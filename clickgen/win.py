@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
     win.py is restrong of anicursorgen.py
     generate .cur & .ani files based on '.in' config file
