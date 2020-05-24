@@ -29,8 +29,8 @@ def __gen_argv_ctypes(argv: list):
 
 
 def generate(argv: list):
-    # add null at first position, unless xcurosrgen.c break
-    argv.insert(0, '')
+    # add script name at first position, i.e. xcurosrgen.c
+    argv.insert(0, 'xursorgen.c')
     argc = len(argv)
 
     na = __gen_argv_ctypes(argv)
