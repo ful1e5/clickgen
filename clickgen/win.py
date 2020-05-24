@@ -22,7 +22,7 @@ program_name = 'anicursorgen'
 program_version = '1.0.0'
 
 
-def main():
+def main(input_config: str, output_file: str):
     parser = argparse.ArgumentParser(description='Creates .ani or .cur files from separate images and input metadata.',
                                      add_help=False)
     parser.add_argument('-V', '--version', action='version', version='{}-{}'.format(program_name, program_version),
@@ -54,6 +54,11 @@ def main():
                         help='Output cursor file (stdout by default).')
 
     args = parser.parse_args()
+
+    if(input_config is not None):
+        args.input_config = input_config
+    if(output_file is not None):
+        args.output_file = output_file
 
     try:
         if args.color[0] != '0' or args.color[1] not in ['x', 'X'] or len(args.color) != 10:
