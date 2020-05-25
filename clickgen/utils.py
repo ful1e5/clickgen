@@ -7,16 +7,13 @@ from clickgen.win import main as win_gen
 config_ext = ('*.in', '*.ini')
 
 
-def have_configs(dir: str) -> bool:
-    files_grabbed = []
+def get_configs(dir: str) -> list:
+    configs_grabbed = []
 
-    for files in config_ext:
-        files_grabbed.extend(glob.glob(files))
-
-    if len(files_grabbed) >= 0:
-        return True
-    else:
-        return False
+    for ext in config_ext:
+        configs_grabbed.extend(
+            glob.glob(os.path.abspath(os.path.join(dir, ext))))
+    return configs_grabbed
 
 
 def main(config_dir: str,
@@ -36,8 +33,8 @@ def main(config_dir: str,
     out_path = os.path.abspath(out_path)
 
     try:
-        flag = have_configs(config_dir)
-        if (flag == True):
-            raise FileNotFoundError('no configs files found in %s' % in_path)
+        configs = get_configs(config_dir)
+        if (len(configs) <= 0):
+            raise FileNotFoundError('no configs found in %s' % in_path)
     except FileNotFoundError as err:
         print('Error:', err)
