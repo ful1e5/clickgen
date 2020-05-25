@@ -10,11 +10,18 @@ class install(_install):
         _install.run(self)
 
 
+# third-party dependencies
+with open('./requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
-    name='clickgen',
-    version='1.0.0',
     author='Kaiz Khatri',
-    packages=['clickgen'],
+    cmdclass={
+        'install': install,
+    },
+    install_requires=required,
+    name='clickgen',
     package_data={'clickgen': ['xcursorgen.so']},
-    cmdclass={'install': install},
+    packages=['clickgen'],
+    version='1.0.0',
 )
