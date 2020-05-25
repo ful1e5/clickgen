@@ -30,11 +30,13 @@ def main(config_dir: str,
         print('Error:', valerr)
 
     in_path = os.path.abspath(config_dir)
-    out_path = os.path.abspath(out_path)
 
     try:
         configs = get_configs(config_dir)
         if (len(configs) <= 0):
             raise FileNotFoundError('no configs found in %s' % in_path)
     except FileNotFoundError as err:
-        print('Error:', err)
+        print(err)
+
+    out = os.path.abspath(os.path.join(out_path, name))
+    os.mkdir(out_path)
