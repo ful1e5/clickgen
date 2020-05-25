@@ -17,9 +17,12 @@ LP_LP_c_char = ctypes.POINTER(LP_c_char)
 dll.main.argtypes = (ctypes.c_int, LP_LP_c_char)
 dll.main.restypes = ctypes.c_int
 
+# Default arguments
+argv = ['xcursorgen']
+
 
 def __gen_argv_ctypes(argv: list):
-    p = (LP_c_char*len(argv))()
+    p = (LP_c_char * len(argv))()
 
     for i, arg in enumerate(argv):  # not sys.argv, but argv!!!
         enc_arg = arg.encode('utf-8')
@@ -28,12 +31,19 @@ def __gen_argv_ctypes(argv: list):
     return ctypes.cast(p, LP_LP_c_char)
 
 
-def generate(argv: list):
-    # add script name at first position, i.e. xcurosrgen.c
-    argv.insert(0, 'xursorgen.c')
+def generate(argc: int, argv: list) -> None:
+    try:
+        na = __gen_argv_ctypes(argv)
+        res = dll.main(argc, na)
+
+        if res == 0:
+            raise ValueError('Xcursorgen raised error')
+    except ValueError as valerr:
+        print('Error: ', valerr)
+
+
+def main(input_config: str, output_file: str) -> None:
+    argv.extend([input_config, output_file])
     argc = len(argv)
 
-    na = __gen_argv_ctypes(argv)
-
-    res = dll.main(argc, na)
-    return res
+    generate(argc, argv)
