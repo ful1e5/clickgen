@@ -23,9 +23,22 @@ def create_dir(path: str) -> None:
         os.mkdir(path)
 
 
-def get_cur_name(config: str, type: str, animated: bool) -> str:
-    config_name = os.path.basename(config)
+def _is_animated(config: str) -> bool:
+    try:
+        with open(config, 'r') as config:
+            line = config.readline()
+            columns = line.split(" ")
+            if (len(columns) > 4):
+                return True
+            else:
+                return False
+    except IOError as err:
+        print('Error: ', err)
 
+
+def get_cur_name(config: str, type: str) -> str:
+    config_name = os.path.basename(config)
+    animated = _is_animated(config)
     try:
         if (type == None):
             raise ValueError("`type` not defined in get_cur_name()")
@@ -74,12 +87,15 @@ def main(config_dir: str,
 
     if (win == True and x11 == True):
         win_work_dir = os.path.join(out, 'win')
+        create_dir(win_work_dir)
         x11_work_dir = os.path.join(out, 'x11')
+        create_dir(x11_work_dir)
 
     if (win == True):
         print('Building win cursors..')
         for config in configs:
-            print(config_name)
-
+            cur_name = get_cur_name(config, type='win')
+            cur_out = os.path.join(win_work_dir, cur_name)
+            win_gen(input_config=config, output_file=cur_out, prefix=configs)
     if (x11 == True):
         print('Building x11 cursors..')
