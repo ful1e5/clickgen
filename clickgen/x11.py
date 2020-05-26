@@ -33,7 +33,7 @@ def generate(argc: int, argv: list) -> None:
         na = __gen_argv_ctypes(argv)
         res = dll.main(argc, na)
 
-        if res == 0:
+        if res == 1:
             raise ValueError('Xcursorgen raised error')
     except ValueError as valerr:
         print('Error: ', valerr)
@@ -42,7 +42,7 @@ def generate(argc: int, argv: list) -> None:
 def main(input_config: str, output_file: str, prefix: str) -> None:
 
     # binary name as first argument
-    argv = ['xcursorgen', input_config, output_file]
+    argv = ['xcursorgen', '-p', prefix, input_config, output_file]
     argc = len(argv)
 
     generate(argc, argv)

@@ -84,6 +84,8 @@ def main(config_dir: str,
 
     # set output directory as `out_path`
     win_work_dir = x11_work_dir = out
+    # set png prefix
+    prefix = os.path.abspath(config_dir)
 
     if (win == True and x11 == True):
         win_work_dir = os.path.join(out, 'win')
@@ -96,10 +98,10 @@ def main(config_dir: str,
         for config in configs:
             cur_name = get_cur_name(config, type='win')
             cur_out = os.path.join(win_work_dir, cur_name)
-            win_gen(input_config=config, output_file=cur_out, prefix=configs)
+            win_gen(input_config=config, output_file=cur_out, prefix=prefix)
     if (x11 == True):
         print('Building x11 cursors..')
         for config in configs:
             cur_name = get_cur_name(config, type='x11')
             cur_out = os.path.join(x11_work_dir, cur_name)
-            x11_gen(input_config=config, output_file=cur_out, prefix=configs)
+            x11_gen(input_config=config, output_file=cur_out, prefix=prefix)
