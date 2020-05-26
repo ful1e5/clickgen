@@ -99,3 +99,7 @@ def main(config_dir: str,
             win_gen(input_config=config, output_file=cur_out, prefix=configs)
     if (x11 == True):
         print('Building x11 cursors..')
+        for config in configs:
+            cur_name = get_cur_name(config, type='x11')
+            cur_out = os.path.join(x11_work_dir, cur_name)
+            x11_gen(input_config=config, output_file=cur_out, prefix=configs)
