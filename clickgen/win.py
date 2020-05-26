@@ -22,49 +22,110 @@ program_name = 'anicursorgen'
 program_version = '1.0.0'
 
 
-def main(input_config: str, output_file: str):
-    parser = argparse.ArgumentParser(description='Creates .ani or .cur files from separate images and input metadata.',
-                                     add_help=False)
-    parser.add_argument('-V', '--version', action='version', version='{}-{}'.format(program_name, program_version),
+def main(input_config: str, output_file: str, prefix: str):
+    parser = argparse.ArgumentParser(
+        description=
+        'Creates .ani or .cur files from separate images and input metadata.',
+        add_help=False)
+    parser.add_argument('-V',
+                        '--version',
+                        action='version',
+                        version='{}-{}'.format(program_name, program_version),
                         help='Display the version number and exit.')
-    parser.add_argument('-h', '-?', action='help',
+    parser.add_argument('-h',
+                        '-?',
+                        action='help',
                         help='Display the usage message and exit.')
-    parser.add_argument('-p', '--prefix', metavar='dir', default=None,
-                        help='Find cursor images in the directory specified by dir. If not specified, the current directory is used.')
-    parser.add_argument('-s', '--add-shadows', action='store_true', dest='add_shadows', default=False,
-                        help='Generate shadows for cursors (disabled by default).')
-    parser.add_argument('-n', '--no-shadows', action='store_false', dest='add_shadows', default=False,
-                        help='Do not generate shadows for cursors (put after --add-shadows to cancel its effect).')
+    parser.add_argument(
+        '-p',
+        '--prefix',
+        metavar='dir',
+        default=None,
+        help=
+        'Find cursor images in the directory specified by dir. If not specified, the current directory is used.'
+    )
+    parser.add_argument(
+        '-s',
+        '--add-shadows',
+        action='store_true',
+        dest='add_shadows',
+        default=False,
+        help='Generate shadows for cursors (disabled by default).')
+    parser.add_argument(
+        '-n',
+        '--no-shadows',
+        action='store_false',
+        dest='add_shadows',
+        default=False,
+        help=
+        'Do not generate shadows for cursors (put after --add-shadows to cancel its effect).'
+    )
 
     shadows = parser.add_argument_group(
-        title='Shadow generation', description='Only relevant when --add-shadows is given')
+        title='Shadow generation',
+        description='Only relevant when --add-shadows is given')
 
-    shadows.add_argument('-r', '--right-shift', metavar='%', type=float, default=9.375,
-                         help='Shift shadow right by this percentage of the canvas size (default is 9.375).')
-    shadows.add_argument('-d', '--down-shift', metavar='%', type=float, default=3.125,
-                         help='Shift shadow down by this percentage of the canvas size (default is 3.125).')
-    shadows.add_argument('-b', '--blur', metavar='%', type=float, default=3.125,
-                         help='Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).')
-    shadows.add_argument('-c', '--color', metavar='%', default='0x00000040',
-                         help='Shadow color in 0xRRGGBBAA form (default is 0x00000040).')
+    shadows.add_argument(
+        '-r',
+        '--right-shift',
+        metavar='%',
+        type=float,
+        default=9.375,
+        help=
+        'Shift shadow right by this percentage of the canvas size (default is 9.375).'
+    )
+    shadows.add_argument(
+        '-d',
+        '--down-shift',
+        metavar='%',
+        type=float,
+        default=3.125,
+        help=
+        'Shift shadow down by this percentage of the canvas size (default is 3.125).'
+    )
+    shadows.add_argument(
+        '-b',
+        '--blur',
+        metavar='%',
+        type=float,
+        default=3.125,
+        help=
+        'Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).'
+    )
+    shadows.add_argument(
+        '-c',
+        '--color',
+        metavar='%',
+        default='0x00000040',
+        help='Shadow color in 0xRRGGBBAA form (default is 0x00000040).')
 
-    parser.add_argument('input_config', default='-', metavar='input-config [output-file]', nargs='?',
+    parser.add_argument('input_config',
+                        default='-',
+                        metavar='input-config [output-file]',
+                        nargs='?',
                         help='Input config file (stdin by default).')
-    parser.add_argument('output_file', default='-', metavar='', nargs='?',
+    parser.add_argument('output_file',
+                        default='-',
+                        metavar='',
+                        nargs='?',
                         help='Output cursor file (stdout by default).')
 
     args = parser.parse_args()
 
-    if(input_config is not None):
+    if (input_config is not None):
         args.input_config = input_config
-    if(output_file is not None):
+    if (output_file is not None):
         args.output_file = output_file
+    if (prefix is not None):
+        args.prefix = prefix
 
     try:
-        if args.color[0] != '0' or args.color[1] not in ['x', 'X'] or len(args.color) != 10:
+        if args.color[0] != '0' or args.color[1] not in [
+                'x', 'X'
+        ] or len(args.color) != 10:
             raise ValueError
-        args.color = (int(args.color[2:4], 16), int(args.color[4:6], 16), int(
-            args.color[6:8], 16), int(args.color[8:10], 16))
+        args.color = (int(args.color[2:4], 16), int(args.color[4:6], 16),
+                      int(args.color[6:8], 16), int(args.color[8:10], 16))
     except:
         print("Can't parse the color '{}'".format(args.color), file=sys.stderr)
         parser.print_help()
@@ -165,15 +226,16 @@ def make_cur(frames, args, animated=False):
                 frame_png.close()
                 frame_png = shadowed
 
+
 #   Windows 10 fails to read PNG-compressed cursors for some reason
 #   and the information about storing PNG-compressed cursors is
 #   sparse. This is why PNG compression is not used.
 #   Previously this was conditional on cursor size (<= 48 to be uncompressed).
         compressed = False
 
-#   On the other hand, Windows 10 refuses to read very large
-#   uncompressed animated cursor files, but does accept
-#   PNG-compressed animated cursors for some reason. Go figure.
+        #   On the other hand, Windows 10 refuses to read very large
+        #   uncompressed animated cursor files, but does accept
+        #   PNG-compressed animated cursors for some reason. Go figure.
         if animated:
             compressed = True
 
@@ -206,8 +268,10 @@ def make_framesets(frames):
             counter = 0
 
             if size in sizes:
-                print("Frames are not sorted: frame {} has size {}, but we have seen that already".format(
-                    i, size), file=sys.stderr)
+                print(
+                    "Frames are not sorted: frame {} has size {}, but we have seen that already"
+                    .format(i, size),
+                    file=sys.stderr)
                 return None
 
             sizes.add(size)
@@ -221,14 +285,18 @@ def make_framesets(frames):
     for i in range(1, len(framesets)):
         if len(framesets[i - 1]) != len(framesets[i]):
             print("Frameset {} has size {}, expected {}".format(
-                i, len(framesets[i]), len(framesets[i - 1])), file=sys.stderr)
+                i, len(framesets[i]), len(framesets[i - 1])),
+                  file=sys.stderr)
             return None
 
     for frameset in framesets:
         for i in range(1, len(frameset)):
             if frameset[i - 1][4] != frameset[i][4]:
-                print("Frameset {} has duration {} for framesize {}, but {} for framesize {}".format(
-                    i, frameset[i][4], frameset[i][0], frameset[i - 1][4], frameset[i - 1][0]), file=sys.stderr)
+                print(
+                    "Frameset {} has duration {} for framesize {}, but {} for framesize {}"
+                    .format(i, frameset[i][4], frameset[i][0],
+                            frameset[i - 1][4], frameset[i - 1][0]),
+                    file=sys.stderr)
                 return None
 
     # def frameset_size_cmp(f1, f2):
@@ -258,8 +326,9 @@ def make_ani(frames, out, args):
 
     buf.write(b'ACON')
     buf.write(b'anih')
-    buf.write(p('<IIIIIIIIII', 36, 36, len(framesets), len(
-        framesets), 0, 0, 32, 1, framesets[0][0][4], 0x01))
+    buf.write(
+        p('<IIIIIIIIII', 36, 36, len(framesets), len(framesets), 0, 0, 32, 1,
+          framesets[0][0][4], 0x01))
 
     rates = set()
     for frameset in framesets:
@@ -309,8 +378,9 @@ def write_png(out, frame, frame_png):
 def write_cur(out, frame, frame_png):
     pixels = frame_png.load()
 
-    out.write(p('<I II HH IIIIII', 40,
-                frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0, 0))
+    out.write(
+        p('<I II HH IIIIII', 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0,
+          0))
 
     for y in reversed(list(range(frame[0]))):
         for x in range(frame[0]):
@@ -380,7 +450,8 @@ def create_shadow(orig, args):
 
     if args.blur > 0:
         crop = (int(math.floor(-blur_px)), int(math.floor(-blur_px)),
-                orig.size[0] + int(math.ceil(blur_px)), orig.size[1] + int(math.ceil(blur_px)))
+                orig.size[0] + int(math.ceil(blur_px)),
+                orig.size[1] + int(math.ceil(blur_px)))
         right_px += int(math.floor(-blur_px))
         down_px += int(math.floor(-blur_px))
         shadow = shadow.crop(crop)
