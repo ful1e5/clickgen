@@ -16,15 +16,22 @@ def get_configs(dir: str) -> list:
     return configs_grabbed
 
 
+def create_dir(path: str) -> None:
+    isExists = os.path.exists(path)
+
+    if (isExists == False):
+        os.mkdir(path)
+
+
 def main(config_dir: str,
          out_path: str,
          name: str,
-         x11: bool = True,
-         win: bool = True,
+         x11: bool = False,
+         win: bool = False,
          archive: bool = False) -> None:
 
     try:
-        if (x11 == False & win == False):
+        if (x11 == False and win == False):
             raise ValueError('cursor generation type missing')
     except ValueError as valerr:
         print('Error:', valerr)
@@ -39,4 +46,17 @@ def main(config_dir: str,
         print(err)
 
     out = os.path.abspath(os.path.join(out_path, name))
-    os.mkdir(out_path)
+    create_dir(out)
+
+    # set output directory as `out_path`
+    win_work_dir = x11_work_dir = out
+
+    if (win == True and x11 == True):
+        win_work_dir = os.path.join(out, 'win')
+        x11_work_dir = os.path.join(out, 'x11')
+
+    if (win == True):
+        print('Building win cursors..')
+
+    if (x11 == True):
+        print('Building x11 cursors..')
