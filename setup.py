@@ -1,5 +1,5 @@
 import subprocess
-from setuptools import setup
+from setuptools import setup, find_namespace_packages
 from distutils.command.install import install as _install
 
 
@@ -22,6 +22,6 @@ setup(
     install_requires=required,
     name='clickgen',
     package_data={'clickgen': ['xcursorgen.so']},
-    packages=['clickgen'],
+    packages=find_namespace_packages(include=['clickgen.*']),
     version='1.0.0',
 )
