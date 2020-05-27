@@ -1,9 +1,9 @@
 import glob
 import os
 
-from linker import create_linked_cursors
-from clickgen.win import main as win_gen
-from clickgen.x11 import main as x11_gen
+from .linker import create_linked_cursors
+from .win import main as win_gen
+from .x11 import main as x11_gen
 
 config_ext = ('*.in', '*.ini')
 
@@ -108,4 +108,4 @@ def main(config_dir: str,
             x11_gen(input_config=config, output_file=cur_out, prefix=prefix)
 
         print('Generating Symblinks..')
-        create_linked_cursors(configs=configs)
+        create_linked_cursors(x11_work_dir)
