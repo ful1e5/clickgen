@@ -21,7 +21,7 @@ setup(author='Kaiz Khatri',
       install_requires=required,
       name='clickgen',
       package_data={'clickgen': ['xcursorgen.so']},
-      packages=find_namespace_packages(include=['clickgen.*']),
+      packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
       version='1.0.0',
       zip_safe=True)
