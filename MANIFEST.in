@@ -1,0 +1,3 @@
+include requirements.txt
+include LICENSE
+recursive-include clickgen/linker data.json
