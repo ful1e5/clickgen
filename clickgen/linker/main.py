@@ -3,7 +3,7 @@ import json
 from difflib import SequenceMatcher as SM
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-common_json_file = os.path.join(basedir, 'common.json')
+data_file = os.path.join(basedir, 'data.json')
 
 
 def match_to_directory(name: str, directory: list) -> str:
@@ -38,11 +38,14 @@ def create_linked_cursors(x11_dir: str) -> None:
     except FileNotFoundError as err:
         print('Error: ', err)
 
-    with open(common_json_file) as f:
-        common_cursors = json.loads(f.read())
+    with open(data_file) as f:
+        data = json.loads(f.read())
+
+    common_cursors = data['common']
+    symblink_cursors = data['symblink']
 
     # rename cursor with proper name
-    for cursor in cursors:
+    for index, cursor in enumerate(cursors):
         fix_cur = match_to_directory(cursor, common_cursors)
 
         if (fix_cur != cursor):
@@ -50,9 +53,13 @@ def create_linked_cursors(x11_dir: str) -> None:
             new_path = os.path.join(x11_dir, fix_cur)
             os.rename(old_path, new_path)
 
-            print('%s ==> %s' % (cursor, fix_cur))
+            cursors[index] = fix_cur
 
-    # TODO:generate symblinks cursors
+            print('Fixed: %s ==> %s' % (cursor, fix_cur))
+
+    # # TODO:generate symblinks cursors
+    # for cursor in cursors:
+    #     print(cursor)
 
 
 def symlink_rel(src: str, dst: str) -> None:
