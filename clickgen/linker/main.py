@@ -18,14 +18,29 @@ def match_to_directory(name: str, directory: list) -> str:
     return match
 
 
-def create_linked_cursors(configs: list) -> None:
+def create_linked_cursors(x11_dir: str) -> None:
+    x11_dir = os.path.abspath(x11_dir)
+    isExists = os.path.exists(x11_dir)
+    cursors = []
+    try:
+        if isExists == False:
+            raise FileNotFoundError('x11 directory not found')
+
+        for file in os.listdir(x11_dir):
+            cursors.append(file)
+
+        if (len(cursors) <= 0):
+            raise FileNotFoundError('directory is empty')
+
+    except FileNotFoundError as err:
+        print('Error: ', err)
+
     with open(common_json_file) as f:
         common_cursors = json.loads(f.read())
 
-    temp = []
-    for config in configs:
-        in_cur = os.path.basename(config).split('.')[0]
-        temp.append(match_to_directory(in_cur, common_cursors))
+    # fix cursors name
+    for cursor in cursors:
+        fix_cur = match_to_directory(cursor, common_cursors)
 
 
 def symlink_rel(src: str, dst: str) -> None:
