@@ -14,14 +14,14 @@ class install(_install):
 with open('./requirements.txt') as f:
     required = f.read().splitlines()
 
-setup(
-    author='Kaiz Khatri',
-    cmdclass={
-        'install': install,
-    },
-    install_requires=required,
-    name='clickgen',
-    package_data={'clickgen': ['xcursorgen.so']},
-    packages=find_namespace_packages(include=['clickgen.*']),
-    version='1.0.0',
-)
+setup(author='Kaiz Khatri',
+      cmdclass={
+          'install': install,
+      },
+      install_requires=required,
+      name='clickgen',
+      package_data={'clickgen': ['xcursorgen.so']},
+      packages=find_namespace_packages(include=['clickgen.*']),
+      include_package_data=True,
+      version='1.0.0',
+      zip_safe=True)
