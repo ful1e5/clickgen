@@ -34,6 +34,7 @@ def create_linked_cursors(x11_dir: str) -> None:
     x11_dir = os.path.abspath(x11_dir)
     isExists = os.path.exists(x11_dir)
 
+    # user have cursors fot symblink
     cursors = []
 
     try:
@@ -67,9 +68,21 @@ def create_linked_cursors(x11_dir: str) -> None:
 
             print('Fixed: %s ==> %s' % (cursor, fix_cur))
 
-    # # TODO:generate symblinks cursors
-    # for cursor in cursors:
-    #     print(cursor)
+    # TODO:generate symblinks cursors
+    path = x11_dir
+    for cursor in cursors:
+        src = os.path.join(path, cursor)
+        for relative in known_cursors:
+            if cursor in relative:
+                # remove source cursor
+                relative.remove(cursor)
+
+                # links to other if not empty
+                if len(relative) != 0:
+                    for link in relative:
+                        dst = os.path.join(path, link)
+                        symlink_rel(src, dst)
+                    print('symblink: %s ==> ' % (cursor), *relative)
 
 
 def symlink_rel(src: str, dst: str) -> None:
