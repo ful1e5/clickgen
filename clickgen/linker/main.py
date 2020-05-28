@@ -1,4 +1,5 @@
 import os
+import itertools
 import json
 from difflib import SequenceMatcher as SM
 
@@ -7,13 +8,13 @@ data_file = os.path.join(basedir, 'data.json')
 
 
 def match_to_directory(name: str, directory: list) -> str:
-    prev_ratio = 0
-    match = ''
+    compare_ratio = 0.5
+    match = name
 
     for word in directory:
         ratio = SM(None, name.lower(), word.lower()).ratio()
-        if ratio > prev_ratio:
-            prev_ratio = ratio
+        if ratio > compare_ratio:
+            compare_ratio = ratio
             match = word
 
     return match
@@ -23,16 +24,10 @@ def load_data() -> [list]:
     with open(data_file) as f:
         data = json.loads(f.read())
 
-    common = data['common']
-    symblink = data['symblink']
-    all = common
+    cursors = data['cursors']
+    all = list(itertools.chain.from_iterable(cursors))
 
-    for c in symblink:
-        links = symblink[c]
-        for l in links:
-            all.append(l)
-
-    return common, symblink, all
+    return cursors, all
 
 
 def create_linked_cursors(x11_dir: str) -> None:
@@ -54,12 +49,15 @@ def create_linked_cursors(x11_dir: str) -> None:
     except FileNotFoundError as err:
         print('Error: ', err)
 
-    common_cursors, symblink_cursors, all_cursors = load_data()
+    known_cursors, all_cursors = load_data()
+
     # rename cursor with proper name
     for index, cursor in enumerate(cursors):
         fix_cur = match_to_directory(cursor, all_cursors)
+
         if fix_cur not in all_cursors:
-            print('Warning: %s undefined cursor' % fix_cur)
+            print('Warning: %s is unknown cursor' % fix_cur)
+
         elif (fix_cur != cursor):
             old_path = os.path.join(x11_dir, cursor)
             new_path = os.path.join(x11_dir, fix_cur)
