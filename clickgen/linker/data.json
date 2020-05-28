@@ -76,25 +76,27 @@
     "circle": ["forbidden"],
     "copy": [
       "1081e37283d90000800003c07f3ef6bf",
-      "b66166c04f8c3109214a4fbd64a50fc8",
-      "6407b0e94181790501fd1e167b474872"
+      "6407b0e94181790501fd1e167b474872",
+      "b66166c04f8c3109214a4fbd64a50fc8"
     ],
     "cross": ["cross_reverse", "diamond_cross"],
     "crossed_circle": ["03b6e0fcb3499374a867c041f52298f0", "not-allowed"],
     "dnd-link": ["alias"],
     "dnd_no_drop": ["no-drop"],
+    "dnd-none": ["closedhand", "fcf21c00b30f7e3f83fe0dfd12e71cff"],
     "dotbox": ["dot_box_mask", "draped_box", "icon", "target"],
     "fd_double_arrow": [
       "fcf1c3c7cd4491d801f1e1c78f100000",
       "nesw-resize",
-      "size_bdiag",
-      "openhand"
+      "openhand",
+      "size_bdiag"
     ],
-    "hand1": ["grab"],
+    "hand1": ["grab", "openhand"],
     "hand2": [
       "9d800788f1b08800ae810202380a0822",
       "e29285e634086352946a0e7090d73106",
-      "pointer"
+      "pointer",
+      "pointing_hand"
     ],
     "left_ptr": [
       "arrow",
@@ -152,15 +154,14 @@
       "double_arrow",
       "ns-resize",
       "row-resize",
-      "v_double_arrow",
-      "split_v"
+      "split_v",
+      "v_double_arrow"
     ],
     "tcross": ["color-picker"],
     "top_left_corner": ["nw-resize"],
     "top_right_corner": ["ne-resize"],
     "top_side": ["n-resize"],
     "watch": ["wait"],
-    "wayland-cursor": [],
     "xterm": ["text", "ibeam"]
   }
 }
