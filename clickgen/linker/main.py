@@ -19,6 +19,22 @@ def match_to_directory(name: str, directory: list) -> str:
     return match
 
 
+def load_data() -> [list]:
+    with open(data_file) as f:
+        data = json.loads(f.read())
+
+    common = data['common']
+    symblink = data['symblink']
+    all = common
+
+    for c in symblink:
+        links = symblink[c]
+        for l in links:
+            all.append(l)
+
+    return common, symblink, all
+
+
 def create_linked_cursors(x11_dir: str) -> None:
     x11_dir = os.path.abspath(x11_dir)
     isExists = os.path.exists(x11_dir)
@@ -38,17 +54,13 @@ def create_linked_cursors(x11_dir: str) -> None:
     except FileNotFoundError as err:
         print('Error: ', err)
 
-    with open(data_file) as f:
-        data = json.loads(f.read())
-
-    common_cursors = data['common']
-    symblink_cursors = data['symblink']
-
+    common_cursors, symblink_cursors, all_cursors = load_data()
     # rename cursor with proper name
     for index, cursor in enumerate(cursors):
-        fix_cur = match_to_directory(cursor, common_cursors)
-
-        if (fix_cur != cursor):
+        fix_cur = match_to_directory(cursor, all_cursors)
+        if fix_cur not in all_cursors:
+            print('Warning: %s undefined cursor' % fix_cur)
+        elif (fix_cur != cursor):
             old_path = os.path.join(x11_dir, cursor)
             new_path = os.path.join(x11_dir, fix_cur)
             os.rename(old_path, new_path)
