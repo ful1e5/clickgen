@@ -30,6 +30,11 @@ def load_data() -> [list]:
     return cursors, all
 
 
+def symlink_rel(src: str, dst: str) -> None:
+    rel_path_src = os.path.relpath(src, os.path.dirname(dst))
+    os.symlink(rel_path_src, dst)
+
+
 def create_linked_cursors(x11_dir: str) -> None:
     x11_dir = os.path.abspath(x11_dir)
     isExists = os.path.exists(x11_dir)
@@ -68,7 +73,6 @@ def create_linked_cursors(x11_dir: str) -> None:
 
             print('Fixed: %s ==> %s' % (cursor, fix_cur))
 
-    # TODO:generate symblinks cursors
     path = x11_dir
     for cursor in cursors:
         src = os.path.join(path, cursor)
@@ -83,8 +87,3 @@ def create_linked_cursors(x11_dir: str) -> None:
                         dst = os.path.join(path, link)
                         symlink_rel(src, dst)
                     print('symblink: %s ==> ' % (cursor), *relative)
-
-
-def symlink_rel(src: str, dst: str) -> None:
-    rel_path_src = os.path.relpath(src, os.path.dirname(dst))
-    os.symlink(rel_path_src, dst)
