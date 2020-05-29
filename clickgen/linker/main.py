@@ -1,7 +1,8 @@
-import os
+from difflib import SequenceMatcher as SM
 import itertools
 import json
-from difflib import SequenceMatcher as SM
+import os
+import tempfile
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 data_file = os.path.join(basedir, 'data.json')
@@ -30,9 +31,39 @@ def load_data() -> [list]:
     return cursors, all
 
 
-def symlink_rel(src: str, dst: str) -> None:
-    rel_path_src = os.path.relpath(src, os.path.dirname(dst))
-    os.symlink(rel_path_src, dst)
+def symlink(target, link_name, overwrite=False):
+    '''
+    Create a symbolic link named link_name pointing to target.
+    If link_name exists then FileExistsError is raised, unless overwrite=True.
+    When trying to overwrite a directory, IsADirectoryError is raised.
+    
+    ref => https://stackoverflow.com/a/55742015
+    '''
+
+    if not overwrite:
+        os.symlink(target, link_name)
+        return
+
+    link_dir = os.path.dirname(link_name)
+
+    while True:
+        temp_link_name = tempfile.mktemp(dir=link_dir)
+
+        try:
+            os.symlink(target, temp_link_name)
+            break
+        except FileExistsError:
+            pass
+
+    try:
+        if os.path.isdir(link_name):
+            raise IsADirectoryError(
+                f"Cannot symlink over existing directory: '{link_name}'")
+        os.replace(temp_link_name, link_name)
+    except:
+        if os.path.islink(temp_link_name):
+            os.remove(temp_link_name)
+        raise
 
 
 def create_linked_cursors(x11_dir: str) -> None:
@@ -85,5 +116,5 @@ def create_linked_cursors(x11_dir: str) -> None:
                 if len(relative) != 0:
                     for link in relative:
                         dst = os.path.join(path, link)
-                        symlink_rel(src, dst)
+                        symlink(src, dst, overwrite=True)
                     print('symblink: %s ==> ' % (cursor), *relative)
