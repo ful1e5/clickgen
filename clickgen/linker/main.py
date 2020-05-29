@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from difflib import SequenceMatcher as SM
 import itertools
 import json
@@ -6,6 +7,19 @@ import tempfile
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 data_file = os.path.join(basedir, 'data.json')
+
+
+@contextmanager
+def cd(path):
+    CWD = os.getcwd()
+
+    os.chdir(path)
+    try:
+        yield
+    except:
+        print('Exception caught: %s' % sys.exc_info()[0])
+    finally:
+        os.chdir(CWD)
 
 
 def match_to_directory(name: str, directory: list) -> str:
@@ -104,17 +118,18 @@ def create_linked_cursors(x11_dir: str) -> None:
 
             print('Fixed: %s ==> %s' % (cursor, fix_cur))
 
-    path = x11_dir
-    for cursor in cursors:
-        src = os.path.join(path, cursor)
-        for relative in known_cursors:
-            if cursor in relative:
-                # remove source cursor
-                relative.remove(cursor)
+    # For relative links
+    with cd(x11_dir):
+        for cursor in cursors:
+            for relative in known_cursors:
+                if cursor in relative:
+                    # remove source cursor
+                    relative.remove(cursor)
 
-                # links to other if not empty
-                if len(relative) != 0:
-                    for link in relative:
-                        dst = os.path.join(path, link)
-                        symlink(src, dst, overwrite=True)
-                    print('symblink: %s ==> ' % (cursor), *relative)
+                    # links to other if not empty
+                    if len(relative) != 0:
+                        for link in relative:
+                            src = './' + cursor
+                            dst = './' + link
+                            symlink(src, dst, overwrite=True)
+                        print('symblink: %s ==> ' % (cursor), *relative)
