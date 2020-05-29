@@ -80,6 +80,7 @@ def main(config_dir: str,
     try:
         if (x11 and win):
             raise ValueError('cursor generation type missing')
+
     except ValueError as valerr:
         print('Error:', valerr)
 
@@ -89,6 +90,7 @@ def main(config_dir: str,
         configs = get_configs(config_dir)
         if (len(configs) <= 0):
             raise FileNotFoundError('no configs found in %s' % in_path)
+
     except FileNotFoundError as err:
         print(err)
 
@@ -99,6 +101,7 @@ def main(config_dir: str,
 
     if (win):
         print('Building win cursors..')
+
         with TemporaryDirectory() as win_work_dir:
             for config in configs:
                 cur_name = get_cur_name(config, type='win')
@@ -107,8 +110,12 @@ def main(config_dir: str,
                         output_file=cur_out,
                         prefix=prefix)
 
+            win_out = os.path.join(out, 'win')
+            shutil.copytree(win_work_dir, win_out)
+
     if (x11):
         print('Building x11 cursors..')
+
         with TemporaryDirectory() as x11_work_dir:
             for config in configs:
                 cur_name = get_cur_name(config, type='x11')
@@ -118,3 +125,5 @@ def main(config_dir: str,
                         prefix=prefix)
 
             create_linked_cursors(x11_work_dir)
+            x11_out = os.path.join(out, 'x11')
+            shutil.copytree(x11_work_dir, x11_out, symlinks=True)
