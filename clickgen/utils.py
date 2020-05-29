@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import glob
 import os
 import shutil
@@ -8,6 +9,15 @@ from .win import main as win_gen
 from .x11 import main as x11_gen
 
 config_ext = ('*.in', '*.ini')
+
+
+@contextmanager
+def TemporaryDirectory():
+    name = tempfile.mkdtemp()
+    try:
+        yield name
+    finally:
+        shutil.rmtree(name)
 
 
 def get_configs(dir: str) -> list:
@@ -68,7 +78,7 @@ def main(config_dir: str,
          archive: bool = False) -> None:
 
     try:
-        if (x11 == False and win == False):
+        if (x11 and win):
             raise ValueError('cursor generation type missing')
     except ValueError as valerr:
         print('Error:', valerr)
@@ -83,37 +93,28 @@ def main(config_dir: str,
         print(err)
 
     out = os.path.abspath(os.path.join(out_path, name))
-    create_dir(out)
-
-    # setting temp work environment
-    tempdir = tempfile.tempdir
-    win_work_dir = tempfile.mkdtemp(tempdir)
-    x11_work_dir = tempfile.mkdtemp(tempdir)
 
     # set png prefix
     prefix = os.path.abspath(config_dir)
 
-    if (win == True and x11 == True):
-        win_work_dir = os.path.join(out, 'win')
-        create_dir(win_work_dir)
-        x11_work_dir = os.path.join(out, 'x11')
-        create_dir(x11_work_dir)
-
-    if (win == True):
+    if (win):
         print('Building win cursors..')
-        for config in configs:
-            cur_name = get_cur_name(config, type='win')
-            cur_out = os.path.join(win_work_dir, cur_name)
-            win_gen(input_config=config, output_file=cur_out, prefix=prefix)
-    if (x11 == True):
+        with TemporaryDirectory() as win_work_dir:
+            for config in configs:
+                cur_name = get_cur_name(config, type='win')
+                cur_out = os.path.join(win_work_dir, cur_name)
+                win_gen(input_config=config,
+                        output_file=cur_out,
+                        prefix=prefix)
+
+    if (x11):
         print('Building x11 cursors..')
-        for config in configs:
-            cur_name = get_cur_name(config, type='x11')
-            cur_out = os.path.join(x11_work_dir, cur_name)
-            x11_gen(input_config=config, output_file=cur_out, prefix=prefix)
+        with TemporaryDirectory() as x11_work_dir:
+            for config in configs:
+                cur_name = get_cur_name(config, type='x11')
+                cur_out = os.path.join(x11_work_dir, cur_name)
+                x11_gen(input_config=config,
+                        output_file=cur_out,
+                        prefix=prefix)
 
-        create_linked_cursors(x11_work_dir)
-
-    # cleanup temorary files
-    shutil.rmtree(win_work_dir, ignore_errors=True)
-    shutil.rmtree(x11_work_dir, ignore_errors=True)
+            create_linked_cursors(x11_work_dir)
