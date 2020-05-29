@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 import tempfile
 
 from .linker import create_linked_cursors
@@ -112,3 +113,7 @@ def main(config_dir: str,
             x11_gen(input_config=config, output_file=cur_out, prefix=prefix)
 
         create_linked_cursors(x11_work_dir)
+
+    # cleanup temorary files
+    shutil.rmtree(win_work_dir, ignore_errors=True)
+    shutil.rmtree(x11_work_dir, ignore_errors=True)
