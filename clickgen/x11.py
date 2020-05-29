@@ -29,14 +29,8 @@ def __gen_argv_ctypes(argv: list):
 
 
 def generate(argc: int, argv: list) -> None:
-    try:
-        na = __gen_argv_ctypes(argv)
-        res = dll.main(argc, na)
-
-        if res == 1:
-            raise ValueError('Xcursorgen raised error')
-    except ValueError as valerr:
-        print('Error: ', valerr)
+    na = __gen_argv_ctypes(argv)
+    dll.main(argc, na)
 
 
 def main(input_config: str, output_file: str, prefix: str) -> None:

@@ -107,5 +107,4 @@ def main(config_dir: str,
             cur_out = os.path.join(x11_work_dir, cur_name)
             x11_gen(input_config=config, output_file=cur_out, prefix=prefix)
 
-        print('Generating Symblinks..')
         create_linked_cursors(x11_work_dir)
