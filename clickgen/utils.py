@@ -1,5 +1,6 @@
 import glob
 import os
+import tempfile
 
 from .linker import create_linked_cursors
 from .win import main as win_gen
@@ -83,8 +84,11 @@ def main(config_dir: str,
     out = os.path.abspath(os.path.join(out_path, name))
     create_dir(out)
 
-    # set output directory as `out_path`
-    win_work_dir = x11_work_dir = out
+    # setting temp work environment
+    tempdir = tempfile.tempdir
+    win_work_dir = tempfile.mkdtemp(tempdir)
+    x11_work_dir = tempfile.mkdtemp(tempdir)
+
     # set png prefix
     prefix = os.path.abspath(config_dir)
 
