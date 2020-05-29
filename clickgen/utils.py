@@ -70,15 +70,15 @@ def get_cur_name(config: str, type: str) -> str:
         return ""
 
 
-def main(config_dir: str,
-         out_path: str,
-         name: str,
+def main(name: str,
+         config_dir: str,
+         out_path: str = os.curdir,
          x11: bool = False,
          win: bool = False,
          archive: bool = False) -> None:
 
     try:
-        if (x11 and win):
+        if (x11 == False and win == False):
             raise ValueError('cursor generation type missing')
 
     except ValueError as valerr:
@@ -111,6 +111,11 @@ def main(config_dir: str,
                         prefix=prefix)
 
             win_out = os.path.join(out, 'win')
+
+            # deleting existed win directory
+            if (os.path.exists(win_out)):
+                shutil.rmtree(win_out)
+
             shutil.copytree(win_work_dir, win_out)
 
     if (x11):
@@ -129,4 +134,9 @@ def main(config_dir: str,
 
             create_linked_cursors(x11_cursors_dir)
             x11_out = os.path.join(out, 'x11')
+
+            # deleting existed x11 directory
+            if (os.path.exists(x11_out)):
+                shutil.rmtree(x11_out)
+
             shutil.copytree(x11_work_dir, x11_out, symlinks=True)
