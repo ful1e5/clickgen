@@ -117,13 +117,16 @@ def main(config_dir: str,
         print('Building x11 cursors..')
 
         with TemporaryDirectory() as x11_work_dir:
+            x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
+            create_dir(x11_cursors_dir)
             for config in configs:
                 cur_name = get_cur_name(config, type='x11')
-                cur_out = os.path.join(x11_work_dir, cur_name)
+
+                cur_out = os.path.join(x11_cursors_dir, cur_name)
                 x11_gen(input_config=config,
                         output_file=cur_out,
                         prefix=prefix)
 
-            create_linked_cursors(x11_work_dir)
+            create_linked_cursors(x11_cursors_dir)
             x11_out = os.path.join(out, 'x11')
             shutil.copytree(x11_work_dir, x11_out, symlinks=True)
