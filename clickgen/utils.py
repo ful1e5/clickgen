@@ -5,6 +5,7 @@ import shutil
 import tempfile
 
 from .linker import link_cursors
+from .template import create_x11_template
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
@@ -134,6 +135,7 @@ def main(name: str,
                         prefix=prefix)
 
             link_cursors(x11_cursors_dir)
+            create_x11_template(name=name, dir=x11_work_dir)
             x11_out = os.path.join(out, 'x11')
 
             # deleting existed x11 directory
