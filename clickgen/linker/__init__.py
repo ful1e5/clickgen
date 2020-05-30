@@ -1,1 +1,1 @@
-from .__main__ import create_linked_cursors
+from .__main__ import link_cursors

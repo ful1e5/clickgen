@@ -4,7 +4,7 @@ import os
 import shutil
 import tempfile
 
-from .linker import create_linked_cursors
+from .linker import link_cursors
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
@@ -110,6 +110,7 @@ def main(name: str,
                         output_file=cur_out,
                         prefix=prefix)
 
+            link_cursors(win_work_dir, win=True)
             win_out = os.path.join(out, 'win')
 
             # deleting existed win directory
@@ -132,7 +133,7 @@ def main(name: str,
                         output_file=cur_out,
                         prefix=prefix)
 
-            create_linked_cursors(x11_cursors_dir)
+            link_cursors(x11_cursors_dir)
             x11_out = os.path.join(out, 'x11')
 
             # deleting existed x11 directory

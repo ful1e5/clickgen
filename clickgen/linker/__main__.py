@@ -80,9 +80,9 @@ def symlink(target, link_name, overwrite=False):
         raise
 
 
-def create_linked_cursors(x11_dir: str) -> None:
-    x11_dir = os.path.abspath(x11_dir)
-    isExists = os.path.exists(x11_dir)
+def link_cursors(dir: str, win=False) -> None:
+    dir = os.path.abspath(dir)
+    isExists = os.path.exists(dir)
 
     # user have cursors fot symblink
     cursors = []
@@ -91,7 +91,7 @@ def create_linked_cursors(x11_dir: str) -> None:
         if isExists == False:
             raise FileNotFoundError('x11 directory not found')
 
-        for file in os.listdir(x11_dir):
+        for file in os.listdir(dir):
             cursors.append(file)
 
         if (len(cursors) <= 0):
@@ -110,8 +110,8 @@ def create_linked_cursors(x11_dir: str) -> None:
             print('Warning: %s is unknown cursor' % fix_cur)
 
         elif (fix_cur != cursor):
-            old_path = os.path.join(x11_dir, cursor)
-            new_path = os.path.join(x11_dir, fix_cur)
+            old_path = os.path.join(dir, cursor)
+            new_path = os.path.join(dir, fix_cur)
             os.rename(old_path, new_path)
 
             cursors[index] = fix_cur
@@ -119,17 +119,18 @@ def create_linked_cursors(x11_dir: str) -> None:
             print('Fixed: %s ==> %s' % (cursor, fix_cur))
 
     # For relative links
-    with cd(x11_dir):
-        for cursor in cursors:
-            for relative in known_cursors:
-                if cursor in relative:
-                    # remove source cursor
-                    relative.remove(cursor)
+    if (win == False):
+        with cd(dir):
+            for cursor in cursors:
+                for relative in known_cursors:
+                    if cursor in relative:
+                        # remove source cursor
+                        relative.remove(cursor)
 
-                    # links to other if not empty
-                    if len(relative) != 0:
-                        for link in relative:
-                            src = './' + cursor
-                            dst = './' + link
-                            symlink(src, dst, overwrite=True)
-                        print('symblink: %s ==> ' % (cursor), *relative)
+                        # links to other if not empty
+                        if len(relative) != 0:
+                            for link in relative:
+                                src = './' + cursor
+                                dst = './' + link
+                                symlink(src, dst, overwrite=True)
+                            print('symblink: %s ==> ' % (cursor), *relative)
