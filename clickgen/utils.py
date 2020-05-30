@@ -6,6 +6,7 @@ import tempfile
 
 from .linker import link_cursors
 from .template import create_x11_template
+from .helpers import Helpers
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
@@ -28,13 +29,6 @@ def get_configs(dir: str) -> list:
         configs_grabbed.extend(
             glob.glob(os.path.abspath(os.path.join(dir, ext))))
     return configs_grabbed
-
-
-def create_dir(path: str) -> None:
-    isExists = os.path.exists(path)
-
-    if (isExists == False):
-        os.mkdir(path)
 
 
 def _is_animated(config: str) -> bool:
@@ -125,7 +119,7 @@ def main(name: str,
 
         with TemporaryDirectory() as x11_work_dir:
             x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
-            create_dir(x11_cursors_dir)
+            Helpers.create_dir(x11_cursors_dir)
             for config in configs:
                 cur_name = get_cur_name(config, type='x11')
 
