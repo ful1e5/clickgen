@@ -142,4 +142,6 @@ def main(name: str,
             shutil.copytree(x11_work_dir, x11_out, symlinks=True)
 
     if (archive):
-        shutil.make_archive(out, 'zip', out)
+        # 'tar' archive store symbolic link ,'zip' transfer to normal files
+        shutil.make_archive(out, 'tar', out)
+        shutil.rmtree(out)
