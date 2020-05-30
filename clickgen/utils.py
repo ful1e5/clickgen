@@ -140,3 +140,6 @@ def main(name: str,
                 shutil.rmtree(x11_out)
 
             shutil.copytree(x11_work_dir, x11_out, symlinks=True)
+
+    if (archive):
+        shutil.make_archive(out, 'zip', out)
