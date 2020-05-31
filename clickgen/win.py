@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 """
-    win.py is restrong of anicursorgen.py
-    generate .cur & .ani files based on '.in' config file
+    'win.py' is restrong of 'anicursorgen.py'
+
+    Generate .cur & .ani files based on '.in' config file
+    
     anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
-    sample config files => <https://github.com/ubuntu/yaru/tree/master/icons/src/cursors/bitmaps>
+    
 """
 
 import sys
