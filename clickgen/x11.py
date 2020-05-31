@@ -26,9 +26,7 @@ def gen_argv_ctypes(argv: list) -> LP_LP_c_char:
 def generate(argc: int, argv: list) -> None:
     """
         Call to xcursorgen.c 'main' function.
-
         'argc' is length of arguments,i.e: length of list.
-
         'argv' is list of arguments. Each command-line argument separated by ' '(Space) in C, but here by 'elements' of list.
         for example:
 
@@ -48,13 +46,9 @@ def generate(argc: int, argv: list) -> None:
 def main(input_config: str, output_file: str, prefix: str) -> None:
     """
          xcursorgen.c python api
-
         'input_config' is path to config_file.
-        
         'output_file' is a path to store process cursor.
-        
         In 'input_config' & 'output_file' absolute or relative both aceptable.
-
         'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
     """
     # binary name as first argument

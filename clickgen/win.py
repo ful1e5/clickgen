@@ -1,13 +1,3 @@
-#!/usr/bin/env python
-"""
-    'win.py' is restrong of 'anicursorgen.py'
-
-    Generate .cur & .ani files based on '.in' config file
-    
-    anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
-    
-"""
-
 import sys
 import os
 import argparse
@@ -25,6 +15,16 @@ program_version = '1.0.0'
 
 
 def main(input_config: str, output_file: str, prefix: str):
+    """
+        'win.py' is restrong of 'anicursorgen.py'.
+        'input_config' is path to config_file.
+        'output_file' is a path to store process cursor.
+        In 'input_config' & 'output_file' absolute or relative both aceptable.
+        'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
+        Generate .cur & .ani files based on '.in' config file.
+        anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
+    """
+
     parser = argparse.ArgumentParser(
         description=
         'Creates .ani or .cur files from separate images and input metadata.',
