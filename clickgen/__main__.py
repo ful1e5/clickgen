@@ -94,6 +94,7 @@ def main(name: str,
         'name' is the Display Name of the cursor. That reflects a gnome-tweak-tool, KDE-settings,.. etc. In 'Window' is doesn't matter but it reflects an archive name.
 
         'config_dir' is where all config files stored, only .in or .ini config files supported.
+        sample config files => <https://github.com/ubuntu/yaru/tree/master/icons/src/cursors/bitmaps>
 
         'out_path' is where cursor archive or directory stored.absolute or relative path both eligible.
 
