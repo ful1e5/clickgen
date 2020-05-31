@@ -80,14 +80,13 @@ def get_cur_name(config: str, type: str) -> str:
         return ""
 
 
-def main(
-    name: str,
-    config_dir: str,
-    out_path: str = os.curdir,
-    x11: bool = False,
-    win: bool = False,
-    archive: bool = False,
-) -> None:
+def main(name: str,
+         config_dir: str,
+         out_path: str = os.curdir,
+         x11: bool = False,
+         win: bool = False,
+         archive: bool = False,
+         logs: bool = False) -> None:
     """
         Generate 'Window' or 'X11' cursor package from configs.
         'name' is the Display Name of the cursor. That reflects a gnome-tweak-tool, KDE-settings,.. etc. In 'Window' is doesn't matter but it reflects an archive name.
@@ -98,7 +97,14 @@ def main(
         'logs' is for extra information
     """
 
-    # If both flags disabled
+    # logs stuff
+    logger = logging.getLogger('clickgen')
+    logging.basicConfig(level=logging.INFO)
+    logger.disabled = True
+    if (logs):
+        logger.disabled = False
+
+    # If platforms  flags disabled
     try:
         if (x11 == False and win == False):
             raise ValueError('cursor generate type missing')
@@ -127,6 +133,8 @@ def main(
         print('👷 Building Windows cursors..')
 
         with TemporaryDirectory() as win_work_dir:
+            logger.warning('Entering to %s' % win_work_dir)
+
             for config in configs:
                 cur_name = get_cur_name(config, type='win')
                 cur_out = os.path.join(win_work_dir, cur_name)
