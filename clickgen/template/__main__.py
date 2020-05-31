@@ -1,7 +1,6 @@
 import os
-import shutil
 
-from ..helpers import Helpers
+from ..helpers import create_dir
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 cursor_file_path = os.path.join(basedir, 'cursor.theme')
@@ -14,7 +13,7 @@ def create_x11_template(dir: str, name: str, comment: str = '') -> None:
     cursor_file_out_path = os.path.join(abs_dir, 'cursor.theme')
     index_file_out_path = os.path.join(abs_dir, 'index.theme')
 
-    Helpers.create_dir(dir)
+    create_dir(dir)
 
     with open(cursor_file_path, 'r') as cursor_file:
         with open(cursor_file_out_path, 'w') as cursor_file_out:

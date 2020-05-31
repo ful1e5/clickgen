@@ -1,25 +1,15 @@
-from contextlib import contextmanager
 import glob
 import os
 import shutil
-import tempfile
 
 from .linker import link_cursors
 from .template import create_x11_template
-from .helpers import Helpers
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
+from .helpers import create_dir, TemporaryDirectory
+
 config_ext = ('*.in', '*.ini')
-
-
-@contextmanager
-def TemporaryDirectory():
-    name = tempfile.mkdtemp()
-    try:
-        yield name
-    finally:
-        shutil.rmtree(name)
 
 
 def get_configs(dir: str) -> list:
@@ -31,7 +21,7 @@ def get_configs(dir: str) -> list:
     return configs_grabbed
 
 
-def _is_animated(config: str) -> bool:
+def is_animated(config: str) -> bool:
     try:
         with open(config, 'r') as config:
             line = config.readline()
@@ -46,7 +36,7 @@ def _is_animated(config: str) -> bool:
 
 def get_cur_name(config: str, type: str) -> str:
     config_name = os.path.basename(config)
-    animated = _is_animated(config)
+    animated = is_animated(config)
     try:
         if (type == None):
             raise ValueError("`type` not defined in get_cur_name()")
@@ -119,7 +109,7 @@ def main(name: str,
 
         with TemporaryDirectory() as x11_work_dir:
             x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
-            Helpers.create_dir(x11_cursors_dir)
+            create_dir(x11_cursors_dir)
             for config in configs:
                 cur_name = get_cur_name(config, type='x11')
 
