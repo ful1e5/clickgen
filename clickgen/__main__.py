@@ -16,6 +16,11 @@ archive_format = 'tar'
 
 
 def get_configs(dir: str) -> list:
+    """
+        To get all config_files name with extension in Directory.
+
+        'dir' is where config_files stored.
+    """
     configs_grabbed = []
 
     for ext in config_ext:
@@ -25,6 +30,21 @@ def get_configs(dir: str) -> list:
 
 
 def is_animated(config: str) -> bool:
+    """
+       check config_file have animation or not.
+
+        'config' is name of .in or .ini config file.
+
+        config_file contains following information for each size:
+
+            <size> <xhot> <yhot> <path_to_png> <delay>
+              ^      ^      ^         ^          ^
+              |      |      |         |          |
+           column1 column2 column3  column4    colums5
+        
+        <delay> is optional information, This function is designed only for read first line of config. 
+    """
+
     try:
         with open(config, 'r') as config:
             line = config.readline()
@@ -40,6 +60,15 @@ def is_animated(config: str) -> bool:
 
 
 def get_cur_name(config: str, type: str) -> str:
+    """
+        Get the cursor's extension by providing `type` to this function.
+ 
+        window extension => .cur , .ani
+            watch.ani, left_ptr.cur
+
+        x11 extension => `null`
+            watch, left_ptr
+    """
     config_name = os.path.basename(config)
     animated = is_animated(config)
 
@@ -59,7 +88,20 @@ def main(name: str,
          x11: bool = False,
          win: bool = False,
          archive: bool = False) -> None:
+    """
+        Generate 'Window' or 'X11' cursor package from configs.
 
+        'name' is the Display Name of the cursor. That reflects a gnome-tweak-tool, KDE-settings,.. etc. In 'Window' is doesn't matter but it reflects an archive name.
+
+        'config_dir' is where all config files stored, only .in or .ini config files supported.
+
+        'out_path' is where cursor archive or directory stored.absolute or relative path both eligible.
+
+        'x11' & 'win' are platforms flags.Using these flag to output package platforms,like 'win' for "Window OS" and 'x11' for "FreeDesktop" that used in "Linux".Default both flags are "False".
+
+        'archive' flag to compress cursor package to 'tar'.In python zip compression method symbolic links replace by normal file, that increase size of the output file.
+
+    """
     try:
         if (x11 == False and win == False):
             raise ValueError('cursor generation type missing')
@@ -83,7 +125,7 @@ def main(name: str,
     prefix = os.path.abspath(config_dir)
 
     if (win):
-        print('Building win cursors..')
+        print('Building win cursors..\n')
 
         with TemporaryDirectory() as win_work_dir:
             for config in configs:
@@ -103,7 +145,7 @@ def main(name: str,
             shutil.copytree(win_work_dir, win_out)
 
     if (x11):
-        print('Building x11 cursors..')
+        print('Building x11 cursors..\n\n')
 
         with TemporaryDirectory() as x11_work_dir:
             x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
