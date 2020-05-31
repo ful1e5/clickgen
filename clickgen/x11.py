@@ -1,7 +1,3 @@
-"""
-    xcursorgen.c python api
-"""
-
 import ctypes
 import os
 
@@ -28,12 +24,39 @@ def gen_argv_ctypes(argv: list) -> LP_LP_c_char:
 
 
 def generate(argc: int, argv: list) -> None:
+    """
+        Call to xcursorgen.c 'main' function.
+
+        'argc' is length of arguments,i.e: length of list.
+
+        'argv' is list of arguments. Each command-line argument separated by ' '(Space) in C, but here by 'elements' of list.
+        for example:
+
+        In Terminal:
+            ~$ xcursorgen -v
+
+        In list:
+            ['xcursorgen','-v']
+            ['xcursorgen','-p','<png_dir>','<path_to_input_config>','<path_to_output_file>']
+
+        In list binary_name as the first element is mandatory for executing the binary here is 'xcursorgen'.
+    """
     na = gen_argv_ctypes(argv)
     dll.main(argc, na)
 
 
 def main(input_config: str, output_file: str, prefix: str) -> None:
+    """
+         xcursorgen.c python api
 
+        'input_config' is path to config_file.
+        
+        'output_file' is a path to store process cursor.
+        
+        In 'input_config' & 'output_file' absolute or relative both aceptable.
+
+        'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
+    """
     # binary name as first argument
     argv = ['xcursorgen', '-p', prefix, input_config, output_file]
     argc = len(argv)
