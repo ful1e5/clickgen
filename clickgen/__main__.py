@@ -18,7 +18,6 @@ archive_format = 'tar'
 def get_configs(dir: str) -> list:
     """
         To get all config_files name with extension in Directory.
-
         'dir' is where config_files stored.
     """
     configs_grabbed = []
@@ -32,9 +31,7 @@ def get_configs(dir: str) -> list:
 def is_animated(config: str) -> bool:
     """
        check config_file have animation or not.
-
        'config' is name of .in or .ini config file.
-
        config_file contains following information for each size:
 
         <size> <xhot> <yhot> <path_to_png> <delay>
@@ -62,7 +59,7 @@ def is_animated(config: str) -> bool:
 def get_cur_name(config: str, type: str) -> str:
     """
         Get the cursor's extension by providing `type` to this function.
- 
+        
         window extension => .cur , .ani
             watch.ani, left_ptr.cur
 
@@ -90,15 +87,10 @@ def main(name: str,
          archive: bool = False) -> None:
     """
         Generate 'Window' or 'X11' cursor package from configs.
-
         'name' is the Display Name of the cursor. That reflects a gnome-tweak-tool, KDE-settings,.. etc. In 'Window' is doesn't matter but it reflects an archive name.
-
         'config_dir' is where all config files stored, only .in or .ini config files supported.sample config_files => <https://github.com/ubuntu/yaru/tree/master/icons/src/cursors/bitmaps>
-
         'out_path' is where cursor archive or directory stored.absolute or relative path both eligible.
-
         'x11' & 'win' are platforms flags.Using these flag to output package platforms,like 'win' for "Window OS" and 'x11' for "FreeDesktop" that used in "Linux".Default both flags are "False".
-
         'archive' flag to compress cursor package to 'tar'.In python zip compression method symbolic links replace by normal file, that increase size of the output file.
 
     """
