@@ -10,7 +10,6 @@ def create_dir(path: str) -> None:
         ⚡ Clickgen Helper Function ⚡
         
         Create a directory if not exists.
-
         'path' is an absolute or relative path to the directory to create.
     """
 
@@ -26,12 +25,11 @@ def TemporaryDirectory():
         ⚡ Clickgen Helper Function ⚡
         
         Work with Temporary Directory.
-
         Use this context with `with` syntax as following:
-            ```  
-                with TemporaryDirectory() as temp_dir:
-                    ...
-            ```
+            
+            with TemporaryDirectory() as temp_dir:
+                ...
+        
     """
     name = tempfile.mkdtemp()
     try:
@@ -46,12 +44,10 @@ def cd(path):
         ⚡ Clickgen Helper Function ⚡
         
         Temporary change directory.
-
         Use this context with `with` syntax as following:
-            ```  
-                with cd('/tmp'):
-                    ...
-            ```
+
+            with cd('/tmp'):
+                ...
     """
 
     CWD = os.getcwd()
@@ -70,7 +66,6 @@ def symlink(target, link_name, overwrite=False):
         ⚡ Clickgen Helper Function ⚡
 
         Create a symbolic link named 'link_name' pointing to 'target'.
-
         If link_name exists then FileExistsError is raised, unless 'overwrite=True'.
         When trying to overwrite a directory, IsADirectoryError is raised.
         
