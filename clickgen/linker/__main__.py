@@ -10,6 +10,12 @@ data_file = os.path.join(basedir, 'data.json')
 
 
 def match_to_directory(name: str, directory: list) -> str:
+    """
+        Match 'name' with 'directory' with 0.5 ratio. That can fix 'name' typo by searching inside directory.
+        Example:
+
+            z00m => zoom
+    """
     compare_ratio = 0.5
     match = name
 
@@ -23,6 +29,11 @@ def match_to_directory(name: str, directory: list) -> str:
 
 
 def load_data() -> [list]:
+    """
+        Load ./data.json file and return processed two lists.i.e.:cursors, all_cursors
+        'cursors' is 'group' of similar cursors, Means one cursor from them satisfied all other cursors by generating the symbolic link.
+        'all' is used as a 'directory' where all cursors return as a list without any 'group'.
+    """
     with open(data_file) as f:
         data = json.loads(f.read())
 
@@ -33,6 +44,10 @@ def load_data() -> [list]:
 
 
 def link_cursors(dir: str, win=False) -> None:
+    """
+        Generate missing cursors have similar endpoint inside 'dir'.
+        'win' flag is 'False' default. If it 'True' this function only fix the name of cursor.
+    """
     dir = os.path.abspath(dir)
     isExists = os.path.exists(dir)
 
@@ -70,8 +85,9 @@ def link_cursors(dir: str, win=False) -> None:
 
             print('Fixed: %s ==> %s' % (cursor, fix_cur))
 
-    # For relative links
+    # symbolic links only for x11 beacuse all windows cursors are satisfied.
     if not win:
+        # cd for relative links
         with cd(dir):
             for cursor in cursors:
                 for relative in known_cursors:
