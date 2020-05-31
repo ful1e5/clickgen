@@ -9,7 +9,10 @@ from .x11 import main as x11_gen
 
 from .helpers import create_dir, TemporaryDirectory
 
+# config variables
 config_ext = ('*.in', '*.ini')
+# Note: 'zip' formate remove symbolic links,replace with normal files.That can affect the archive size.
+archive_format = 'tar'
 
 
 def get_configs(dir: str) -> list:
@@ -26,6 +29,8 @@ def is_animated(config: str) -> bool:
         with open(config, 'r') as config:
             line = config.readline()
             columns = line.split(" ")
+
+            # animated cursor config have 5 columns,or more
             if (len(columns) > 4):
                 return True
             else:
@@ -37,13 +42,6 @@ def is_animated(config: str) -> bool:
 def get_cur_name(config: str, type: str) -> str:
     config_name = os.path.basename(config)
     animated = is_animated(config)
-    try:
-        if (type == None):
-            raise ValueError("`type` not defined in get_cur_name()")
-        if (animated == None):
-            raise ValueError("`animated` not deined in get_cur_name()")
-    except ValueError as err:
-        print('Error:', err)
 
     if (type == 'win' and animated == False):
         return config_name.replace('.in', '.cur')
@@ -129,6 +127,5 @@ def main(name: str,
             shutil.copytree(x11_work_dir, x11_out, symlinks=True)
 
     if (archive):
-        # 'tar' archive store symbolic link ,'zip' transfer to normal files
-        shutil.make_archive(out, 'tar', out)
+        shutil.make_archive(out, archive_format, out)
         shutil.rmtree(out)
