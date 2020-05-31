@@ -1,4 +1,5 @@
 import glob
+import logging
 import os
 import shutil
 
@@ -7,7 +8,7 @@ from .template import create_x11_template
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
-from .helpers import create_dir, TemporaryDirectory
+from .helpers import TemporaryDirectory, create_dir
 
 # config variables
 config_ext = ('*.in', '*.ini')
@@ -79,12 +80,14 @@ def get_cur_name(config: str, type: str) -> str:
         return ""
 
 
-def main(name: str,
-         config_dir: str,
-         out_path: str = os.curdir,
-         x11: bool = False,
-         win: bool = False,
-         archive: bool = False) -> None:
+def main(
+    name: str,
+    config_dir: str,
+    out_path: str = os.curdir,
+    x11: bool = False,
+    win: bool = False,
+    archive: bool = False,
+) -> None:
     """
         Generate 'Window' or 'X11' cursor package from configs.
         'name' is the Display Name of the cursor. That reflects a gnome-tweak-tool, KDE-settings,.. etc. In 'Window' is doesn't matter but it reflects an archive name.
@@ -92,15 +95,18 @@ def main(name: str,
         'out_path' is where cursor archive or directory stored.absolute or relative path both eligible.
         'x11' & 'win' are platforms flags.Using these flag to output package platforms,like 'win' for "Window OS" and 'x11' for "FreeDesktop" that used in "Linux".Default both flags are "False".
         'archive' flag to compress cursor package to 'tar'.In python zip compression method symbolic links replace by normal file, that increase size of the output file.
-
+        'logs' is for extra information
     """
+
+    # If both flags disabled
     try:
         if (x11 == False and win == False):
-            raise ValueError('cursor generation type missing')
+            raise ValueError('cursor generate type missing')
 
     except ValueError as valerr:
         print('Error:', valerr)
 
+    # passing configs path
     in_path = os.path.abspath(config_dir)
 
     try:
@@ -116,8 +122,9 @@ def main(name: str,
     # set png prefix
     prefix = os.path.abspath(config_dir)
 
+    # generate cursor based on flags
     if (win):
-        print('Building win cursors..\n')
+        print('👷 Building Windows cursors..')
 
         with TemporaryDirectory() as win_work_dir:
             for config in configs:
@@ -137,7 +144,7 @@ def main(name: str,
             shutil.copytree(win_work_dir, win_out)
 
     if (x11):
-        print('Building x11 cursors..\n\n')
+        print('👷 Building X11 cursors..')
 
         with TemporaryDirectory() as x11_work_dir:
             x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
