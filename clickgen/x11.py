@@ -15,10 +15,9 @@ LP_c_char = ctypes.POINTER(ctypes.c_char)
 LP_LP_c_char = ctypes.POINTER(LP_c_char)
 
 dll.main.argtypes = (ctypes.c_int, LP_LP_c_char)
-dll.main.restypes = ctypes.c_int
 
 
-def __gen_argv_ctypes(argv: list):
+def gen_argv_ctypes(argv: list) -> LP_LP_c_char:
     p = (LP_c_char * len(argv))()
 
     for i, arg in enumerate(argv):  # not sys.argv, but argv!!!
@@ -29,7 +28,7 @@ def __gen_argv_ctypes(argv: list):
 
 
 def generate(argc: int, argv: list) -> None:
-    na = __gen_argv_ctypes(argv)
+    na = gen_argv_ctypes(argv)
     dll.main(argc, na)
 
 
