@@ -6,6 +6,14 @@ import tempfile
 
 
 def create_dir(path: str) -> None:
+    """
+        ⚡ Clickgen Helper Function ⚡
+        
+        Create a directory if not exists.
+
+        'path' is an absolute or relative path to the directory to create.
+    """
+
     isExists = os.path.exists(path)
 
     if (isExists == False):
@@ -14,6 +22,17 @@ def create_dir(path: str) -> None:
 
 @contextmanager
 def TemporaryDirectory():
+    """
+        ⚡ Clickgen Helper Function ⚡
+        
+        Work with Temporary Directory.
+
+        Use this context with `with` syntax as following:
+            ```  
+                with TemporaryDirectory() as temp_dir:
+                    ...
+            ```
+    """
     name = tempfile.mkdtemp()
     try:
         yield name
@@ -23,6 +42,18 @@ def TemporaryDirectory():
 
 @contextmanager
 def cd(path):
+    """
+        ⚡ Clickgen Helper Function ⚡
+        
+        Temporary change directory.
+
+        Use this context with `with` syntax as following:
+            ```  
+                with cd('/tmp'):
+                    ...
+            ```
+    """
+
     CWD = os.getcwd()
 
     os.chdir(path)
@@ -35,13 +66,17 @@ def cd(path):
 
 
 def symlink(target, link_name, overwrite=False):
-    '''
-    Create a symbolic link named link_name pointing to target.
-    If link_name exists then FileExistsError is raised, unless overwrite=True.
-    When trying to overwrite a directory, IsADirectoryError is raised.
-    
-    ref => https://stackoverflow.com/a/55742015
-    '''
+    """
+        ⚡ Clickgen Helper Function ⚡
+
+        Create a symbolic link named 'link_name' pointing to 'target'.
+
+        If link_name exists then FileExistsError is raised, unless 'overwrite=True'.
+        When trying to overwrite a directory, IsADirectoryError is raised.
+        
+        ref => https://stackoverflow.com/a/55742015
+    """
+
     if not overwrite:
         os.symlink(target, link_name)
         return
