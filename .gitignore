@@ -1,6 +1,6 @@
 # Custom
 env
-test
+mock
 .vscode
 
 # Byte-compiled / optimized / DLL files
