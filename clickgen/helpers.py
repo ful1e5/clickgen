@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 from contextlib import contextmanager
 import logging
 import os

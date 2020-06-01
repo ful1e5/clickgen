@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 from difflib import SequenceMatcher as SM
 import itertools
 import json

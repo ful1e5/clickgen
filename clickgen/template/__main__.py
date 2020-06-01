@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import os
 
 from ..helpers import create_dir, get_logger
