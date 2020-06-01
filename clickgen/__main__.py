@@ -99,9 +99,9 @@ def main(name: str,
 
     # logs stuff
     logger = get_logger('clickgen')
-    logger.disabled = True
+    logging.disable(logging.CRITICAL)
     if (logs):
-        logger.disabled = False
+        logging.disable(logging.NOTSET)
 
     # If platforms  flags disabled
     try:
@@ -132,7 +132,6 @@ def main(name: str,
         print('👷 Building Windows cursors..')
 
         with TemporaryDirectory() as win_work_dir:
-            logger.info('Entering to %s' % win_work_dir)
 
             for config in configs:
                 cur_name = get_cur_name(config, type='win')
@@ -157,6 +156,7 @@ def main(name: str,
         with TemporaryDirectory() as x11_work_dir:
             x11_cursors_dir = os.path.join(x11_work_dir, 'cursors')
             create_dir(x11_cursors_dir)
+
             for config in configs:
                 cur_name = get_cur_name(config, type='x11')
 
