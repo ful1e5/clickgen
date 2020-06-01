@@ -34,8 +34,9 @@ def create_dir(path: str) -> None:
         Create a directory if not exists.
         'path' is an absolute or relative path to the directory to create.
     """
-   if not os.path.exists(path):
-        os.makedirs(path) 
+
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 @contextmanager
