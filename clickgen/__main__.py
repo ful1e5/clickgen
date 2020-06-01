@@ -97,9 +97,10 @@ def main(name: str,
         'logs' is for extra information
     """
 
-    # logs stuff
+    # logs disabled default
     logger = get_logger('clickgen')
     logging.disable(logging.CRITICAL)
+    # enabling logs
     if (logs):
         logging.disable(logging.NOTSET)
 
