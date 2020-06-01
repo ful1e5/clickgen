@@ -1,8 +1,24 @@
 from contextlib import contextmanager
 import os
+import logging
 import shutil
 import sys
 import tempfile
+
+from . import color_logger
+
+
+def get_logger(name: str) -> logging.Logger:
+    """
+        To get custom `logging` instance.
+        Return a logger with the specified name, creating it if necessary.
+        If no name is specified, return the root logger.
+    """
+
+    logger = logging.getLogger(name)
+    logging.basicConfig(level=logging.INFO)
+
+    return logger
 
 
 def create_dir(path: str) -> None:
