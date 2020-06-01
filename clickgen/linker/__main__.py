@@ -104,4 +104,5 @@ def link_cursors(dir: str, win=False) -> None:
                                 src = './' + cursor
                                 dst = './' + link
                                 symlink(src, dst, overwrite=True)
-                            print('symblink: %s ==> ' % (cursor), *relative)
+                            print('Symbolic link: %s ==> ' % (cursor),
+                                  *relative)
