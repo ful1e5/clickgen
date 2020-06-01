@@ -1,6 +1,6 @@
 from contextlib import contextmanager
-import os
 import logging
+import os
 import shutil
 import sys
 import tempfile
@@ -19,6 +19,9 @@ def get_logger(name: str) -> logging.Logger:
     logging.basicConfig(level=logging.INFO)
 
     return logger
+
+
+logger = get_logger('clickgen:helpers')
 
 
 def create_dir(path: str) -> None:
@@ -50,8 +53,10 @@ def TemporaryDirectory():
     name = tempfile.mkdtemp()
     try:
         yield name
+        logger.info('Entering to %s' % name)
     finally:
         shutil.rmtree(name)
+        logger.info('Exist and remove %s' % name)
 
 
 @contextmanager
@@ -71,10 +76,12 @@ def cd(path):
     os.chdir(path)
     try:
         yield
+        logger.info('Change directory to %s' % path)
     except:
         print('Exception caught: %s' % sys.exc_info()[0])
     finally:
         os.chdir(CWD)
+        logger.info('Back to Normal as %s' % CWD)
 
 
 def symlink(target, link_name, overwrite=False):
