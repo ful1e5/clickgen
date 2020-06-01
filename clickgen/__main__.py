@@ -8,7 +8,7 @@ from .template import create_x11_template
 from .win import main as win_gen
 from .x11 import main as x11_gen
 
-from .helpers import TemporaryDirectory, create_dir
+from .helpers import TemporaryDirectory, create_dir, get_logger
 
 # config variables
 config_ext = ('*.in', '*.ini')
@@ -98,8 +98,7 @@ def main(name: str,
     """
 
     # logs stuff
-    logger = logging.getLogger('clickgen')
-    logging.basicConfig(level=logging.INFO)
+    logger = get_logger('clickgen')
     logger.disabled = True
     if (logs):
         logger.disabled = False
@@ -133,7 +132,7 @@ def main(name: str,
         print('👷 Building Windows cursors..')
 
         with TemporaryDirectory() as win_work_dir:
-            logger.warning('Entering to %s' % win_work_dir)
+            logger.info('Entering to %s' % win_work_dir)
 
             for config in configs:
                 cur_name = get_cur_name(config, type='win')
@@ -141,6 +140,7 @@ def main(name: str,
                 win_gen(input_config=config,
                         output_file=cur_out,
                         prefix=prefix)
+                logger.info('Window: cursor generated to %s' % cur_out)
 
             link_cursors(win_work_dir, win=True)
             win_out = os.path.join(out, 'win')
@@ -164,6 +164,8 @@ def main(name: str,
                 x11_gen(input_config=config,
                         output_file=cur_out,
                         prefix=prefix)
+
+                logger.info('X11: cursor generated to %s' % cur_out)
 
             link_cursors(x11_cursors_dir)
             create_x11_template(name=name, dir=x11_work_dir)

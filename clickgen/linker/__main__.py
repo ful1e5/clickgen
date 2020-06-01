@@ -3,10 +3,11 @@ import itertools
 import json
 import os
 
-from ..helpers import cd, symlink
+from ..helpers import cd, get_logger, symlink
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 data_file = os.path.join(basedir, 'data.json')
+logger = get_logger('clickgen:linker')
 
 
 def match_to_directory(name: str, directory: list) -> str:
@@ -25,6 +26,8 @@ def match_to_directory(name: str, directory: list) -> str:
             compare_ratio = ratio
             match = word
 
+    logger.info('"%s" match to "%s" with "%s" ratio' %
+                (name, match, compare_ratio))
     return match
 
 
@@ -74,7 +77,7 @@ def link_cursors(dir: str, win=False) -> None:
         fix_cur = match_to_directory(cursor, all_cursors)
 
         if fix_cur not in all_cursors:
-            print('Warning: %s is unknown cursor' % fix_cur)
+            logger.warning('%s is unknown cursor' % fix_cur)
 
         elif (fix_cur != cursor):
             old_path = os.path.join(dir, cursor)
