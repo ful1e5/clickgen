@@ -41,16 +41,26 @@ class TestHelpesMethods(unittest.TestCase):
             mock_chdir.reset_mock()
         mock_chdir.assert_called_once_with(self.orig_cwd)
 
+    @patch('clickgen.helpers.os.replace')
     @patch('clickgen.helpers.tempfile.mktemp')
     @patch('clickgen.helpers.os.symlink')
-    def test_symblink(self, mock_symlink, mock_temp_link):
+    def test_symblink(self, mock_symlink, mock_temp_link, mock_replace):
+
         # testing general symbolic link
         helpers.symlink(target=self.test_target,
                         link_name=self.test_link_name,
                         overwrite=False)
         mock_symlink.assert_called_with(self.test_target, self.test_link_name)
 
-        # TODO: testing force symbolic link
+        # testing force symbolic link
+        tmp_link = '/asdasd'
+        mock_temp_link.return_value = tmp_link
+
+        helpers.symlink(target=self.test_target,
+                        link_name=self.test_link_name,
+                        overwrite=True)
+        mock_symlink.assert_called_with(self.test_target, tmp_link)
+        mock_replace.assert_called_with(tmp_link, self.test_link_name)
 
 
 if __name__ == '__main__':
