@@ -1,6 +1,7 @@
 import logging
 import os
 import unittest
+import tempfile
 from unittest.mock import patch
 
 from clickgen import helpers
@@ -11,7 +12,10 @@ class TestHelpesMethods(unittest.TestCase):
         logging.disable(logging.CRITICAL)
 
         self.orig_cwd = os.getcwd()
-        self.dst_dir = 'test'
+        self.dst_dir = 'foo'
+
+        self.test_target = os.path.join(tempfile.gettempdir(), 'foo')
+        self.test_link_name = os.path.join(tempfile.gettempdir(), 'bar')
 
     def tearDown(self):
         logging.disable(logging.NOTSET)
@@ -37,7 +41,16 @@ class TestHelpesMethods(unittest.TestCase):
             mock_chdir.reset_mock()
         mock_chdir.assert_called_once_with(self.orig_cwd)
 
-    # TODO:symblinks
+    @patch('clickgen.helpers.tempfile.mktemp')
+    @patch('clickgen.helpers.os.symlink')
+    def test_symblink(self, mock_symlink, mock_temp_link):
+        # testing general symbolic link
+        helpers.symlink(target=self.test_target,
+                        link_name=self.test_link_name,
+                        overwrite=False)
+        mock_symlink.assert_called_with(self.test_target, self.test_link_name)
+
+        # TODO: testing force symbolic link
 
 
 if __name__ == '__main__':
