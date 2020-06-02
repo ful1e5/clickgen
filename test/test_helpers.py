@@ -1,7 +1,8 @@
-import logging
 import os
-import unittest
+import logging
 import tempfile
+
+import unittest
 from unittest.mock import patch
 
 from clickgen import helpers
