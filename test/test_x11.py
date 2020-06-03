@@ -11,11 +11,13 @@ class TestX11Builder(unittest.TestCase):
         self.test_argv = ['foo', 'bar']
 
     def test_gen_argv_ctypes(self):
+        # testing return proper argument class
         mock_result = x11.gen_argv_ctypes(self.test_argv)
         self.assertEqual(str(mock_result.__class__),
                          "<class 'clickgen.x11.LP_LP_c_char'>")
 
     def test_generate(self):
+        # binary exists
         self.assertTrue(os.path.exists(libpath))
 
 
