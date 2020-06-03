@@ -1,4 +1,5 @@
 import os
+
 import unittest
 from unittest.mock import patch
 
@@ -8,11 +9,11 @@ from clickgen.x11 import libpath
 
 class TestX11Builder(unittest.TestCase):
     def setUp(self):
-        self.test_argv = ['foo', 'bar']
+        self.mock_argv = ['foo', 'bar']
 
     def test_gen_argv_ctypes(self):
         # testing return proper argument class
-        mock_result = x11.gen_argv_ctypes(self.test_argv)
+        mock_result = x11.gen_argv_ctypes(self.mock_argv)
         self.assertEqual(str(mock_result.__class__),
                          "<class 'clickgen.x11.LP_LP_c_char'>")
 
