@@ -40,11 +40,13 @@ def create_x11_template(dir: str, name: str, comment: str = '') -> None:
 
             for line in lines:
                 temp_line = line.replace('<Name>', name)
-                temp_line = temp_line.replace('<Comment>',
-                                              '%s cursor theme' % name)
 
                 if (comment != ''):
-                    temp_line = line.replace('<Comment>', comment)
+                    temp_line = temp_line.replace('<Comment>', comment)
+                else:
+                    temp_line = temp_line.replace('<Comment>',
+                                                  '%s cursor theme' % name)
+
                 index_file_out.write(temp_line)
 
             logger.info('index.theme file generated for %s at %s' %
