@@ -5,7 +5,8 @@ mock_config_path = os.path.join(basedir, 'configs')
 
 
 def get_static_mock_config_path() -> str:
-    return os.path.join(mock_config_path, 'mock_static.in')
+    path = os.path.join(mock_config_path, 'mock_static.in')
+    return path
 
 
 def get_animated_mock_config_path() -> str:
