@@ -80,7 +80,9 @@ def link_cursors(dir: str, win=False) -> None:
         fix_cur = match_to_directory(cursor, all_cursors)
 
         if fix_cur not in all_cursors:
-            logger.warning('%s is unknown cursor' % fix_cur)
+            msg = '%s is unknown cursor' % fix_cur
+            logger.warning(msg)
+            print(msg)
 
         elif (fix_cur != cursor):
             old_path = os.path.join(dir, cursor)
@@ -89,7 +91,9 @@ def link_cursors(dir: str, win=False) -> None:
 
             cursors[index] = fix_cur
 
-            print('Fixed: %s ==> %s' % (cursor, fix_cur))
+            msg = 'Fixed: %s ==> %s' % (cursor, fix_cur)
+            logger.info(msg)
+            print(msg)
 
     # symbolic links only for x11 beacuse all windows cursors are satisfied.
     if not win:
