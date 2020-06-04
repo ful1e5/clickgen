@@ -18,7 +18,7 @@ class TestX11Builder(unittest.TestCase):
         self.temp_dir = tempfile.mkdtemp()
         self.mock_prefix = assets.mock_config_path
         self.mock_static_out = os.path.join(self.temp_dir, 'mock_static')
-        self.mock_animate_out = os.path.join(self.temp_dir, 'mock_static')
+        self.mock_animated_out = os.path.join(self.temp_dir, 'mock_animated')
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -44,6 +44,11 @@ class TestX11Builder(unittest.TestCase):
                  output_file=self.mock_static_out,
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_static_out)
+
+        x11.main(input_config=assets.get_animated_mock_config_path(),
+                 output_file=self.mock_animated_out,
+                 prefix=self.mock_prefix)
+        self.assert_cursor_size(self.mock_animated_out)
 
 
 if __name__ == '__main__':
