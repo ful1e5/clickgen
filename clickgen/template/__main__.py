@@ -12,10 +12,7 @@ index_file_path = os.path.join(basedir, 'index.theme')
 
 def create_x11_template(dir: str, name: str, comment: str = '') -> None:
     """
-        Copy extra theme files to the directory.
-        'dir' is a path to the cursor package directory.
-        'name' & 'comment' is Metadata for cursor package.
-        Copy extra theme files to the directory.
+        Copy metadata files to the cursor package directory.
         'dir' is a path to the cursor package directory.
         'name' & 'comment' is Metadata for cursor package.
     """
