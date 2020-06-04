@@ -20,6 +20,7 @@ class TestTemplate(unittest.TestCase):
                                                   'cursor.theme')
         self.mock_index_file_path = os.path.join(self.mock_dir, 'index.theme')
         self.mock_name = 'foo'
+        self.mock_comment = 'foo bar'
 
     def tearDown(self):
         logging.disable(logging.NOTSET)
@@ -43,13 +44,27 @@ class TestTemplate(unittest.TestCase):
                                      comment='')
         # testing cursor.theme
         self.assert_word_in_file(file=self.mock_cursor_file_path,
-                                 word=self.mock_name)
+                                 word='Name=foo')
 
         # testing index.theme
         self.assert_word_in_file(file=self.mock_index_file_path,
                                  word='Name=foo')
         self.assert_word_in_file(file=self.mock_index_file_path,
                                  word='Comment=foo cursor theme')
+
+    def test_create_x11_template_with_comments(self):
+        template.create_x11_template(name=self.mock_name,
+                                     dir=self.mock_dir,
+                                     comment=self.mock_comment)
+        # testing cursor.theme
+        self.assert_word_in_file(file=self.mock_cursor_file_path,
+                                 word='Name=foo')
+
+        # testing index.theme
+        self.assert_word_in_file(file=self.mock_index_file_path,
+                                 word='Name=foo')
+        self.assert_word_in_file(file=self.mock_index_file_path,
+                                 word='Comment=foo bar')
 
 
 if __name__ == '__main__':
