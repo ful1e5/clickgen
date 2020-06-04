@@ -45,6 +45,12 @@ class TestTemplate(unittest.TestCase):
         self.assert_word_in_file(file=self.mock_cursor_file_path,
                                  word=self.mock_name)
 
+        # testing index.theme
+        self.assert_word_in_file(file=self.mock_index_file_path,
+                                 word='Name=foo')
+        self.assert_word_in_file(file=self.mock_index_file_path,
+                                 word='Comment=foo cursor theme')
+
 
 if __name__ == '__main__':
     unittest.main()
