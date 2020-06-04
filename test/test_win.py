@@ -18,6 +18,7 @@ class TestWinBuilder(unittest.TestCase):
         self.assertGreater(os.path.getsize(path), 0)
 
     # tests
+    # TODO: More to test here
     def test_main(self):
         pass
 
