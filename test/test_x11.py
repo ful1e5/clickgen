@@ -1,18 +1,16 @@
 import os
 import shutil
 import tempfile
-
 import unittest
-from unittest.mock import patch
 
+import assets
 from clickgen import x11
 from clickgen.x11 import libpath
-import assets
 
 
 class TestX11Builder(unittest.TestCase):
-    # setup
 
+    # setup
     def setUp(self):
         self.mock_argv = ['foo', 'bar']
         self.temp_dir = tempfile.mkdtemp()
@@ -45,6 +43,7 @@ class TestX11Builder(unittest.TestCase):
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_static_out)
 
+        # testing animated cursor
         x11.main(input_config=assets.get_animated_mock_config_path(),
                  output_file=self.mock_animated_out,
                  prefix=self.mock_prefix)
