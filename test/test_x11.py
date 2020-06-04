@@ -11,6 +11,8 @@ import assets
 
 
 class TestX11Builder(unittest.TestCase):
+    # setup
+
     def setUp(self):
         self.mock_argv = ['foo', 'bar']
         self.temp_dir = tempfile.mkdtemp()
@@ -21,6 +23,11 @@ class TestX11Builder(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
+    # helpers
+    def assert_cursor_size(self, path: str):
+        self.assertGreater(os.path.getsize(path), 0)
+
+    # tests
     def test_gen_argv_ctypes(self):
         # testing return proper argument class
         mock_result = x11.gen_argv_ctypes(self.mock_argv)
@@ -36,8 +43,7 @@ class TestX11Builder(unittest.TestCase):
         x11.main(input_config=assets.get_static_mock_config_path(),
                  output_file=self.mock_static_out,
                  prefix=self.mock_prefix)
-
-        self.assertGreater(os.stat(self.mock_static_out).st_size, 0)
+        self.assert_cursor_size(self.mock_static_out)
 
 
 if __name__ == '__main__':
