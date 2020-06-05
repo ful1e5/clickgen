@@ -16,6 +16,11 @@ class TestMain(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.mock_config_dir_with_out_configs)
 
+    # helpers
+    def assert_cur_name(self, config: str, type: str, expect_ext: str):
+        ext = clickgen.get_cur_name(config, type)
+        self.assertEqual(ext, expect_ext)
+
     # test
     def test_get_config(self):
         # testing with assets dir,have 2 config files
@@ -39,6 +44,9 @@ class TestMain(unittest.TestCase):
 
         self.assertFalse(
             clickgen.is_animated(config=assets.get_static_mock_config_path()))
+
+    def test_get_cur_name(self):
+        pass
 
 
 if __name__ == "__main__":
