@@ -9,6 +9,8 @@ from clickgen import helpers
 
 
 class TestHelpesMethods(unittest.TestCase):
+
+    # setup
     def setUp(self):
         logging.disable(logging.CRITICAL)
 
@@ -21,6 +23,7 @@ class TestHelpesMethods(unittest.TestCase):
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
+    # tests
     def test_get_looger(self):
         foo_logger = helpers.get_logger('foo')
         self.assertEqual(logging.getLogger('foo'), foo_logger)

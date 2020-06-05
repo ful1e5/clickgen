@@ -9,6 +9,7 @@ from assets import __main__ as assets
 
 
 class TestMain(unittest.TestCase):
+
     # setup
     def setUp(self):
         self.mock_config_dir_with_configs = assets.mock_config_path
