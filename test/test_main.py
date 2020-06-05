@@ -12,9 +12,12 @@ class TestMain(unittest.TestCase):
     def setUp(self):
         self.mock_config_dir_with_configs = assets.mock_config_path
         self.mock_config_dir_with_out_configs = tempfile.mkdtemp()
+        self.mock_config_path = assets.mock_config_path
+        self.mock_out_path = tempfile.mkdtemp()
 
     def tearDown(self):
         shutil.rmtree(self.mock_config_dir_with_out_configs)
+        shutil.rmtree(self.mock_out_path)
 
     # helpers
     def assert_cur_name(self, config: str, type: str, expect_ext: str):
@@ -60,6 +63,9 @@ class TestMain(unittest.TestCase):
         self.assert_cur_name(config=assets.get_static_mock_config_path(),
                              type='x11',
                              expect_ext='mock_static')
+
+    def test_main(self):
+        pass
 
 
 if __name__ == "__main__":
