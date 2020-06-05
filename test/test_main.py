@@ -29,6 +29,25 @@ class TestMain(unittest.TestCase):
 
         self.assertEqual(ext, expect_ext)
 
+    def assert_x11_dir(self):
+        self.assertTrue(os.path.exists(self.foo_dir_path))
+
+        mock_x11_dir = os.path.join(self.foo_dir_path, 'x11')
+        self.assertTrue(os.path.exists(mock_x11_dir))
+
+        expect_dir_struc = ['cursor.theme', 'cursors', 'index.theme']
+        self.assertEqual(os.listdir(mock_x11_dir), expect_dir_struc)
+
+        mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
+
+    def assert_win_dir(self):
+
+        self.assertTrue(os.path.exists(self.foo_dir_path))
+
+        mock_win_dir = os.path.join(self.foo_dir_path, 'win')
+        self.assertTrue(os.path.exists(mock_win_dir))
+        self.assertGreater(len(os.listdir(mock_win_dir)), 0)
+
     # test
     def test_get_config(self):
         # testing with assets dir,have 2 config files
@@ -76,17 +95,7 @@ class TestMain(unittest.TestCase):
                       out_path=self.mock_out_path,
                       x11=True)
 
-        # checking cursor dir exists
-        self.assertTrue(os.path.exists(self.foo_dir_path))
-
-        mock_x11_dir = os.path.join(self.foo_dir_path, 'x11')
-        self.assertTrue(os.path.exists(mock_x11_dir))
-
-        expect_dir_struc = ['cursor.theme', 'cursors', 'index.theme']
-        self.assertEqual(os.listdir(mock_x11_dir), expect_dir_struc)
-
-        mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
-        self.assertGreater(len(os.listdir(mock_cursor_dir)), 0)
+        self.assert_x11_dir()
 
     def test_win_dir_struc(self):
         # testing win with directory
@@ -96,12 +105,7 @@ class TestMain(unittest.TestCase):
                       out_path=self.mock_out_path,
                       win=True)
 
-        # checking cursor dir exists
-        self.assertTrue(os.path.exists(self.foo_dir_path))
-
-        mock_win_dir = os.path.join(self.foo_dir_path, 'win')
-        self.assertTrue(os.path.exists(mock_win_dir))
-        self.assertGreater(len(os.listdir(mock_win_dir)), 0)
+        self.assert_win_dir()
 
 
 if __name__ == "__main__":
