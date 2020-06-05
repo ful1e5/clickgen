@@ -28,6 +28,18 @@ class TestMain(unittest.TestCase):
             dir=self.mock_config_dir_with_out_configs)
         self.assertEqual(len(mock_configs), 0)
 
+    def test_is_animated(self):
+        # testing config file with aimation
+
+        self.assertTrue(
+            clickgen.is_animated(
+                config=assets.get_animated_mock_config_path()))
+
+        # testing config file without aimation
+
+        self.assertFalse(
+            clickgen.is_animated(config=assets.get_static_mock_config_path()))
+
 
 if __name__ == "__main__":
     unittest.main()
