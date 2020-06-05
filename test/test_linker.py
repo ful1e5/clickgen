@@ -1,3 +1,4 @@
+import os
 import logging
 
 import unittest
@@ -23,8 +24,14 @@ class TestLinke(unittest.TestCase):
 
     # tests
     def test_match_to_directory(self):
+        # word is similar to directory
         self.assert_to_directory(name='F0o', expect_name='foo')
-        # self.assert_to_mock_directory(name='F0o', expect_name='foo')
+        # word new to directory
+        self.assert_to_directory(name='foo_bar_zoo', expect_name='foo_bar_zoo')
+
+    def test_load_data(self):
+        # checking data file extists
+        self.assertTrue(os.path.exists(linker.data_file))
 
 
 if __name__ == "__main__":
