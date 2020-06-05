@@ -88,6 +88,20 @@ class TestMain(unittest.TestCase):
         mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
         self.assertGreater(len(os.listdir(mock_cursor_dir)), 0)
 
+    def test_win_dir_struc(self):
+        # testing win with directory
+        print('\n🧪 Testing win directory Structure')
+        clickgen.main(name=self.mock_name,
+                      config_dir=self.mock_config_path,
+                      out_path=self.mock_out_path,
+                      win=True)
+
+        # checking cursor dir exists
+        self.assertTrue(os.path.exists(self.foo_dir_path))
+
+        mock_win_dir = os.path.join(self.foo_dir_path, 'win')
+        self.assertTrue(os.path.exists(mock_win_dir))
+
 
 if __name__ == "__main__":
     unittest.main()
