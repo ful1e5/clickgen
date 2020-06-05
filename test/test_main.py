@@ -19,6 +19,7 @@ class TestMain(unittest.TestCase):
     # helpers
     def assert_cur_name(self, config: str, type: str, expect_ext: str):
         ext = clickgen.get_cur_name(config, type)
+
         self.assertEqual(ext, expect_ext)
 
     # test
@@ -35,18 +36,30 @@ class TestMain(unittest.TestCase):
 
     def test_is_animated(self):
         # testing config file with aimation
-
         self.assertTrue(
             clickgen.is_animated(
                 config=assets.get_animated_mock_config_path()))
 
         # testing config file without aimation
-
         self.assertFalse(
             clickgen.is_animated(config=assets.get_static_mock_config_path()))
 
     def test_get_cur_name(self):
-        pass
+        # window extensions
+        self.assert_cur_name(config=assets.get_animated_mock_config_path(),
+                             type='win',
+                             expect_ext='mock_animated.ani')
+        self.assert_cur_name(config=assets.get_static_mock_config_path(),
+                             type='win',
+                             expect_ext='mock_static.cur')
+
+        # x11 extensions
+        self.assert_cur_name(config=assets.get_animated_mock_config_path(),
+                             type='x11',
+                             expect_ext='mock_animated')
+        self.assert_cur_name(config=assets.get_static_mock_config_path(),
+                             type='x11',
+                             expect_ext='mock_static')
 
 
 if __name__ == "__main__":
