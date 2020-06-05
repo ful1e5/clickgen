@@ -1,3 +1,4 @@
+import os
 import shutil
 import tempfile
 
@@ -14,6 +15,9 @@ class TestMain(unittest.TestCase):
         self.mock_config_dir_with_out_configs = tempfile.mkdtemp()
         self.mock_config_path = assets.mock_config_path
         self.mock_out_path = tempfile.mkdtemp()
+        self.mock_name = 'foo'
+        self.foo_dir_path = os.path.join(self.mock_out_path, 'foo')
+        self.foo_archive_path = os.path.join(self.mock_out_path, 'foo.tar')
 
     def tearDown(self):
         shutil.rmtree(self.mock_config_dir_with_out_configs)
@@ -64,8 +68,22 @@ class TestMain(unittest.TestCase):
                              type='x11',
                              expect_ext='mock_static')
 
-    def test_main(self):
-        pass
+    def test_x11_dir_struc(self):
+        # testing x11 with directory
+        print('\n🧪 Testing x11 directory Structure')
+        clickgen.main(name=self.mock_name,
+                      config_dir=self.mock_config_path,
+                      out_path=self.mock_out_path,
+                      x11=True)
+
+        # checking cursor dir exists
+        self.assertTrue(os.path.exists(self.foo_dir_path))
+
+        mock_x11_dir = os.path.join(self.foo_dir_path, 'x11')
+        self.assertTrue(os.path.exists(mock_x11_dir))
+
+        expect_dir_struc = ['cursor.theme', 'cursors', 'index.theme']
+        self.assertEqual(os.listdir(mock_x11_dir), expect_dir_struc)
 
 
 if __name__ == "__main__":
