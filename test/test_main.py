@@ -85,6 +85,9 @@ class TestMain(unittest.TestCase):
         expect_dir_struc = ['cursor.theme', 'cursors', 'index.theme']
         self.assertEqual(os.listdir(mock_x11_dir), expect_dir_struc)
 
+        mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
+        self.assertGreater(len(os.listdir(mock_cursor_dir)), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
