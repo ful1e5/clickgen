@@ -101,6 +101,7 @@ class TestMain(unittest.TestCase):
 
         mock_win_dir = os.path.join(self.foo_dir_path, 'win')
         self.assertTrue(os.path.exists(mock_win_dir))
+        self.assertGreater(len(os.listdir(mock_win_dir)), 0)
 
 
 if __name__ == "__main__":
