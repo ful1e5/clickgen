@@ -107,6 +107,32 @@ class TestMain(unittest.TestCase):
 
         self.assert_win_dir()
 
+    def test_dir_struc(self):
+        print('\n🧪 Testing all directory Structure')
+        clickgen.main(name=self.mock_name,
+                      config_dir=self.mock_config_path,
+                      out_path=self.mock_out_path,
+                      win=True,
+                      x11=True)
+
+        self.assert_win_dir()
+        self.assert_x11_dir()
+
+    def test_archive(self):
+
+        print('\n🧪 Testing archive')
+        clickgen.main(name=self.mock_name,
+                      config_dir=self.mock_config_path,
+                      out_path=self.mock_out_path,
+                      win=True,
+                      x11=True,
+                      archive=True)
+
+        mock_out_file = os.path.join(self.mock_out_path,
+                                     self.mock_name + '.tar')
+
+        self.assertGreater(os.path.getsize(mock_out_file), 0)
+
 
 if __name__ == "__main__":
     unittest.main()
