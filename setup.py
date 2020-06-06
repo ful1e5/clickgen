@@ -18,7 +18,7 @@ with open('./requirements.txt') as f:
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(version='1.0.0',
+setup(version='1.0.1',
       author='Kaiz Khatri',
       author_email='kaizmandhu@gmail.com',
       description='X11 & Windows Cursor API 👷',
