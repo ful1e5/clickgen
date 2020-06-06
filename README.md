@@ -1,2 +1,3 @@
 # clickgen
-X11 &amp; Windows Cursor building API for python 👷
+
+X11 & Windows Cursor API 👷
