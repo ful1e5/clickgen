@@ -34,6 +34,6 @@ jobs:
       run: |
         python setup.py install
 
-    - name: Test with unittest
+    - name: Unittest
       run: |
         python -m unittest
