@@ -25,9 +25,12 @@ setup(version='1.0.1',
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[
-          "Programming Language :: Python :: 3",
-          "License :: OSI Approved :: MIT License",
-          "Operating System :: OS Independent",
+          'Development Status :: 3 - Alpha',
+          'Topic :: System :: Operating System',
+          'Programming Language :: Python :: 3', 'Programming Language :: C'
+          'Natural Language :: English'
+          'License :: OSI Approved :: MIT License',
+          'Operating System :: OS Independent', 'Typing :: Typed'
       ],
       python_requires='>=3.6',
       cmdclass={
