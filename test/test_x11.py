@@ -3,7 +3,7 @@ import shutil
 import tempfile
 import unittest
 
-import assets
+from . import assets
 from clickgen import x11
 from clickgen.x11 import libpath
 

@@ -5,7 +5,7 @@ import tempfile
 
 import unittest
 
-import assets
+from . import assets
 from clickgen.template import __main__ as template
 
 
