@@ -37,7 +37,9 @@ class TestMain(unittest.TestCase):
         self.assertTrue(os.path.exists(mock_x11_dir))
 
         expect_dir_struc = ['cursor.theme', 'cursors', 'index.theme']
-        self.assertListEqual(os.listdir(mock_x11_dir), expect_dir_struc)
+        result_dir_struc = os.listdir(mock_x11_dir)
+        self.assertEqual(len(result_dir_struc), len(expect_dir_struc))
+        self.assertListEqual(result_dir_struc.sort(), expect_dir_struc.sort())
 
         mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
 
