@@ -5,7 +5,7 @@ on:
     types: [created]
 
 jobs:
-  build:
+  build-n-deploy:
     if: "github.event.release.prerelease"
     runs-on: ubuntu-latest
 
