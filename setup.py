@@ -21,7 +21,7 @@ with open("README.md", "r") as fh:
 setup(version='1.0.0',
       author='Kaiz Khatri',
       author_email='kaizmandhu@gmail.com',
-      description='X11 & Windows Cursor building API for python 👷',
+      description='X11 & Windows Cursor API 👷',
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[
