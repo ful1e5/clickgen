@@ -14,7 +14,22 @@ class install(_install):
 with open('./requirements.txt') as f:
     required = f.read().splitlines()
 
-setup(author='Kaiz Khatri',
+# readme.md as long description
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setup(version='1.0.0',
+      author='Kaiz Khatri',
+      author_email='kaizmandhu@gmail.com',
+      description='X11 & Windows Cursor building API for python 👷',
+      long_description=long_description,
+      long_description_content_type="text/markdown",
+      classifiers=[
+          "Programming Language :: Python :: 3",
+          "License :: OSI Approved :: MIT License",
+          "Operating System :: OS Independent",
+      ],
+      python_requires='>=3.6',
       cmdclass={
           'install': install,
       },
@@ -22,5 +37,4 @@ setup(author='Kaiz Khatri',
       name='clickgen',
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
-      version='1.0.0',
       zip_safe=True)
