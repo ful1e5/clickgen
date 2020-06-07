@@ -2,6 +2,19 @@ import subprocess
 from setuptools import setup, find_namespace_packages
 from distutils.command.install import install as _install
 
+try:
+    # for pip >= 10
+    from pip._internal.req import parse_requirements
+except ImportError:
+    # for pip <= 9.0.3
+    from pip.req import parse_requirements
+
+
+# third-party dependencies
+def load_requirements(fname):
+    reqs = parse_requirements(fname, session='clickgen_session')
+    return [str(ir.requirement) for ir in reqs]
+
 
 class install(_install):
     def run(self):
@@ -10,15 +23,11 @@ class install(_install):
         _install.run(self)
 
 
-# third-party dependencies
-with open('./requirements.txt') as f:
-    required = f.read().splitlines()
-
 # readme.md as long description
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(version='1.0.1',
+setup(version='1.0.2',
       author='Kaiz Khatri',
       author_email='kaizmandhu@gmail.com',
       description='X11 & Windows Cursor API 👷',
@@ -36,7 +45,7 @@ setup(version='1.0.1',
       cmdclass={
           'install': install,
       },
-      install_requires=required,
+      install_requires=load_requirements('requirements.txt'),
       name='clickgen',
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
