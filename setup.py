@@ -2,6 +2,19 @@ import subprocess
 from setuptools import setup, find_namespace_packages
 from distutils.command.install import install as _install
 
+# third-party dependencies
+try:
+    # for pip >= 10
+    from pip._internal.req import parse_requirements
+except ImportError:
+    # for pip <= 9.0.3
+    from pip.req import parse_requirements
+
+
+def load_requirements(fname):
+    reqs = parse_requirements(fname, session='clickgen_session')
+    return [str(ir.req) for ir in reqs]
+
 
 class install(_install):
     def run(self):
@@ -9,10 +22,6 @@ class install(_install):
         subprocess.call(['make', '-C', 'src'])
         _install.run(self)
 
-
-# third-party dependencies
-with open('./requirements.txt') as f:
-    required = f.read().splitlines()
 
 # readme.md as long description
 with open("README.md", "r") as fh:
@@ -36,7 +45,7 @@ setup(version='1.0.2',
       cmdclass={
           'install': install,
       },
-      install_requires=required,
+      install_requires=load_requirements('requirements.txt'),
       name='clickgen',
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
