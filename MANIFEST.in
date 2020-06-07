@@ -1,4 +1,3 @@
-include requirements.txt
 include LICENSE
 recursive-include clickgen xcursorgen.so
 recursive-include clickgen/linker data.json
