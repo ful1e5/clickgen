@@ -4,4 +4,3 @@ recursive-include clickgen xcursorgen.so
 recursive-include clickgen/linker data.json
 recursive-include clickgen/template cursor.theme
 recursive-include clickgen/template index.theme
-global-exclude test_*.py
