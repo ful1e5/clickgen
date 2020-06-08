@@ -36,8 +36,8 @@ setup(version='1.0.2',
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Topic :: System :: Operating System',
-          'Programming Language :: Python :: 3', 'Programming Language :: C'
-          'Natural Language :: English'
+          'Programming Language :: Python :: 3', 'Programming Language :: C',
+          'Natural Language :: English',
           'License :: OSI Approved :: MIT License',
           'Operating System :: OS Independent', 'Typing :: Typed'
       ],
