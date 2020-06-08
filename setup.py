@@ -27,14 +27,14 @@ class install(_install):
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(version='1.0.1',
+setup(version='1.0.0',
       author='Kaiz Khatri',
       author_email='kaizmandhu@gmail.com',
       description='X11 & Windows Cursor API 👷',
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[
-          'Development Status :: 3 - Alpha',
+          'Development Status :: 4 - Beta',
           'Topic :: System :: Operating System',
           'Programming Language :: Python :: 3', 'Programming Language :: C',
           'Natural Language :: English',
