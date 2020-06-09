@@ -5,9 +5,9 @@
 </div>
 
 <p align="center">
-    X11 & Windows Cursor API 👷
+  X11 & Windows Cursor API 👷
 </p>
 
-<p align="center">
-<img alt="Downloads" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg">
-</p>
+<div align="center">
+  <img alt="Downloads" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg">
+</div>
