@@ -6,7 +6,6 @@ on:
 
 jobs:
   build-n-deploy:
-    if: "github.event.release.released"
     runs-on: ubuntu-latest
 
     steps:
