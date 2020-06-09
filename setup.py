@@ -34,7 +34,7 @@ setup(version='1.0.0',
       long_description=long_description,
       long_description_content_type="text/markdown",
       classifiers=[
-          'Development Status ::3 - Alpha',
+          'Development Status :: 3 - Alpha',
           'Topic :: System :: Operating System',
           'Programming Language :: Python :: 3', 'Programming Language :: C',
           'Natural Language :: English',
