@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from clickgen import __main__ as clickgen
-from . import assets
+import assets
 
 
 class TestMain(unittest.TestCase):
@@ -30,6 +30,9 @@ class TestMain(unittest.TestCase):
 
         self.assertEqual(ext, expect_ext)
 
+    def assert_win_extension(self, extension: str):
+        return True if extension == '.cur' or extension == '.ani' else False
+
     def assert_x11_dir(self):
         self.assertTrue(os.path.exists(self.foo_dir_path))
 
@@ -42,6 +45,12 @@ class TestMain(unittest.TestCase):
         self.assertListEqual(result_dir_struc, expect_dir_struc)
 
         mock_cursor_dir = os.path.join(mock_x11_dir, 'cursors')
+        self.assertTrue(os.path.exists(mock_cursor_dir))
+        self.assertGreater(len(os.listdir(mock_cursor_dir)), 0)
+
+        for cursor in os.listdir(mock_cursor_dir):
+            _, extension = os.path.splitext(cursor)
+            self.assertEqual(extension, '')
 
     def assert_win_dir(self):
 
@@ -50,6 +59,10 @@ class TestMain(unittest.TestCase):
         mock_win_dir = os.path.join(self.foo_dir_path, 'win')
         self.assertTrue(os.path.exists(mock_win_dir))
         self.assertGreater(len(os.listdir(mock_win_dir)), 0)
+
+        for cursor in os.listdir(mock_win_dir):
+            _, extension = os.path.splitext(cursor)
+            self.assert_win_extension(extension)
 
     # test
     def test_get_config(self):
