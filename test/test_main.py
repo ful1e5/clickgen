@@ -5,7 +5,7 @@ import tempfile
 import unittest
 
 from clickgen import __main__ as clickgen
-import assets
+from . import assets
 
 
 class TestMain(unittest.TestCase):
