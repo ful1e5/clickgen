@@ -17,9 +17,9 @@ def match_to_directory(name: str, directory: list) -> str:
     """
         Match 'name' with 'directory' with 0.5 ratio. That can fix 'name' typo by searching inside directory.
         Example:
-
             z00m => zoom
     """
+
     compare_ratio = 0.5
     match = name
 
@@ -31,6 +31,7 @@ def match_to_directory(name: str, directory: list) -> str:
 
     logger.info('"%s" match to "%s" with "%s" ratio' %
                 (name, match, compare_ratio))
+
     return match
 
 
@@ -77,6 +78,7 @@ def link_cursors(dir: str, win=False) -> None:
 
     # rename cursor with proper name
     for index, cursor in enumerate(cursors):
+        cursor, extension = os.path.splitext(cursor)
         fix_cur = match_to_directory(cursor, all_cursors)
 
         if fix_cur not in all_cursors:
@@ -85,8 +87,8 @@ def link_cursors(dir: str, win=False) -> None:
             print(msg)
 
         elif (fix_cur != cursor):
-            old_path = os.path.join(dir, cursor)
-            new_path = os.path.join(dir, fix_cur)
+            old_path = os.path.join(dir, cursor + extension)
+            new_path = os.path.join(dir, fix_cur + extension)
             os.rename(old_path, new_path)
 
             cursors[index] = fix_cur
@@ -95,7 +97,7 @@ def link_cursors(dir: str, win=False) -> None:
             logger.info(msg)
             print(msg)
 
-    # symbolic links only for x11 beacuse all windows cursors are satisfied.
+    # symbolic links only for x11
     if not win:
         # cd for relative links
         with cd(dir):
