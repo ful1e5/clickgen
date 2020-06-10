@@ -60,5 +60,6 @@ jobs:
       - name: Unittest
         run: |
           cd dist && mkdir clickgen
+          tar -C clickgen -xvf clickgen-*.tar.gz
           cd clickgen
           python -m unittest ./test
