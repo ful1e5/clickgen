@@ -6,7 +6,7 @@ import unittest
 from clickgen.linker import __main__ as linker
 
 
-class TestLinke(unittest.TestCase):
+class TestLinker(unittest.TestCase):
 
     # setup
     def setUp(self):
