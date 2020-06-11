@@ -67,18 +67,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: ./dist
-
-      - name: Unpacking artifact package
-        working-directory: ./dist
-        run: mkdir clickgen && tar -xvf clickgen-*.tar.gz
-        continue-on-error: false
-
       - name: Testing
-        run: |
-          # going to unpacked directory
-          cd */*/test && cd ..
-          python -m unittest discover ./test
+        run: python -m unittest
