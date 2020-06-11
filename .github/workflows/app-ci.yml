@@ -80,5 +80,13 @@ jobs:
       - name: Testing
         run: |
           # going to unpacked directory
-          cd */*/test && cd ..
+          cd */*/test
           python -m unittest
+
+  new:
+    needs: [build, test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        run: ls
