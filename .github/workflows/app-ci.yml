@@ -67,9 +67,12 @@ jobs:
         working-directory: dist
         run: |
           mkdir clickgen
+          ls
           tar -C clickgen -xvf clickgen-*.tar.gz
+          ls
 
       - name: Testing
-        working-directory: dist/clickgen
+        # working-directory: dist/clickgen
         run: |
+          ls 
           python -m unittest
