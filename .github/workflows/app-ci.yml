@@ -63,10 +63,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Testing
       - uses: actions/download-artifact@v2
         with:
           name: dist
           path: ./dist
         # run: python -m unittest
+      - name: Testing
         run: ls
