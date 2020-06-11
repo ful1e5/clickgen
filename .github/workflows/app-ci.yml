@@ -80,5 +80,5 @@ jobs:
       - name: Testing
         run: |
           # going to unpacked directory
-          cd */*/test
-          python -m unittest discover .
+          cd */*/test && cd ..
+          python -m unittest discover ./test
