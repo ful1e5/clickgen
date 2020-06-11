@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Unpacking clickgen
-        working-directory: ./dist
+        working-directory: ./build/dist
         run: ls
 
         # run: mkdir clickgen && tar -C clickgen -xvf clickgen-*.tar.gz
