@@ -52,8 +52,6 @@ jobs:
       - name: Building Package
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
-
-      - name: Upload artifacts
       - uses: actions/upload-artifact@master
         with:
           name: dist
