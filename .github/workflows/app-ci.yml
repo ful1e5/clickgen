@@ -7,13 +7,15 @@ on:
       - LICENSE
 
   release:
-    types: [created]
+    types:
+      - created
 
   pull_request:
     paths-ignore:
       - README.md
       - LICENSE
-    branches: [master]
+    branches:
+      - master
 
 jobs:
   build:
@@ -68,10 +70,10 @@ jobs:
           cd clickgen
           python -m unittest 
           cd ../..
-        continue-on-error: false
 
       - name: Uploading package directory
       - uses: actions/upload-artifact@v2
+        if: success()
         with:
           name: Package
           path: dist/
