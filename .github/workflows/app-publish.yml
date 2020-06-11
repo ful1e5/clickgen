@@ -10,6 +10,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -45,12 +46,31 @@ jobs:
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
 
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
+
   test:
     needs: [build]
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ./dist
+
+      - name: Unpacking artifact package
+        working-directory: ./dist
+        run: mkdir clickgen && tar -C clickgen -xvf clickgen-*.tar.gz
+        continue-on-error: false
+
       - name: Testing
+        working-directory: ./dist/clickgen
         run: python -m unittest
 
   publish:
@@ -59,6 +79,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ./dist
+
       - name: Publishing
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
