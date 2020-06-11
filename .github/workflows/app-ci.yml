@@ -78,7 +78,6 @@ jobs:
         continue-on-error: false
 
       - name: Testing
-        working-directory: ./dist/*/
         run: |
           # going to unpacked directory
           cd */*/test && cd ..
