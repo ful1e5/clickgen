@@ -64,10 +64,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Unpacking clickgen
-        working-directory: ./build/dist
         run: ls
-
-        # run: mkdir clickgen && tar -C clickgen -xvf clickgen-*.tar.gz
       - name: Testing
-        working-directory: ./dist/clickgen
         run: python -m unittest
