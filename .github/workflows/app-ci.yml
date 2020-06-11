@@ -53,6 +53,7 @@ jobs:
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
       - uses: actions/upload-artifact@master
+        if: success()
         with:
           name: dist
           path: dist
@@ -62,5 +63,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Unpacking clickgen
+        working-directory: dist
+        run: |
+          mkdir clickgen
+          tar -C clickgen -xvf clickgen-*.tar.gz
+
       - name: Testing
-        run: python -m unittest
+        working-directory: dist/clickgen
+        run: |
+          python -m unittest
