@@ -64,4 +64,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Testing
-        run: python -m unittest
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: ./dist
+        # run: python -m unittest
+        run: ls
