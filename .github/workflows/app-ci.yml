@@ -6,6 +6,9 @@ on:
       - README.md
       - LICENSE
 
+  release:
+    types: [created]
+
   pull_request:
     paths-ignore:
       - README.md
@@ -13,7 +16,7 @@ on:
     branches: [master]
 
 jobs:
-  build-n-test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -63,4 +66,12 @@ jobs:
           cd dist && mkdir clickgen
           tar -C clickgen -xvf clickgen-*.tar.gz
           cd clickgen
-          python -m unittest
+          python -m unittest 
+          cd ../..
+        continue-on-error: false
+
+      - name: Uploading package directory
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: dist/

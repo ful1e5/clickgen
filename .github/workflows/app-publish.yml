@@ -1,0 +1,24 @@
+name: Publish on PyPI
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Downloading artifact
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./
+        continue-on-error: false
+
+      - name: Publishing on PyPI
+        env:
+          TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          twine upload dist/*
