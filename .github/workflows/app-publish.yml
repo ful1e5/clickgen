@@ -2,7 +2,7 @@ name: Publish on PyPI
 
 on:
   release:
-    types: created
+    types: [created]
 
 jobs:
   build:
@@ -14,12 +14,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: "3.x"
-      
+
       - name: Install build dependencies
         run: |
           sudo apt install libx11-dev libxcursor-dev libpng-dev
         continue-on-error: false
- 
+
       - name: Cache pip dependencies
         uses: actions/cache@v2
         with:
@@ -30,31 +30,31 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
-      
+
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
         continue-on-error: false
-        
+
       - name: Make
         run: python setup.py install
         continue-on-error: false
-      
+
       - name: Building Package
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
-  
+
   test:
     needs: [build]
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - uses: actions/checkout@v2
       - name: Testing
         run: python -m unittest
 
   publish:
-    needs: [build,test]
+    needs: [build, test]
     runs-on: ubuntu-latest
 
     steps:
