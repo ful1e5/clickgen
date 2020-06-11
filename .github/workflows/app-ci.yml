@@ -18,6 +18,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -52,6 +53,7 @@ jobs:
       - name: Building Package
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
+
       - uses: actions/upload-artifact@master
         if: success()
         with:
@@ -61,12 +63,19 @@ jobs:
   test:
     needs: [build]
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+
       - uses: actions/download-artifact@v2
         with:
           name: dist
           path: ./dist
-        # run: python -m unittest
+
+      - name: Unpacking artifact package
+        working-directory: ./dist
+        run: mkdir clickgen && tar -C clickgen -xvf clickgen-*.tar.gz
+
       - name: Testing
         run: ls
+        # run: python -m unittest
