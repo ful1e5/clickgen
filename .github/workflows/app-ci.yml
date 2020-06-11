@@ -75,6 +75,7 @@ jobs:
       - name: Unpacking artifact package
         working-directory: ./dist
         run: mkdir clickgen && tar -C clickgen -xvf clickgen-*.tar.gz
+        continue-on-error: false
 
       - name: Testing
         working-directory: ./dist/clickgen
