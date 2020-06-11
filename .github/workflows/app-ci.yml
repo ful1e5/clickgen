@@ -1,25 +1,33 @@
 name: build
+
 on:
   push:
     paths-ignore:
       - README.md
       - LICENSE
+    branches: [master]
+  
   pull_request:
     paths-ignore:
       - README.md
       - LICENSE
     branches: [master]
+
 jobs:
-  build:
+  build-n-test:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
+      
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
+      
       - name: Install build dependencies
         run: sudo apt install libx11-dev libxcursor-dev libpng-dev
+      
       - name: Cache pip dependencies
         uses: actions/cache@v2
         with:
@@ -30,32 +38,24 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
+      
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install flake8 setuptools wheel twine
+          pip install flake8 
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-      - name: Making Xcursorgen.c
-        run: python setup.py install
-      - name: Packaging
-        run: python setup.py sdist bdist_wheel
+      
+      - name: Make
+        run: |
+          python setup.py install
+          
       - name: Testing
         run: |
-          # unittest inside builded package
-          cd dist && mkdir clickgen
-          tar -C clickgen -xvf clickgen-*.tar.gz
-          cd clickgen
-          python -m unittest 
-          cd ../..
-      - name: Uploading package directory
-      - uses: actions/upload-artifact@v2
-        if: success()
-        with:
-          name: Package
-          path: dist/
+          python -m unittest
