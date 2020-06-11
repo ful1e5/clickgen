@@ -50,6 +50,12 @@ jobs:
         run: python setup.py install
         continue-on-error: false
 
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: xcursorgen
+          path: clickgen/xcursorgen.so
+
       - name: Building Package
         run: python setup.py sdist bdist_wheel
         continue-on-error: false
