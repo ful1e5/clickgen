@@ -33,6 +33,7 @@ setup(version='1.1.0',
       description='X11 & Windows Cursor API 👷',
       long_description=long_description,
       long_description_content_type="text/markdown",
+      url='https://github.com/KaizIqbal/clickgen',
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Topic :: System :: Operating System',
