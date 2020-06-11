@@ -9,5 +9,5 @@
 </p>
 
 <p align="center">
-  <img alt="Downloads" src="![build](https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg?branch=master&event=push)">
+  <img alt="Downloads" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg?branch=master">
 </p>
