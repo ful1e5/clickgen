@@ -79,5 +79,7 @@ jobs:
 
       - name: Testing
         working-directory: ./dist/*/
-        run: ls
-        # run: python -m unittest
+        run: |
+          # going to unpacked directory
+          cd */*/test && cd ..
+          python -m unittest
