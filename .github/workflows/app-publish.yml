@@ -1,8 +1,15 @@
 name: Publish on PyPI
 
 on:
-  release:
-    types: [created]
+  push:
+    paths-ignore:
+      - README.md
+      - LICENSE
+    branches: [master, dev]
+
+# on:
+#   release:
+#     types: [created]
 
 jobs:
   build:
@@ -97,4 +104,5 @@ jobs:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
           TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
-          twine upload dist/*
+          ls 
+          twine --version
