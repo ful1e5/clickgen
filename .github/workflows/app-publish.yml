@@ -28,36 +28,9 @@ jobs:
           sudo apt install libx11-dev libxcursor-dev libpng-dev
         continue-on-error: false
 
-      - name: Cache pip dependencies
-        uses: actions/cache@v2
-        with:
-          # This path is specific to Ubuntu
-          path: ~/.cache/pip
-          # Look to see if there is a cache hit for the corresponding requirements file
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
-
-      - name: Install pip dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools wheel twine
-        continue-on-error: false
-
       - name: Make
         run: python setup.py install
         continue-on-error: false
-
-      - name: Building Package
-        run: python setup.py sdist bdist_wheel
-        continue-on-error: false
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: dist
-          path: dist
 
   test:
     needs: [build]
@@ -90,13 +63,11 @@ jobs:
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install twine
+          pip install setuptools wheel twine
         continue-on-error: false
 
-      - uses: actions/download-artifact@v2
-        with:
-          name: dist
-          path: ./dist
+      - name: Building Package
+        run: python setup.py sdist bdist_wheel
         continue-on-error: false
 
       - name: Publishing
@@ -106,3 +77,10 @@ jobs:
         run: |
           ls 
           twine --version
+        continue-on-error: false
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
