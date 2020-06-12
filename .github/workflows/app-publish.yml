@@ -45,3 +45,15 @@ jobs:
         run: |
           twine --version
           twine upload dist/*
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: xcursorgen
+          path: ./clickgen/xcursorgen.so
