@@ -76,27 +76,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # - name: Cache pip dependencies
-      #   uses: actions/cache@v2
-      #   with:
-      #     # This path is specific to Ubuntu
-      #     path: ~/.cache/pip
-      #     # Look to see if there is a cache hit for the corresponding requirements file
-      #     key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-pip-
-      #       ${{ runner.os }}-
+      - name: Cache pip dependencies
+        uses: actions/cache@v2
+        with:
+          # This path is specific to Ubuntu
+          path: ~/.cache/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
 
-      # - name: Install pip dependencies
-      #   run: |
-      #     python -m pip install --upgrade pip
-      #     pip install setuptools wheel twine
-      #   continue-on-error: false
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install twine
+        continue-on-error: false
 
       - uses: actions/download-artifact@v2
         with:
           name: dist
-          path: ./
+          path: ./dist
         continue-on-error: false
 
       - name: Publishing
