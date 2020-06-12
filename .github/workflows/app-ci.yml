@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - README.md
       - LICENSE
+    branches: [master, dev]
 
   pull_request:
     paths-ignore:
