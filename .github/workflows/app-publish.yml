@@ -90,6 +90,7 @@ jobs:
         with:
           name: dist
           path: ./dist
+        continue-on-error: false
 
       - name: Publishing
         env:
