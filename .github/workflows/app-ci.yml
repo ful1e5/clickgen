@@ -58,6 +58,9 @@ jobs:
         run: python setup.py install
         continue-on-error: false
 
+      - name: Testing
+        run: python -m unittest
+
       - uses: actions/upload-artifact@master
         if: success()
         with:
@@ -73,13 +76,3 @@ jobs:
         with:
           name: dist
           path: dist
-
-  test:
-    needs: [build]
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Testing
-        run: python -m unittest
