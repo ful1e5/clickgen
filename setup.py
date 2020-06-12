@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import subprocess
 from setuptools import setup, find_namespace_packages
 from distutils.command.install import install as _install
