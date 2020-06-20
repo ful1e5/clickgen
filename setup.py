@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+from pkginfo import *
+
 import subprocess
 from setuptools import setup, find_namespace_packages
 from distutils.command.install import install as _install
@@ -30,16 +32,16 @@ class install(_install):
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(version='1.1.1',
-      author='Kaiz Khatri',
-      author_email='kaizmandhu@gmail.com',
-      description='X11 & Windows Cursor API 👷',
+setup(name=package_name,
+      version=package_version,
+      author=package_author,
+      author_email=package_author_email,
+      description=package_description,
       long_description=long_description,
       long_description_content_type="text/markdown",
       url='https://github.com/KaizIqbal/clickgen',
       classifiers=[
-          'Development Status :: 3 - Alpha',
-          'Topic :: System :: Operating System',
+          package_status_classifier, 'Topic :: System :: Operating System',
           'Programming Language :: Python :: 3', 'Programming Language :: C',
           'Natural Language :: English',
           'License :: OSI Approved :: MIT License',
@@ -50,7 +52,6 @@ setup(version='1.1.1',
           'install': install,
       },
       install_requires=load_requirements('requirements.txt'),
-      name='clickgen',
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
       zip_safe=True)
