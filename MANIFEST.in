@@ -1,6 +1,7 @@
 include requirements.txt
 include LICENSE
 include cli.py
+include pkginfo.py
 include clickgen/xcursorgen.so
 recursive-include clickgen/linker data.json
 recursive-include clickgen/template cursor.theme
