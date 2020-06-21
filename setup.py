@@ -40,7 +40,6 @@ setup(name=package_name,
       description=package_description,
       long_description=long_description,
       long_description_content_type="text/markdown",
-      entry_points={'console_script': ['clickgen = cli.__main__:main']},
       url='https://github.com/KaizIqbal/clickgen',
       classifiers=[
           package_status_classifier, 'Topic :: System :: Operating System',
@@ -50,9 +49,7 @@ setup(name=package_name,
           'Operating System :: OS Independent', 'Typing :: Typed'
       ],
       python_requires='>=3.6',
-      cmdclass={
-          'install': install,
-      },
+      scripts=['clickgencli'],
       install_requires=load_requirements('requirements.txt'),
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
