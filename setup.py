@@ -23,8 +23,8 @@ def load_requirements(fname):
 
 class install(_install):
     def run(self):
-        subprocess.call(['make', 'clean', '-C', 'src'])
-        subprocess.call(['make', '-C', 'src'])
+        subprocess.call(['make', 'clean', '-C', 'xcursogen'])
+        subprocess.call(['make', '-C', 'xcursorgen'])
         _install.run(self)
 
 
