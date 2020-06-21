@@ -1,5 +1,5 @@
 package_name = 'clickgen'
-package_version = '1.1.1'
+package_version = '1.1.2'
 package_description = 'X11 & Windows Cursor API 👷'
 package_author = 'Kaiz Khatri'
 package_author_email = 'kaizmandhu@gmail.com'
