@@ -25,7 +25,8 @@ class install(_install):
     def run(self):
         subprocess.call(['make', 'clean', '-C', 'xcursorgen'])
         subprocess.call(['make', '-C', 'xcursorgen'])
-        _install.run(self)
+
+        return super().run()
 
 
 # readme.md as long description
