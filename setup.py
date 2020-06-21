@@ -39,6 +39,7 @@ setup(name=package_name,
       description=package_description,
       long_description=long_description,
       long_description_content_type="text/markdown",
+      entry_points={'console_script': ['clickgen = cli.__main__:main']},
       url='https://github.com/KaizIqbal/clickgen',
       classifiers=[
           package_status_classifier, 'Topic :: System :: Operating System',
