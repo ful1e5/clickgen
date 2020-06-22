@@ -483,5 +483,5 @@ def shadowize(shadow, orig, color):
                                int(color[3] * (o_px[3] / 255.0)))
 
 
-if __name__ == '__main__':
-    sys.exit(main())
+# if __name__ == '__main__':
+# sys.exit(main())
