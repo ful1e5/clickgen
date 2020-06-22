@@ -4,8 +4,11 @@
 import argparse
 import os
 
-from pkginfo import package_name, package_version, package_description
 import clickgen
+# Disable all the no-member violations in this function
+# pylint: disable=import-error
+# pylint: disable=no-name-in-module
+from clickgen.pkginfo import package_name, package_version, package_description
 
 
 def main(name: str, config_dir: str, out_path: str, x11: bool, win: bool,
