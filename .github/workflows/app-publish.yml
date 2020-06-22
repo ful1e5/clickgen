@@ -30,8 +30,7 @@ jobs:
 
       - name: Building
         run: |
-          python setup.py install
-          python setup.py sdist bdist_wheel
+          python setup.py install sdist bdist_wheel
         continue-on-error: false
 
       - name: Testing
