@@ -25,8 +25,7 @@ class install(_install):
     def run(self):
         subprocess.call(['make', 'clean', '-C', 'xcursorgen'])
         subprocess.call(['make', '-C', 'xcursorgen'])
-
-        return super().run()
+        _install.run(self)
 
 
 # readme.md as long description
@@ -48,6 +47,9 @@ setup(name=package_name,
           'License :: OSI Approved :: MIT License',
           'Operating System :: OS Independent', 'Typing :: Typed'
       ],
+      cmdclass={
+          'install': install,
+      },
       python_requires='>=3.6',
       scripts=['clickgencli'],
       install_requires=load_requirements('requirements.txt'),
