@@ -2,7 +2,7 @@ include requirements.txt
 include LICENSE
 
 include clickgencli
-include pkginfo.py
+include clickgen/pkginfo.json 
 
 include clickgen/xcursorgen.so
 recursive-include clickgen/linker data.json
