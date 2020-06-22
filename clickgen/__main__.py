@@ -85,7 +85,7 @@ def get_cur_name(config: str, type: str) -> str:
 
 def main(name: str,
          config_dir: str,
-         out_path: str = os.curdir,
+         out_path: str = os.getcwd(),
          x11: bool = False,
          win: bool = False,
          archive: bool = False,
@@ -126,6 +126,7 @@ def main(name: str,
     except FileNotFoundError as err:
         print(err)
 
+    print(out_path)
     out = os.path.abspath(os.path.join(out_path, name))
 
     # set png prefix
