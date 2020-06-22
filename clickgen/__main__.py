@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import sys
 import glob
 import logging
 import os
@@ -110,10 +111,11 @@ def main(name: str,
     # If platforms  flags disabled
     try:
         if (x11 == False and win == False):
-            raise ValueError('cursor generate type missing')
+            raise ValueError('🚨 Cursor generate type missing')
 
     except ValueError as valerr:
         print('Error:', valerr)
+        sys.exit(1)
 
     # passing configs path
     in_path = os.path.abspath(config_dir)
@@ -121,12 +123,12 @@ def main(name: str,
     try:
         configs = get_configs(config_dir)
         if (len(configs) <= 0):
-            raise FileNotFoundError('no configs found in %s' % in_path)
+            raise FileNotFoundError('🚨 No configs found in %s' % in_path)
 
     except FileNotFoundError as err:
         print(err)
+        sys.exit(1)
 
-    print(out_path)
     out = os.path.abspath(os.path.join(out_path, name))
 
     # set png prefix
