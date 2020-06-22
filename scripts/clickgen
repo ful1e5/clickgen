@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import argparse
 import os
+import sys
+import argparse
 
 import clickgen
-# Disable all the no-member violations in this function
-# pylint: disable=import-error
-# pylint: disable=no-name-in-module
-from clickgen.pkginfo import package_name, package_version, package_description
+from clickgen import __version__, info
 
 
 def main(name: str, config_dir: str, out_path: str, x11: bool, win: bool,
@@ -23,13 +21,13 @@ def main(name: str, config_dir: str, out_path: str, x11: bool, win: bool,
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=package_description,
+    parser = argparse.ArgumentParser(description=info['description'],
                                      add_help=False)
 
     parser.add_argument('-V',
                         '--version',
                         action='version',
-                        version='%s-%s' % (package_name, package_version),
+                        version='%s-%s' % (info['name'], __version__),
                         help='Display the version number and exit.')
     parser.add_argument('-v',
                         '--verbose',
@@ -45,11 +43,12 @@ if __name__ == "__main__":
                         dest='theme_name',
                         metavar='string',
                         default=None,
+                        required=True,
                         help='Specified cursor-theme name')
     parser.add_argument(
         '-c',
         '--configs-dir',
-        metavar='directory',
+        metavar='config directory',
         dest='config_dir',
         default='-',
         help=
@@ -58,7 +57,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '-o',
         '--output-dir',
-        metavar='directory',
+        metavar='output directory',
         dest='output_dir',
         default='-',
         help=
