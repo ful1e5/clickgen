@@ -54,6 +54,9 @@ setup(name=_info['name'],
       },
       python_requires='>=3.6',
       scripts=['scripts/clickgen'],
+      keywords=[
+          'cursor', 'xcursor', 'windows', 'linux', 'anicursorgen', 'xcursorgen'
+      ],
       install_requires=load_requirements('requirements.txt'),
       packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
       include_package_data=True,
