@@ -37,15 +37,11 @@ jobs:
         run: python -m unittest
         continue-on-error: false
 
-      - name: Publish to Registry
-        uses: HurricanKai/Publish-Docker-Github-Action@master
+      - name: Publishing Docker Image to Github Docker Registry
+        uses: mattdavis0351/actions/docker-gpr@v1
         with:
-          name: clickgen
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.pkg.github.com
-          cache: true
-          tagging: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          image-name: clickgen
         continue-on-error: false
 
       - name: Publishing to PyPI
