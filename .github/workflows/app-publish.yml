@@ -1,4 +1,4 @@
-name: Publish on PyPI
+name: Publish PyPI Package & Docker
 
 on:
   release:
@@ -35,6 +35,20 @@ jobs:
 
       - name: Testing
         run: python -m unittest
+        continue-on-error: false
+
+      - name: Publish to Registry
+        uses: HurricanKai/Publish-Docker-Github-Action@master
+        if: contains(github.ref, 'refs/tags/v')
+        with:
+          name: clickgen
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.pkg.github.com
+          cache: true
+          tagging: true
+          snapshot: true
+          dockerfile: Dockerfile
         continue-on-error: false
 
       - name: Publishing to PyPI
