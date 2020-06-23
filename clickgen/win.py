@@ -3,7 +3,7 @@
 
 import sys
 import os
-import argparse
+from argparse import Namespace
 import shlex
 import io
 import struct
@@ -28,94 +28,14 @@ def main(input_config: str, output_file: str, prefix: str):
         anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
     """
 
-    parser = argparse.ArgumentParser(
-        description=
-        'Creates .ani or .cur files from separate images and input metadata.',
-        add_help=False)
-    parser.add_argument('-V',
-                        '--version',
-                        action='version',
-                        version='{}-{}'.format(program_name, program_version),
-                        help='Display the version number and exit.')
-    parser.add_argument('-h',
-                        '-?',
-                        action='help',
-                        help='Display the usage message and exit.')
-    parser.add_argument(
-        '-p',
-        '--prefix',
-        metavar='dir',
-        default=None,
-        help=
-        'Find cursor images in the directory specified by dir. If not specified, the current directory is used.'
-    )
-    parser.add_argument(
-        '-s',
-        '--add-shadows',
-        action='store_true',
-        dest='add_shadows',
-        default=False,
-        help='Generate shadows for cursors (disabled by default).')
-    parser.add_argument(
-        '-n',
-        '--no-shadows',
-        action='store_false',
-        dest='add_shadows',
-        default=False,
-        help=
-        'Do not generate shadows for cursors (put after --add-shadows to cancel its effect).'
-    )
-
-    shadows = parser.add_argument_group(
-        title='Shadow generation',
-        description='Only relevant when --add-shadows is given')
-
-    shadows.add_argument(
-        '-r',
-        '--right-shift',
-        metavar='%',
-        type=float,
-        default=9.375,
-        help=
-        'Shift shadow right by this percentage of the canvas size (default is 9.375).'
-    )
-    shadows.add_argument(
-        '-d',
-        '--down-shift',
-        metavar='%',
-        type=float,
-        default=3.125,
-        help=
-        'Shift shadow down by this percentage of the canvas size (default is 3.125).'
-    )
-    shadows.add_argument(
-        '-b',
-        '--blur',
-        metavar='%',
-        type=float,
-        default=3.125,
-        help=
-        'Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).'
-    )
-    shadows.add_argument(
-        '-c',
-        '--color',
-        metavar='%',
-        default='0x00000040',
-        help='Shadow color in 0xRRGGBBAA form (default is 0x00000040).')
-
-    parser.add_argument('input_config',
-                        default='-',
-                        metavar='input-config [output-file]',
-                        nargs='?',
-                        help='Input config file (stdin by default).')
-    parser.add_argument('output_file',
-                        default='-',
-                        metavar='',
-                        nargs='?',
-                        help='Output cursor file (stdout by default).')
-
-    args = parser.parse_args()
+    args = Namespace(add_shadows=False,
+                     blur=3.125,
+                     color='0x00000040',
+                     down_shift=3.125,
+                     input_config='-',
+                     output_file='-',
+                     prefix=None,
+                     right_shift=9.375)
 
     if (input_config is not None):
         args.input_config = input_config
@@ -133,7 +53,6 @@ def main(input_config: str, output_file: str, prefix: str):
                       int(args.color[6:8], 16), int(args.color[8:10], 16))
     except:
         print("Can't parse the color '{}'".format(args.color), file=sys.stderr)
-        parser.print_help()
         return 1
 
     if args.prefix is None:
