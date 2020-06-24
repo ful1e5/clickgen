@@ -44,6 +44,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
           tag_with_ref: true
+          tags: latest
         continue-on-error: false
 
       - name: Push to GitHub Docker Package
@@ -54,6 +55,7 @@ jobs:
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
           registry: docker.pkg.github.com
           tag_with_ref: true
+          tags: latest
         continue-on-error: false
 
       - name: Publishing to PyPI
