@@ -37,14 +37,22 @@ jobs:
         run: python -m unittest
         continue-on-error: false
 
+      - name: Extract tag name
+        id: tag
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.ref.replace(/\/refs\/tags\//, '');
+
       - name: Push to Docker Hub
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
-          tag_with_ref: true
-          tags: latest
+          cache_froms: python:3-alpine:latest
+          tags: latest,${{ steps.tag.outputs.result }}
         continue-on-error: false
 
       - name: Push to GitHub Docker Package
@@ -54,8 +62,8 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
           registry: docker.pkg.github.com
-          tag_with_ref: true
-          tags: latest
+          cache_froms: python:3-alpine:latest
+          tags: latest,${{ steps.tag.outputs.result }}
         continue-on-error: false
 
       - name: Publishing to PyPI
