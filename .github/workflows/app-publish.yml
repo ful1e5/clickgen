@@ -45,17 +45,7 @@ jobs:
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
           cache_froms: python:3-alpine:latest
           tags: latest, 1.1
-        continue-on-error: false
-
-      - name: Push to GitHub Docker Package
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
-          registry: docker.pkg.github.com
-          cache_froms: python:3-alpine:latest
-          tags: latest, 1.1
+          tag_with_ref: true
         continue-on-error: false
 
       - name: Publishing to PyPI
