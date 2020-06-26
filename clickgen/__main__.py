@@ -43,7 +43,7 @@ def is_animated(config: str) -> bool:
             ^      ^      ^         ^          ^
             |      |      |         |          |
         column1 column2 column3  column4    colums5
-        
+
         <delay> is optional information, This function is designed only for read first line of config. 
     """
 
@@ -64,7 +64,7 @@ def is_animated(config: str) -> bool:
 def get_cur_name(config: str, type: str) -> str:
     """
         Get the cursor's extension by providing `type` to this function.
-        
+
         window extension => .cur , .ani
             watch.ani, left_ptr.cur
 

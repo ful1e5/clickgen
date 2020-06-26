@@ -210,7 +210,7 @@ def make_framesets(frames):
         if len(framesets[i - 1]) != len(framesets[i]):
             print("Frameset {} has size {}, expected {}".format(
                 i, len(framesets[i]), len(framesets[i - 1])),
-                  file=sys.stderr)
+                file=sys.stderr)
             return None
 
     for frameset in framesets:

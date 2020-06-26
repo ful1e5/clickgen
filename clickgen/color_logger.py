@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+import platform
 import logging
 
 
@@ -71,7 +72,7 @@ def add_coloring_to_emit_windows(fn):
 
         ret = fn(*args)
         args[0]._set_color(FOREGROUND_WHITE)
-        #print "after"
+        # print "after"
         return ret
 
     return new
@@ -94,13 +95,12 @@ def add_coloring_to_emit_ansi(fn):
         else:
             color = '\x1b[0m'  # normal
         args[1].msg = color + args[1].msg + '\x1b[0m'  # normal
-        #print "after"
+        # print "after"
         return fn(*args)
 
     return new
 
 
-import platform
 if platform.system() == 'Windows':
     # Windows does not support ANSI escapes and we are using API calls to set the console color
     logging.StreamHandler.emit = add_coloring_to_emit_windows(
@@ -110,6 +110,6 @@ else:
     logging.StreamHandler.emit = add_coloring_to_emit_ansi(
         logging.StreamHandler.emit)
     #log = logging.getLogger()
-    #log.addFilter(log_filter())
-    #//hdlr = logging.StreamHandler()
-    #//hdlr.setFormatter(formatter())
+    # log.addFilter(log_filter())
+    # //hdlr = logging.StreamHandler()
+    # //hdlr.setFormatter(formatter())
