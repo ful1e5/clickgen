@@ -1,7 +1,8 @@
 all: xcursorgen.so
 
 xcursorgen.so: xcursorgen.c
-	gcc -Wl,-zdefs -shared -o xcursorgen.so -fPIC  xcursorgen.c  -lc -lpng16 -lXcursor -lX11
+	gcc -c -fPIC xcursorgen.c
+	gcc -static-libgcc -o xcursorgen.so -Wl,--whole-archive -L/usr/lib/x86_64-linux-gnu/ -I/usr/lib/x86_64-linux-gnu/ -lX11 -lpng -lXcursor -Wl,--no-whole-archive -shared xcursorgen.o
 	cp xcursorgen.so ../clickgen/xcursorgen.so
 
 clean:
