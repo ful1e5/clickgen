@@ -1,12 +1,10 @@
 all: xcursorgen.so
 
 CC= gcc
-LIBS= -lX11 -lpng -lXcursor
-L_FLAG= -L /usr/lib/x86_64-linux-gnu/
+LIBS= -lX11 -lXcursor -lpng -lz
 
 xcursorgen.so: xcursorgen.c
-	$(CC) -c -fPIC xcursorgen.c
-	$(CC) -o xcursorgen.so -Wl,--whole-archive $(L_FLAG) $(LIBS) -Wl,--no-whole-archive -shared xcursorgen.o
+	$(CC) -Wl,-zdefs -shared -o xcursorgen.so -fPIC  xcursorgen.c $(LIBS) 
 	cp xcursorgen.so ../clickgen/xcursorgen.so
 
 clean:
