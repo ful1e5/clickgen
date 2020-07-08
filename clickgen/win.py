@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys
+import io
 import os
+import sys
 from argparse import Namespace
 import shlex
-import io
 import struct
 import math
+
 from PIL import Image
 from PIL import ImageFilter
+
+from .types import Path
 
 p = struct.pack
 
@@ -17,7 +20,7 @@ program_name = 'anicursorgen'
 program_version = '1.0.0'
 
 
-def main(input_config: str, output_file: str, prefix: str):
+def main(input_config: Path, output_file: Path, prefix: Path):
     """
         'win.py' is restrong of 'anicursorgen.py'.
         'input_config' is path to config_file.
@@ -76,7 +79,7 @@ def main(input_config: str, output_file: str, prefix: str):
     return result
 
 
-def make_cursor_from(inp, out, args):
+def make_cursor_from(inp: Path, out: Path, args):
     frames = parse_config_from(inp, args.prefix)
 
     animated = frames_have_animation(frames)
