@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release
 - Logo and badges
 - CI/CD Pipelines
+- **auto-install** `pip requirements`
+- `xcursorgen.so` file included in the packaging
+- auto-generated **symlinks** based on input configs
+- `.tar` archive & `directory` as out **package**.
 
 [unreleased]: https://github.com/KaizIqbal/clickgen/compare/1.1.3-alpha...master
 [1.1.0-alpha]: https://github.com/kaiziqbal/clickgen/releases/tag/1.1.0-alpha
