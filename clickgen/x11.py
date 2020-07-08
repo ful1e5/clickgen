@@ -4,10 +4,12 @@
 import ctypes
 import os
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-libpath = os.path.join(basedir, 'xcursorgen.so')
+from .types import Path
 
-dll = ctypes.CDLL(libpath)
+basedir: Path = os.path.abspath(os.path.dirname(__file__))
+libpath: Path = os.path.join(basedir, 'xcursorgen.so')
+
+dll: Path = ctypes.CDLL(libpath)
 
 # main function ctypes define
 LP_c_char = ctypes.POINTER(ctypes.c_char)
@@ -46,7 +48,7 @@ def generate(argc: int, argv: list) -> None:
     dll.main(argc, na)
 
 
-def main(input_config: str, output_file: str, prefix: str) -> None:
+def main(input_config: Path, output_file: Path, prefix: Path) -> None:
     """
          xcursorgen.c python api
         'input_config' is path to config_file.
