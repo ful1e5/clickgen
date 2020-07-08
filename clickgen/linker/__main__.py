@@ -2,18 +2,20 @@
 # encoding: utf-8
 
 from difflib import SequenceMatcher as SM
+from pathlib import Path
 import itertools
 import json
 import os
 
 from ..helpers import cd, get_logger, symlink
+from ..types import Path, StringList
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-data_file = os.path.join(basedir, 'data.json')
-logger = get_logger('clickgen:linker')
+basedir: Path = os.path.abspath(os.path.dirname(__file__))
+data_file: Path = os.path.join(basedir, 'data.json')
+logger: Path = get_logger('clickgen:linker')
 
 
-def match_to_directory(name: str, directory: list) -> str:
+def match_to_directory(name: str, directory: StringList) -> str:
     """
         Match 'name' with 'directory' with 0.5 ratio. That can fix 'name' typo by searching inside directory.
         Example:
@@ -35,7 +37,7 @@ def match_to_directory(name: str, directory: list) -> str:
     return match
 
 
-def load_data() -> [list]:
+def load_data() -> [StringList]:
     """
         Load ./data.json file and return processed two lists.i.e.:cursors, all_cursors
         'cursors' is 'group' of similar cursors, Means one cursor from them satisfied all other cursors by generating the symbolic link.
@@ -50,7 +52,7 @@ def load_data() -> [list]:
     return cursors, all
 
 
-def link_cursors(dir: str, win=False) -> None:
+def link_cursors(dir: Path, win: bool = False) -> None:
     """
         Generate missing cursors have similar endpoint inside 'dir'.
         'win' flag is 'False' default. If it 'True' this function only fix the name of cursor.
