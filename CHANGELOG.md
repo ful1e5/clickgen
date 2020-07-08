@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Windows cursors extension `null` to `.ani` or `.cur` in linker module.
-- Restructure **Tests**
+- Restructure **test** 🧪
 - Logo **Alignment fix** in `README.md`
 - CI Pipeline
 - GitHub workflow name changed
@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release
+- Initial release 🎊
 - Logo and badges
 - CI/CD Pipelines
 - **auto-install** `pip requirements`
