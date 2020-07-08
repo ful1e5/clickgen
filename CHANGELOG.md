@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [1.1.2-alpha] - 23 June 2020
+
+### Added
+
+- Docker image available on **Github Docker Registry**
+- `clickgen CLI` added with the pip package
+
+### Changed
+
+- Remove default command-line arguments in `win.py` aka **anicursorgen**
+- Exited with an error if `exception` occurred.
+- Empty cursor theme `archive` generation **fixed**.
+
 ## [1.1.1-alpha] - 12 June 2020
 
 ### Changed
@@ -31,4 +44,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.tar` archive & `directory` as out **package**.
 
 [unreleased]: https://github.com/KaizIqbal/clickgen/compare/1.1.3-alpha...master
+[1.1.2-alpha]: https://github.com/KaizIqbal/clickgen/compare/1.1.1-alpha...1.1.2-alpha
+[1.1.1-alpha]: https://github.com/kaiziqbal/clickgen/compare/1.1.0-alpha...1.1.1-alpha
 [1.1.0-alpha]: https://github.com/kaiziqbal/clickgen/releases/tag/1.1.0-alpha
