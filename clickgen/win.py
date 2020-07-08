@@ -118,14 +118,6 @@ def make_cur(frames, args, animated=False):
     buf.write(p('<HHH', 0, 2, len(frames)))
     frame_offsets = []
 
-    # def frame_size_cmp(f1, f2):
-    #     if f1[0] < f2[0]:
-    #         return -1
-    #     elif f1[0] > f2[0]:
-    #         return 1
-    #     else:
-    #         return 0
-
     frames = sorted(frames, reverse=True)
 
     for frame in frames:
@@ -222,15 +214,6 @@ def make_framesets(frames):
                             frameset[i - 1][4], frameset[i - 1][0]),
                     file=sys.stderr)
                 return None
-
-    # def frameset_size_cmp(f1, f2):
-    #     if f1[0][0] < f2[0][0]:
-    #         return -1
-    #     elif f1[0][0] > f2[0][0]:
-    #         return 1
-    #     else:
-    #         return 0
-
     framesets = sorted(framesets, reverse=True)
 
     return framesets
@@ -400,7 +383,3 @@ def shadowize(shadow, orig, color):
             if o_px[3] > 0:
                 s_pxs[x, y] = (color[0], color[1], color[2],
                                int(color[3] * (o_px[3] / 255.0)))
-
-
-# if __name__ == '__main__':
-# sys.exit(main())
