@@ -34,30 +34,28 @@ with open("README.md", "r") as fh:
 with open('clickgen/pkginfo.json') as fp:
     _info = json.load(fp)
 
-setup(name=_info['name'],
-      version=_info['version'],
-      author=_info['author'],
-      author_email=_info['author_email'],
-      description=_info['description'],
-      long_description=long_description,
-      long_description_content_type="text/markdown",
-      url='https://github.com/KaizIqbal/clickgen',
-      classifiers=[
-          _info['status_classifier'], 'Topic :: System :: Operating System',
-          'Programming Language :: Python :: 3', 'Programming Language :: C',
-          'Natural Language :: English',
-          'License :: OSI Approved :: MIT License',
-          'Operating System :: OS Independent', 'Typing :: Typed'
-],
-    cmdclass={
-          'install': install,
-},
+setup(
+    name=_info['name'],
+    version=_info['version'],
+    author=_info['author'],
+    author_email=_info['author_email'],
+    description=_info['description'],
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url='https://github.com/KaizIqbal/clickgen',
+    classifiers=[
+        _info['status_classifier'], 'Topic :: System :: Operating System',
+        'Programming Language :: Python :: 3', 'Programming Language :: C',
+        'Natural Language :: English',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: OS Independent', 'Typing :: Typed'],
+    cmdclass={'install': install},
     python_requires='>=3.6',
     scripts=['scripts/clickgen'],
-    keywords=[
-          'cursor', 'xcursor', 'windows', 'linux', 'anicursorgen', 'xcursorgen'
-],
+    keywords=['cursor', 'xcursor', 'windows',
+              'linux', 'anicursorgen', 'xcursorgen'],
     install_requires=load_requirements('requirements.txt'),
     packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
     include_package_data=True,
-    zip_safe=True)
+    zip_safe=True
+)
