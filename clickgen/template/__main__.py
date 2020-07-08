@@ -4,13 +4,14 @@
 import os
 
 from ..helpers import create_dir, get_logger
+from ..types import Path
 
-basedir = os.path.abspath(os.path.dirname(__file__))
-cursor_file_path = os.path.join(basedir, 'cursor.theme')
-index_file_path = os.path.join(basedir, 'index.theme')
+basedir: Path = os.path.abspath(os.path.dirname(__file__))
+cursor_file_path: Path = os.path.join(basedir, 'cursor.theme')
+index_file_path: Path = os.path.join(basedir, 'index.theme')
 
 
-def create_x11_template(dir: str, name: str, comment: str = '') -> None:
+def create_x11_template(dir: Path, name: Path, comment: str = '') -> None:
     """
         Copy metadata files to the cursor package directory.
         'dir' is a path to the cursor package directory.
