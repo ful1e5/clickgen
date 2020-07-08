@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [1.1.1-alpha] - 12 June 2020
+
+### Changed
+
+- Windows cursors extension `null` to `.ani` or `.cur` in linker module.
+- Restructure **Tests**
+- Logo **Alignment fix** in `README.md`
+- CI Pipeline
+- GitHub workflow name changed
+- badges in `README.md`
+
 ## [1.1.0-alpha] - 9 June 2020
 
 ### Added
