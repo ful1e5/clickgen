@@ -14,13 +14,15 @@ from .x11 import main as x11_gen
 
 from .helpers import TemporaryDirectory, create_dir, get_logger
 
+from .types import Path
+
 # config variables
 config_ext = ('*.in', '*.ini')
 # Note: 'zip' formate remove symbolic links,replace with normal files.That can affect the archive size.
 archive_format = 'tar'
 
 
-def get_configs(dir: str) -> list:
+def get_configs(dir: Path) -> list:
     """
         To get all config_files name with extension in Directory.
         'dir' is where config_files stored.
@@ -33,7 +35,7 @@ def get_configs(dir: str) -> list:
     return configs_grabbed
 
 
-def is_animated(config: str) -> bool:
+def is_animated(config: Path) -> bool:
     """
        check config_file have animation or not.
        'config' is name of .in or .ini config file.
@@ -61,7 +63,7 @@ def is_animated(config: str) -> bool:
         print('Error: ', err)
 
 
-def get_cur_name(config: str, type: str) -> str:
+def get_cur_name(config: Path, type: str) -> str:
     """
         Get the cursor's extension by providing `type` to this function.
 
@@ -85,8 +87,8 @@ def get_cur_name(config: str, type: str) -> str:
 
 
 def main(name: str,
-         config_dir: str,
-         out_path: str = os.getcwd(),
+         config_dir: Path,
+         out_path: Path = os.getcwd(),
          x11: bool = False,
          win: bool = False,
          archive: bool = False,
