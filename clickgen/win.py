@@ -94,7 +94,7 @@ def make_cursor_from(inp: Path, out: Path, args):
     return result
 
 
-def copy_to(out, buf):
+def copy_to(out: Path, buf):
     buf.seek(0, io.SEEK_SET)
     while True:
         b = buf.read(1024)
@@ -222,7 +222,7 @@ def make_framesets(frames):
     return framesets
 
 
-def make_ani(frames, out, args):
+def make_ani(frames, out: Path, args):
     framesets = make_framesets(frames)
     if framesets is None:
         return 1
@@ -281,11 +281,11 @@ def make_ani(frames, out, args):
     return 0
 
 
-def write_png(out, frame, frame_png):
+def write_png(out: Path, frame, frame_png):
     frame_png.save(out, "png", optimize=True)
 
 
-def write_cur(out, frame, frame_png):
+def write_cur(out: Path, frame, frame_png):
     pixels = frame_png.load()
 
     out.write(
@@ -313,7 +313,7 @@ def write_cur(out, frame, frame_png):
             out.write(b'\x00' * (4 - wrote % 4))
 
 
-def parse_config_from(inp, prefix):
+def parse_config_from(inp, prefix: Path):
     frames = []
     for line in inp.readlines():
         line = line.decode()
