@@ -1,5 +1,11 @@
-import typing
-import pathlib
+#!/usr/bin/env python
+# encoding: utf-8
 
-Path = typing.Union[str, pathlib.Path]
-StringList = typing.List[str]
+import pathlib
+from typing import List, Union
+
+Path = Union[str, pathlib.Path]
+
+StringList = List[str]
+
+IntegerList = List[int]
