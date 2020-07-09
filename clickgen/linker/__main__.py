@@ -55,7 +55,7 @@ def load_data() -> [StringList]:
 def link_cursors(dir: Path, win: bool = False) -> None:
     """
         Generate missing cursors have similar endpoint inside 'dir'.
-        'win' flag is 'False' default. If it 'True' this function only fix the name of cursor.
+        'win' flag is 'False' default, If it 'True' this function only fix the name of cursors because `Windows` does not support symblinks.
     """
     dir = os.path.abspath(dir)
     isExists = os.path.exists(dir)
