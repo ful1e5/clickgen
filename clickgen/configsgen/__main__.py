@@ -5,7 +5,7 @@ import os
 import itertools
 from PIL import Image
 
-from .types import Path, IntegerList, StringList, IntegerTuple
+from ..types import Path, IntegerList, StringList, IntegerTuple
 
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
