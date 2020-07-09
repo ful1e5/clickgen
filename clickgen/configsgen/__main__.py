@@ -96,7 +96,8 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
             imgs_dir, cursor.replace(".png", ".in"))
         content = []
 
-        # setting Hotspots from JSON data and `None` if not have JSON data
+        # setting Hotspots from JSON data
+        # set to `None` if not have JSON data or `key` not in JSON
         cursor_name = cursor.split('.')[0]
         try:
             hotspot = hotspots[cursor_name]
@@ -125,7 +126,8 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
         config_file_path = os.path.join(imgs_dir, group_name + ".in")
         content = []
 
-        # setting Hotspots from JSON data and `None` if not have JSON data
+        # setting Hotspots from JSON data
+        # set to `None` if not have JSON data or `key` not in JSON
         try:
             hotspot = hotspots[group_name]
             xhot = hotspot['xhot']
