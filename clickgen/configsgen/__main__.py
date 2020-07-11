@@ -120,6 +120,7 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
             resized_xhot, resized_yhot = resize_cursor(
                 cursor, size, imgs_dir, coordinate)
 
+            # statement prints if hotspots provided
             if coordinate is not None:
                 print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
                       (cursor_name, xhot, yhot, resized_xhot, resized_yhot))
@@ -156,6 +157,7 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
                 resized_xhot, resized_yhot = resize_cursor(
                     cursor, size, imgs_dir, coordinate)
 
+                # statement prints if hotspots provided
                 if coordinate is not None:
                     print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
                           (group_name, xhot, yhot, resized_xhot, resized_yhot))
