@@ -20,16 +20,17 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
 
     if (animated):
         # animated cursor have filename-01,02,03..n postfix
-        temp = [cursor for cursor in all_curosr_list if
-                cursor.find("-") >= 0]
+        temp: StringList = [cursor for cursor in all_curosr_list if
+                            cursor.find("-") >= 0]
         temp.sort()
-        cursor_list = [list(g) for _, g in itertools.groupby(
+        cursor_list: StringList = [list(g) for _, g in itertools.groupby(
             temp, lambda x: x.partition("-")[0])]
     else:
         for cursor in all_curosr_list:
             if cursor.find("-") <= 0:
                 cursor_list.append(cursor)
         cursor_list.sort()
+
     return cursor_list
 
 
