@@ -10,8 +10,11 @@ import os
 from ..helpers import cd, get_logger, symlink
 from ..types import Path, StringList, Logger
 
+# cursor data paths
 basedir: Path = os.path.abspath(os.path.dirname(__file__))
 data_file: Path = os.path.join(basedir, 'data.json')
+
+# Logger
 logger: Logger = get_logger('clickgen:linker')
 
 
