@@ -85,7 +85,6 @@ def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: C
 
 
 def write_xcur(config_file_path: str, content: StringList) -> None:
-
     # sort line, So all lines in order according to size (24x24, 28x28, ..)
     content.sort()
 
@@ -100,6 +99,7 @@ def write_xcur(config_file_path: str, content: StringList) -> None:
 
 def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> None:
     list: StringList = get_cursor_list(imgs_dir)
+
     for cursor in list:
 
         config_file_path: Path = os.path.join(
@@ -131,12 +131,14 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
             line = "%s %s %s %sx%s/%s\n" % (size,
                                             resized_xhot, resized_yhot, size, size, cursor)
             content.append(line)
+
         write_xcur(config_file_path, content)
 
 
 def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
     list: StringList = get_cursor_list(imgs_dir, animated=True)
     delay: int = 20
+
     for group in list:
         group_name = str(group[0]).split("-")[0]
         config_file_path: Path = os.path.join(imgs_dir, group_name + ".in")
@@ -167,6 +169,7 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
                                                    resized_xhot, resized_yhot, size, size, cursor, delay)
             content.append(line)
+
         write_xcur(config_file_path, content)
 
 
