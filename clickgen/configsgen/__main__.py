@@ -5,7 +5,11 @@ import os
 import itertools
 from PIL import Image
 
-from ..types import Path, IntegerList, StringList, IntegerTuple, CoordinateTuple
+from ..helpers import get_logger
+from ..types import Path, IntegerList, StringList, IntegerTuple, CoordinateTuple, Logger
+
+# Logger
+logger: Logger = get_logger('clickgen:configsgen')
 
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
