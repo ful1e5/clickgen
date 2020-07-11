@@ -120,8 +120,9 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
             resized_xhot, resized_yhot = resize_cursor(
                 cursor, size, imgs_dir, coordinate)
 
-            print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
-                  (cursor_name, xhot, yhot, resized_xhot, resized_yhot))
+            if coordinate is not None:
+                print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
+                      (cursor_name, xhot, yhot, resized_xhot, resized_yhot))
 
             line = "%s %s %s %sx%s/%s\n" % (size,
                                             resized_xhot, resized_yhot, size, size, cursor)
@@ -155,8 +156,9 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
                 resized_xhot, resized_yhot = resize_cursor(
                     cursor, size, imgs_dir, coordinate)
 
-                print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
-                      (group_name, xhot, yhot, resized_xhot, resized_yhot))
+                if coordinate is not None:
+                    print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
+                          (group_name, xhot, yhot, resized_xhot, resized_yhot))
 
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
                                                    resized_xhot, resized_yhot, size, size, cursor, delay)
