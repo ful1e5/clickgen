@@ -82,7 +82,7 @@ def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: C
         Rx = round(size / width * xhot)
         Ry = round(size / height * yhot)
 
-    return Rx, Ry
+    return (Rx, Ry)
 
 
 def write_xcur(config_file_path: str, content: list) -> None:
