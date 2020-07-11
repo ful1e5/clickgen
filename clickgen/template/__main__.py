@@ -6,9 +6,13 @@ import os
 from ..helpers import create_dir, get_logger
 from ..types import Path, Logger
 
+# files path
 basedir: Path = os.path.abspath(os.path.dirname(__file__))
 cursor_file_path: Path = os.path.join(basedir, 'cursor.theme')
 index_file_path: Path = os.path.join(basedir, 'index.theme')
+
+# Logger
+logger: Logger = get_logger('clickgen:template')
 
 
 def create_x11_template(dir: Path, name: Path, comment: str = '') -> None:
@@ -17,7 +21,6 @@ def create_x11_template(dir: Path, name: Path, comment: str = '') -> None:
         'dir' is a path to the cursor package directory.
         'name' & 'comment' is Metadata for cursor package.
     """
-    logger: Logger = get_logger('clickgen:template')
     abs_dir = os.path.abspath(dir)
     cursor_file_out_path = os.path.join(abs_dir, 'cursor.theme')
     index_file_out_path = os.path.join(abs_dir, 'index.theme')
