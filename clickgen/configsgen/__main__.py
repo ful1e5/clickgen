@@ -84,9 +84,14 @@ def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: C
     return (Rx, Ry)
 
 
-def write_xcur(config_file_path: str, content: list) -> None:
+def write_xcur(config_file_path: str, content: StringList) -> None:
+
+    # sort line, So all lines in order according to size (24x24, 28x28, ..)
     content.sort()
+
+    # remove newline end of file `xcursorgen` generate error
     content[-1] = content[-1].rstrip("\n")
+
     with open(config_file_path, "w") as config_file:
         for line in content:
             config_file.write(line)
@@ -94,12 +99,13 @@ def write_xcur(config_file_path: str, content: list) -> None:
 
 
 def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> None:
-    list = get_cursor_list(imgs_dir)
+    list: StringList = get_cursor_list(imgs_dir)
     for cursor in list:
 
-        config_file_path = os.path.join(
+        config_file_path: Path = os.path.join(
             imgs_dir, cursor.replace(".png", ".in"))
-        content = []
+
+        content: StringList = []
 
         # setting Hotspots from JSON data
         # set to `None` if not have JSON data or `key` not in JSON
@@ -108,8 +114,8 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
 
         try:
             hotspot = hotspots[cursor_name]
-            xhot = hotspot['xhot']
-            yhot = hotspot['yhot']
+            xhot: int = hotspot['xhot']
+            yhot: int = hotspot['yhot']
             coordinate = (xhot, yhot)
         except TypeError:
             xhot = None
@@ -119,8 +125,8 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
             resized_xhot, resized_yhot = resize_cursor(
                 cursor, size, imgs_dir, coordinate)
 
-            print('%sx%s %s hotspots set to (%s,%s)' %
-                  (size, size, cursor_name, resized_xhot, resized_yhot))
+            logger.info('%sx%s %s hotspots set to (%s,%s)' %
+                        (size, size, cursor_name, resized_xhot, resized_yhot))
 
             line = "%s %s %s %sx%s/%s\n" % (size,
                                             resized_xhot, resized_yhot, size, size, cursor)
@@ -129,12 +135,13 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
 
 
 def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
-    list = get_cursor_list(imgs_dir, animated=True)
-    delay = 20
+    list: StringList = get_cursor_list(imgs_dir, animated=True)
+    delay: int = 20
     for group in list:
         group_name = str(group[0]).split("-")[0]
-        config_file_path = os.path.join(imgs_dir, group_name + ".in")
-        content = []
+        config_file_path: Path = os.path.join(imgs_dir, group_name + ".in")
+
+        content: StringList = []
 
         # setting Hotspots from JSON data
         # set to `None` if not have JSON data or `key` not in JSON
@@ -154,8 +161,8 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
                 resized_xhot, resized_yhot = resize_cursor(
                     cursor, size, imgs_dir, coordinate)
 
-                print('%sx%s %s hotspots set to (%s,%s)' %
-                      (size, size, group_name, resized_xhot, resized_yhot))
+                logger.info('%sx%s %s hotspots set to (%s,%s)' %
+                            (size, size, group_name, resized_xhot, resized_yhot))
 
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
                                                    resized_xhot, resized_yhot, size, size, cursor, delay)
