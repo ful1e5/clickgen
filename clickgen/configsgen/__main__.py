@@ -5,7 +5,7 @@ import os
 import itertools
 from PIL import Image
 
-from ..types import Path, IntegerList, StringList, IntegerTuple
+from ..types import Path, IntegerList, StringList, IntegerTuple, CoordinateTuple
 
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
@@ -29,7 +29,7 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     return cursor_list
 
 
-def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, xhot: int, yhot: int) -> IntegerTuple:
+def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: CoordinateTuple) -> IntegerTuple:
     # helper variables
     in_path = imgs_dir + "/" + cursor
     out_dir = imgs_dir + "/%sx%s/" % (size, size)
@@ -69,10 +69,11 @@ def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, xhot: int, yho
     thumb.save(out_path)
 
     #  finding new X & Y coordinates
-    if xhot == None or yhot == None:
+    if coordinates is None:
         Rx = int(width / 2)
         Ry = int(height / 2)
     else:
+        (xhot, yhot) = coordinates
         Rx = round(size / width * xhot)
         Ry = round(size / height * yhot)
 
@@ -99,17 +100,20 @@ def generate_static_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any) -> 
         # setting Hotspots from JSON data
         # set to `None` if not have JSON data or `key` not in JSON
         cursor_name = cursor.split('.')[0]
+        coordinate: CoordinateTuple = None
+
         try:
             hotspot = hotspots[cursor_name]
             xhot = hotspot['xhot']
             yhot = hotspot['yhot']
+            coordinate = (xhot, yhot)
         except TypeError:
             xhot = None
             yhot = None
 
         for size in sizes:
             resized_xhot, resized_yhot = resize_cursor(
-                cursor, size, imgs_dir, xhot=xhot, yhot=yhot)
+                cursor, size, imgs_dir, coordinate)
             print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
                   (cursor_name, xhot, yhot, resized_xhot, resized_yhot))
             line = "%s %s %s %sx%s/%s\n" % (size,
@@ -128,10 +132,13 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
 
         # setting Hotspots from JSON data
         # set to `None` if not have JSON data or `key` not in JSON
+        coordinate: CoordinateTuple = None
+
         try:
             hotspot = hotspots[group_name]
             xhot = hotspot['xhot']
             yhot = hotspot['yhot']
+            coordinate = (xhot, yhot)
         except TypeError:
             xhot = None
             yhot = None
@@ -139,7 +146,7 @@ def generate_animated_cursor(imgs_dir: str, sizes: IntegerList, hotspots: any):
         for cursor in group:
             for size in sizes:
                 resized_xhot, resized_yhot = resize_cursor(
-                    cursor, size, imgs_dir, xhot=xhot, yhot=yhot)
+                    cursor, size, imgs_dir, coordinate)
                 print('%s hotspots resized %s(x) %s(y) to %s(x) %s(y)' %
                       (group_name, xhot, yhot, resized_xhot, resized_yhot))
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
