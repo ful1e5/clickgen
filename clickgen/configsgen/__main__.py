@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+# TODO: Tests
+
 import os
 import itertools
 from PIL import Image

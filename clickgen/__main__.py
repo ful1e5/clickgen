@@ -189,3 +189,8 @@ def main(name: str,
     if (archive):
         shutil.make_archive(out, archive_format, out)
         shutil.rmtree(out)
+
+
+# TODO: Test and body
+def build_cursor_theme():
+    pass
