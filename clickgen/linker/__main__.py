@@ -8,11 +8,11 @@ import json
 import os
 
 from ..helpers import cd, get_logger, symlink
-from ..types import Path, StringList
+from ..types import Path, StringList, Logger
 
 basedir: Path = os.path.abspath(os.path.dirname(__file__))
 data_file: Path = os.path.join(basedir, 'data.json')
-logger: Path = get_logger('clickgen:linker')
+logger: Logger = get_logger('clickgen:linker')
 
 
 def match_to_directory(name: str, directory: StringList) -> str:
