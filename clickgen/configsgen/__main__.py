@@ -75,8 +75,7 @@ def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: C
 
     #  finding new X & Y coordinates
     if coordinates is None:
-        Rx = int(width / 2)
-        Ry = int(height / 2)
+        Rx = Ry = int(size / 2)
     else:
         (xhot, yhot) = coordinates
         Rx = round(size / width * xhot)
