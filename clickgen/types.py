@@ -9,7 +9,7 @@ Path = Union[str, pathlib.Path]
 
 StringList = List[str]
 
-
 IntegerList = List[int]
 
 IntegerTuple = Tuple[int, int]
+CoordinateTuple = Union[Tuple[int, int], None]
