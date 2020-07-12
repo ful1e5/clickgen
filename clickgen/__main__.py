@@ -11,10 +11,11 @@ from .linker import link_cursors
 from .template import create_x11_template
 from .win import main as win_gen
 from .x11 import main as x11_gen
+from .configsgen.__main__ import main as configsgen
 
 from .helpers import TemporaryDirectory, create_dir, get_logger
 
-from .types import Path
+from .types import Path, IntegerList
 
 # config variables
 config_ext = ('*.in', '*.ini')
@@ -192,5 +193,7 @@ def main(name: str,
 
 
 # TODO: Test and body
-def build_cursor_theme(image_dir: Path, hotspots: any):
-    print(image_dir, hotspots)
+def build_cursor_theme(image_dir: Path, cursor_sizes: IntegerList, hotspots: any):
+
+    # generate configs
+    configsgen(image_dir, cursor_sizes, hotspots)
