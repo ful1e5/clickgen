@@ -192,5 +192,5 @@ def main(name: str,
 
 
 # TODO: Test and body
-def build_cursor_theme():
-    pass
+def build_cursor_theme(image_dir: Path, hotspots: any):
+    print(image_dir, hotspots)
