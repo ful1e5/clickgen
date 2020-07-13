@@ -29,11 +29,11 @@ def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
 
 
 # TODO: Tests
-def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd()):
+def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False):
 
     # generate configs
     configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
 
     # build package
     main(name=name, config_dir=configs, out_path=out_path,
-         x11=True, win=True, archive=True, logs=True)
+         x11=True, win=True, archive=archive, logs=True)
