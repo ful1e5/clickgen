@@ -192,7 +192,7 @@ def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path
 
     generate_static_cursor(imgs_dir, sizes=cursor_sizes,
                            hotspots=hotspots, out_dir=out_dir)
-    # generate_animated_cursor(imgs_dir, sizes=cursor_sizes,
-    #                          hotspots=hotspots, out_dir=out_dir)
+    generate_animated_cursor(imgs_dir, sizes=cursor_sizes,
+                             hotspots=hotspots, out_dir=out_dir)
 
     return (os.path.abspath(out_dir))
