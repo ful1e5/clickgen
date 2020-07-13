@@ -10,8 +10,12 @@ from PIL import Image
 from ..helpers import get_logger
 from ..types import Path, IntegerList, StringList, IntegerTuple, CoordinateTuple, Logger
 
+
 # Logger
 logger: Logger = get_logger('clickgen:configsgen')
+
+# Default configs path is <working_dir>/configs/
+DEFAULT_CONFIGS_PATH = os.path.join(os.getcwd(), 'configs')
 
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
@@ -36,11 +40,12 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     return cursor_list
 
 
-def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: CoordinateTuple) -> IntegerTuple:
+def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: CoordinateTuple, out_dir: Path = DEFAULT_CONFIGS_PATH) -> IntegerTuple:
+
     # helper variables
-    in_path = imgs_dir + "/" + cursor
-    out_dir = imgs_dir + "/%sx%s/" % (size, size)
-    out_path = out_dir + cursor
+    in_path = os.path.join(imgs_dir, cursor)
+    out_dir = os.path.join(out_dir, '%sx%s' % (size, size))
+    out_path = os.path.join(out_dir, cursor)
 
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -99,13 +104,13 @@ def write_xcur(config_file_path: Path, content: StringList) -> None:
         config_file.close()
 
 
-def generate_static_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any) -> None:
+def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any) -> None:
     list: StringList = get_cursor_list(imgs_dir)
 
     for cursor in list:
 
         config_file_path: Path = os.path.join(
-            imgs_dir, cursor.replace(".png", ".in"))
+            out_dir, cursor.replace(".png", ".in"))
 
         content: StringList = []
 
@@ -125,7 +130,7 @@ def generate_static_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any) ->
 
         for size in sizes:
             resized_xhot, resized_yhot = resize_cursor(
-                cursor, size, imgs_dir, coordinate)
+                cursor, size, imgs_dir, coordinate, out_dir=out_dir)
 
             logger.info('%sx%s %s hotspots set to (%s,%s)' %
                         (size, size, cursor_name, resized_xhot, resized_yhot))
@@ -137,13 +142,13 @@ def generate_static_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any) ->
         write_xcur(config_file_path, content)
 
 
-def generate_animated_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any):
+def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any):
     list: StringList = get_cursor_list(imgs_dir, animated=True)
     delay: int = 20
 
     for group in list:
         group_name = str(group[0]).split("-")[0]
-        config_file_path: Path = os.path.join(imgs_dir, group_name + ".in")
+        config_file_path: Path = os.path.join(out_dir, group_name + ".in")
 
         content: StringList = []
 
@@ -163,7 +168,7 @@ def generate_animated_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any):
         for cursor in group:
             for size in sizes:
                 resized_xhot, resized_yhot = resize_cursor(
-                    cursor, size, imgs_dir, coordinate)
+                    cursor, size, imgs_dir, coordinate, out_dir=out_dir)
 
                 logger.info('%sx%s %s hotspots set to (%s,%s)' %
                             (size, size, group_name, resized_xhot, resized_yhot))
@@ -175,14 +180,19 @@ def generate_animated_cursor(imgs_dir: Path, sizes: IntegerList, hotspots: any):
         write_xcur(config_file_path, content)
 
 
-def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any) -> Path:
+def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path = DEFAULT_CONFIGS_PATH) -> Path:
     """
         Generate Configs files.
         hotspots is JSON data for each cursor having xhot & yhot parameters.
         Provide `None` value set hotspots to middle of cursor.
         hotspots is default set to `None`
     """
-    generate_static_cursor(imgs_dir, sizes=cursor_sizes, hotspots=hotspots)
-    generate_animated_cursor(imgs_dir, sizes=cursor_sizes, hotspots=hotspots)
 
-    return (os.path.abspath(imgs_dir))
+    logger.info('configs are writen to %s' % out_dir)
+
+    generate_static_cursor(imgs_dir, sizes=cursor_sizes,
+                           hotspots=hotspots, out_dir=out_dir)
+    # generate_animated_cursor(imgs_dir, sizes=cursor_sizes,
+    #                          hotspots=hotspots, out_dir=out_dir)
+
+    return (os.path.abspath(out_dir))
