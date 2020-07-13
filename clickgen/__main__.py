@@ -192,8 +192,30 @@ def main(name: str,
         shutil.rmtree(out)
 
 
-# TODO: Test and body
-def build_cursor_theme(image_dir: Path, cursor_sizes: IntegerList, hotspots: any):
+# TODO: Tests
+def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, archive: bool = False, out_path: Path = os.getcwd(), logs: bool = False):
 
     # generate configs
-    configsgen(image_dir, cursor_sizes, hotspots)
+    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
+
+    main(name=name, config_dir=configs, out_path=out_path,
+         x11=False, win=True, logs=logs)
+
+
+# TODO: Tests
+def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, archive: bool = False, out_path: Path = os.getcwd(), logs: bool = False):
+
+    # generate configs
+    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
+
+    main(name=name, config_dir=configs, out_path=out_path,
+         x11=True, win=False, logs=logs)
+
+
+# TODO: Tests
+def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None):
+
+    # generate configs
+    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
+
+    # build package
