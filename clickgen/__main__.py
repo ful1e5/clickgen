@@ -15,7 +15,7 @@ from .configsgen.__main__ import main as configsgen
 
 from .helpers import TemporaryDirectory, create_dir, get_logger
 
-from .types import Path, IntegerList
+from .types import Path
 
 # config variables
 config_ext = ('*.in', '*.ini')
@@ -190,34 +190,3 @@ def main(name: str,
     if (archive):
         shutil.make_archive(out, archive_format, out)
         shutil.rmtree(out)
-
-
-# TODO: Tests
-def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, archive: bool = False, out_path: Path = os.getcwd(), logs: bool = False):
-
-    # generate configs
-    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
-
-    main(name=name, config_dir=configs, out_path=out_path,
-         x11=False, win=True, logs=logs)
-
-
-# TODO: Tests
-def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, archive: bool = False, out_path: Path = os.getcwd(), logs: bool = False):
-
-    # generate configs
-    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
-
-    main(name=name, config_dir=configs, out_path=out_path,
-         x11=True, win=False, logs=logs)
-
-
-# TODO: Tests
-def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, archive: bool = False, out_path: Path = os.getcwd(), logs: bool = False):
-
-    # generate configs
-    configs: Path = configsgen(image_dir, cursor_sizes, hotspots)
-
-    # build package
-    main(name=name, config_dir=configs, out_path=out_path,
-         x11=True, win=True, archive=archive, logs=logs)
