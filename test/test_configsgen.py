@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
+
 import unittest
 import tempfile
 import shutil
+import logging
 import os
 from PIL import Image
 
@@ -14,6 +16,7 @@ class TestConfigsgen(unittest.TestCase):
 
     # setup
     def setUp(self):
+        logging.disable(logging.CRITICAL)
 
         self.temp_dir = tempfile.mkdtemp()
 
@@ -35,6 +38,7 @@ class TestConfigsgen(unittest.TestCase):
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+        logging.disable(logging.NOTSET)
 
     # helpers
     def assert_file_is_valid(self, path: str):
