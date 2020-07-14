@@ -14,7 +14,10 @@ class TestConfigsgen(unittest.TestCase):
 
     # setup
     def setUp(self):
+
         self.temp_dir = tempfile.mkdtemp()
+
+        # for test_resize_image
         self.mock_cursor = 'mock_static.png'
         self.mock_size = 100
         self.mock_coordinates = (47, 25)
@@ -22,8 +25,18 @@ class TestConfigsgen(unittest.TestCase):
         self.resulted_resize_image_path = os.path.join(
             self.temp_dir, '%sx%s' % (self.mock_size, self.mock_size), self.mock_cursor)
 
+        # for test_write_xcur
+        self.mock_config_write_path = os.path.join(self.temp_dir, 'foo.in')
+        self.mock_config_content = ['foo\n', 'bar\n', 'zoo\n']
+
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
+
+    # helpers
+    def assert_file_is_valid(self, path: str):
+        # test resized images exists or not
+        self.assertTrue(os.path.isfile(path))
+        self.assertGreater(os.path.getsize(path), 0)
 
     # tests
     def test_get_cursor_list(self):
@@ -48,8 +61,7 @@ class TestConfigsgen(unittest.TestCase):
         self.assertTupleEqual(result_coordinates_tuple, (24, 12))
 
         # test resized images exists or not
-        self.assertTrue(os.path.isfile(self.resulted_resize_image_path))
-        self.assertGreater(os.path.getsize(self.resulted_resize_image_path), 0)
+        self.assert_file_is_valid(self.resulted_resize_image_path)
 
         # test resized image dimensions & type as `.png`
         mock_resize_image_instace = Image.open(self.resulted_resize_image_path)
@@ -61,6 +73,8 @@ class TestConfigsgen(unittest.TestCase):
         mock_resize_image_instace.close()
 
     def test_write_xcur(self):
+        configsgen.write_xcur(
+            config_file_path=self.mock_config_write_path, content=self.mock_config_content)
 
         pass
 
