@@ -108,7 +108,6 @@ class TestMain(unittest.TestCase):
 
     def test_x11_dir_struc(self):
         # testing x11 with directory
-        print('\n🧪 Testing x11 directory Structure')
         clickgen.main(name=self.mock_name,
                       config_dir=self.mock_config_path,
                       out_path=self.mock_out_path,
@@ -118,7 +117,6 @@ class TestMain(unittest.TestCase):
 
     def test_win_dir_struc(self):
         # testing win with directory
-        print('\n🧪 Testing win directory Structure')
         clickgen.main(name=self.mock_name,
                       config_dir=self.mock_config_path,
                       out_path=self.mock_out_path,
@@ -127,7 +125,6 @@ class TestMain(unittest.TestCase):
         self.assert_win_dir()
 
     def test_dir_struc(self):
-        print('\n🧪 Testing all directory Structure')
         clickgen.main(name=self.mock_name,
                       config_dir=self.mock_config_path,
                       out_path=self.mock_out_path,
@@ -138,8 +135,6 @@ class TestMain(unittest.TestCase):
         self.assert_x11_dir()
 
     def test_archive(self):
-
-        print('\n🧪 Testing archive')
         clickgen.main(name=self.mock_name,
                       config_dir=self.mock_config_path,
                       out_path=self.mock_out_path,
