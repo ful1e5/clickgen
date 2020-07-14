@@ -26,7 +26,7 @@ class TestConfigsgen(unittest.TestCase):
             self.temp_dir, '%sx%s' % (self.mock_size, self.mock_size), self.mock_cursor)
 
         # for test_write_xcur
-        self.mock_config_write_path = os.path.join(self.temp_dir, 'foo.in')
+        self.mock_config_path = os.path.join(self.temp_dir, 'foo.in')
         self.mock_config_content = ['foo\n', 'bar\n', 'zoo\n']
 
     def tearDown(self):
@@ -73,9 +73,9 @@ class TestConfigsgen(unittest.TestCase):
 
     def test_write_xcur(self):
         configsgen.write_xcur(
-            config_file_path=self.mock_config_write_path, content=self.mock_config_content)
+            config_file_path=self.mock_config_path, content=self.mock_config_content)
 
-        pass
+        self.assert_file_is_valid(self.mock_config_path)
 
 
 if __name__ == '__main__':
