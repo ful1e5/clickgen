@@ -53,11 +53,20 @@ class TestConfigsgen(unittest.TestCase):
             'mock_animated_2-01.png', 'mock_animated_2-02.png']])
 
     def test_resize_cursor(self):
+        # 🧪 TEST FOR COORDINATORS
         result_coordinates_tuple = configsgen.resize_cursor(
             cursor=self.mock_cursor, size=self.mock_size, imgs_dir=self.mock_images_path, coordinates=self.mock_coordinates, out_dir=self.temp_dir)
 
         # testing coordinates result
         self.assertTupleEqual(result_coordinates_tuple, (24, 12))
+
+        # 🧪 TEST FOR `NONE` COORDINATORS
+        result_coordinates_tuple = configsgen.resize_cursor(
+            cursor=self.mock_cursor, size=self.mock_size, imgs_dir=self.mock_images_path, coordinates=None, out_dir=self.temp_dir)
+
+        # testing coordinates result
+        self.assertTupleEqual(result_coordinates_tuple,
+                              (self.mock_size / 2, self.mock_size / 2))
 
         # test resized images exists or not
         self.assert_file_is_valid(self.resulted_resize_image_path)
