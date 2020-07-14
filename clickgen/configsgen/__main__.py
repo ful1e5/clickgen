@@ -129,8 +129,7 @@ def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, ho
             yhot: int = hotspot['yhot']
             coordinate = (xhot, yhot)
         except TypeError:
-            xhot = None
-            yhot = None
+            coordinate = None
 
         for size in sizes:
             resized_xhot, resized_yhot = resize_cursor(
@@ -166,8 +165,7 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
             yhot = hotspot['yhot']
             coordinate = (xhot, yhot)
         except TypeError:
-            xhot = None
-            yhot = None
+            coordinate = None
 
         for cursor in group:
             for size in sizes:
