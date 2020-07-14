@@ -15,3 +15,10 @@ class TestConfigsgen(unittest.TestCase):
             imgs_dir=assets.get_mock_images_path(), animated=False)
 
         self.assertEqual(mock_static_list, ['mock_static.png'])
+
+        # testing animated images list
+        mock_animated_list = configsgen.get_cursor_list(
+            imgs_dir=assets.get_mock_images_path(), animated=True)
+
+        self.assertEqual(mock_animated_list, [['mock_animated_1-01.png', 'mock_animated_1-02.png'], [
+            'mock_animated_2-01.png', 'mock_animated_2-02.png']])
