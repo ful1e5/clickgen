@@ -18,3 +18,7 @@ def get_animated_mock_config_path() -> str:
 
 def get_mock_images_path() -> str:
     return os.path.join(basedir, 'images')
+
+
+def get_mock_image() -> str:
+    return os.path.join(basedir, 'images', 'mock_static.png')
