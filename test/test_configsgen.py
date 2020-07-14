@@ -60,6 +60,10 @@ class TestConfigsgen(unittest.TestCase):
 
         mock_resize_image_instace.close()
 
+    def test_write_xcur(self):
+
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
