@@ -34,7 +34,6 @@ class TestConfigsgen(unittest.TestCase):
 
     # helpers
     def assert_file_is_valid(self, path: str):
-        # test resized images exists or not
         self.assertTrue(os.path.isfile(path))
         self.assertGreater(os.path.getsize(path), 0)
 
