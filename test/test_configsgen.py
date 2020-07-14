@@ -13,7 +13,10 @@ class TestConfigsgen(unittest.TestCase):
     # setup
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
-        self.mock_images_path = assets.get_mock_image()
+        self.mock_cursor = 'mock_static.png'
+        self.mock_size = 100
+        self.mock_coordinates = (47, 25)
+        self.mock_images_path = assets.get_mock_images_path()
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -34,7 +37,10 @@ class TestConfigsgen(unittest.TestCase):
             'mock_animated_2-01.png', 'mock_animated_2-02.png']])
 
     def test_resize_cursor(self):
-        pass
+        result_coordinates_tuple = configsgen.resize_cursor(
+            cursor=self.mock_cursor, size=self.mock_size, imgs_dir=self.mock_images_path, coordinates=self.mock_coordinates, out_dir=self.temp_dir)
+
+        self.assertTupleEqual(result_coordinates_tuple, (24, 12))
 
 
 if __name__ == '__main__':
