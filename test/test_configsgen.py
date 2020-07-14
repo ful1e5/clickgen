@@ -13,6 +13,7 @@ class TestConfigsgen(unittest.TestCase):
     # setup
     def setUp(self):
         self.temp_dir = tempfile.mkdtemp()
+        self.mock_images_path = assets.get_mock_image()
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
