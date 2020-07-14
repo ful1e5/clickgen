@@ -80,6 +80,10 @@ def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: Coordinat
     # save resized image
     thumb.save(out_path)
 
+    # closing PIL.Image instances
+    image.close()
+    thumb.close()
+
     #  finding new X & Y coordinates
     if coordinates is None:
         Rx = Ry = int(size / 2)
