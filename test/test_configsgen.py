@@ -31,3 +31,6 @@ class TestConfigsgen(unittest.TestCase):
 
         self.assertEqual(mock_animated_list, [['mock_animated_1-01.png', 'mock_animated_1-02.png'], [
             'mock_animated_2-01.png', 'mock_animated_2-02.png']])
+
+    def test_resize_cursor(self):
+        pass
