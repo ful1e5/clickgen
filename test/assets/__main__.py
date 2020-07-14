@@ -14,3 +14,7 @@ def get_static_mock_config_path() -> str:
 
 def get_animated_mock_config_path() -> str:
     return os.path.join(mock_config_path, 'mock_animated.in')
+
+
+def get_mock_images_path() -> str:
+    return os.path.join(basedir, 'images')
