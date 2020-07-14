@@ -100,8 +100,19 @@ class TestConfigsgen(unittest.TestCase):
             self.assertListEqual(mock_content, ['bar\n', 'foo\n', 'zoo'])
 
     def test_generate_static_cursor(self):
+        # test with `None` Hotspots
         configsgen.generate_static_cursor(
             imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=None)
+
+        # testing generated sized directory structure
+        for size in self.mock_sizes:
+            # have size direcory
+            size_dir = '%sx%s' % (size, size)
+            self.assertIn(size_dir, os.listdir(self.temp_dir))
+
+        # test with `Mock` Hotspots
+        configsgen.generate_static_cursor(
+            imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=self.mock_hotspots)
 
 
 if __name__ == '__main__':
