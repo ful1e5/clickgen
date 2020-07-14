@@ -4,6 +4,7 @@ import unittest
 import tempfile
 import shutil
 import os
+from PIL import Image
 
 from . import assets
 from clickgen import configsgen
@@ -49,6 +50,15 @@ class TestConfigsgen(unittest.TestCase):
         # test resized images exists or not
         self.assertTrue(os.path.isfile(self.resulted_resize_image_path))
         self.assertGreater(os.path.getsize(self.resulted_resize_image_path), 0)
+
+        # test resized image dimensions & type as `.png`
+        mock_resize_image_instace = Image.open(self.resulted_resize_image_path)
+
+        self.assertTupleEqual(mock_resize_image_instace.size,
+                              (self.mock_size, self.mock_size))
+        self.assertEqual(mock_resize_image_instace.mode, 'RGBA')
+
+        mock_resize_image_instace.close()
 
 
 if __name__ == '__main__':
