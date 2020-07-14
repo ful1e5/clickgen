@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import os
+import json
 
 basedir = os.path.dirname(__file__)
 mock_config_path = os.path.join(basedir, 'configs')
@@ -26,3 +27,8 @@ def get_mock_image() -> str:
 
 def get_mock_images_list() -> [str]:
     return os.listdir(os.path.join(basedir, 'images'))
+
+
+def get_mock_hotspots() -> any:
+    with open(os.path.join(basedir, 'hotspots.json')) as hotspots_file:
+        return json.loads(hotspots_file.read())
