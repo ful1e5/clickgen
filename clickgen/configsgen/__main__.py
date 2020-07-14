@@ -40,7 +40,7 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     return cursor_list
 
 
-def resize_cursor(cursor: str, size: IntegerList, imgs_dir: Path, coordinates: CoordinateTuple, out_dir: Path = DEFAULT_CONFIGS_PATH) -> IntegerTuple:
+def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: CoordinateTuple, out_dir: Path = DEFAULT_CONFIGS_PATH) -> IntegerTuple:
 
     # helper variables
     in_path = os.path.join(imgs_dir, cursor)
