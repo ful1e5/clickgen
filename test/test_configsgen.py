@@ -77,6 +77,11 @@ class TestConfigsgen(unittest.TestCase):
 
         self.assert_file_is_valid(self.mock_config_path)
 
+        # testing config file content are sorted & '\n' trimdown from a last line
+        with open(self.mock_config_path, 'r') as mock_config:
+            mock_content = mock_config.readlines()
+            self.assertListEqual(mock_content, ['bar\n', 'foo\n', 'zoo'])
+
 
 if __name__ == '__main__':
     unittest.main()
