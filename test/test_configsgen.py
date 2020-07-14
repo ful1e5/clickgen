@@ -29,6 +29,10 @@ class TestConfigsgen(unittest.TestCase):
         self.mock_config_path = os.path.join(self.temp_dir, 'foo.in')
         self.mock_config_content = ['foo\n', 'bar\n', 'zoo\n']
 
+        # for test_generate_static_cursor
+        self.mock_sizes = [50, 28]
+        self.mock_hotspots = assets.get_mock_hotspots()
+
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
 
@@ -92,7 +96,8 @@ class TestConfigsgen(unittest.TestCase):
             self.assertListEqual(mock_content, ['bar\n', 'foo\n', 'zoo'])
 
     def test_generate_static_cursor(self):
-        pass
+        configsgen.generate_static_cursor(
+            imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=None)
 
 
 if __name__ == '__main__':
