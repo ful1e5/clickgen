@@ -60,7 +60,7 @@ jobs:
         continue-on-error: false
 
       - name: Testing
-        run: python -m unittest
+        run: python -m unittest -b
 
       - uses: actions/upload-artifact@master
         if: success()

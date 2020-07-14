@@ -34,7 +34,7 @@ jobs:
         continue-on-error: false
 
       - name: Testing
-        run: python -m unittest
+        run: python -m unittest -b
         continue-on-error: false
 
       - name: Push to Docker Hub
