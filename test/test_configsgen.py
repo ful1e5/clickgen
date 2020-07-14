@@ -91,6 +91,9 @@ class TestConfigsgen(unittest.TestCase):
             mock_content = mock_config.readlines()
             self.assertListEqual(mock_content, ['bar\n', 'foo\n', 'zoo'])
 
+    def test_generate_static_cursor(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
