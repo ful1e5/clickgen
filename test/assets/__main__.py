@@ -22,3 +22,7 @@ def get_mock_images_path() -> str:
 
 def get_mock_image() -> str:
     return os.path.join(basedir, 'images', 'mock_static.png')
+
+
+def get_mock_images_list() -> [str]:
+    return os.listdir(os.path.join(basedir, 'images'))
