@@ -3,6 +3,7 @@
 import unittest
 import tempfile
 import shutil
+import os
 
 from . import assets
 from clickgen import configsgen
@@ -17,6 +18,8 @@ class TestConfigsgen(unittest.TestCase):
         self.mock_size = 100
         self.mock_coordinates = (47, 25)
         self.mock_images_path = assets.get_mock_images_path()
+        self.resulted_resize_image_path = os.path.join(
+            self.temp_dir, '%sx%s' % (self.mock_size, self.mock_size), self.mock_cursor)
 
     def tearDown(self):
         shutil.rmtree(self.temp_dir)
@@ -40,7 +43,12 @@ class TestConfigsgen(unittest.TestCase):
         result_coordinates_tuple = configsgen.resize_cursor(
             cursor=self.mock_cursor, size=self.mock_size, imgs_dir=self.mock_images_path, coordinates=self.mock_coordinates, out_dir=self.temp_dir)
 
+        # testing coordinates result
         self.assertTupleEqual(result_coordinates_tuple, (24, 12))
+
+        # test resized images exists or not
+        self.assertTrue(os.path.isfile(self.resulted_resize_image_path))
+        self.assertGreater(os.path.getsize(self.resulted_resize_image_path), 0)
 
 
 if __name__ == '__main__':
