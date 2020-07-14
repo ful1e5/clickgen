@@ -1,12 +1,21 @@
 #!/usr/bin/env python
 # encoding: utf-8
 import unittest
+import tempfile
+import shutil
 
 from . import assets
 from clickgen import configsgen
 
 
 class TestConfigsgen(unittest.TestCase):
+
+    # setup
+    def setUp(self):
+        self.temp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.temp_dir)
 
     # tests
     def test_get_cursor_list(self):
