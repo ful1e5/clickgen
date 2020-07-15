@@ -17,6 +17,9 @@ logger: Logger = get_logger('clickgen:configsgen')
 # Default configs path is <working_dir>/configs/
 DEFAULT_CONFIGS_PATH = os.path.join(os.getcwd(), 'configs')
 
+# SET DELAY OF ANIMATED FRAMES IN CONFIG FILE
+DELAY = 20
+
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     all_curosr_list, cursor_list = [], []
@@ -145,9 +148,8 @@ def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, ho
         write_xcur(config_file_path, content)
 
 
-def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any):
+def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any, delay: int = DELAY):
     list: StringList = get_cursor_list(imgs_dir, animated=True)
-    delay: int = 20
 
     for group in list:
         group_name = str(group[0]).split("-")[0]
