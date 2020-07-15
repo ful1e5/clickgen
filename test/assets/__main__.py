@@ -24,7 +24,7 @@ def get_mock_animated_images_list() -> [str]:
         if '-' in image:
             animated_list.append(image)
 
-    return animated_list
+    return sorted(animated_list)
 
 
 def get_mock_static_images_list() -> [str]:
