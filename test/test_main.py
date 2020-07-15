@@ -83,26 +83,26 @@ class TestMain(unittest.TestCase):
         # testing config file with aimation
         self.assertTrue(
             clickgen.is_animated(
-                config=assets.get_animated_mock_config_path()))
+                config=assets.animated_mock_config_path))
 
         # testing config file without aimation
         self.assertFalse(
-            clickgen.is_animated(config=assets.get_static_mock_config_path()))
+            clickgen.is_animated(config=assets.static_mock_config_path))
 
     def test_get_cur_name(self):
         # window extensions
-        self.assert_cur_name(config=assets.get_animated_mock_config_path(),
+        self.assert_cur_name(config=assets.animated_mock_config_path,
                              type='win',
                              expect_ext='mock_animated.ani')
-        self.assert_cur_name(config=assets.get_static_mock_config_path(),
+        self.assert_cur_name(config=assets.static_mock_config_path,
                              type='win',
                              expect_ext='mock_static.cur')
 
         # x11 extensions
-        self.assert_cur_name(config=assets.get_animated_mock_config_path(),
+        self.assert_cur_name(config=assets.animated_mock_config_path,
                              type='x11',
                              expect_ext='mock_animated')
-        self.assert_cur_name(config=assets.get_static_mock_config_path(),
+        self.assert_cur_name(config=assets.static_mock_config_path,
                              type='x11',
                              expect_ext='mock_static')
 

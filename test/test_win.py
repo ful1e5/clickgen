@@ -31,13 +31,13 @@ class TestWinBuilder(unittest.TestCase):
     # TODO: More to test here
     def test_main(self):
         # testing static cursor
-        win.main(input_config=assets.get_static_mock_config_path(),
+        win.main(input_config=assets.static_mock_config_path,
                  output_file=self.mock_static_out,
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_static_out)
 
         # testing animated cursor
-        win.main(input_config=assets.get_animated_mock_config_path(),
+        win.main(input_config=assets.animated_mock_config_path,
                  output_file=self.mock_animated_out,
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_animated_out)

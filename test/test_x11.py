@@ -41,13 +41,13 @@ class TestX11Builder(unittest.TestCase):
 
     def test_main(self):
         # testing static cursor
-        x11.main(input_config=assets.get_static_mock_config_path(),
+        x11.main(input_config=assets.static_mock_config_path,
                  output_file=self.mock_static_out,
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_static_out)
 
         # testing animated cursor
-        x11.main(input_config=assets.get_animated_mock_config_path(),
+        x11.main(input_config=assets.animated_mock_config_path,
                  output_file=self.mock_animated_out,
                  prefix=self.mock_prefix)
         self.assert_cursor_size(self.mock_animated_out)
