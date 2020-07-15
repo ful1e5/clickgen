@@ -185,7 +185,7 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
         write_xcur(config_file_path, content)
 
 
-def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path = DEFAULT_CONFIGS_PATH) -> Path:
+def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path = DEFAULT_CONFIGS_PATH, delay: int = DELAY) -> Path:
     """
         Generate Configs files.
         hotspots is JSON data for each cursor having xhot & yhot parameters.
@@ -198,6 +198,6 @@ def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path
     generate_static_cursor(imgs_dir, sizes=cursor_sizes,
                            hotspots=hotspots, out_dir=out_dir)
     generate_animated_cursor(imgs_dir, sizes=cursor_sizes,
-                             hotspots=hotspots, out_dir=out_dir)
+                             hotspots=hotspots, out_dir=out_dir, delay=delay)
 
     return (os.path.abspath(out_dir))
