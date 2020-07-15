@@ -45,6 +45,15 @@ class TestConfigsgen(unittest.TestCase):
         self.assertTrue(os.path.isfile(path))
         self.assertGreater(os.path.getsize(path), 0)
 
+    def assert_image_size(self, img_path: str, size: int):
+        mock_resize_image_instace = Image.open(img_path)
+
+        self.assertTupleEqual(mock_resize_image_instace.size,
+                              (size, size))
+        self.assertEqual(mock_resize_image_instace.mode, 'RGBA')
+
+        mock_resize_image_instace.close()
+
     # tests
     def test_get_cursor_list(self):
         # testing static images list
@@ -80,13 +89,8 @@ class TestConfigsgen(unittest.TestCase):
         self.assert_file_is_valid(self.resulted_resize_image_path)
 
         # test resized image dimensions & type as `.png`
-        mock_resize_image_instace = Image.open(self.resulted_resize_image_path)
-
-        self.assertTupleEqual(mock_resize_image_instace.size,
-                              (self.mock_size, self.mock_size))
-        self.assertEqual(mock_resize_image_instace.mode, 'RGBA')
-
-        mock_resize_image_instace.close()
+        self.assert_image_size(
+            img_path=self.resulted_resize_image_path, size=self.mock_size)
 
     def test_write_xcur(self):
         configsgen.write_xcur(
