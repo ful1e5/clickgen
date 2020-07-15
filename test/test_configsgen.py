@@ -5,6 +5,7 @@ import unittest
 import tempfile
 import shutil
 import logging
+import filecmp
 import os
 from PIL import Image
 
@@ -24,7 +25,7 @@ class TestConfigsgen(unittest.TestCase):
         self.mock_cursor = 'mock_static.png'
         self.mock_size = 100
         self.mock_coordinates = (47, 25)
-        self.mock_images_path = assets.get_mock_images_path()
+        self.mock_images_path = assets.mock_images_path
         self.resulted_resize_image_path = os.path.join(
             self.temp_dir, '%sx%s' % (self.mock_size, self.mock_size), self.mock_cursor)
 
@@ -58,13 +59,13 @@ class TestConfigsgen(unittest.TestCase):
     def test_get_cursor_list(self):
         # testing static images list
         mock_static_list = configsgen.get_cursor_list(
-            imgs_dir=assets.get_mock_images_path(), animated=False)
+            imgs_dir=assets.mock_images_path, animated=False)
 
         self.assertEqual(mock_static_list, ['mock_static.png'])
 
         # testing animated images list
         mock_animated_list = configsgen.get_cursor_list(
-            imgs_dir=assets.get_mock_images_path(), animated=True)
+            imgs_dir=assets.mock_images_path, animated=True)
 
         self.assertEqual(mock_animated_list, [['mock_animated_1-01.png', 'mock_animated_1-02.png'], [
             'mock_animated_2-01.png', 'mock_animated_2-02.png']])
@@ -119,17 +120,22 @@ class TestConfigsgen(unittest.TestCase):
             images_list: [str] = assets.get_mock_static_images_list()
 
             # have resized images
-            self.assertListEqual(
-                images_list, os.listdir(size_dir_path))
+            self.assertListEqual(images_list, os.listdir(size_dir_path))
 
             # test resized image dimensions & type as `.png`
             for image in images_list:
                 img_path = os.path.join(size_dir_path, image)
                 self.assert_image_size(img_path=img_path, size=size)
 
-        # test with `Mock` Hotspots
-        configsgen.generate_static_cursor(
-            imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=self.mock_hotspots)
+        # testing .in config file
+        result_config_path = os.path.join(self.temp_dir, 'mock_static.in')
+        with open(result_config_path, 'r') as file:
+            content = file.read()
+
+            for size in self.mock_sizes:
+                expect_line: str = '%s %s %s %sx%s/mock_static.png' % (
+                    size, size // 2, size // 2, size, size)
+                self.assertTrue(expect_line in content)
 
 
 if __name__ == '__main__':
