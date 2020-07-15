@@ -155,6 +155,9 @@ class TestConfigsgen(unittest.TestCase):
                 expect_line: str = '50 3 3 50x50/mock_static.png'
                 self.assertTrue(expect_line in content)
 
+    def test_generate_static_cursor(self):
+        pass
+
 
 if __name__ == '__main__':
     unittest.main()
