@@ -34,6 +34,7 @@ class TestConfigsgen(unittest.TestCase):
         self.mock_config_content = ['foo\n', 'bar\n', 'zoo\n']
 
         # for test_generate_static_cursor
+        # 📝 Note : doen't change size that Fail Some test
         self.mock_sizes = [50, 28]
         self.mock_hotspots = assets.get_mock_hotspots()
 
