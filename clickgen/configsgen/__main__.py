@@ -168,6 +168,7 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
             coordinate = None
 
         for cursor in group:
+
             for size in sizes:
                 resized_xhot, resized_yhot = resize_cursor(
                     cursor, size, imgs_dir, coordinate, out_dir=out_dir)
@@ -177,7 +178,7 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
 
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
                                                    resized_xhot, resized_yhot, size, size, cursor, delay)
-            content.append(line)
+                content.append(line)
 
         write_xcur(config_file_path, content)
 
