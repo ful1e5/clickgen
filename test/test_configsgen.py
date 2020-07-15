@@ -137,6 +137,23 @@ class TestConfigsgen(unittest.TestCase):
                     size, size // 2, size // 2, size, size)
                 self.assertTrue(expect_line in content)
 
+        # test with `Mock` Hotspots
+        configsgen.generate_static_cursor(
+            imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=self.mock_hotspots)
+
+        # testing .in config file
+        # 📝 Note : Hard Coded test. size doesn't affect this test
+        result_config_path = os.path.join(self.temp_dir, 'mock_static.in')
+        with open(result_config_path, 'r') as file:
+            content = file.read()
+
+            for size in self.mock_sizes:
+                expect_line: str = '28 2 2 28x28/mock_static.png'
+                self.assertTrue(expect_line in content)
+
+                expect_line: str = '50 3 3 50x50/mock_static.png'
+                self.assertTrue(expect_line in content)
+
 
 if __name__ == '__main__':
     unittest.main()
