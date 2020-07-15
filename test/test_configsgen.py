@@ -110,6 +110,12 @@ class TestConfigsgen(unittest.TestCase):
             size_dir = '%sx%s' % (size, size)
             self.assertIn(size_dir, os.listdir(self.temp_dir))
 
+            size_dir_path = os.path.join(self.temp_dir, size_dir)
+
+            # have resized images
+            self.assertListEqual(
+                assets.get_mock_static_images_list(), os.listdir(size_dir_path))
+
         # test with `Mock` Hotspots
         configsgen.generate_static_cursor(
             imgs_dir=self.mock_images_path, out_dir=self.temp_dir, sizes=self.mock_sizes, hotspots=self.mock_hotspots)
