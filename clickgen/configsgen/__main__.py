@@ -175,8 +175,8 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
                 resized_xhot, resized_yhot = resize_cursor(
                     cursor, size, imgs_dir, coordinate, out_dir=out_dir)
 
-                logger.info('%sx%s %s hotspots set to (%s,%s)' %
-                            (size, size, group_name, resized_xhot, resized_yhot))
+                logger.info('%sx%s %s hotspots set to (%s,%s) with %sms delay' %
+                            (size, size, group_name, resized_xhot, resized_yhot, delay))
 
                 line = "%s %s %s %sx%s/%s %s\n" % (size,
                                                    resized_xhot, resized_yhot, size, size, cursor, delay)
