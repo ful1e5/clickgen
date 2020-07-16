@@ -9,6 +9,7 @@ import sys
 import tempfile
 
 from . import color_logger
+from .types import Path
 
 
 def get_logger(name: str) -> logging.Logger:
@@ -27,7 +28,7 @@ def get_logger(name: str) -> logging.Logger:
 logger = get_logger('clickgen:helpers')
 
 
-def create_dir(path: str) -> None:
+def create_dir(path: Path) -> None:
     """
         ⚡ Clickgen Helper Function ⚡
 
@@ -61,7 +62,7 @@ def TemporaryDirectory():
 
 
 @contextmanager
-def cd(path):
+def cd(path: Path):
     """
         ⚡ Clickgen Helper Function ⚡
 
@@ -85,7 +86,7 @@ def cd(path):
         logger.info('Back to Normal as %s' % CWD)
 
 
-def symlink(target, link_name, overwrite=False):
+def symlink(target: Path, link_name: Path, overwrite=False):
     """
         ⚡ Clickgen Helper Function ⚡
 

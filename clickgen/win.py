@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import sys
+import io
 import os
+import sys
 from argparse import Namespace
 import shlex
-import io
 import struct
 import math
+
 from PIL import Image
 from PIL import ImageFilter
+
+from .types import Path
 
 p = struct.pack
 
@@ -17,7 +20,7 @@ program_name = 'anicursorgen'
 program_version = '1.0.0'
 
 
-def main(input_config: str, output_file: str, prefix: str):
+def main(input_config: Path, output_file: Path, prefix: Path):
     """
         'win.py' is restrong of 'anicursorgen.py'.
         'input_config' is path to config_file.
@@ -76,7 +79,7 @@ def main(input_config: str, output_file: str, prefix: str):
     return result
 
 
-def make_cursor_from(inp, out, args):
+def make_cursor_from(inp: Path, out: Path, args):
     frames = parse_config_from(inp, args.prefix)
 
     animated = frames_have_animation(frames)
@@ -91,7 +94,7 @@ def make_cursor_from(inp, out, args):
     return result
 
 
-def copy_to(out, buf):
+def copy_to(out: Path, buf):
     buf.seek(0, io.SEEK_SET)
     while True:
         b = buf.read(1024)
@@ -117,14 +120,6 @@ def make_cur(frames, args, animated=False):
     buf = io.BytesIO()
     buf.write(p('<HHH', 0, 2, len(frames)))
     frame_offsets = []
-
-    # def frame_size_cmp(f1, f2):
-    #     if f1[0] < f2[0]:
-    #         return -1
-    #     elif f1[0] > f2[0]:
-    #         return 1
-    #     else:
-    #         return 0
 
     frames = sorted(frames, reverse=True)
 
@@ -222,21 +217,12 @@ def make_framesets(frames):
                             frameset[i - 1][4], frameset[i - 1][0]),
                     file=sys.stderr)
                 return None
-
-    # def frameset_size_cmp(f1, f2):
-    #     if f1[0][0] < f2[0][0]:
-    #         return -1
-    #     elif f1[0][0] > f2[0][0]:
-    #         return 1
-    #     else:
-    #         return 0
-
     framesets = sorted(framesets, reverse=True)
 
     return framesets
 
 
-def make_ani(frames, out, args):
+def make_ani(frames, out: Path, args):
     framesets = make_framesets(frames)
     if framesets is None:
         return 1
@@ -295,11 +281,11 @@ def make_ani(frames, out, args):
     return 0
 
 
-def write_png(out, frame, frame_png):
+def write_png(out: Path, frame, frame_png):
     frame_png.save(out, "png", optimize=True)
 
 
-def write_cur(out, frame, frame_png):
+def write_cur(out: Path, frame, frame_png):
     pixels = frame_png.load()
 
     out.write(
@@ -327,7 +313,7 @@ def write_cur(out, frame, frame_png):
             out.write(b'\x00' * (4 - wrote % 4))
 
 
-def parse_config_from(inp, prefix):
+def parse_config_from(inp, prefix: Path):
     frames = []
     for line in inp.readlines():
         line = line.decode()
@@ -400,7 +386,3 @@ def shadowize(shadow, orig, color):
             if o_px[3] > 0:
                 s_pxs[x, y] = (color[0], color[1], color[2],
                                int(color[3] * (o_px[3] / 255.0)))
-
-
-# if __name__ == '__main__':
-# sys.exit(main())
