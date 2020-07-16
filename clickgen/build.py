@@ -11,7 +11,6 @@ from .types import Path, IntegerList
 from .helpers import TemporaryDirectory
 
 
-# TODO: Tests
 def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
 
     # generate configs to temporary directory
@@ -23,7 +22,6 @@ def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
              x11=False, win=True, archive=archive, logs=True)
 
 
-# TODO: Tests
 def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
 
     # generate configs to temporary directory
@@ -35,7 +33,6 @@ def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
              x11=True, win=False, archive=archive, logs=True)
 
 
-# TODO: Tests
 def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
 
     # generate configs to temporary directory
