@@ -1,3 +1,4 @@
+<!-- Branding -->
 <p align="center">
   <img src="https://imgur.com/L2IZ2MH.png" width="120" alt="clickgen" />
   <br />
@@ -8,8 +9,8 @@
   X11 & Windows Cursor API 👷
 </p>
 
+<!-- Badges -->
 <p align="center">
-  
   <a href="https://github.com/KaizIqbal/clickgen/actions?query=workflow%3Abuild">
     <img alt="GitHub Action Build" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg?branch=master&event=push" />
   </a>
