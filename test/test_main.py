@@ -71,12 +71,12 @@ class TestMain(unittest.TestCase):
     def test_get_config(self):
         # testing with assets dir,have 2 config files
         mock_configs = clickgen.get_configs(
-            dir=self.mock_config_dir_with_configs)
+            directory=self.mock_config_dir_with_configs)
         self.assertEqual(len(mock_configs), 2)
 
         # testing with empty dir
         mock_configs = clickgen.get_configs(
-            dir=self.mock_config_dir_with_out_configs)
+            directory=self.mock_config_dir_with_out_configs)
         self.assertEqual(len(mock_configs), 0)
 
     def test_is_animated(self):

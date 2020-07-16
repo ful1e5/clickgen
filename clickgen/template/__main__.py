@@ -15,18 +15,18 @@ index_file_path: Path = os.path.join(basedir, 'index.theme')
 logger: Logger = get_logger('clickgen:template')
 
 
-def create_x11_template(dir: Path, name: Path, comment: str = '') -> None:
+def create_x11_template(directory: Path, name: Path, comment: str = '') -> None:
     """
         Copy metadata files to the cursor package directory.
         'dir' is a path to the cursor package directory.
         'name' & 'comment' is Metadata for cursor package.
     """
-    abs_dir = os.path.abspath(dir)
+    abs_dir = os.path.abspath(directory)
     cursor_file_out_path = os.path.join(abs_dir, 'cursor.theme')
     index_file_out_path = os.path.join(abs_dir, 'index.theme')
 
     # helper
-    create_dir(dir)
+    create_dir(directory)
 
     with open(cursor_file_path, 'r') as cursor_file:
         with open(cursor_file_out_path, 'w') as cursor_file_out:

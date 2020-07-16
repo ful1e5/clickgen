@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-# TODO: Tests
-
 import os
 import itertools
 from PIL import Image
@@ -112,9 +110,9 @@ def write_xcur(config_file_path: Path, content: StringList) -> None:
 
 
 def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any) -> None:
-    list: StringList = get_cursor_list(imgs_dir)
+    cursors_list: StringList = get_cursor_list(imgs_dir)
 
-    for cursor in list:
+    for cursor in cursors_list:
 
         config_file_path: Path = os.path.join(
             out_dir, cursor.replace(".png", ".in"))
@@ -149,9 +147,9 @@ def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, ho
 
 
 def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any, delay: int = DELAY):
-    list: StringList = get_cursor_list(imgs_dir, animated=True)
+    cursors_list: StringList = get_cursor_list(imgs_dir, animated=True)
 
-    for group in list:
+    for group in cursors_list:
         group_name = str(group[0]).split("-")[0]
         config_file_path: Path = os.path.join(out_dir, group_name + ".in")
 
