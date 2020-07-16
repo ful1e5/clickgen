@@ -178,7 +178,7 @@ def main(name: str,
                 logger.info('X11: cursor generated to %s' % cur_out)
 
             link_cursors(x11_cursors_dir)
-            create_x11_template(name=name, dir=x11_work_dir)
+            create_x11_template(name=name, directory=x11_work_dir)
             x11_out = os.path.join(out, 'x11')
 
             # deleting existed x11 directory
