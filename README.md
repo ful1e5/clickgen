@@ -17,4 +17,8 @@
   <a href="https://badge.fury.io/py/clickgen">
     <img src="https://badge.fury.io/py/clickgen.svg" alt="PyPI version" height="20">
   </a>
+
+  <a href="https://www.codefactor.io/repository/github/kaiziqbal/clickgen">
+    <img src="https://www.codefactor.io/repository/github/kaiziqbal/clickgen/badge" alt="CodeFactor" />
+  </a>
 </p>
