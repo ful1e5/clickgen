@@ -64,9 +64,9 @@ def is_animated(config: Path) -> bool:
         print('Error: ', err)
 
 
-def get_cur_name(config: Path, type: str) -> str:
+def get_cur_name(config: Path, cur_type: str) -> str:
     """
-        Get the cursor's extension by providing `type` to this function.
+        Get the cursor's extension by providing `cur_type` to this function.
 
         window extension => .cur , .ani
             watch.ani, left_ptr.cur
@@ -77,11 +77,11 @@ def get_cur_name(config: Path, type: str) -> str:
     config_name = os.path.basename(config)
     animated = is_animated(config)
 
-    if (type == 'win' and animated == False):
+    if (cur_type == 'win' and animated == False):
         return config_name.replace('.in', '.cur')
-    elif (type == 'win' and animated == True):
+    elif (cur_type == 'win' and animated == True):
         return config_name.replace('.in', '.ani')
-    elif (type == 'x11'):
+    elif (cur_type == 'x11'):
         return config_name.replace('.in', '')
     else:
         return ""
@@ -144,7 +144,7 @@ def main(name: str,
         with TemporaryDirectory() as win_work_dir:
 
             for config in configs:
-                cur_name = get_cur_name(config, type='win')
+                cur_name = get_cur_name(config, cur_type='win')
                 cur_out = os.path.join(win_work_dir, cur_name)
                 win_gen(input_config=config,
                         output_file=cur_out,
@@ -168,7 +168,7 @@ def main(name: str,
             create_dir(x11_cursors_dir)
 
             for config in configs:
-                cur_name = get_cur_name(config, type='x11')
+                cur_name = get_cur_name(config, cur_type='x11')
 
                 cur_out = os.path.join(x11_cursors_dir, cur_name)
                 x11_gen(input_config=config,
