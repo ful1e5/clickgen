@@ -43,7 +43,7 @@ class TestTemplate(unittest.TestCase):
 
     def test_create_x11_template_without_comments(self):
         template.create_x11_template(name=self.mock_name,
-                                     dir=self.mock_dir,
+                                     directory=self.mock_dir,
                                      comment='')
         # testing cursor.theme
         self.assert_word_in_file(file=self.mock_cursor_file_path,
@@ -57,7 +57,7 @@ class TestTemplate(unittest.TestCase):
 
     def test_create_x11_template_with_comments(self):
         template.create_x11_template(name=self.mock_name,
-                                     dir=self.mock_dir,
+                                     directory=self.mock_dir,
                                      comment=self.mock_comment)
         # testing cursor.theme
         self.assert_word_in_file(file=self.mock_cursor_file_path,
