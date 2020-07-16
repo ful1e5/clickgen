@@ -23,7 +23,7 @@ config_ext = ('*.in', '*.ini')
 archive_format = 'tar'
 
 
-def get_configs(dir: Path) -> list:
+def get_configs(directory: Path) -> list:
     """
         To get all config_files name with extension in Directory.
         'dir' is where config_files stored.
@@ -32,7 +32,7 @@ def get_configs(dir: Path) -> list:
 
     for ext in config_ext:
         configs_grabbed.extend(
-            glob.glob(os.path.abspath(os.path.join(dir, ext))))
+            glob.glob(os.path.abspath(os.path.join(directory, ext))))
     return configs_grabbed
 
 
