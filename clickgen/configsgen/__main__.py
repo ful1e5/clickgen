@@ -46,6 +46,13 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
 
 
 def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: CoordinateTuple, out_dir: Path = DEFAULT_CONFIGS_PATH) -> IntegerTuple:
+    """
+        `cursor` is cursor `name`.
+        `size` is pixel size of cursor to resize.
+        `imgs_dir` is where `cursor` is found.
+        `coordinares` is `InegerTuple` contains `(xhot, yhot)`.
+        `out_dir` is `Path` for resized cursor, `default` set to `configs` directory inside `workdir()`.
+    """
 
     # helper variables
     in_path = os.path.join(imgs_dir, cursor)
