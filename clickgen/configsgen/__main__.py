@@ -20,6 +20,10 @@ DELAY = 20
 
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
+    """
+        Get cursors from `imgs_dir` based on `animated` flag.
+        `animated` flag is usefull for get animated cursors frames, Frames per cursor is identify by `number(01, 02, .., n)` with `postfix` of cursor name like `wait-01.png`.
+    """
     all_curosr_list, cursor_list = [], []
 
     for file_path in os.listdir(imgs_dir):
