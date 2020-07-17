@@ -60,7 +60,7 @@ def link_cursors(directory: Path, win: bool = False) -> None:
         Generate missing cursors have similar endpoint inside `directory`.
         `win` flag is `False` default, If it `True` this function only fix the name of cursors because `Windows` does not support symblinks.
     """
-    dir = os.path.abspath(directory)
+    directory = os.path.abspath(directory)
     isExists = os.path.exists(directory)
 
     # user have cursors fot symblink
@@ -70,7 +70,7 @@ def link_cursors(directory: Path, win: bool = False) -> None:
         if not isExists:
             raise FileNotFoundError('x11 directory not found')
 
-        for file in os.listdir(dir):
+        for file in os.listdir(directory):
             cursors.append(file)
 
         if (len(cursors) <= 0):
@@ -92,8 +92,8 @@ def link_cursors(directory: Path, win: bool = False) -> None:
             print(msg)
 
         elif (fix_cur != cursor):
-            old_path = os.path.join(dir, cursor + extension)
-            new_path = os.path.join(dir, fix_cur + extension)
+            old_path = os.path.join(directory, cursor + extension)
+            new_path = os.path.join(directory, fix_cur + extension)
             os.rename(old_path, new_path)
 
             cursors[index] = fix_cur
@@ -105,7 +105,7 @@ def link_cursors(directory: Path, win: bool = False) -> None:
     # symbolic links only for x11
     if not win:
         # cd for relative links
-        with cd(dir):
+        with cd(directory):
             for cursor in cursors:
                 for relative in known_cursors:
                     if cursor in relative:
