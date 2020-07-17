@@ -179,6 +179,21 @@ def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, ho
 
 
 def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any, delay: int = DELAY):
+    """
+        Generate Animated cursor & config.
+        `imgs_dir` is `directory` where images are stored.
+        `out_dir` is `directory` for storing generated resized images & config files.
+        `sizes` is `List` of pixel size.
+        `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+        example:
+            {
+                "wait": {
+                    "xhot":2
+                    "yhot":4
+                }
+            }
+    """
+
     cursors_list: StringList = get_cursor_list(imgs_dir, animated=True)
 
     for group in cursors_list:
