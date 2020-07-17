@@ -108,6 +108,10 @@ def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: Coordinat
 
 
 def write_xcur(config_file_path: Path, content: StringList) -> None:
+    """
+        Write `content` to `config_file_path`.
+        config file extension is `.in` or `.ini`.
+    """
     # sort line, So all lines in order according to size (24x24, 28x28, ..)
     content.sort()
 
