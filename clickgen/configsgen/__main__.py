@@ -24,6 +24,7 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
         Get cursors from `imgs_dir` based on `animated` flag.
         `animated` flag is usefull for get animated cursors frames, Frames per cursor is identify by `number(01, 02, .., n)` with `postfix` of cursor name like `wait-01.png`.
     """
+
     all_curosr_list, cursor_list = [], []
 
     for file_path in os.listdir(imgs_dir):
@@ -112,6 +113,7 @@ def write_xcur(config_file_path: Path, content: StringList) -> None:
         Write `content` to `config_file_path`.
         config file extension is `.in` or `.ini`.
     """
+
     # sort line, So all lines in order according to size (24x24, 28x28, ..)
     content.sort()
 
@@ -125,6 +127,21 @@ def write_xcur(config_file_path: Path, content: StringList) -> None:
 
 
 def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any) -> None:
+    """
+        Generate Staic cursor & config.
+        `imgs_dir` is `directory` where images are stored.
+        `out_dir` is `directory` for storing generated resized images & config files.
+        `sizes` is `List` of pixel size.
+        `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+        example:
+            {
+                "all_scroll": {
+                    "xhot":2
+                    "yhot":4
+                }
+            }
+    """
+
     cursors_list: StringList = get_cursor_list(imgs_dir)
 
     for cursor in cursors_list:
