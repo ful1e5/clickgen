@@ -12,6 +12,20 @@ from .helpers import TemporaryDirectory
 
 
 def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
+    """
+    Build Functions for Windows Cursor Theme.
+    `name` is folder name.
+    `image_dir` is where all images are stored.Cursor naming is based on `image name`.
+    `cursor_sizes` is pixel size for generating cursor(basically in `ineteger array`)
+    `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+     example:
+        {
+            "all_scroll": {
+                "xhot":2
+                "yhot":4
+            }
+        }
+    """
 
     # generate configs to temporary directory
     with TemporaryDirectory() as configs:
@@ -23,6 +37,20 @@ def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
 
 
 def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
+    """
+    Build Functions for Windows Cursor Theme.
+    `name` is folder name.
+    `image_dir` is where all images are stored.Cursor naming is based on `image name`.
+    `cursor_sizes` is pixel size for generating cursor(basically in `ineteger array`)
+    `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+     example:
+        {
+            "all_scroll": {
+                "xhot":2
+                "yhot":4
+            }
+        }
+    """
 
     # generate configs to temporary directory
     with TemporaryDirectory() as configs:
@@ -34,6 +62,20 @@ def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
 
 
 def build_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
+    """
+    Build Functions for Windows Cursor Theme.
+    `name` is folder name.
+    `image_dir` is where all images are stored.Cursor naming is based on `image name`.
+    `cursor_sizes` is pixel size for generating cursor(basically in `ineteger array`)
+    `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+     example:
+        {
+            "all_scroll": {
+                "xhot":2
+                "yhot":4
+            }
+        }
+    """
 
     # generate configs to temporary directory
     with TemporaryDirectory() as configs:
