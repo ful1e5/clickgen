@@ -7,14 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [1.1.4-beta] - 20 July 2020 (Current)
+## [1.1.5-beta] - 29 July 2020 (Current)
+
+# Changed
+
+- Typo fixed
+
+## [1.1.4-beta] - 20 July 2020
 
 ### Added
 
 - **configsgen** - _a tool for automating cursor `configs` generation from images._
 - **build function** - _a shortcut functions for build a `cursor theme`._
 
-# Changed
+### Changed
 
 - individual `logging` support
 - added more _logs_
@@ -61,7 +67,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/KaizIqbal/clickgen/compare/1.1.4-beta...master
+[unreleased]: https://github.com/KaizIqbal/clickgen/compare/1.1.5-beta...master
+[1.1.5-beta]: https://github.com/KaizIqbal/clickgen/compare/1.1.4-alpha...1.1.5-beta
 [1.1.4-beta]: https://github.com/KaizIqbal/clickgen/compare/1.1.3-alpha...1.1.4-beta
 [1.1.3-alpha]: https://github.com/KaizIqbal/clickgen/compare/1.1.2-alpha...1.1.3-alpha
 [1.1.2-alpha]: https://github.com/KaizIqbal/clickgen/compare/1.1.1-alpha...1.1.2-alpha
