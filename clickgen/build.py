@@ -11,7 +11,7 @@ from .types import Path, IntegerList
 from .helpers import TemporaryDirectory
 
 
-def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
+def build_win_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
     """
     Build Functions for Windows Cursor Theme.
     `name` is folder name.
@@ -36,7 +36,7 @@ def build_win_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList
              x11=False, win=True, archive=archive, logs=True)
 
 
-def build_x11_curosr_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
+def build_x11_cursor_theme(name: str, image_dir: Path, cursor_sizes: IntegerList, hotspots: any = None, out_path: Path = os.getcwd(), archive: bool = False, delay: int = DELAY):
     """
     Build Functions for Windows Cursor Theme.
     `name` is folder name.
