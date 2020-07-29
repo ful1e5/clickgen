@@ -25,20 +25,20 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
         `animated` flag is usefull for get animated cursors frames, Frames per cursor is identify by `number(01, 02, .., n)` with `postfix` of cursor name like `wait-01.png`.
     """
 
-    all_curosr_list, cursor_list = [], []
+    all_cursor_list, cursor_list = [], []
 
     for file_path in os.listdir(imgs_dir):
-        all_curosr_list.append(os.path.basename(file_path))
+        all_cursor_list.append(os.path.basename(file_path))
 
     if (animated):
         # animated cursor have filename-01,02,03..n postfix
-        temp: StringList = [cursor for cursor in all_curosr_list if
+        temp: StringList = [cursor for cursor in all_cursor_list if
                             cursor.find("-") >= 0]
         temp.sort()
         cursor_list: StringList = [list(g) for _, g in itertools.groupby(
             temp, lambda x: x.partition("-")[0])]
     else:
-        for cursor in all_curosr_list:
+        for cursor in all_cursor_list:
             if cursor.find("-") <= 0:
                 cursor_list.append(cursor)
         cursor_list.sort()

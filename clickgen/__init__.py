@@ -19,7 +19,7 @@ from .template import template
 from .configsgen.__main__ import generate_animated_cursor, generate_static_cursor
 from .configsgen import configsgen
 
-from .build import build_cursor_theme, build_win_curosr_theme, build_x11_curosr_theme
+from .build import build_cursor_theme, build_win_cursor_theme, build_x11_cursor_theme
 
 with open(os.path.join(os.path.dirname(__file__), 'pkginfo.json')) as fp:
     _info = json.load(fp)
