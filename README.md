@@ -11,8 +11,8 @@
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://github.com/KaizIqbal/clickgen/actions?query=workflow%3Abuild">
-    <img alt="GitHub Action Build" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg?branch=master&event=push" />
+  <a href="https://github.com/ful1ie5/clickgen/actions?query=workflow%3Abuild">
+    <img alt="GitHub Action Build" src="https://github.com/ful1ie5/clickgen/workflows/build/badge.svg?branch=master&event=push" />
   </a>
 
   <a href="https://badge.fury.io/py/clickgen">

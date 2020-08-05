@@ -67,10 +67,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/KaizIqbal/clickgen/compare/1.1.5-beta...master
-[1.1.5-beta]: https://github.com/KaizIqbal/clickgen/compare/1.1.4-alpha...1.1.5-beta
-[1.1.4-beta]: https://github.com/KaizIqbal/clickgen/compare/1.1.3-alpha...1.1.4-beta
-[1.1.3-alpha]: https://github.com/KaizIqbal/clickgen/compare/1.1.2-alpha...1.1.3-alpha
-[1.1.2-alpha]: https://github.com/KaizIqbal/clickgen/compare/1.1.1-alpha...1.1.2-alpha
+[unreleased]: https://github.com/ful1ie5/clickgen/compare/1.1.5-beta...master
+[1.1.5-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.4-alpha...1.1.5-beta
+[1.1.4-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.3-alpha...1.1.4-beta
+[1.1.3-alpha]: https://github.com/ful1ie5/clickgen/compare/1.1.2-alpha...1.1.3-alpha
+[1.1.2-alpha]: https://github.com/ful1ie5/clickgen/compare/1.1.1-alpha...1.1.2-alpha
 [1.1.1-alpha]: https://github.com/kaiziqbal/clickgen/compare/1.1.0-alpha...1.1.1-alpha
 [1.1.0-alpha]: https://github.com/kaiziqbal/clickgen/releases/tag/1.1.0-alpha
