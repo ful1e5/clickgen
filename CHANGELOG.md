@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+
+- `vertical resize` wrong implementation fix (KDE Cursor) #13
+- Remove unnecessary cursors from `left_ptr`
+- Remove `./` from all **symbolic link** cursors
+- Untraced `pkginfo.in` file
+
 ## [1.1.5-beta] - 29 July 2020 (Current)
 
-# Changed
+### Changed
 
 - Typo fixed
 
