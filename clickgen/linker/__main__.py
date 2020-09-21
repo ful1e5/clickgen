@@ -115,8 +115,6 @@ def link_cursors(directory: Path, win: bool = False) -> None:
                         # links to other if not empty
                         if len(relative) != 0:
                             for link in relative:
-                                src = './' + cursor
-                                dst = './' + link
-                                symlink(src, dst, overwrite=True)
+                                symlink(cursor, link, overwrite=True)
                             print('Symbolic link: %s ==> ' % (cursor),
                                   *relative)
