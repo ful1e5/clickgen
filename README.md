@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  X11 & Windows Cursor API 👷
+  X11 & Windows Cursor Building API 👷
 </p>
 
 <!-- Badges -->
