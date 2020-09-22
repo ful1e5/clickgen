@@ -23,3 +23,9 @@
     <img src="https://www.codefactor.io/repository/github/ful1e5/clickgen/badge" alt="CodeFactor" />
   </a>
 </p>
+
+---
+
+# Clickgen
+
+`clickgen` is API for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` under the hood.
