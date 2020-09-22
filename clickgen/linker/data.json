@@ -47,16 +47,7 @@
       "pointer",
       "pointing_hand"
     ],
-    [
-      "left_ptr",
-      "arrow",
-      "default",
-      "top_left_arrow",
-      "size-bdiag",
-      "size-fdiag",
-      "size-hor",
-      "size-ver"
-    ],
+    ["left_ptr", "arrow", "default"],
     [
       "left_ptr_watch",
       "00000000000000020006000e7e9ffc3f",
@@ -100,9 +91,9 @@
       "14fef782d02440884392942c1120523",
       "col-resize",
       "ew-resize",
-      "h_double_arrow",
       "size_hor",
-      "size_ver",
+      "size-hor",
+      "h_double_arrow",
       "split_h"
     ],
     ["sb_left_arrow", "left-arrow"],
@@ -114,6 +105,8 @@
       "2870a09082c103050810ffdffffe0204",
       "double_arrow",
       "ns-resize",
+      "size_ver",
+      "size-ver",
       "row-resize",
       "split_v",
       "v_double_arrow"

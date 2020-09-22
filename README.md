@@ -6,20 +6,26 @@
 </p>
 
 <p align="center">
-  X11 & Windows Cursor API 👷
+  X11 & Windows Cursor Building API 👷
 </p>
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://github.com/KaizIqbal/clickgen/actions?query=workflow%3Abuild">
-    <img alt="GitHub Action Build" src="https://github.com/KaizIqbal/clickgen/workflows/build/badge.svg?branch=master&event=push" />
+  <a href="https://github.com/ful1ie5/clickgen/actions?query=workflow%3Abuild">
+    <img alt="GitHub Action Build" src="https://github.com/ful1e5/clickgen/workflows/build/badge.svg" />
   </a>
 
   <a href="https://badge.fury.io/py/clickgen">
     <img src="https://badge.fury.io/py/clickgen.svg" alt="PyPI version" height="20">
   </a>
 
-  <a href="https://www.codefactor.io/repository/github/kaiziqbal/clickgen">
-    <img src="https://www.codefactor.io/repository/github/kaiziqbal/clickgen/badge" alt="CodeFactor" />
+  <a href="https://www.codefactor.io/repository/github/ful1e5/clickgen">
+    <img src="https://www.codefactor.io/repository/github/ful1e5/clickgen/badge" alt="CodeFactor" />
   </a>
 </p>
+
+---
+
+# Clickgen
+
+**clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
