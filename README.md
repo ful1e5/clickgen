@@ -28,4 +28,4 @@
 
 # Clickgen
 
-`clickgen` is API for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` under the hood.
+`clickgen` is API for building **X11** and **Windows** Cursors from `.png` files. **clickgen** is using `anicursorgen` and `xcursorgen` under the hood.
