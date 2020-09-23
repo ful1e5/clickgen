@@ -30,15 +30,15 @@
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
 
-# Install
+## Install
 
 ```bash
 pip3 install clickgen
 ```
 
-# Examples
+## Examples
 
-## Generating Cursor config(.in) files
+### Generate Cursor's config files (.in)
 
 ```python
 import json
@@ -48,5 +48,5 @@ with open('./hotspots.json', 'r') as hotspot_file:
     hotspots = json.loads(hotspot_file.read())
 
 configsgen.generate_configs(
-    imgs_dir="./bitmaps", cursor_sizes=[24, 28], out_dir="./configs", delay=45)
+    imgs_dir="./bitmaps", cursor_sizes=[24, 28], out_dir="./configs", delay=50)
 ```
