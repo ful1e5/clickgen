@@ -70,9 +70,11 @@ sudo dnf install libx11-devel libxcursor-devel libpng-devel
 
 ## Examples
 
+🔥 Check **examples** [here](./examples/)
+
 > **Recommended**: Design Cursor `bitmaps` images(.png) in 200x200 pixel for **HiDPI** size support.
 > **Note**: Provide cursor's hotspot respect to `bitmaps`, Clickgen's `Linker` automatically generate hotspots for each `cursor_sizes`.
-> Check [hotspots.json](#) file for more info.
+> Check [hotspots.json](./examples/hotspots.json) file for more info.
 
 ### Generate Cursor's config files (.in)
 
