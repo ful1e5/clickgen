@@ -50,3 +50,16 @@ with open('./hotspots.json', 'r') as hotspot_file:
 configsgen.generate_configs(
     imgs_dir="./bitmaps", cursor_sizes=[24, 28], out_dir="./configs", delay=50)
 ```
+
+### Build Cursor Theme without Configs
+
+```python
+import json
+from clickgen import build_x11_cursor_theme
+
+with open('./hotspots.json', 'r') as hotspot_file:
+    hotspots = json.loads(hotspot_file.read())
+
+build_x11_cursor_theme(
+    name="Bibata", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
+```
