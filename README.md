@@ -29,3 +29,9 @@
 # Clickgen
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
+
+# Install
+
+```bash
+pip3 install clickgen
+```
