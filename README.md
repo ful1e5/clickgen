@@ -64,3 +64,16 @@ build_cursor_theme(
     name="Bibata", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
 
 ```
+
+### Build only `x11` Cursor Theme from config files (.in/.ini)
+
+```python
+import json
+from clickgen import build_x11_cursor_theme
+
+with open('./hotspots.json', 'r') as hotspot_file:
+    hotspots = json.loads(hotspot_file.read())
+
+build_x11_cursor_theme(
+    name="Bibata", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
+```
