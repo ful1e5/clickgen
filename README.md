@@ -51,7 +51,7 @@ configsgen.generate_configs(
     imgs_dir="./bitmaps", cursor_sizes=[24, 28], out_dir="./configs", delay=50)
 ```
 
-### Build Cursor Theme without Configs
+### Build Cursor Theme
 
 ```python
 import json
@@ -65,7 +65,7 @@ build_cursor_theme(
 
 ```
 
-### Build only `x11` Cursor Theme from config files (.in/.ini)
+### Build only `x11` Cursor Theme
 
 ```python
 import json
