@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [1.1.6] - 24 Sept 2020 (Stable)
+
 ### Changed
 
 - `vertical resize` wrong implementation fix (KDE Cursor) #13
@@ -19,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - clickgen **info** in [README.md](./README.md)
 
-## [1.1.5-beta] - 29 July 2020 (Current)
+## [1.1.5-beta] - 29 July 2020
 
 ### Changed
 
@@ -79,7 +81,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1ie5/clickgen/compare/1.1.5-beta...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/main...1.1.6
+[1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
 [1.1.5-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.4-alpha...1.1.5-beta
 [1.1.4-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.3-alpha...1.1.4-beta
 [1.1.3-alpha]: https://github.com/ful1ie5/clickgen/compare/1.1.2-alpha...1.1.3-alpha
