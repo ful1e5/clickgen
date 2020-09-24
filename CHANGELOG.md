@@ -81,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/main...1.1.6
+[unreleased]: https://github.com/ful1e5/clickgen/compare/1.1.6...main
 [1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
 [1.1.5-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.4-alpha...1.1.5-beta
 [1.1.4-beta]: https://github.com/ful1ie5/clickgen/compare/1.1.3-alpha...1.1.4-beta
