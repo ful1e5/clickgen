@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove unnecessary cursors from `left_ptr`
 - Remove `./` from all **symbolic link** cursors
 - Untraced `pkginfo.in` file
+- Update `Pillow` to 7.2.0
 
 ### Added
 
