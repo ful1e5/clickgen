@@ -13,10 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Remove unnecessary cursors from `left_ptr`
 - Remove `./` from all **symbolic link** cursors
 - Untraced `pkginfo.in` file
+- Update `Pillow` to 7.2.0
 
 ### Added
 
-- clickgen **info** in README.md(./README.md)
+- clickgen **info** in [README.md](./README.md)
 
 ## [1.1.5-beta] - 29 July 2020 (Current)
 
