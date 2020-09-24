@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- clickgen **info** in README.md(./README.md)
+- clickgen **info** in [README.md](./README.md)
 
 ## [1.1.5-beta] - 29 July 2020 (Current)
 
