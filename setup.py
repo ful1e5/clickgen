@@ -20,6 +20,16 @@ def load_requirements(fname):
     return [str(ir.requirement) for ir in reqs]
 
 
+# Skip `Pillow` if already installed
+try:
+    import PIL
+    INSTALL_REQUIRE = load_requirements('requirements.txt')
+    INSTALL_REQUIRE = list(
+        filter(lambda x: (str(x).find('Pillow')), INSTALL_REQUIRE))
+except ImportError:
+    INSTALL_REQUIRE = load_requirements('requirements.txt')
+
+
 class install(_install):
     def run(self):
         subprocess.call(['make', 'clean', '-C', 'xcursorgen'])
@@ -54,7 +64,7 @@ setup(
     scripts=['scripts/clickgen'],
     keywords=['cursor', 'xcursor', 'windows',
               'linux', 'anicursorgen', 'xcursorgen'],
-    install_requires=load_requirements('requirements.txt'),
+    install_requires=INSTALL_REQUIRE,
     packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
     include_package_data=True,
     zip_safe=True
