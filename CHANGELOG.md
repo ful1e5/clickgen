@@ -9,12 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New Stable version **1.1.7**
 - Archlinux/Manjaro installation docs
 - CLI usage in [README.md](./README.md)
 
 ### Changed
 
-- skip `Pillow` if already installed
+- skip `Pillow` is already installed
 
 ## [1.1.6] - 24 Sept 2020 (Stable)
 
