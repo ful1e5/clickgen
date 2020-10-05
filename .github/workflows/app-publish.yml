@@ -2,8 +2,7 @@ name: Publish PyPI Package & Docker
 
 on:
   release:
-    types:
-      - created
+    types: [published]
 
 jobs:
   publish:
