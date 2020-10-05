@@ -5,13 +5,16 @@ on:
     paths-ignore:
       - README.md
       - LICENSE
-    branches: [main, dev]
+    branches:
+      - main
+      - dev
 
   pull_request:
     paths-ignore:
       - README.md
       - LICENSE
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   build:
