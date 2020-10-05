@@ -32,9 +32,33 @@
 
 ## Install
 
+### using pip
+
 ```bash
 pip3 install clickgen
 ```
+
+### ArchLinux
+
+```bash
+yay -S python-clickgen
+```
+
+### Manjaro
+
+```bash
+pamac build python-clickgen
+```
+
+## CLI
+
+```
+clickgen -h
+```
+
+## PyPi Dependencies
+
+- Pillow/python-pillow
 
 ## Runtime Dependencies
 
