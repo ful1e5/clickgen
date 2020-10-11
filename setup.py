@@ -52,7 +52,7 @@ setup(
     description=_info['description'],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/ful1ie5/clickgen',
+    url='https://github.com/ful1e5/clickgen',
     classifiers=[
         _info['status_classifier'], 'Topic :: System :: Operating System',
         'Programming Language :: Python :: 3', 'Programming Language :: C',

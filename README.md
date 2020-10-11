@@ -11,7 +11,7 @@
 
 <!-- Badges -->
 <p align="center">
-  <a href="https://github.com/ful1ie5/clickgen/actions?query=workflow%3Abuild">
+  <a href="https://github.com/ful1e5/clickgen/actions?query=workflow%3Abuild">
     <img alt="GitHub Action Build" src="https://github.com/ful1e5/clickgen/workflows/build/badge.svg" />
   </a>
 
