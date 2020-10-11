@@ -10,10 +10,10 @@ from ..types import Path, IntegerList, StringList, IntegerTuple, CoordinateTuple
 
 
 # Logger
-logger: Logger = get_logger('clickgen:configsgen')
+logger: Logger = get_logger("clickgen:configsgen")
 
 # Default configs path is <working_dir>/configs/
-DEFAULT_CONFIGS_PATH = os.path.join(os.getcwd(), 'configs')
+DEFAULT_CONFIGS_PATH = os.path.join(os.getcwd(), "configs")
 
 # SET DELAY OF ANIMATED FRAMES IN CONFIG FILE
 DELAY = 20
@@ -21,8 +21,8 @@ DELAY = 20
 
 def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     """
-        Get cursors from `imgs_dir` based on `animated` flag.
-        `animated` flag is usefull for get animated cursors frames, Frames per cursor is identify by `number(01, 02, .., n)` with `postfix` of cursor name like `wait-01.png`.
+    Get cursors from `imgs_dir` based on `animated` flag.
+    `animated` flag is usefull for get animated cursors frames, Frames per cursor is identify by `number(01, 02, .., n)` with `postfix` of cursor name like `wait-01.png`.
     """
 
     all_cursor_list, cursor_list = [], []
@@ -30,13 +30,15 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     for file_path in os.listdir(imgs_dir):
         all_cursor_list.append(os.path.basename(file_path))
 
-    if (animated):
+    if animated:
         # animated cursor have filename-01,02,03..n postfix
-        temp: StringList = [cursor for cursor in all_cursor_list if
-                            cursor.find("-") >= 0]
+        temp: StringList = [
+            cursor for cursor in all_cursor_list if cursor.find("-") >= 0
+        ]
         temp.sort()
-        cursor_list: StringList = [list(g) for _, g in itertools.groupby(
-            temp, lambda x: x.partition("-")[0])]
+        cursor_list: StringList = [
+            list(g) for _, g in itertools.groupby(temp, lambda x: x.partition("-")[0])
+        ]
     else:
         for cursor in all_cursor_list:
             if cursor.find("-") <= 0:
@@ -46,18 +48,24 @@ def get_cursor_list(imgs_dir: Path, animated: bool = False) -> StringList:
     return cursor_list
 
 
-def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: CoordinateTuple, out_dir: Path = DEFAULT_CONFIGS_PATH) -> IntegerTuple:
+def resize_cursor(
+    cursor: str,
+    size: int,
+    imgs_dir: Path,
+    coordinates: CoordinateTuple,
+    out_dir: Path = DEFAULT_CONFIGS_PATH,
+) -> IntegerTuple:
     """
-        `cursor` is cursor `name`.
-        `size` is pixel size of cursor to resize.
-        `imgs_dir` is where `cursor` is found.
-        `coordinares` is `InegerTuple` contains `(xhot, yhot)`.
-        `out_dir` is `Path` for resized cursor, `default` set to `configs` directory inside `workdir()`.
+    `cursor` is cursor `name`.
+    `size` is pixel size of cursor to resize.
+    `imgs_dir` is where `cursor` is found.
+    `coordinares` is `InegerTuple` contains `(xhot, yhot)`.
+    `out_dir` is `Path` for resized cursor, `default` set to `configs` directory inside `workdir()`.
     """
 
     # helper variables
     in_path = os.path.join(imgs_dir, cursor)
-    out_dir = os.path.join(out_dir, '%sx%s' % (size, size))
+    out_dir = os.path.join(out_dir, "%sx%s" % (size, size))
     out_path = os.path.join(out_dir, cursor)
 
     if not os.path.exists(out_dir):
@@ -85,10 +93,9 @@ def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: Coordinat
         # ... crop the top and bottom:
         new_height = int(width / ideal_aspect)
         offset = (height - new_height) / 2
-        resize = (0, offset, width, height-offset)
+        resize = (0, offset, width, height - offset)
 
-    thumb = image.crop(resize).resize(
-        (ideal_width, ideal_height), Image.ANTIALIAS)
+    thumb = image.crop(resize).resize((ideal_width, ideal_height), Image.ANTIALIAS)
 
     # save resized image
     thumb.save(out_path)
@@ -110,8 +117,8 @@ def resize_cursor(cursor: str, size: int, imgs_dir: Path, coordinates: Coordinat
 
 def write_xcur(config_file_path: Path, content: StringList) -> None:
     """
-        Write `content` to `config_file_path`.
-        config file extension is `.in` or `.ini`.
+    Write `content` to `config_file_path`.
+    config file extension is `.in` or `.ini`.
     """
 
     # sort line, So all lines in order according to size (24x24, 28x28, ..)
@@ -126,72 +133,84 @@ def write_xcur(config_file_path: Path, content: StringList) -> None:
         config_file.close()
 
 
-def generate_static_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any) -> None:
+def generate_static_cursor(
+    imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any
+) -> None:
     """
-        Generate Staic cursor & config.
-        `imgs_dir` is `directory` where images are stored.
-        `out_dir` is `directory` for storing generated resized images & config files.
-        `sizes` is `List` of pixel size.
-        `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
-        example:
-            {
-                "all_scroll": {
-                    "xhot":2
-                    "yhot":4
-                }
+    Generate Staic cursor & config.
+    `imgs_dir` is `directory` where images are stored.
+    `out_dir` is `directory` for storing generated resized images & config files.
+    `sizes` is `List` of pixel size.
+    `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+    example:
+        {
+            "all_scroll": {
+                "xhot":2
+                "yhot":4
             }
+        }
     """
 
     cursors_list: StringList = get_cursor_list(imgs_dir)
 
     for cursor in cursors_list:
 
-        config_file_path: Path = os.path.join(
-            out_dir, cursor.replace(".png", ".in"))
+        config_file_path: Path = os.path.join(out_dir, cursor.replace(".png", ".in"))
 
         content: StringList = []
 
         # setting Hotspots from JSON data
         # set to `None` if not have JSON data or `key` not in JSON
-        cursor_name = cursor.split('.')[0]
+        cursor_name = cursor.split(".")[0]
         coordinate: CoordinateTuple = None
 
         try:
             hotspot = hotspots[cursor_name]
-            xhot: int = hotspot['xhot']
-            yhot: int = hotspot['yhot']
+            xhot: int = hotspot["xhot"]
+            yhot: int = hotspot["yhot"]
             coordinate = (xhot, yhot)
         except TypeError:
             coordinate = None
 
         for size in sizes:
             resized_xhot, resized_yhot = resize_cursor(
-                cursor, size, imgs_dir, coordinate, out_dir=out_dir)
+                cursor, size, imgs_dir, coordinate, out_dir=out_dir
+            )
 
-            logger.info('%sx%s %s hotspots set to (%s,%s)' %
-                        (size, size, cursor_name, resized_xhot, resized_yhot))
+            logger.info(
+                "%sx%s %s hotspots set to (%s,%s)"
+                % (size, size, cursor_name, resized_xhot, resized_yhot)
+            )
 
-            line = "%s %s %s %sx%s/%s\n" % (size,
-                                            resized_xhot, resized_yhot, size, size, cursor)
+            line = "%s %s %s %sx%s/%s\n" % (
+                size,
+                resized_xhot,
+                resized_yhot,
+                size,
+                size,
+                cursor,
+            )
             content.append(line)
 
         write_xcur(config_file_path, content)
 
 
-def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any, delay: int = DELAY):
+def generate_animated_cursor(
+    imgs_dir: Path, out_dir: Path, sizes: IntegerList, hotspots: any, delay: int = DELAY
+):
     """
-        Generate Animated cursor & config.
-        `imgs_dir` is `directory` where images are stored.
-        `out_dir` is `directory` for storing generated resized images & config files.
-        `sizes` is `List` of pixel size.
-        `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
-        example:
-            {
-                "wait": {
-                    "xhot":2
-                    "yhot":4
-                }
+    Generate Animated cursor & config.
+    `imgs_dir` is `directory` where images are stored.
+    `out_dir` is `directory` for storing generated resized images & config files.
+    `sizes` is `List` of pixel size.
+    `hotspots` is `JSON` data each cursor have `xhot` and `yhot` member.
+    example:
+        {
+            "wait": {
+                "xhot":2
+                "yhot":4
             }
+        }
     """
 
     cursors_list: StringList = get_cursor_list(imgs_dir, animated=True)
@@ -208,8 +227,8 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
 
         try:
             hotspot = hotspots[group_name]
-            xhot = hotspot['xhot']
-            yhot = hotspot['yhot']
+            xhot = hotspot["xhot"]
+            yhot = hotspot["yhot"]
             coordinate = (xhot, yhot)
         except TypeError:
             coordinate = None
@@ -218,31 +237,49 @@ def generate_animated_cursor(imgs_dir: Path, out_dir: Path, sizes: IntegerList, 
 
             for size in sizes:
                 resized_xhot, resized_yhot = resize_cursor(
-                    cursor, size, imgs_dir, coordinate, out_dir=out_dir)
+                    cursor, size, imgs_dir, coordinate, out_dir=out_dir
+                )
 
-                logger.info('%sx%s %s hotspots set to (%s,%s) with %sms delay' %
-                            (size, size, group_name, resized_xhot, resized_yhot, delay))
+                logger.info(
+                    "%sx%s %s hotspots set to (%s,%s) with %sms delay"
+                    % (size, size, group_name, resized_xhot, resized_yhot, delay)
+                )
 
-                line = "%s %s %s %sx%s/%s %s\n" % (size,
-                                                   resized_xhot, resized_yhot, size, size, cursor, delay)
+                line = "%s %s %s %sx%s/%s %s\n" % (
+                    size,
+                    resized_xhot,
+                    resized_yhot,
+                    size,
+                    size,
+                    cursor,
+                    delay,
+                )
                 content.append(line)
 
         write_xcur(config_file_path, content)
 
 
-def main(imgs_dir: Path, cursor_sizes: IntegerList, hotspots: any, out_dir: Path = DEFAULT_CONFIGS_PATH, delay: int = DELAY) -> Path:
+def main(
+    imgs_dir: Path,
+    cursor_sizes: IntegerList,
+    hotspots: any,
+    out_dir: Path = DEFAULT_CONFIGS_PATH,
+    delay: int = DELAY,
+) -> Path:
     """
-        Generate Configs files.
-        hotspots is JSON data for each cursor having xhot & yhot parameters.
-        Provide `None` value set hotspots to middle of cursor.
-        hotspots is default set to `None`
+    Generate Configs files.
+    hotspots is JSON data for each cursor having xhot & yhot parameters.
+    Provide `None` value set hotspots to middle of cursor.
+    hotspots is default set to `None`
     """
 
-    logger.info('configs are writen to %s' % out_dir)
+    logger.info("configs are writen to %s" % out_dir)
 
-    generate_static_cursor(imgs_dir, sizes=cursor_sizes,
-                           hotspots=hotspots, out_dir=out_dir)
-    generate_animated_cursor(imgs_dir, sizes=cursor_sizes,
-                             hotspots=hotspots, out_dir=out_dir, delay=delay)
+    generate_static_cursor(
+        imgs_dir, sizes=cursor_sizes, hotspots=hotspots, out_dir=out_dir
+    )
+    generate_animated_cursor(
+        imgs_dir, sizes=cursor_sizes, hotspots=hotspots, out_dir=out_dir, delay=delay
+    )
 
-    return (os.path.abspath(out_dir))
+    return os.path.abspath(out_dir)

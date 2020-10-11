@@ -53,7 +53,7 @@ def main(input_config: Path, output_file: Path, prefix: Path) -> None:
          xcursorgen.c python api
         'input_config' is path to config_file.
         'output_file' is a path to store process cursor.
-        In 'input_config' & 'output_file' absolute or relative both aceptable.
+        In 'input_config' & 'output_file' absolute or relative both acceptable.
         'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
     """
     # binary name as first argument
