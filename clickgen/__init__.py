@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 import json
 import os
@@ -21,8 +21,8 @@ from .configsgen import configsgen
 
 from .build import build_cursor_theme, build_win_cursor_theme, build_x11_cursor_theme
 
-with open(os.path.join(os.path.dirname(__file__), 'pkginfo.json')) as fp:
+with open(os.path.join(os.path.dirname(__file__), "pkginfo.json")) as fp:
     _info = json.load(fp)
 
-__version__ = _info['version']
+__version__ = _info["version"]
 info = _info

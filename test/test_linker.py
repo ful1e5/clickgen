@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 import os
 import logging
@@ -14,23 +14,22 @@ class TestLinker(unittest.TestCase):
     # setup
     def setUp(self):
         logging.disable(logging.CRITICAL)
-        self.mock_directory = ['foo', 'bar', 'zoo']
+        self.mock_directory = ["foo", "bar", "zoo"]
 
     def tearDown(self):
         logging.disable(logging.NOTSET)
 
     # helpers
     def assert_to_directory(self, name: str, expect_name: str):
-        mock_result = linker.match_to_directory(name,
-                                                directory=self.mock_directory)
+        mock_result = linker.match_to_directory(name, directory=self.mock_directory)
         self.assertEqual(mock_result, expect_name)
 
     # tests
     def test_match_to_directory(self):
         # word is similar to directory
-        self.assert_to_directory(name='F0o', expect_name='foo')
+        self.assert_to_directory(name="F0o", expect_name="foo")
         # word new to directory
-        self.assert_to_directory(name='foo_bar_zoo', expect_name='foo_bar_zoo')
+        self.assert_to_directory(name="foo_bar_zoo", expect_name="foo_bar_zoo")
 
     def test_load_data(self):
         # checking data file extists

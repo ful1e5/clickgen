@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 import io
 import os
@@ -16,44 +16,52 @@ from .types import Path
 
 p = struct.pack
 
-program_name = 'anicursorgen'
-program_version = '1.0.0'
+program_name = "anicursorgen"
+program_version = "1.0.0"
 
 
 def main(input_config: Path, output_file: Path, prefix: Path):
     """
-        'win.py' is restrong of 'anicursorgen.py'.
-        'input_config' is path to config_file.
-        'output_file' is a path to store process cursor.
-        In 'input_config' & 'output_file' absolute or relative both acceptable.
-        'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
-        Generate .cur & .ani files based on '.in' config file.
-        anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
+    'win.py' is restrong of 'anicursorgen.py'.
+    'input_config' is path to config_file.
+    'output_file' is a path to store process cursor.
+    In 'input_config' & 'output_file' absolute or relative both acceptable.
+    'prefix' is a path to '.png files' link in the config_file, if relative path implemented.
+    Generate .cur & .ani files based on '.in' config file.
+    anicursorgen.py main copy found at <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
     """
 
-    args = Namespace(add_shadows=False,
-                     blur=3.125,
-                     color='0x00000040',
-                     down_shift=3.125,
-                     input_config='-',
-                     output_file='-',
-                     prefix=None,
-                     right_shift=9.375)
+    args = Namespace(
+        add_shadows=False,
+        blur=3.125,
+        color="0x00000040",
+        down_shift=3.125,
+        input_config="-",
+        output_file="-",
+        prefix=None,
+        right_shift=9.375,
+    )
 
-    if (input_config is not None):
+    if input_config is not None:
         args.input_config = input_config
-    if (output_file is not None):
+    if output_file is not None:
         args.output_file = output_file
-    if (prefix is not None):
+    if prefix is not None:
         args.prefix = prefix
 
     try:
-        if args.color[0] != '0' or args.color[1] not in [
-                'x', 'X'
-        ] or len(args.color) != 10:
+        if (
+            args.color[0] != "0"
+            or args.color[1] not in ["x", "X"]
+            or len(args.color) != 10
+        ):
             raise ValueError
-        args.color = (int(args.color[2:4], 16), int(args.color[4:6], 16),
-                      int(args.color[6:8], 16), int(args.color[8:10], 16))
+        args.color = (
+            int(args.color[2:4], 16),
+            int(args.color[4:6], 16),
+            int(args.color[6:8], 16),
+            int(args.color[8:10], 16),
+        )
     except:
         print("Can't parse the color '{}'".format(args.color), file=sys.stderr)
         return 1
@@ -61,15 +69,15 @@ def main(input_config: Path, output_file: Path, prefix: Path):
     if args.prefix is None:
         args.prefix = os.getcwd()
 
-    if args.input_config == '-':
+    if args.input_config == "-":
         input_config = sys.stdin
     else:
-        input_config = open(args.input_config, 'rb')
+        input_config = open(args.input_config, "rb")
 
-    if args.output_file == '-':
+    if args.output_file == "-":
         output_file = sys.stdout
     else:
-        output_file = open(args.output_file, 'wb')
+        output_file = open(args.output_file, "wb")
 
     result = make_cursor_from(input_config, output_file, args)
 
@@ -118,7 +126,7 @@ def frames_have_animation(frames):
 
 def make_cur(frames, args, animated=False):
     buf = io.BytesIO()
-    buf.write(p('<HHH', 0, 2, len(frames)))
+    buf.write(p("<HHH", 0, 2, len(frames)))
     frame_offsets = []
 
     frames = sorted(frames, reverse=True)
@@ -128,9 +136,9 @@ def make_cur(frames, args, animated=False):
         if width > 255:
             width = 0
         height = width
-        buf.write(p('<BBBB HH', width, height, 0, 0, frame[1], frame[2]))
+        buf.write(p("<BBBB HH", width, height, 0, 0, frame[1], frame[2]))
         size_offset_pos = buf.seek(0, io.SEEK_CUR)
-        buf.write(p('<II', 0, 0))
+        buf.write(p("<II", 0, 0))
         frame_offsets.append([size_offset_pos])
 
     for i, frame in enumerate(frames):
@@ -145,11 +153,10 @@ def make_cur(frames, args, animated=False):
                 frame_png.close()
                 frame_png = shadowed
 
-
-#   Windows 10 fails to read PNG-compressed cursors for some reason
-#   and the information about storing PNG-compressed cursors is
-#   sparse. This is why PNG compression is not used.
-#   Previously this was conditional on cursor size (<= 48 to be uncompressed).
+        #   Windows 10 fails to read PNG-compressed cursors for some reason
+        #   and the information about storing PNG-compressed cursors is
+        #   sparse. This is why PNG compression is not used.
+        #   Previously this was conditional on cursor size (<= 48 to be uncompressed).
         compressed = False
 
         #   On the other hand, Windows 10 refuses to read very large
@@ -170,7 +177,7 @@ def make_cur(frames, args, animated=False):
 
     for frame_offset in frame_offsets:
         buf.seek(frame_offset[0])
-        buf.write(p('<II', frame_offset[2], frame_offset[1]))
+        buf.write(p("<II", frame_offset[2], frame_offset[1]))
 
     return buf
 
@@ -188,9 +195,11 @@ def make_framesets(frames):
 
             if size in sizes:
                 print(
-                    "Frames are not sorted: frame {} has size {}, but we have seen that already"
-                    .format(i, size),
-                    file=sys.stderr)
+                    "Frames are not sorted: frame {} has size {}, but we have seen that already".format(
+                        i, size
+                    ),
+                    file=sys.stderr,
+                )
                 return None
 
             sizes.add(size)
@@ -203,19 +212,27 @@ def make_framesets(frames):
 
     for i in range(1, len(framesets)):
         if len(framesets[i - 1]) != len(framesets[i]):
-            print("Frameset {} has size {}, expected {}".format(
-                i, len(framesets[i]), len(framesets[i - 1])),
-                file=sys.stderr)
+            print(
+                "Frameset {} has size {}, expected {}".format(
+                    i, len(framesets[i]), len(framesets[i - 1])
+                ),
+                file=sys.stderr,
+            )
             return None
 
     for frameset in framesets:
         for i in range(1, len(frameset)):
             if frameset[i - 1][4] != frameset[i][4]:
                 print(
-                    "Frameset {} has duration {} for framesize {}, but {} for framesize {}"
-                    .format(i, frameset[i][4], frameset[i][0],
-                            frameset[i - 1][4], frameset[i - 1][0]),
-                    file=sys.stderr)
+                    "Frameset {} has duration {} for framesize {}, but {} for framesize {}".format(
+                        i,
+                        frameset[i][4],
+                        frameset[i][0],
+                        frameset[i - 1][4],
+                        frameset[i - 1][0],
+                    ),
+                    file=sys.stderr,
+                )
                 return None
     framesets = sorted(framesets, reverse=True)
 
@@ -229,52 +246,64 @@ def make_ani(frames, out: Path, args):
 
     buf = io.BytesIO()
 
-    buf.write(b'RIFF')
+    buf.write(b"RIFF")
     riff_len_pos = buf.seek(0, io.SEEK_CUR)
-    buf.write(p('<I', 0))
+    buf.write(p("<I", 0))
     riff_len_start = buf.seek(0, io.SEEK_CUR)
 
-    buf.write(b'ACON')
-    buf.write(b'anih')
+    buf.write(b"ACON")
+    buf.write(b"anih")
     buf.write(
-        p('<IIIIIIIIII', 36, 36, len(framesets), len(framesets), 0, 0, 32, 1,
-          framesets[0][0][4], 0x01))
+        p(
+            "<IIIIIIIIII",
+            36,
+            36,
+            len(framesets),
+            len(framesets),
+            0,
+            0,
+            32,
+            1,
+            framesets[0][0][4],
+            0x01,
+        )
+    )
 
     rates = set()
     for frameset in framesets:
         rates.add(frameset[0][4])
 
     if len(rates) != 1:
-        buf.write(b'rate')
-        buf.write(p('<I', len(framesets) * 4))
+        buf.write(b"rate")
+        buf.write(p("<I", len(framesets) * 4))
         for frameset in framesets:
-            buf.write(p('<I', frameset[0][4]))
+            buf.write(p("<I", frameset[0][4]))
 
-    buf.write(b'LIST')
+    buf.write(b"LIST")
     list_len_pos = buf.seek(0, io.SEEK_CUR)
-    buf.write(p('<I', 0))
+    buf.write(p("<I", 0))
     list_len_start = buf.seek(0, io.SEEK_CUR)
 
-    buf.write(b'fram')
+    buf.write(b"fram")
 
     for frameset in framesets:
-        buf.write(b'icon')
+        buf.write(b"icon")
         cur = make_cur(frameset, args, animated=True)
         cur_size = cur.seek(0, io.SEEK_END)
         # aligned_cur_size = cur_size
         # if cur_size % 4 != 0:
         #  aligned_cur_size += 4 - cur_size % 2
-        buf.write(p('<i', cur_size))
+        buf.write(p("<i", cur_size))
         copy_to(buf, cur)
         pos = buf.seek(0, io.SEEK_END)
         if pos % 2 != 0:
-            buf.write(('\x00' * (2 - (pos % 2))).encode())
+            buf.write(("\x00" * (2 - (pos % 2))).encode())
 
     end_at = buf.seek(0, io.SEEK_CUR)
     buf.seek(riff_len_pos, io.SEEK_SET)
-    buf.write(p('<I', end_at - riff_len_start))
+    buf.write(p("<I", end_at - riff_len_start))
     buf.seek(list_len_pos, io.SEEK_SET)
-    buf.write(p('<I', end_at - list_len_start))
+    buf.write(p("<I", end_at - list_len_start))
 
     copy_to(out, buf)
 
@@ -288,14 +317,12 @@ def write_png(out: Path, frame, frame_png):
 def write_cur(out: Path, frame, frame_png):
     pixels = frame_png.load()
 
-    out.write(
-        p('<I II HH IIIIII', 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0,
-          0))
+    out.write(p("<I II HH IIIIII", 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0, 0))
 
     for y in reversed(list(range(frame[0]))):
         for x in range(frame[0]):
             pixel = pixels[x, y]
-            out.write(p('<BBBB', pixel[2], pixel[1], pixel[0], pixel[3]))
+            out.write(p("<BBBB", pixel[2], pixel[1], pixel[0], pixel[3]))
 
     acc = 0
     acc_pos = 0
@@ -310,14 +337,14 @@ def write_cur(out: Path, frame, frame_png):
                 out.write(chr(acc).encode())
                 wrote += 1
         if wrote % 4 != 0:
-            out.write(b'\x00' * (4 - wrote % 4))
+            out.write(b"\x00" * (4 - wrote % 4))
 
 
 def parse_config_from(inp, prefix: Path):
     frames = []
     for line in inp.readlines():
         line = line.decode()
-        words = shlex.split(line.rstrip('\n').rstrip('\r'))
+        words = shlex.split(line.rstrip("\n").rstrip("\r"))
         # print(words)
         if len(words) < 4:
             continue
@@ -332,7 +359,7 @@ def parse_config_from(inp, prefix: Path):
             filename = words[3]
             # print(filename)
             if not os.path.isabs(filename):
-                filename = prefix + '/' + filename
+                filename = prefix + "/" + filename
         except:
             continue
 
@@ -354,14 +381,17 @@ def create_shadow(orig, args):
     right_px = int(orig.size[0] / 100.0 * args.right_shift)
     down_px = int(orig.size[1] / 100.0 * args.down_shift)
 
-    shadow = Image.new('RGBA', orig.size, (0, 0, 0, 0))
+    shadow = Image.new("RGBA", orig.size, (0, 0, 0, 0))
     shadowize(shadow, orig, args.color)
     shadow.load()
 
     if args.blur > 0:
-        crop = (int(math.floor(-blur_px)), int(math.floor(-blur_px)),
-                orig.size[0] + int(math.ceil(blur_px)),
-                orig.size[1] + int(math.ceil(blur_px)))
+        crop = (
+            int(math.floor(-blur_px)),
+            int(math.floor(-blur_px)),
+            orig.size[0] + int(math.ceil(blur_px)),
+            orig.size[1] + int(math.ceil(blur_px)),
+        )
         right_px += int(math.floor(-blur_px))
         down_px += int(math.floor(-blur_px))
         shadow = shadow.crop(crop)
@@ -369,7 +399,7 @@ def create_shadow(orig, args):
         shadow = shadow.filter(flt)
     shadow.load()
 
-    shadowed = Image.new('RGBA', orig.size, (0, 0, 0, 0))
+    shadowed = Image.new("RGBA", orig.size, (0, 0, 0, 0))
     shadowed.paste(shadow, (right_px, down_px))
     shadowed.crop((0, 0, orig.size[0], orig.size[1]))
     shadowed = Image.alpha_composite(shadowed, orig)
@@ -384,5 +414,9 @@ def shadowize(shadow, orig, color):
         for x in range(orig.size[0]):
             o_px = o_pxs[x, y]
             if o_px[3] > 0:
-                s_pxs[x, y] = (color[0], color[1], color[2],
-                               int(color[3] * (o_px[3] / 255.0)))
+                s_pxs[x, y] = (
+                    color[0],
+                    color[1],
+                    color[2],
+                    int(color[3] * (o_px[3] / 255.0)),
+                )

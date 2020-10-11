@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
 import json
 import subprocess
@@ -16,24 +16,24 @@ except ImportError:
 
 # third-party dependencies
 def load_requirements(fname):
-    reqs = parse_requirements(fname, session='clickgen_session')
+    reqs = parse_requirements(fname, session="clickgen_session")
     return [str(ir.requirement) for ir in reqs]
 
 
 # Skip `Pillow` if already installed
 try:
     import PIL
-    INSTALL_REQUIRE = load_requirements('requirements.txt')
-    INSTALL_REQUIRE = list(
-        filter(lambda x: (str(x).find('Pillow')), INSTALL_REQUIRE))
+
+    INSTALL_REQUIRE = load_requirements("requirements.txt")
+    INSTALL_REQUIRE = list(filter(lambda x: (str(x).find("Pillow")), INSTALL_REQUIRE))
 except ImportError:
-    INSTALL_REQUIRE = load_requirements('requirements.txt')
+    INSTALL_REQUIRE = load_requirements("requirements.txt")
 
 
 class install(_install):
     def run(self):
-        subprocess.call(['make', 'clean', '-C', 'xcursorgen'])
-        subprocess.call(['make', '-C', 'xcursorgen'])
+        subprocess.call(["make", "clean", "-C", "xcursorgen"])
+        subprocess.call(["make", "-C", "xcursorgen"])
         _install.run(self)
 
 
@@ -41,31 +41,34 @@ class install(_install):
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open('clickgen/pkginfo.json') as fp:
+with open("clickgen/pkginfo.json") as fp:
     _info = json.load(fp)
 
 setup(
-    name=_info['name'],
-    version=_info['version'],
-    author=_info['author'],
-    author_email=_info['author_email'],
-    description=_info['description'],
+    name=_info["name"],
+    version=_info["version"],
+    author=_info["author"],
+    author_email=_info["author_email"],
+    description=_info["description"],
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://github.com/ful1e5/clickgen',
+    url="https://github.com/ful1e5/clickgen",
     classifiers=[
-        _info['status_classifier'], 'Topic :: System :: Operating System',
-        'Programming Language :: Python :: 3', 'Programming Language :: C',
-        'Natural Language :: English',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: OS Independent', 'Typing :: Typed'],
-    cmdclass={'install': install},
-    python_requires='>=3.6',
-    scripts=['scripts/clickgen'],
-    keywords=['cursor', 'xcursor', 'windows',
-              'linux', 'anicursorgen', 'xcursorgen'],
+        _info["status_classifier"],
+        "Topic :: System :: Operating System",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: C",
+        "Natural Language :: English",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Typing :: Typed",
+    ],
+    cmdclass={"install": install},
+    python_requires=">=3.6",
+    scripts=["scripts/clickgen"],
+    keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
     install_requires=INSTALL_REQUIRE,
-    packages=find_namespace_packages(include=['clickgen', 'clickgen.*']),
+    packages=find_namespace_packages(include=["clickgen", "clickgen.*"]),
     include_package_data=True,
-    zip_safe=True
+    zip_safe=True,
 )
