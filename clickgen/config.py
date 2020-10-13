@@ -59,3 +59,8 @@ class ConfigProvider:
             logging.disable(logging.NOTSET)
         else:
             logging.disable(logging.CRITICAL)
+
+    def get_logger(self, name: str) -> logging.Logger:
+        """ Get custom logger."""
+        logger = logging.getLogger(name)
+        return logger
