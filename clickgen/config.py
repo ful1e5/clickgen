@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import logging
 from os import PathLike, path
 from typing import AnyStr
 
@@ -30,6 +31,11 @@ class ConfigProvider:
         self.x11: bool = True
         self.win: bool = True
 
+        # Logging config
+        self.logs = False
+        self.logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.INFO)
+
     @property
     def get_platforms(self) -> list[str]:
         """  Provide platforms for building cursors theme. """
@@ -41,3 +47,15 @@ class ConfigProvider:
             platform.append("WINDOWS")
 
         return platform
+
+    @property
+    def toggle_logging(self) -> None:
+        """
+        Enable/Disable logging in clickgen. (@default Disable)
+        """
+        self.logs = not self.logs
+
+        if self.logs:
+            logging.disable(logging.NOTSET)
+        else:
+            logging.disable(logging.CRITICAL)
