@@ -7,7 +7,7 @@ from typing import AnyStr
 
 
 class ConfigProvider:
-    """Configure `clickgen` cursor building process."""
+    """ Configure `clickgen` cursor building process. """
 
     def __init__(
         self,
@@ -29,3 +29,15 @@ class ConfigProvider:
         # Cursor platforms
         self.x11: bool = True
         self.win: bool = True
+
+    @property
+    def get_platforms(self) -> list[str]:
+        """  Provide platforms for building cursors theme. """
+        platform: list[str] = []
+
+        if self.x11:
+            platform.append("X11")
+        if self.win:
+            platform.append("WINDOWS")
+
+        return platform
