@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-from clickgen.configs.core import ConfigProvider
+from clickgen.configs.core import Config
 
 
 class X11Builder:
     """ Generate `x11` cursors """
 
-    def __init__(self, config: ConfigProvider) -> None:
+    def __init__(self, config: Config) -> None:
         self._config = config
