@@ -116,7 +116,3 @@ if platform.system() == "Windows":
 else:
     # all non-Windows platforms are supporting ANSI escapes so we use them
     logging.StreamHandler.emit = add_coloring_to_emit_ansi(logging.StreamHandler.emit)
-    # log = logging.getLogger()
-    # log.addFilter(log_filter())
-    # //hdlr = logging.StreamHandler()
-    # //hdlr.setFormatter(formatter())

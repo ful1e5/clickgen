@@ -7,7 +7,7 @@ from os import PathLike, path
 from typing import AnyStr
 
 
-class ConfigProvider:
+class Config:
     """ Configure `clickgen` cursor building process. """
 
     def __init__(
