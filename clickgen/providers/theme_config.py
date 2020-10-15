@@ -7,12 +7,13 @@ from typing import AnyStr, List, Union, Callable
 from clickgen.providers.json_parser import HotspotsParser
 
 
-class CursorsConfigFileProvider:
+class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
 
     def __init__(self, bitmaps_dir: str, hotspots_file=PathLike[AnyStr]) -> None:
         self.__bitmaps_dir = bitmaps_dir
         self.__cords_parser = HotspotsParser(hotspots_file)
+        self.__pngs = self.__get_png_files()
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -28,12 +29,18 @@ class CursorsConfigFileProvider:
 
         return pngs
 
-    def __list_static_cursors(self, is_animated: bool = False) -> List[str]:
+    def __list_static_png(self, is_animated: bool = False) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
-        pngs: List[str] = self.__get_png_files()
-
+        func: Callable[[str], bool] = lambda x: x.find("-") <= 0
+        pngs: List[str] = list(filter(func, self.__pngs))
         return pngs
 
-    def get_config(self, cursor_name: str) -> Union[PathLike[AnyStr], str]:
+    def __list_animated_png(self, is_animated: bool = False) -> List[str]:
+        """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
+        func: Callable[[str], bool] = lambda x: x.find("-") >= 0
+        pngs: List[str] = list(filter(func, self.__pngs))
+        return pngs
+
+    def get_cfg_dir(self, cursor_name: str) -> Union[PathLike[AnyStr], str]:
         """ Return `.in` file path. """
         return cursor_name
