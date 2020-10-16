@@ -2,18 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
-from os import PathLike, path
-from typing import AnyStr, List, Union, Callable
-from clickgen.providers.json_parser import HotspotsParser
+from os import path
+import tempfile
+from typing import AnyStr, Callable, List
+
+from json_parser import HotspotsParser
 
 
 class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
-
-    def __init__(self, bitmaps_dir: str, hotspots_file=PathLike[AnyStr]) -> None:
-        self.__bitmaps_dir = bitmaps_dir
-        self.__cords_parser = HotspotsParser(hotspots_file)
-        self.__pngs = self.__get_png_files()
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -29,18 +26,37 @@ class ThemeConfigsProvider:
 
         return pngs
 
+    def __get_cfg_files(self) -> List[str]:
+        """ Generate list of .in files according to `self.__pngs` """
+        func: Callable[[str], str] = lambda x: f"{path.splitext(x)[0].split('-')[0]}.in"
+        cfgs: List[str] = list(map(func, self.__pngs))
+        return cfgs
+
+    def __init__(self, bitmaps_dir: str, hotspots_file: AnyStr) -> None:
+        self.__bitmaps_dir = bitmaps_dir
+        self.__cords_parser = HotspotsParser(hotspots_file)
+        self.__pngs = self.__get_png_files()
+        self.config_dir = tempfile.mkdtemp()
+
     def __list_static_png(self, is_animated: bool = False) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
-        pngs: List[str] = list(filter(func, self.__pngs))
-        return pngs
+        st_pngs: List[str] = list(filter(func, self.__pngs))
+        return st_pngs
 
     def __list_animated_png(self, is_animated: bool = False) -> List[str]:
-        """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
+        """ Return cursors list inside `bitmaps_dir` that had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") >= 0
-        pngs: List[str] = list(filter(func, self.__pngs))
-        return pngs
+        an_pngs: List[str] = list(filter(func, self.__pngs))
+        return an_pngs
 
-    def get_cfg_dir(self, cursor_name: str) -> Union[PathLike[AnyStr], str]:
-        """ Return `.in` file path. """
-        return cursor_name
+    def __generate_static_cfgs(self) -> None:
+        self.__list_static_png()
+
+    def __generate_animated_cfgs(self) -> None:
+        self.__list_animated_png()
+        self.__get_cfg_files()
+
+    def generate(self) -> None:
+        self.__generate_animated_cfgs()
+        self.__generate_static_cfgs()
