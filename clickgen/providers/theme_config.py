@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
+import itertools
 from os import path
 import tempfile
-import itertools
 from typing import AnyStr, Callable, List
 
 from json_parser import HotspotsParser
@@ -68,9 +68,9 @@ class ThemeConfigsProvider:
 
 
 if __name__ == "__main__":
-    tconf = ThemeConfigsProvider(
-        bitmaps_dir="../../examples/bitmaps",
-        hotspots_file="../../examples/hotspots.json",
+    t = ThemeConfigsProvider(
+        bitmaps_dir="/home/kaiz/Github/clickgen/examples/bitmaps",
+        hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
         sizes=[24, 28],
     )
-    tconf.generate()
+    t.generate()
