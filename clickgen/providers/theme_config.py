@@ -4,6 +4,7 @@
 from glob import glob
 from os import path
 import tempfile
+import itertools
 from typing import AnyStr, Callable, List
 
 from json_parser import HotspotsParser
@@ -55,17 +56,21 @@ class ThemeConfigsProvider:
     def __generate_static_cfgs(self) -> None:
         cursors = self.__list_static_png()
 
-        for cur in cursors:
-            print(cur)
-            print(self.__get_cfg_file(cur))
+        for i, j in itertools.product(self.__sizes, cursors):
+            print(f"{i} xxxxxx {j}")
 
     def __generate_animated_cfgs(self) -> None:
-        cursors = self.__list_animated_png()
-
-        for cur in cursors:
-            print(cur)
-            print(self.__get_cfg_file(cur))
+        self.__list_animated_png()
 
     def generate(self) -> None:
         self.__generate_animated_cfgs()
         self.__generate_static_cfgs()
+
+
+if __name__ == "__main__":
+    tconf = ThemeConfigsProvider(
+        bitmaps_dir="../../examples/bitmaps",
+        hotspots_file="../../examples/hotspots.json",
+        sizes=[24, 28],
+    )
+    tconf.generate()
