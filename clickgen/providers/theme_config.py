@@ -5,7 +5,7 @@ from glob import glob
 from os import path
 import os
 import tempfile
-from typing import AnyStr, Callable, List, Tuple
+from typing import AnyStr, Callable, Dict, List, Tuple
 
 from PIL import Image
 
@@ -14,6 +14,14 @@ from json_parser import HotspotsParser
 
 class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
+
+    def __init__(
+        self, bitmaps_dir: str, hotspots_file: AnyStr, sizes: List[int]
+    ) -> None:
+        self.__bitmaps_dir = bitmaps_dir
+        self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
+        self.__sizes = sizes
+        self.config_dir = tempfile.mkdtemp()
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -29,25 +37,40 @@ class ThemeConfigsProvider:
 
         return pngs
 
-    def __init__(
-        self, bitmaps_dir: str, hotspots_file: AnyStr, sizes: List[int]
-    ) -> None:
-        self.__bitmaps_dir = bitmaps_dir
-        self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
-        self.__pngs = self.__get_png_files()
-        self.__sizes = sizes
-        self.config_dir = tempfile.mkdtemp()
+    def __get_png_files(self) -> List[str]:
+        """ Return list of .png files in `bitmaps_dir`. """
+        func: Callable[[str], str] = lambda x: path.basename(x)
+        pngs: List[str] = []
 
-    def __list_static_png(self, is_animated: bool = False) -> List[str]:
+        try:
+            pngs.extend(list(map(func, glob(path.join(self.__bitmaps_dir, "*.png")))))
+            if len(pngs) <= 0:
+                raise Exception("Cursors .png files not found")
+        except Exception as e:
+            print(e)
+
+        return pngs
+
+    def __list_static_png(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
-        st_pngs: List[str] = list(filter(func, self.__pngs))
+        st_pngs: List[str] = list(filter(func, self.__get_png_files()))
         return st_pngs
 
-    def __list_animated_png(self, is_animated: bool = False) -> List[str]:
+    def __list_animated_png(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
-        func: Callable[[str], bool] = lambda x: x.find("-") >= 0
-        an_pngs: List[str] = list(filter(func, self.__pngs))
+        func: Callable[[str], bool] = lambda x: x.find(f"-") >= 0
+        pngs: List[str] = list(filter(func, self.__get_png_files()))
+
+        grp_func: Callable[[str], str] = lambda x: x.split("-")[0]
+        grp: List[str] = list(set(map(grp_func, pngs)))
+        an_pngs: Dict[str, List[str]] = {}
+
+        for g in grp:
+            f: Callable[[str], bool] = lambda x: x.find(f"{g}-") >= 0
+            p: List[str] = sorted(list(filter(f, pngs)))
+            an_pngs[g] = p
+
         return an_pngs
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
@@ -120,7 +143,7 @@ class ThemeConfigsProvider:
         self.__list_animated_png()
 
     def generate(self) -> None:
-        # self.__generate_animated_cfgs()
+        self.__generate_animated_cfgs()
         self.__generate_static_cfgs()
 
 
