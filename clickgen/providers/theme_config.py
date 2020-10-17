@@ -26,16 +26,18 @@ class ThemeConfigsProvider:
 
         return pngs
 
-    def __get_cfg_files(self) -> List[str]:
-        """ Generate list of .in files according to `self.__pngs` """
-        func: Callable[[str], str] = lambda x: f"{path.splitext(x)[0].split('-')[0]}.in"
-        cfgs: List[str] = list(map(func, self.__pngs))
-        return cfgs
+    def __get_cfg_file(self, png_file: AnyStr) -> str:
+        """ Generate .in file according to @png_file. """
+        cfg: str = f"{path.splitext(png_file)[0].split('-')[0]}.in"
+        return cfg
 
-    def __init__(self, bitmaps_dir: str, hotspots_file: AnyStr) -> None:
+    def __init__(
+        self, bitmaps_dir: str, hotspots_file: AnyStr, sizes: List[int]
+    ) -> None:
         self.__bitmaps_dir = bitmaps_dir
         self.__cords_parser = HotspotsParser(hotspots_file)
         self.__pngs = self.__get_png_files()
+        self.__sizes = sizes
         self.config_dir = tempfile.mkdtemp()
 
     def __list_static_png(self, is_animated: bool = False) -> List[str]:
@@ -51,11 +53,18 @@ class ThemeConfigsProvider:
         return an_pngs
 
     def __generate_static_cfgs(self) -> None:
-        self.__list_static_png()
+        cursors = self.__list_static_png()
+
+        for cur in cursors:
+            print(cur)
+            print(self.__get_cfg_file(cur))
 
     def __generate_animated_cfgs(self) -> None:
-        self.__list_animated_png()
-        self.__get_cfg_files()
+        cursors = self.__list_animated_png()
+
+        for cur in cursors:
+            print(cur)
+            print(self.__get_cfg_file(cur))
 
     def generate(self) -> None:
         self.__generate_animated_cfgs()
