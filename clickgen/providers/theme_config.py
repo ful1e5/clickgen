@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
-import itertools
 from os import path
 import os
 import tempfile
@@ -29,11 +28,6 @@ class ThemeConfigsProvider:
             print(e)
 
         return pngs
-
-    def __get_cfg_file(self, png_file: AnyStr) -> str:
-        """ Generate .in file according to @png_file. """
-        cfg: str = f"{path.splitext(png_file)[0].split('-')[0]}.in"
-        return cfg
 
     def __init__(
         self, bitmaps_dir: str, hotspots_file: AnyStr, sizes: List[int]
@@ -96,19 +90,37 @@ class ThemeConfigsProvider:
             path.splitext(cur)[0], (width, height), size
         )
 
-    def __generate_static_cfgs(self) -> None:
-        cursors = self.__list_static_png()
+    def __get_cfg_file(self, png_file: AnyStr) -> str:
+        """ Generate .in file according to @png_file. """
+        cfg: str = f"{path.splitext(png_file)[0].split('-')[0]}.in"
+        return cfg
 
-        for size, cur in itertools.product(self.__sizes, cursors):
-            print(f"{size} xxxxxx {cur}")
-            (xhot, yhot) = self.__resize_cursor(cur, size)
-            print(f"{xhot} ------- {yhot}")
+    def __write_cfg_file(self, cur: str, lines: List[str]) -> None:
+        """ Write {@cur.in} file in @self.config_dir. """
+        # sort line, So all lines in order according to size (24x24, 28x28, ..)
+        lines.sort()
+        # remove newline from EOF
+        lines[-1] = lines[-1].rstrip("\n")
+        with open(self.__get_cfg_file(cur), "w") as config_file:
+            for line in lines:
+                config_file.write(line)
+
+    def __generate_static_cfgs(self) -> None:
+        """ Generate static cursors `.in` config files according to @self.__sizes. """
+        cursors = self.__list_static_png()
+        for cur in cursors:
+            lines: List[str] = []
+            for size in self.__sizes:
+                (xhot, yhot) = self.__resize_cursor(cur, size)
+                lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
+            self.__write_cfg_file(cur, lines)
 
     def __generate_animated_cfgs(self) -> None:
+        """ Generate animated cursors `.in` config files according to @self.__sizes. """
         self.__list_animated_png()
 
     def generate(self) -> None:
-        self.__generate_animated_cfgs()
+        # self.__generate_animated_cfgs()
         self.__generate_static_cfgs()
 
 
@@ -116,6 +128,6 @@ if __name__ == "__main__":
     t = ThemeConfigsProvider(
         bitmaps_dir="/home/kaiz/Github/clickgen/examples/bitmaps",
         hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
-        sizes=[24],
+        sizes=[24, 25],
     )
     t.generate()
