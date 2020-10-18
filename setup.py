@@ -1,33 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from distutils.command.install import install as _install
 import json
 import subprocess
-from setuptools import setup, find_namespace_packages
-from distutils.command.install import install as _install
 
-try:
-    # for pip >= 10
-    from pip._internal.req import parse_requirements
-except ImportError:
-    # for pip <= 9.0.3
-    from pip.req import parse_requirements
-
-
-# third-party dependencies
-def load_requirements(fname):
-    reqs = parse_requirements(fname, session="clickgen_session")
-    return [str(ir.requirement) for ir in reqs]
-
-
-# Skip `Pillow` if already installed
-try:
-    import PIL
-
-    INSTALL_REQUIRE = load_requirements("requirements.txt")
-    INSTALL_REQUIRE = list(filter(lambda x: (str(x).find("Pillow")), INSTALL_REQUIRE))
-except ImportError:
-    INSTALL_REQUIRE = load_requirements("requirements.txt")
+from setuptools import find_namespace_packages, setup
 
 
 class install(_install):
@@ -67,7 +45,7 @@ setup(
     python_requires=">=3.6",
     scripts=["scripts/clickgen"],
     keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
-    install_requires=INSTALL_REQUIRE,
+    install_requires=["Pillow>=7.2.0"],
     packages=find_namespace_packages(include=["clickgen", "clickgen.*"]),
     include_package_data=True,
     zip_safe=True,
