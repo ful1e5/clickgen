@@ -21,7 +21,7 @@ class ThemeConfigsProvider:
         self.__bitmaps_dir = bitmaps_dir
         self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
         self.__sizes = sizes
-        self.config_dir = tempfile.mkdtemp()
+        self.config_dir = tempfile.mkdtemp(prefix="clickgen_")
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -146,13 +146,3 @@ class ThemeConfigsProvider:
         self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
         return self.config_dir
-
-
-# if __name__ == "__main__":
-#     t = ThemeConfigsProvider(
-#         bitmaps_dir="/home/kaiz/Github/clickgen/examples/bitmaps",
-#         hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
-#         sizes=[100],
-#     )
-#     cfg_dir = t.generate(animation_delay=10)
-#     print(cfg_dir)
