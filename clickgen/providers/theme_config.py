@@ -9,7 +9,7 @@ from typing import AnyStr, Callable, Dict, List, Tuple, Union
 
 from PIL import Image
 
-from json_parser import HotspotsParser
+from clickgen.providers.json_parser import HotspotsParser
 
 
 class ThemeConfigsProvider:
@@ -73,8 +73,8 @@ class ThemeConfigsProvider:
 
         # opening original image
         image = Image.open(in_path)
-        width: float = image.size[0]
-        height: float = image.size[1]
+        width: int = image.size[0]
+        height: int = image.size[1]
 
         aspect: float = width / height
         ideal_width: int = size
