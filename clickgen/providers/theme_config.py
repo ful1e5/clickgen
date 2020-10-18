@@ -37,41 +37,20 @@ class ThemeConfigsProvider:
 
         return pngs
 
-    def __get_png_files(self) -> List[str]:
-        """ Return list of .png files in `bitmaps_dir`. """
-        func: Callable[[str], str] = lambda x: path.basename(x)
-        pngs: List[str] = []
-
-        try:
-            pngs.extend(list(map(func, glob(path.join(self.__bitmaps_dir, "*.png")))))
-            if len(pngs) <= 0:
-                raise Exception("Cursors .png files not found")
-        except Exception as e:
-            print(e)
-
-        return pngs
-
     def __list_static_png(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
         st_pngs: List[str] = list(filter(func, self.__get_png_files()))
         return st_pngs
 
-    def __list_animated_png(self) -> Dict[str, List[str]]:
+    def __list_animated_png(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
         func: Callable[[str], bool] = lambda x: x.find(f"-") >= 0
-        pngs: List[str] = list(filter(func, self.__get_png_files()))
-
-        grp_func: Callable[[str], str] = lambda x: x.split("-")[0]
-        grp: List[str] = list(set(map(grp_func, pngs)))
-        an_pngs: Dict[str, List[str]] = {}
-
-        for g in grp:
-            f: Callable[[str], bool] = lambda x: x.find(f"{g}-") >= 0
-            p: List[str] = sorted(list(filter(f, pngs)))
-            an_pngs[g] = p
-
+        an_pngs: List[str] = list(filter(func, self.__get_png_files()))
         return an_pngs
+
+    def __clean_cur_name(self, name: str) -> str:
+        return path.splitext(name)[0].split("-")[0]
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
         """ Resize cursor .png file as @size """
@@ -110,13 +89,8 @@ class ThemeConfigsProvider:
         thumb.close()
 
         return self.__cords_parser.get_hotspots(
-            path.splitext(cur)[0], (width, height), size
+            self.__clean_cur_name(cur), (width, height), size
         )
-
-    def __get_cfg_file(self, png_file: AnyStr) -> str:
-        """ Generate .in file according to @png_file. """
-        cfg: str = f"{path.splitext(png_file)[0].split('-')[0]}.in"
-        return cfg
 
     def __write_cfg_file(self, cur: str, lines: List[str]) -> None:
         """ Write {@cur.in} file in @self.config_dir. """
@@ -124,23 +98,28 @@ class ThemeConfigsProvider:
         lines.sort()
         # remove newline from EOF
         lines[-1] = lines[-1].rstrip("\n")
-        with open(self.__get_cfg_file(cur), "w") as config_file:
+        with open(f"{self.__clean_cur_name(cur)}.in", "w") as config_file:
             for line in lines:
                 config_file.write(line)
+
+    def __generate_cursor(self, cur: str) -> List[str]:
+        lines: List[str] = []
+        for size in self.__sizes:
+            (xhot, yhot) = self.__resize_cursor(cur, size)
+            lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
+        return lines
 
     def __generate_static_cfgs(self) -> None:
         """ Generate static cursors `.in` config files according to @self.__sizes. """
         cursors = self.__list_static_png()
         for cur in cursors:
-            lines: List[str] = []
-            for size in self.__sizes:
-                (xhot, yhot) = self.__resize_cursor(cur, size)
-                lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
+            lines: List[str] = self.__generate_cursor(cur)
             self.__write_cfg_file(cur, lines)
 
     def __generate_animated_cfgs(self) -> None:
         """ Generate animated cursors `.in` config files according to @self.__sizes. """
-        self.__list_animated_png()
+        cursors: List[str] = self.__list_animated_png()
+        print(cursors)
 
     def generate(self) -> None:
         self.__generate_animated_cfgs()
