@@ -1,38 +1,40 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.command.install import install as _install
-import json
-import subprocess
-
-from setuptools import find_namespace_packages, setup
+from setuptools import find_namespace_packages
+from distutils.core import Extension, setup
 
 
-class install(_install):
-    def run(self):
-        subprocess.call(["make", "clean", "-C", "xcursorgen"])
-        subprocess.call(["make", "-C", "xcursorgen"])
-        _install.run(self)
-
+xcursorgen_module = Extension(
+    "xcursorgen",
+    define_macros=[("MAJOR_VERSION", "1"), ("MINOR_VERSION", "0")],
+    include_dirs=["/usr/local/include"],
+    libraries=["X11", "Xcursor", "png", "z"],
+    library_dirs=["/usr/local/lib"],
+    sources=["xcursorgen/xcursorgen.c"],
+)
 
 # readme.md as long description
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("clickgen/pkginfo.json") as fp:
-    _info = json.load(fp)
-
 setup(
-    name=_info["name"],
-    version=_info["version"],
-    author=_info["author"],
-    author_email=_info["author_email"],
-    description=_info["description"],
+    name="clickgen",
+    version="1.1.7",
+    author="Kaiz Khatri",
+    author_email="kaizmandhu@gmail.com",
+    description="X11 & Windows cursor building API 👷",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",
+    ext_modules=[xcursorgen_module],
+    scripts=["scripts/clickgen"],
+    keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
+    install_requires=["Pillow>=7.2.0"],
+    package_dir={"clickgen": "src"},
     classifiers=[
-        _info["status_classifier"],
+        "Development Status :: 5 - Production/Stable",
+        "status_classifier",
         "Topic :: System :: Operating System",
         "Programming Language :: Python :: 3",
         "Programming Language :: C",
@@ -41,12 +43,7 @@ setup(
         "Operating System :: OS Independent",
         "Typing :: Typed",
     ],
-    cmdclass={"install": install},
     python_requires=">=3.6",
-    scripts=["scripts/clickgen"],
-    keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
-    install_requires=["Pillow>=7.2.0"],
     packages=find_namespace_packages(include=["clickgen", "clickgen.*"]),
-    include_package_data=True,
     zip_safe=True,
 )

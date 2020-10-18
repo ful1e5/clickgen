@@ -9,7 +9,7 @@ from typing import AnyStr, Callable, Dict, List, Tuple, Union
 
 from PIL import Image
 
-from clickgen.providers.json_parser import HotspotsParser
+from .json_parser import HotspotsParser
 
 
 class ThemeConfigsProvider:
