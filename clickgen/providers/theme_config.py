@@ -109,9 +109,9 @@ class ThemeConfigsProvider:
         lines.sort()
         # remove newline from EOF
         lines[-1] = lines[-1].rstrip("\n")
-        with open(f"{self.__clean_cur_name(cur)}.in", "w") as config_file:
-            for line in lines:
-                config_file.write(line)
+        cfg_path = path.join(self.config_dir, f"{self.__clean_cur_name(cur)}.in")
+        with open(cfg_path, "w") as f:
+            f.writelines(lines)
 
     def __generate_cursor(self, cur: str, delay: Union[int, None] = None) -> List[str]:
         """ Resize cursor & return `.in` file content. """
@@ -141,16 +141,18 @@ class ThemeConfigsProvider:
                 lines.extend(self.__generate_cursor(cur, delay))
             self.__write_cfg_file(key, lines)
 
-    def generate(self, animation_delay: int) -> None:
+    def generate(self, animation_delay: int) -> str:
         """ Generate `.in` config files of `.png` inside @self.__bitmaps. """
         self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
+        return self.config_dir
 
 
-if __name__ == "__main__":
-    t = ThemeConfigsProvider(
-        bitmaps_dir="/home/kaiz/Github/clickgen/examples/bitmaps",
-        hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
-        sizes=[24, 25],
-    )
-    t.generate(animation_delay=10)
+# if __name__ == "__main__":
+#     t = ThemeConfigsProvider(
+#         bitmaps_dir="/home/kaiz/Github/clickgen/examples/bitmaps",
+#         hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
+#         sizes=[100],
+#     )
+#     cfg_dir = t.generate(animation_delay=10)
+#     print(cfg_dir)
