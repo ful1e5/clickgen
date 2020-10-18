@@ -15,19 +15,15 @@ class HotspotsParser:
     def get_hotspots(
         self, c: str, old_size: Tuple[int, int], new_size: int
     ) -> Tuple[int, int]:
-        xhot = yhot = int(new_size / 2)
 
         x = self.__hotspots[c]["xhot"]
         y = self.__hotspots[c]["yhot"]
         (width, height) = old_size
 
-        if x:
-            xhot = x
+        if x is None or y is None:
+            xhot = yhot = int(new_size / 2)
         else:
-            xhot = round(width / new_size * x)
-        if y:
-            yhot = y
-        else:
-            yhot = round(height / new_size * y)
+            xhot = int(round(new_size / width * x))
+            yhot = int(round(new_size / height * y))
 
         return (xhot, yhot)
