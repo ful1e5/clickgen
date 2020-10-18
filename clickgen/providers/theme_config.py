@@ -5,7 +5,7 @@ from glob import glob
 from os import path
 import os
 import tempfile
-from typing import AnyStr, Callable, Dict, List, Tuple
+from typing import AnyStr, Callable, Dict, List, Tuple, Union
 
 from PIL import Image
 
@@ -43,11 +43,21 @@ class ThemeConfigsProvider:
         st_pngs: List[str] = list(filter(func, self.__get_png_files()))
         return st_pngs
 
-    def __list_animated_png(self) -> List[str]:
+    def __list_animated_png(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
-        func: Callable[[str], bool] = lambda x: x.find(f"-") >= 0
+        func: Callable[[str], bool] = lambda x: x.find("-") >= 0
         an_pngs: List[str] = list(filter(func, self.__get_png_files()))
-        return an_pngs
+
+        g_func: Callable[[str], str] = lambda x: x.split("-")[0]
+        grps: List[str] = list(set(map(g_func, an_pngs)))
+
+        d: Dict[str, List[str]] = {}
+
+        for g in grps:
+            func: Callable[[str], bool] = lambda x: x.find(g) >= 0
+            d[g] = sorted(list(filter(func, an_pngs)))
+
+        return d
 
     def __clean_cur_name(self, name: str) -> str:
         return path.splitext(name)[0].split("-")[0]
@@ -102,11 +112,14 @@ class ThemeConfigsProvider:
             for line in lines:
                 config_file.write(line)
 
-    def __generate_cursor(self, cur: str) -> List[str]:
+    def __generate_cursor(self, cur: str, delay: Union[int, None] = None) -> List[str]:
         lines: List[str] = []
         for size in self.__sizes:
             (xhot, yhot) = self.__resize_cursor(cur, size)
-            lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
+            if delay:
+                lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur} {delay}\n")
+            else:
+                lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
         return lines
 
     def __generate_static_cfgs(self) -> None:
@@ -116,13 +129,18 @@ class ThemeConfigsProvider:
             lines: List[str] = self.__generate_cursor(cur)
             self.__write_cfg_file(cur, lines)
 
-    def __generate_animated_cfgs(self) -> None:
+    def __generate_animated_cfgs(self, delay: int) -> None:
         """ Generate animated cursors `.in` config files according to @self.__sizes. """
-        cursors: List[str] = self.__list_animated_png()
-        print(cursors)
+        d: Dict[str, List[str]] = self.__list_animated_png()
 
-    def generate(self) -> None:
-        self.__generate_animated_cfgs()
+        for key in d:
+            lines: List[str] = []
+            for cur in d.get(key):
+                lines.extend(self.__generate_cursor(cur, delay))
+            self.__write_cfg_file(key, lines)
+
+    def generate(self, animation_delay: int) -> None:
+        self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
 
 
@@ -132,4 +150,4 @@ if __name__ == "__main__":
         hotspots_file="/home/kaiz/Github/clickgen/examples/hotspots.json",
         sizes=[24, 25],
     )
-    t.generate()
+    t.generate(animation_delay=10)
