@@ -60,10 +60,11 @@ class ThemeConfigsProvider:
         return d
 
     def __clean_cur_name(self, name: str) -> str:
+        """ Remove framing postfix. """
         return path.splitext(name)[0].split("-")[0]
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
-        """ Resize cursor .png file as @size """
+        """ Resize cursor .png file as @size. """
         in_path = path.join(self.__bitmaps_dir, cur)
         out_dir = path.join(self.config_dir, f"{size}x{size}")
         out_path = path.join(out_dir, cur)
@@ -113,6 +114,7 @@ class ThemeConfigsProvider:
                 config_file.write(line)
 
     def __generate_cursor(self, cur: str, delay: Union[int, None] = None) -> List[str]:
+        """ Resize cursor & return `.in` file content. """
         lines: List[str] = []
         for size in self.__sizes:
             (xhot, yhot) = self.__resize_cursor(cur, size)
@@ -140,6 +142,7 @@ class ThemeConfigsProvider:
             self.__write_cfg_file(key, lines)
 
     def generate(self, animation_delay: int) -> None:
+        """ Generate `.in` config files of `.png` inside @self.__bitmaps. """
         self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
 
