@@ -4,14 +4,13 @@
 from setuptools import find_namespace_packages
 from distutils.core import Extension, setup
 
-
 xcursorgen_module = Extension(
     "xcursorgen",
     define_macros=[("MAJOR_VERSION", "1"), ("MINOR_VERSION", "0")],
     include_dirs=["/usr/local/include"],
-    libraries=["X11", "Xcursor", "png", "z"],
+    runtime_library_dirs=["X11", "Xcursor", "png", "z"],
     library_dirs=["/usr/local/lib"],
-    sources=["xcursorgen/xcursorgen.c"],
+    sources=["xcursorgen/xcursorgen.c", "xcursorgen/xcursorgen.h"],
 )
 
 # readme.md as long description
@@ -32,6 +31,7 @@ setup(
     keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
     install_requires=["Pillow>=7.2.0"],
     package_dir={"clickgen": "src"},
+    packages=find_namespace_packages(include=["src", "src.*"]),
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "status_classifier",
@@ -44,6 +44,5 @@ setup(
         "Typing :: Typed",
     ],
     python_requires=">=3.6",
-    packages=find_namespace_packages(include=["clickgen", "clickgen.*"]),
     zip_safe=True,
 )
