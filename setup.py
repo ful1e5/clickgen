@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import find_namespace_packages
-from distutils.core import Extension, setup
+import subprocess
+from setuptools import setup, find_namespace_packages
+from distutils.command.install import install as _install
 
-xcursorgen_module = Extension(
-    "xcursorgen",
-    define_macros=[("MAJOR_VERSION", "1"), ("MINOR_VERSION", "0")],
-    include_dirs=["/usr/local/include"],
-    runtime_library_dirs=["X11", "Xcursor", "png", "z"],
-    library_dirs=["/usr/local/lib"],
-    sources=["xcursorgen/xcursorgen.c", "xcursorgen/xcursorgen.h"],
-)
+
+class install(_install):
+    def run(self):
+        subprocess.call(["make", "clean", "-C", "xcursorgen"])
+        subprocess.call(["make", "-C", "xcursorgen"])
+        _install.run(self)
+
 
 # readme.md as long description
 with open("README.md", "r") as fh:
@@ -26,7 +26,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",
-    ext_modules=[xcursorgen_module],
+    cmdclass={"install": install},
     scripts=["scripts/clickgen"],
     keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
     install_requires=["Pillow>=7.2.0"],
