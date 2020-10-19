@@ -3,34 +3,80 @@
 
 import ctypes
 from ctypes import CDLL, c_char, pointer
-from os import path
+from glob import glob
+from os import path, makedirs, remove
 from typing import Any, List
 
-lib_path: str = path.join(__file__, path.abspath("../../libs/xcursorgen.so"))
-xcursorgen: CDLL = CDLL(lib_path)
-
-# main function ctypes define
-LP_c_char = ctypes.POINTER(ctypes.c_char)
-LP_LP_c_char = ctypes.POINTER(LP_c_char)
-xcursorgen.main.argtypes = (ctypes.c_int, LP_LP_c_char)
+lib_xcursorgen: str = path.join(__file__, path.abspath("../../libs/xcursorgen.so"))
 
 
-def gen_argv_ctypes(argv: List[str]) -> Any:
-    """ Convert `string` arguments to `ctypes` pointer. """
-    p = (LP_c_char * len(argv))()
+class X11CursorsBuilder(object):
+    """ Build X11 cursors from `.in` configs files. """
 
-    for i, arg in enumerate(argv):
-        enc_arg: bytes = str(arg).encode("utf-8")
-        p[i] = ctypes.create_string_buffer(enc_arg)
+    def __init__(
+        self,
+        config_dir: str,
+        out_dir: str,
+    ) -> None:
+        self.__config_dir = config_dir
+        self.__out_dir = path.join(out_dir, "cursors")
 
-    return ctypes.cast(p, LP_LP_c_char)
+        if not path.exists(out_dir):
+            makedirs(self.__out_dir)
 
+        # main function ctypes define
+        self.__lib: CDLL = CDLL(lib_xcursorgen)
+        self.__LP_c_char = ctypes.POINTER(ctypes.c_char)
+        self.__LP_LP_c_char = ctypes.POINTER(self.__LP_c_char)
+        self.__lib.main.argtypes = (ctypes.c_int, self.__LP_LP_c_char)
 
-def generate_x11_cursor(cfg_file_path: str, out_path: str, prefix: str) -> None:
-    """ Generate x11 cursor from `.in` file."""
-    argv: List[str] = ["xcursorgen", "-p", prefix, cfg_file_path, out_path]
+    def __gen_argv_ctypes(self, argv: List[str]) -> Any:
+        """ Convert `string` arguments to `ctypes` pointer. """
+        p = (self.__LP_c_char * len(argv))()
 
-    kwargs: pointer[c_char] = gen_argv_ctypes(argv)
-    args: ctypes.c_int = ctypes.c_int(len(argv))
+        for i, arg in enumerate(argv):
+            enc_arg: bytes = str(arg).encode("utf-8")
+            p[i] = ctypes.create_string_buffer(enc_arg)
 
-    xcursorgen.main(args, kwargs)
+        return ctypes.cast(p, self.__LP_LP_c_char)
+
+    def __generate_x11_cursor(
+        self,
+        cfg_file: str,
+    ) -> None:
+        """ Generate x11 cursor from `.in` file."""
+        out: str = path.join(
+            self.__out_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
+        )
+
+        # remove old cursor file
+        if path.exists(out):
+            remove(out)
+
+        argv: List[str] = [
+            "xcursorgen",
+            "-p",  # prefix (do not remove)
+            self.__config_dir,  # prefix (do not remove)
+            cfg_file,  # {cursor}.in file
+            out,
+        ]
+
+        kwargs: pointer[c_char] = self.__gen_argv_ctypes(argv)
+        args: ctypes.c_int = ctypes.c_int(len(argv))
+
+        self.__lib.main(args, kwargs)
+
+    def build(self) -> None:
+        """ Generate x11 cursors from config files(look inside @self.__config_dir). """
+
+        configs: List[str] = glob(f"{self.__config_dir}/*.in")
+
+        try:
+            if len(configs) <= 0:
+                raise IOError(f"configs files not found in {self.__config_dir}")
+
+            for config in configs:
+                self.__generate_x11_cursor(config)
+
+        except IOError as error:
+            print(error)
