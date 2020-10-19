@@ -44,5 +44,6 @@ setup(
         "Typing :: Typed",
     ],
     python_requires=">=3.6",
+    include_package_data=True,
     zip_safe=True,
 )
