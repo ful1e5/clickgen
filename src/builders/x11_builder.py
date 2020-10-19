@@ -19,10 +19,11 @@ class X11CursorsBuilder(object):
         out_dir: str,
     ) -> None:
         self.__config_dir = config_dir
-        self.__out_dir = path.join(out_dir, "cursors")
+        self.__out_dir = out_dir
+        self.__cursors_dir = path.join(self.__out_dir, "cursors")
 
-        if not path.exists(out_dir):
-            makedirs(self.__out_dir)
+        if not path.exists(self.__cursors_dir):
+            makedirs(self.__cursors_dir)
 
         # main function ctypes define
         self.__lib: CDLL = CDLL(lib_xcursorgen)
@@ -46,7 +47,7 @@ class X11CursorsBuilder(object):
     ) -> None:
         """ Generate x11 cursor from `.in` file."""
         out: str = path.join(
-            self.__out_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
+            self.__cursors_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
         )
 
         # remove old cursor file
@@ -60,23 +61,18 @@ class X11CursorsBuilder(object):
             cfg_file,  # {cursor}.in file
             out,
         ]
-
         kwargs: pointer[c_char] = self.__gen_argv_ctypes(argv)
         args: ctypes.c_int = ctypes.c_int(len(argv))
-
         self.__lib.main(args, kwargs)
 
     def build(self) -> None:
         """ Generate x11 cursors from config files(look inside @self.__config_dir). """
-
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
 
         try:
             if len(configs) <= 0:
                 raise IOError(f"configs files not found in {self.__config_dir}")
-
             for config in configs:
                 self.__generate_x11_cursor(config)
-
         except IOError as error:
             print(error)
