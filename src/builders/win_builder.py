@@ -94,6 +94,66 @@ class WinCursorsBuilder:
 
         return False
 
+    def __make_framesets(
+        self, frames: List[Tuple[int, int, int, str, int]]
+    ) -> Optional[List[Any]]:
+        framesets: List[Any] = []
+        sizes: Set[int] = set()
+
+        # This assumes that frames are sorted
+        size = counter = 0
+        for i, frame in enumerate(frames):
+
+            if size == 0 or frame[0] != size:
+                counter = 0
+                size = frame[0]
+
+                if size in sizes:
+                    print(
+                        f"Frames are not sorted: frame {i} has size {size}, but we have seen that already",
+                        file=sys.stderr,
+                    )
+                    return None
+
+                sizes.add(size)
+
+            if counter >= len(framesets):
+                framesets.append([])
+
+            framesets[counter] = frame
+            counter += 1
+
+        for i in range(1, len(framesets)):
+            if len(framesets[i - 1]) != len(framesets[i]):
+                print(
+                    f"Frameset {i} has size {len(framesets[i])}, expected {len(framesets[i - 1])}",
+                    file=sys.stderr,
+                )
+                return None
+
+        for frameset in framesets:
+            for i in range(1, len(frameset)):
+                if frameset[i - 1][4] != frameset[i][4]:
+                    print(
+                        f"Frameset {i} has duration {frameset[i][4]} for framesize {frameset[i][0]}, but {frameset[i - 1][4]} for framesize {frameset[i - 1][0]}",
+                        file=sys.stderr,
+                    )
+                    return None
+        framesets = sorted(framesets, reverse=True)
+
+        return framesets
+
+    def __make_ani(
+        self,
+        frames: List[Tuple[int, int, int, str, int]],
+        out_buffer: BufferedWriter,
+        args: AnicursorgenArgs,
+    ) -> Literal[0, 1]:
+        framesets = self.__make_framesets(frames)
+
+        # TODO
+        return 0
+
     def __make_cursor_from(
         self,
         in_buffer: BufferedReader,
@@ -107,8 +167,8 @@ class WinCursorsBuilder:
 
         animated = self.__frames_have_animation(frames)
 
-        # if animated:
-        #     exec_code = make_ani(frames, out, args)
+        if animated:
+            exec_code = self.__make_ani(frames, out_buffer, args)
         # else:
         #     buf = make_cur(frames, args)
         #     copy_to(out, buf)
