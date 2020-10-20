@@ -4,7 +4,16 @@
 import os
 import logging
 from os import PathLike, path
-from typing import AnyStr
+from typing import AnyStr, Literal, NamedTuple, Tuple
+
+
+class Platforms(NamedTuple):
+    """
+    Platforms settings(Default True in all platforms).
+    """
+
+    x11: bool = True
+    win: bool = True
 
 
 class Config:
@@ -28,27 +37,19 @@ class Config:
             self._out_dir = path.abspath(out_dir)
 
         # Cursor platforms
-        self.x11: bool = True
-        self.win: bool = True
+        self.__platforms = Platforms()
 
         # Logging config
         self.logs = False
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
 
-    @property
-    def get_platforms(self) -> list[str]:
-        """  Provide platforms for building cursors theme. """
-        platform: list[str] = []
+    def set_platforms(self, x11: bool, win: bool) -> None:
+        self.__platforms = Platforms(x11=x11, win=win)
 
-        if self.x11:
-            platform.append("X11")
-        if self.win:
-            platform.append("WINDOWS")
+    def get_platforms(self) -> Platforms:
+        return self.__platforms
 
-        return platform
-
-    @property
     def toggle_logging(self) -> None:
         """
         Enable/Disable logging in clickgen. (@default Disable)
