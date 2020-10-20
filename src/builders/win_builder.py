@@ -3,7 +3,8 @@
 
 from io import BufferedReader, BufferedWriter
 from os import makedirs, path
-from typing import Any, List, Literal, NamedTuple
+from sys import prefix
+from typing import Any, List, Literal, NamedTuple, Optional, Set, Tuple
 from glob import glob
 import sys
 import shlex
@@ -43,17 +44,78 @@ class WinCursorsBuilder:
 
         return out
 
+    def __parse_config_from(
+        self, in_buffer: BufferedReader, prefix: str
+    ) -> List[Tuple[int, int, int, str, int]]:
+        """ Parse `.in` config file buffer. """
+        frames: List[Tuple[int, int, int, str, int]] = []
+
+        for line in in_buffer.readlines():
+            line = line.decode()
+            words = shlex.split(line.rstrip("\n").rstrip("\r"))
+            # print(words)
+            if len(words) < 4:
+                continue
+
+            try:
+                size = int(words[0])
+                xhot = int(words[1]) - 1
+                yhot = int(words[2]) - 1
+                filename = words[3]
+                if not path.isabs(filename):
+                    filename = path.join(prefix, filename)
+            except:
+                continue
+
+            if len(words) > 4:
+                try:
+                    duration = int(words[4])
+                except:
+                    continue
+            else:
+                duration = 0
+
+            frames.append((size, xhot, yhot, filename, duration))
+
+        return frames
+
+    def __frames_have_animation(
+        self, frames: List[Tuple[int, int, int, str, int]]
+    ) -> bool:
+        """ For checking @frames have animation. """
+        sizes: Set[int] = set()
+        for frame in frames:
+            if frame[4] == 0:
+                continue
+            if frame[0] in sizes:
+                return True
+            sizes.add(frame[0])
+
+        return False
+
     def __make_cursor_from(
         self,
-        in_cfg_buffer: BufferedReader,
+        in_buffer: BufferedReader,
         out_buffer: BufferedWriter,
         args: AnicursorgenArgs,
     ) -> Literal[0, 1]:
+        """ Generate Windows cursor from `.in` file."""
 
-        return 0
+        exec_code: Literal[0, 1] = 0
+        frames = self.__parse_config_from(in_buffer, prefix=self.__config_dir)
+
+        animated = self.__frames_have_animation(frames)
+
+        # if animated:
+        #     exec_code = make_ani(frames, out, args)
+        # else:
+        #     buf = make_cur(frames, args)
+        #     copy_to(out, buf)
+
+        return exec_code
 
     def __anicursorgen(self, cfg_file: str, args: AnicursorgenArgs) -> Literal[0, 1]:
-        """ Generate Windows cursor from `.in` file."""
+        """ `anicursorgen.py` @main function. """
 
         try:
             if (
