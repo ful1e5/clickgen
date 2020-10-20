@@ -4,7 +4,7 @@
 import os
 import logging
 from os import PathLike, path
-from typing import AnyStr, Literal, NamedTuple, Tuple
+from typing import AnyStr, NamedTuple
 
 
 class Platforms(NamedTuple):
