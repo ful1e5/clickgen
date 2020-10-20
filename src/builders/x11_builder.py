@@ -10,7 +10,7 @@ from typing import Any, List
 lib_xcursorgen: str = path.join(__file__, path.abspath("../../libs/xcursorgen.so"))
 
 
-class X11CursorsBuilder(object):
+class X11CursorsBuilder:
     """ Build X11 cursors from `.in` configs files. """
 
     def __init__(
@@ -56,8 +56,8 @@ class X11CursorsBuilder(object):
 
         argv: List[str] = [
             "xcursorgen",
-            "-p",  # prefix (do not remove)
-            self.__config_dir,  # prefix (do not remove)
+            "-p",  # prefix args for xcursorgen (do not remove)
+            self.__config_dir,  # prefix args for xcursorgen (do not remove)
             cfg_file,  # {cursor}.in file
             out,
         ]
