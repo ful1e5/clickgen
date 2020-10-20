@@ -5,7 +5,7 @@ from glob import glob
 from io import BufferedReader, BufferedWriter, BytesIO
 import io
 import math
-from os import makedirs, path
+from os import makedirs, path, remove
 import shlex
 import struct
 import sys
@@ -117,9 +117,7 @@ class WinCursorsBuilder:
 
         return False
 
-    def __make_framesets(
-        self, frames: List[Tuple[int, int, int, str, int]]
-    ) -> Optional[List[Any]]:
+    def __make_framesets(self, frames: List[Any]) -> Optional[List[Any]]:
         framesets: List[Any] = []
         sizes: Set = set()
 
@@ -143,7 +141,7 @@ class WinCursorsBuilder:
             if counter >= len(framesets):
                 framesets.append([])
 
-            framesets[counter] = frame
+            framesets[counter].append(frame)
             counter += 1
 
         for i in range(1, len(framesets)):
@@ -158,7 +156,7 @@ class WinCursorsBuilder:
             for i in range(1, len(frameset)):
                 if frameset[i - 1][4] != frameset[i][4]:
                     print(
-                        f"Frameset {i} has duration {frameset[i][4]} for framesize {frameset[i][0]}, but {frameset[i - 1][4]} for framesize {frameset[i - 1][0]}",
+                        f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}",
                         file=sys.stderr,
                     )
                     return None
@@ -205,20 +203,20 @@ class WinCursorsBuilder:
                 0,
                 32,
                 1,
-                framesets[0][0][4],
+                int(framesets[0][0][4]),
                 0x01,
             )
         )
 
         rates = set()
         for frameset in framesets:
-            rates.add(frameset[0][4])
+            rates.add(int(frameset[0][4]))
 
         if len(rates) != 1:
             buf.write(b"rate")
             buf.write(p("<I", len(framesets) * 4))
             for frameset in framesets:
-                buf.write(p("<I", frameset[0][4]))
+                buf.write(p("<I", int(frameset[0][4])))
 
         buf.write(b"LIST")
         list_len_pos = buf.seek(0, io.SEEK_CUR)
@@ -258,9 +256,9 @@ class WinCursorsBuilder:
                 o_px = o_pxs[x, y]
                 if o_px[3] > 0:
                     s_pxs[x, y] = (
-                        color[0],
-                        color[1],
-                        color[2],
+                        int(color[0]),
+                        int(color[1]),
+                        int(color[2]),
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
@@ -410,7 +408,14 @@ class WinCursorsBuilder:
         """ `anicursorgen.py` @main function. """
 
         in_cfg_buffer = open(cfg_file, "rb")
-        out_buffer = open(self.__get_out_file(cfg_file), "wb")
+        out = self.__get_out_file(cfg_file)
+        print(out)
+
+        # remove old cursor file
+        if path.exists(out):
+            remove(out)
+
+        out_buffer = open(out, "wb")
 
         exec_code = self.__make_cursor_from(in_cfg_buffer, out_buffer, args)
 
@@ -419,40 +424,19 @@ class WinCursorsBuilder:
 
         return exec_code
 
-    def build(self) -> None:
+    def build(self, args: AnicursorgenArgs = AnicursorgenArgs()) -> None:
         """ Generate Windows cursors from config files(look inside @self.__config_dir). """
         if not path.exists(self.__out_dir):
             makedirs(self.__out_dir)
 
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
-        args = AnicursorgenArgs(
-            add_shadows=False,
-            blur=3.125,
-            color=(
-                0,
-                0,
-                0,
-                64,
-            ),
-            down_shift=3.125,
-            right_shift=9.375,
-        )
 
-        try:
-            if len(configs) <= 0:
-                raise Exception(f"Cursors configs not found in {self.__config_dir}")
-            for config in configs:
-                exec_code = self.__anicursorgen(config, args)
-                if exec_code == 1:
-                    print(
-                        f"'anicursorgen.py' can't parse {path.basename(config)}",
-                        file=sys.stderr,
-                    )
-
-        except Exception as error:
-            print(error)
-
-
-# if __name__ == "__main__":
-#     b = WinCursorsBuilder(config_dir="/tmp/clickgen_wwjj0xaq", out_dir="/tmp/out")
-#     b.build()
+        if len(configs) <= 0:
+            print(f"Cursors configs not found in {self.__config_dir}", file=sys.stderr)
+        for config in configs:
+            exec_code = self.__anicursorgen(config, args)
+            if exec_code == 1:
+                print(
+                    f"'anicursorgen.py' can't parse {path.basename(config)}",
+                    file=sys.stderr,
+                )

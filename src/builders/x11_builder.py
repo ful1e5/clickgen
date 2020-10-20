@@ -69,10 +69,7 @@ class X11CursorsBuilder:
 
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
 
-        try:
-            if len(configs) <= 0:
-                raise IOError(f"configs files not found in {self.__config_dir}")
+        if len(configs) <= 0:
+            print(f"Cursors configs not found in {self.__config_dir}", file=sys.stderr)
             for config in configs:
                 self.__generate_x11_cursor(config)
-        except IOError as error:
-            print(error)
