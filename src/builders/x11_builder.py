@@ -22,9 +22,6 @@ class X11CursorsBuilder:
         self.__out_dir = out_dir
         self.__cursors_dir = path.join(self.__out_dir, "cursors")
 
-        if not path.exists(self.__cursors_dir):
-            makedirs(self.__cursors_dir)
-
         # main function ctypes define
         self.__lib: CDLL = CDLL(lib_xcursorgen)
         self.__LP_c_char = ctypes.POINTER(ctypes.c_char)
@@ -67,6 +64,9 @@ class X11CursorsBuilder:
 
     def build(self) -> None:
         """ Generate x11 cursors from config files(look inside @self.__config_dir). """
+        if not path.exists(self.__cursors_dir):
+            makedirs(self.__cursors_dir)
+
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
 
         try:
