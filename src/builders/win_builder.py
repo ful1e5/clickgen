@@ -22,7 +22,7 @@ class AnicursorgenArgs(NamedTuple):
 
 class WinCursorsBuilder:
     """
-    Inspired by `anicursorgen.py`.
+    Build Windows cursors from `.in` configs files. Code inspiration from `anicursorgen.py`.
     https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
     """
 
@@ -31,12 +31,13 @@ class WinCursorsBuilder:
         self.__out_dir = out_dir
 
     def __get_out_file(self, cfg_file: str) -> str:
+        """ Generate out path by reading @cfg_file. """
         out: str = path.join(
             self.__out_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
         )
         with open(cfg_file, "r") as f:
-            l = f.readline()
-            words = shlex.split(l.rstrip("\n").rstrip("\r"))
+            line = f.readline()
+            words = shlex.split(line.rstrip("\n").rstrip("\r"))
             if len(words) > 4:
                 out = f"{out}.ani"
             else:
@@ -47,7 +48,7 @@ class WinCursorsBuilder:
     def __parse_config_from(
         self, in_buffer: BufferedReader, prefix: str
     ) -> List[Tuple[int, int, int, str, int]]:
-        """ Parse `.in` config file buffer. """
+        """ Parse config file buffer. """
         frames: List[Tuple[int, int, int, str, int]] = []
 
         for line in in_buffer.readlines():
@@ -99,7 +100,7 @@ class WinCursorsBuilder:
         out_buffer: BufferedWriter,
         args: AnicursorgenArgs,
     ) -> Literal[0, 1]:
-        """ Generate Windows cursor from `.in` file."""
+        """ Generate Windows cursor from `.in` file. """
 
         exec_code: Literal[0, 1] = 0
         frames = self.__parse_config_from(in_buffer, prefix=self.__config_dir)
