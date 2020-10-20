@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from io import BufferedReader, BufferedWriter
 from os import makedirs, path
 from typing import Any, List, Literal, NamedTuple
 from glob import glob
 import sys
+import shlex
 
 
-class BuildArguments(NamedTuple):
+class AnicursorgenArgs(NamedTuple):
     """ `anicursorgen.py` CLI arguments structure."""
 
     add_shadows: bool
@@ -27,16 +29,31 @@ class WinCursorsBuilder:
         self.__config_dir = config_dir
         self.__out_dir = out_dir
 
-    def __anicursorgen(self, cfg_file: str) -> Literal[0, 1]:
-        """ Generate Windows cursor from `.in` file."""
-
-        args = BuildArguments(
-            add_shadows=False,
-            blur=3.125,
-            color="0x00000040",
-            down_shift=3.125,
-            right_shift=9.375,
+    def __get_out_file(self, cfg_file: str) -> str:
+        out: str = path.join(
+            self.__out_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
         )
+        with open(cfg_file, "r") as f:
+            l = f.readline()
+            words = shlex.split(l.rstrip("\n").rstrip("\r"))
+            if len(words) > 4:
+                out = f"{out}.ani"
+            else:
+                out = f"{out}.cur"
+
+        return out
+
+    def __make_cursor_from(
+        self,
+        in_cfg_buffer: BufferedReader,
+        out_buffer: BufferedWriter,
+        args: AnicursorgenArgs,
+    ) -> Literal[0, 1]:
+
+        return 0
+
+    def __anicursorgen(self, cfg_file: str, args: AnicursorgenArgs) -> Literal[0, 1]:
+        """ Generate Windows cursor from `.in` file."""
 
         try:
             if (
@@ -56,18 +73,15 @@ class WinCursorsBuilder:
             print("Can't parse the color '{}'".format(args.color), file=sys.stderr)
             return 1
 
-        out: str = path.join(
-            self.__out_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
-        )
         in_cfg_buffer = open(cfg_file, "rb")
-        out_buffer = open(out, "wb")
+        out_buffer = open(self.__get_out_file(cfg_file), "wb")
 
-        # result = make_cursor_from(input_config, output_file, args)
+        exec_code = self.__make_cursor_from(in_cfg_buffer, out_buffer, args)
 
         in_cfg_buffer.close()
         out_buffer.close()
 
-        return 0
+        return exec_code
 
     def build(self) -> None:
         """ Generate Windows cursors from config files(look inside @self.__config_dir). """
@@ -75,11 +89,18 @@ class WinCursorsBuilder:
             makedirs(self.__out_dir)
 
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
+        args = AnicursorgenArgs(
+            add_shadows=False,
+            blur=3.125,
+            color="0x00000040",
+            down_shift=3.125,
+            right_shift=9.375,
+        )
 
         try:
             if len(configs) <= 0:
                 raise IOError(f"configs files not found in {self.__config_dir}")
             for config in configs:
-                self.__anicursorgen(config)
+                self.__anicursorgen(config, args)
         except IOError as error:
             print(error)
