@@ -139,11 +139,15 @@ class CursorDB:
         """ Fix & Match @cur to cursors database. """
         compare_ratio: float = 0.5
         result: str = cur
+        data: List[str] = list(itertools.chain.from_iterable(self.db))
 
-        for data in list(itertools.chain.from_iterable(self.db)):
-            ratio: float = SM(None, cur.lower(), data.lower()).ratio()
+        for d in data:
+            ratio: float = SM(None, cur.lower(), d.lower()).ratio()
             if ratio > compare_ratio:
                 compare_ratio = ratio
-                result = data
+                result = d
+
+        if result not in data:
+            print(f"'{result}' is unknown cursor.")
 
         return result
