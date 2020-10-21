@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
-from os import path
+from os import path, rename
 import sys
-from typing import List, Tuple
+from typing import List, Optional
 
-from db import CursorDB
+from .db import CursorDB
 
 
-class WinDirFixer(CursorDB):
+class Fixer(CursorDB):
     """ Remove & Create symblinks for cursors. """
 
     __files: List[str] = []
@@ -28,11 +28,13 @@ class WinDirFixer(CursorDB):
                 file=sys.stderr,
             )
 
-        for f in self.__files:
+        for idx, f in enumerate(self.__files):
 
-            cur: str = path.splitext(path.basename(f))[0]
-            result: str = super().match_to_db(cur)
+            cur, ext = path.splitext(path.basename(f))
+            result: Optional[str] = super().match_to_db(cur)
 
-
-wdf = WinDirFixer(dir="/home/kaiz/test/win_out")
-wdf.fix()
+            if result:
+                src: str = path.join(self.__dir, f"{cur}{ext}")
+                dst: str = path.join(self.__dir, f"{result}{ext}")
+                rename(src, dst)
+                self.__files[idx] = dst
