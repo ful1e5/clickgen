@@ -409,7 +409,6 @@ class WinCursorsBuilder:
 
         in_cfg_buffer = open(cfg_file, "rb")
         out = self.__get_out_file(cfg_file)
-        print(out)
 
         # remove old cursor file
         if path.exists(out):
