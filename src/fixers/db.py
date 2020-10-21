@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
+from difflib import SequenceMatcher as SM
+import itertools
 from typing import List
 
 
-class Fixer:
-    _db: List[List[str]] = [
+class CursorDB:
+    db: List[List[str]] = [
         ["X_cursor", "pirate", "x-cursor"],
         ["all-scroll", "fleur", "size_all"],
         [
@@ -23,10 +25,10 @@ class Fixer:
         ["circle", "forbidden"],
         ["context-menu"],
         [
-            "copy",
             "1081e37283d90000800003c07f3ef6bf",
             "6407b0e94181790501fd1e167b474872",
             "b66166c04f8c3109214a4fbd64a50fc8",
+            "copy",
         ],
         ["cross", "cross_reverse", "diamond_cross"],
         ["crossed_circle", "03b6e0fcb3499374a867c041f52298f0", "not-allowed"],
@@ -39,8 +41,8 @@ class Fixer:
         ["dnd_no_drop", "no-drop"],
         ["dotbox", "dot_box_mask", "draped_box", "icon", "target"],
         [
-            "fd_double_arrow",
             "fcf1c3c7cd4491d801f1e1c78f100000",
+            "fd_double_arrow",
             "nesw-resize",
             "size_bdiag",
         ],
@@ -48,44 +50,44 @@ class Fixer:
         ["hand"],
         ["hand1", "grab", "openhand"],
         [
-            "hand2",
             "9d800788f1b08800ae810202380a0822",
             "e29285e634086352946a0e7090d73106",
+            "hand2",
             "pointer",
             "pointing_hand",
         ],
         ["left_ptr", "arrow", "default"],
         [
-            "left_ptr_watch",
             "00000000000000020006000e7e9ffc3f",
             "08e8e1c95fe2fc01f976f1e063a24ccd",
             "3ecb610c1bf2410f44200f48c40d3599",
+            "left_ptr_watch",
             "progress",
         ],
         ["left_side", "w-resize"],
         ["left_tee"],
         [
-            "link",
             "3085a0e285430894940527032f8b26df",
             "640fb0e74195791501fd1ed57b41487f",
             "a2a266d0498c3104214a47bd64ab0fc8",
+            "link",
         ],
         ["ll_angle"],
         ["lr_angle"],
         [
-            "move",
             "4498f0e0c1937ffe01fd06f973665830",
             "9081237383d90e509aa00f00170e968f",
+            "move",
         ],
         ["pencil", "draft"],
         ["plus", "cell"],
         ["pointer-move"],
         [
-            "question_arrow",
             "5c6cd98b3f3ebcb1f9c7f1c204630408",
             "d9ce0ab605698f320427677b458ad60b",
             "help",
             "left_ptr_help",
+            "question_arrow",
             "whats_this",
         ],
         ["right_ptr", "draft_large", "draft_small"],
@@ -93,28 +95,28 @@ class Fixer:
         ["right_tee"],
         ["sb_down_arrow", "down-arrow"],
         [
-            "sb_h_double_arrow",
             "028006030e0e7ebffc7f7070c0600140",
             "14fef782d02440884392942c1120523",
             "col-resize",
             "ew-resize",
-            "size_hor",
-            "size-hor",
             "h_double_arrow",
+            "sb_h_double_arrow",
+            "size-hor",
+            "size_hor",
             "split_h",
         ],
         ["sb_left_arrow", "left-arrow"],
         ["sb_right_arrow", "right-arrow"],
         ["sb_up_arrow", "up-arrow"],
         [
-            "sb_v_double_arrow",
             "00008160000006810000408080010102",
             "2870a09082c103050810ffdffffe0204",
             "double_arrow",
             "ns-resize",
-            "size_ver",
-            "size-ver",
             "row-resize",
+            "sb_v_double_arrow",
+            "size-ver",
+            "size_ver",
             "split_v",
             "v_double_arrow",
         ],
@@ -133,5 +135,15 @@ class Fixer:
         ["zoom-out"],
     ]
 
-    def __init__(self, dir: str) -> None:
-        self._dir: str = dir
+    def match_to_db(self, cur: str) -> str:
+        """ Fix & Match @cur to cursors database. """
+        compare_ratio: float = 0.5
+        result: str = cur
+
+        for data in list(itertools.chain.from_iterable(self.db)):
+            ratio: float = SM(None, cur.lower(), data.lower()).ratio()
+            if ratio > compare_ratio:
+                compare_ratio = ratio
+                result = data
+
+        return result
