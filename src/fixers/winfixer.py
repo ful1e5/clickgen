@@ -4,15 +4,15 @@
 from glob import glob
 from os import path
 import sys
-from typing import List
+from typing import List, Tuple
 
-from .db import CursorDB
+from db import CursorDB
 
 
 class WinDirFixer(CursorDB):
     """ Remove & Create symblinks for cursors. """
 
-    __cursors: List[str] = []
+    __files: List[str] = []
 
     def __init__(self, dir: str) -> None:
         self.__dir: str = dir
@@ -20,17 +20,19 @@ class WinDirFixer(CursorDB):
     def fix(self) -> None:
 
         for ext in ("*.cur", "*.ani"):
-            self.__cursors.extend(glob(path.join(self.__dir, ext)))
+            self.__files.extend(glob(path.join(self.__dir, ext)))
 
-        if len(self.__cursors) == 0:
+        if len(self.__files) == 0:
             print(
                 f".ani or .cur cursors not found in '{self.__dir}'",
                 file=sys.stderr,
             )
 
-        for cur in self.__cursors:
-            print(cur)
+        for f in self.__files:
+
+            cur: str = path.splitext(path.basename(f))[0]
+            result: str = super().match_to_db(cur)
 
 
-wdf = WinDirFixer(dir="/tmp/out")
+wdf = WinDirFixer(dir="/home/kaiz/test/win_out")
 wdf.fix()
