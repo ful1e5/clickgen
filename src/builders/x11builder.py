@@ -4,7 +4,8 @@
 import ctypes
 from ctypes import CDLL, c_char, pointer
 from glob import glob
-from os import path, makedirs, remove
+from os import makedirs, path, remove
+import sys
 from typing import Any, List
 
 lib_xcursorgen: str = path.join(__file__, path.abspath("../../libs/xcursorgen.so"))
