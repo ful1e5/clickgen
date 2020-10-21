@@ -4,7 +4,7 @@
 
 from difflib import SequenceMatcher as SM
 import itertools
-from typing import List
+from typing import List, Optional
 
 
 class CursorDB:
@@ -135,7 +135,7 @@ class CursorDB:
         ["zoom-out"],
     ]
 
-    def match_to_db(self, cur: str) -> str:
+    def match_to_db(self, cur: str) -> Optional[str]:
         """ Fix & Match @cur to cursors database. """
         compare_ratio: float = 0.5
         result: str = cur
@@ -150,4 +150,7 @@ class CursorDB:
         if result not in data:
             print(f"'{result}' is unknown cursor.")
 
-        return result
+        if cur == result:
+            return None
+        else:
+            return result
