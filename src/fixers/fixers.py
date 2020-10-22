@@ -2,66 +2,59 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
-from os import path, rename
+from os import path
 import sys
-from typing import List, Optional
+from typing import Callable, List
 
 from db import CursorDB
 
 
-class WinCursorsFixer(CursorDB):
-    """ Fix Windows cursors. """
+class _WinCursorsFixer(CursorDB):
+    """ Rename cursors. """
 
     __files: List[str] = []
 
     def __init__(self, dir: str) -> None:
-        self.__dir: str = dir
+        super().__init__(dir)
 
-    def run(self, types: List[str] = ["*.cur", "*.ani"]) -> List[str]:
-        """ Rename cursors according local Database. """
-        for ext in types:
-            self.__files.extend(glob(path.join(self.__dir, ext)))
+    def run(self) -> List[str]:
+        """ Run fixer. """
+        for ext in ("*.ani", "*.cur"):
+            self.__files.extend(glob(path.join(super().dir, ext)))
 
         if len(self.__files) == 0:
             print(
-                f"Zero 'Windows' cursors not found in '{self.__dir}'",
+                f"'Windows' cursors not found in '{super().dir}'",
                 file=sys.stderr,
             )
 
-        cursors: List[str] = []
-        for f in self.__files:
-            cur, ext = path.splitext(path.basename(f))
-            result: Optional[str] = super().match_to_db(cur)
-
-            if result:
-                src: str = path.join(self.__dir, f"{cur}{ext}")
-                dst: str = path.join(self.__dir, f"{result}{ext}")
-                rename(src, dst)
-                cursors.append(dst)
-            else:
-                cursors.append(cur)
-
-        return cursors
+        return super().rename(self.__files)
 
 
-class XCursorSymblinks(WinCursorsFixer):
-    """ Rename X11 cursors according local Database. """
+class _XCursorLinker(CursorDB):
+    """ Create Symblinks of missing `XCursors`. """
+
+    __files: List[str] = []
 
     def __init__(self, dir: str) -> None:
         super().__init__(dir)
-        self.__d = dir
-        self.__cursors: List[str] = list(
-            filter(lambda x: not x.find("."), super().run(types=["*"]))
-        )
 
-    def generate(self) -> None:
-        """ Generate cursor symblinks that's missing. """
-        if len(self.__cursors) == 0:
+    def run(self) -> List[str]:
+        """ Run linker. """
+        func: Callable[[str], str] = lambda x: x.split(".")[0]
+        self.__files.extend(list(map(func, glob(path.join(super().dir, "*")))))
+
+        if len(self.__files) == 0:
             print(
-                f"Zero 'XCursors' not found in '{self.__d}'",
+                f"'XCursors' not found in '{super().dir}'",
                 file=sys.stderr,
             )
 
+        return super().rename(self.__files)
 
-if __name__ == "__main__":
-    t = XCursorSymblinks("/home/kaiz/test/win_out/").generate()
+
+def fix(win_dir: str, x11_dir: str) -> None:
+    """ Fix Cursors. """
+    _WinCursorsFixer(dir=win_dir).run()
+    _XCursorLinker(dir=x11_dir).run()
+
