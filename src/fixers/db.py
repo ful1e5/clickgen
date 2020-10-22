@@ -4,6 +4,7 @@
 
 from difflib import SequenceMatcher as SM
 import itertools
+from os import path, rename
 from typing import List, Optional
 
 
@@ -135,6 +136,13 @@ class CursorDB:
         ["zoom-out"],
     ]
 
+    def __init__(self, dir: str) -> None:
+        self._dir: str = dir
+
+    @property
+    def dir(self) -> str:
+        return self._dir
+
     def match_to_db(self, cur: str) -> Optional[str]:
         """ Fix & Match @cur to cursors database. """
         compare_ratio: float = 0.5
@@ -154,3 +162,20 @@ class CursorDB:
             return None
         else:
             return result
+
+    def rename(self, l: List[str]) -> List[str]:
+        """ Rename cursors according to local db. """
+        cursors: List[str] = []
+        for f in l:
+            cur, ext = path.splitext(path.basename(f))
+            result: Optional[str] = self.match_to_db(cur)
+
+            if result:
+                src: str = path.join(self._dir, f"{cur}{ext}")
+                dst: str = path.join(self._dir, f"{result}{ext}")
+                rename(src, dst)
+                cursors.append(dst)
+            else:
+                cursors.append(cur)
+
+        return cursors
