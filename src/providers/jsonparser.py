@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import AnyStr, Tuple
+from typing import AnyStr, Dict, Tuple
 
 
 class HotspotsParser:
@@ -10,7 +10,7 @@ class HotspotsParser:
 
     def __init__(self, f: AnyStr) -> None:
         data = open(f, "r")
-        self.__hotspots = json.loads(data.read())
+        self.__hotspots: Dict[str, Dict[str, int]] = json.loads(data.read())
 
     def get_hotspots(
         self, c: str, old_size: Tuple[int, int], new_size: int
