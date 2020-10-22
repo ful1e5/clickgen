@@ -2,17 +2,15 @@
 # -*- coding: utf-8 -*-
 
 from glob import glob
-from os import path
+from os import path, listdir, remove, rename
 import sys
+import itertools
 from typing import Callable, List
 
 from .db import CursorDB
 
 
-## ----- Private
-
-
-class _WinCursorsFixer(CursorDB):
+class WinCursorsFixer(CursorDB):
     """ Rename Windows cursors accordinf to local database. """
 
     __files: List[str] = []
@@ -31,10 +29,33 @@ class _WinCursorsFixer(CursorDB):
                 file=sys.stderr,
             )
 
-        return super().rename(self.__files)
+        # Renaming cursors according to master DB
+        super().rename(self.__files)
+
+        # Renaming cursors according to Win DB
+        curs = listdir(super().dir)
+        for cur, key in itertools.product(curs, super().win_db):
+            ext: str = path.splitext(cur)[1]
+            func: Callable[[str], str] = lambda x: f"{x}{ext}"
+            l: List[str] = list(map(func, super().win_db[key]))
+
+            if cur in l:
+                src: str = path.join(super().dir, cur)
+                dst: str = path.join(super().dir, key)
+
+                print(f"Renaming '{cur}' to '{key}'")
+                rename(src, dst)
+
+        # Removing other cursors, That's not in Win DB
+        rm_list: List[str] = list(listdir(super().dir) - super().win_db.keys())
+        for e in rm_list:
+            print(f"Removing '{path.basename(e)}'")
+            remove(path.join(super().dir, e))
+
+        return listdir(super().dir)
 
 
-class _XCursorLinker(CursorDB):
+class XCursorLinker(CursorDB):
     """ Create symblinks of missing `XCursors`. """
 
     __files: List[str] = []
@@ -44,8 +65,8 @@ class _XCursorLinker(CursorDB):
 
     def run(self) -> List[str]:
         """ Run linker. """
-        func: Callable[[str], str] = lambda x: x.split(".")[0]
-        self.__files.extend(list(map(func, glob(path.join(super().dir, "*")))))
+        func: Callable[[str], bool] = lambda x: x.split(".")[0] == x
+        self.__files.extend(list(filter(func, glob(path.join(super().dir, "*")))))
 
         if len(self.__files) == 0:
             print(
@@ -53,13 +74,10 @@ class _XCursorLinker(CursorDB):
                 file=sys.stderr,
             )
 
-        return super().rename(self.__files)
+        super().rename(self.__files)
+
+        return listdir(super().dir)
 
 
-# ----- Public
-
-
-def fix(win_dir: str, x11_dir: str) -> None:
-    """ Fix cursors names with appropriate symblinks. """
-    _WinCursorsFixer(dir=win_dir).run()
-    _XCursorLinker(dir=x11_dir).run()
+if __name__ == "__main__":
+    WinCursorsFixer(dir="/home/kaiz/w").run()
