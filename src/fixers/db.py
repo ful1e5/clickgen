@@ -140,7 +140,7 @@ class CursorDB:
 
     win_db: Dict[str, List[str]] = {
         "AppStarting.ani": db[0],
-        "Wait.ani": db[0],
+        "Wait.ani": db[55],
         "Arrow.cur": db[32],
         "Cross.cur": db[20],
         "Hand.cur": db[7],
@@ -175,7 +175,7 @@ class CursorDB:
                 compare_ratio = ratio
                 result = d
 
-        if result not in data:
+        if result not in data and cur not in " ".join(self.win_db.keys()):
             print(f"'{result}' is unknown cursor.")
 
         if cur == result:
@@ -189,6 +189,10 @@ class CursorDB:
         for f in l:
             cur, ext = path.splitext(path.basename(f))
             result: Optional[str] = self.match_to_db(cur)
+
+            # Cursor in Win DB
+            if path.basename(f) in self.win_db.keys():
+                result = None
 
             if result:
                 src: str = path.join(self._dir, f"{cur}{ext}")
