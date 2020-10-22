@@ -45,7 +45,7 @@ class X11CursorsBuilder:
     ) -> None:
         """ Generate x11 cursor from `.in` file."""
         out: str = path.join(
-            self.__cursors_dir, f"{path.splitext(path.basename(cfg_file))[0]}"
+            self.__cursors_dir, path.splitext(path.basename(cfg_file))[0]
         )
 
         # remove old cursor file
@@ -72,5 +72,6 @@ class X11CursorsBuilder:
 
         if len(configs) <= 0:
             print(f"Cursors configs not found in {self.__config_dir}", file=sys.stderr)
+        else:
             for config in configs:
                 self.__generate_x11_cursor(config)
