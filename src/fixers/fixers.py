@@ -6,11 +6,14 @@ from os import path
 import sys
 from typing import Callable, List
 
-from db import CursorDB
+from .db import CursorDB
+
+
+## ----- Private
 
 
 class _WinCursorsFixer(CursorDB):
-    """ Rename cursors. """
+    """ Rename Windows cursors accordinf to local database. """
 
     __files: List[str] = []
 
@@ -32,7 +35,7 @@ class _WinCursorsFixer(CursorDB):
 
 
 class _XCursorLinker(CursorDB):
-    """ Create Symblinks of missing `XCursors`. """
+    """ Create symblinks of missing `XCursors`. """
 
     __files: List[str] = []
 
@@ -53,8 +56,10 @@ class _XCursorLinker(CursorDB):
         return super().rename(self.__files)
 
 
+# ----- Public
+
+
 def fix(win_dir: str, x11_dir: str) -> None:
-    """ Fix Cursors. """
+    """ Fix cursors names with appropriate symblinks. """
     _WinCursorsFixer(dir=win_dir).run()
     _XCursorLinker(dir=x11_dir).run()
-
