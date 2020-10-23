@@ -1,13 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from contextlib import contextmanager
 from glob import glob
-from os import path, listdir, remove, rename
-import sys
 import itertools
-from typing import Callable, List
+from os import chdir, getcwd, listdir, path, remove, rename, symlink, unlink
+from os.path import islink
+import sys
+from typing import Callable, List, Optional
 
 from .db import CursorDB
+
+
+@contextmanager
+def _cd(dir_path: str):
+    """ Temporary change directory context manager. """
+
+    CWD = getcwd()
+    chdir(dir_path)
+    try:
+        yield
+    except:
+        print(f"Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
+    finally:
+        chdir(CWD)
 
 
 class WinCursorsFixer(CursorDB):
@@ -56,12 +72,37 @@ class WinCursorsFixer(CursorDB):
 
 
 class XCursorLinker(CursorDB):
-    """ Create symblinks of missing `XCursors`. """
+    """ Create symlinks of missing `XCursors`. """
 
     __files: List[str] = []
 
     def __init__(self, dir: str) -> None:
         super().__init__(dir)
+
+    def _find_relative_cursors(self, cur: str) -> Optional[List[str]]:
+        """ Find relative cursors from local DB. """
+        result: Optional[List[str]] = []
+
+        for l in super().db:
+            if cur in l:
+                l.remove(cur)
+                result.extend(l)
+
+        if len(result) >= 0:
+            return result
+        else:
+            return None
+
+    def _clean_old_symlinks(self) -> None:
+        for cur in listdir(super().dir):
+            if islink(cur):
+                unlink(cur)
+
+    def _link(self, target: str, links: List[str]) -> None:
+        """ Generate symlinks for @target. """
+        for l in links:
+            symlink(target, l)
+            print(f"'{l}' symlink generated from '{target}'")
 
     def run(self) -> List[str]:
         """ Run linker. """
@@ -74,10 +115,17 @@ class XCursorLinker(CursorDB):
                 file=sys.stderr,
             )
 
+        # Renaming cursors according to master DB
         super().rename(self.__files)
 
+        # Create symlinks for missing cursors
+        with _cd(super().dir):
+            self._clean_old_symlinks()
+            for cur in listdir(super().dir):
+                rel_curs: Optional[List[str]] = self._find_relative_cursors(cur)
+                if rel_curs:
+                    self._link(cur, rel_curs)
+                else:
+                    continue
+
         return listdir(super().dir)
-
-
-if __name__ == "__main__":
-    WinCursorsFixer(dir="/home/kaiz/w").run()
