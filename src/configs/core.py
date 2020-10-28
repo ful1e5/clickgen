@@ -37,7 +37,7 @@ class Config:
         if not self.info.comment:
             self.info.comment = f"{self.info.theme_name} By {self.info.author}"
         if not self.info.url:
-            self.info.url = ""
+            self.info.url = "Unknown Source!"
 
         self._configs_dir: str = path.abspath(configs_dir)
         if out_dir is None:

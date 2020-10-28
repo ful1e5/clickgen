@@ -2,12 +2,13 @@
 # -*- coding: utf-8 -*-
 
 
-from .fixers.fixers import WinCursorsFixer
-from ..configs.core import CursorInfo
-from string import Template
 from os import path
+from string import Template
 
-install_inf_template = Template(
+from ..configs.core import CursorInfo
+from .fixers.fixers import WinCursorsFixer
+
+_inf_template = Template(
     """[Version]
 signature="$CHICAGO$"
 $comment
@@ -72,7 +73,7 @@ class WindowsPackager:
         self.__info: CursorInfo = info
 
     def __install_file(self) -> str:
-        content: str = install_inf_template.safe_substitute(
+        content: str = _inf_template.safe_substitute(
             theme_name=self.__info.theme_name,
             comment=self.__info.comment,
             author=self.__info.author,
@@ -83,6 +84,8 @@ class WindowsPackager:
 
     def pack(self) -> None:
         """ Create installable Windows cursor package. """
+        print(f"Windows package...")
+
         # Remove unnecessary cursors
         WinCursorsFixer(self.__dir).run()
 
@@ -91,3 +94,5 @@ class WindowsPackager:
         f = open(path.join(self.__dir, "install.inf", "w"))
         f.write(content)
         f.close()
+
+        print(f"Windows package... Done")
