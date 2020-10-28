@@ -32,7 +32,7 @@ class X11Packager:
         return files
 
     def pack(self):
-        """ Make XCursors directory installable. """
+        """ Make XCursor theme. """
         print("XCursors package...")
 
         # Link & Rename XCursors according to db.py
