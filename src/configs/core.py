@@ -7,13 +7,6 @@ from os import path
 from typing import NamedTuple, Optional
 
 
-class Platforms(NamedTuple):
-    """ Platforms settings(Default True in all platforms). """
-
-    x11: bool = True
-    win: bool = True
-
-
 class CursorInfo(NamedTuple):
     """ Metadata for cursor theme. """
 
@@ -46,19 +39,10 @@ class Config:
         else:
             self._out_dir: str = path.abspath(out_dir)
 
-        # Cursor platforms
-        self.__platforms = Platforms()
-
         # Logging config
         self.logs = False
         self.logger = logging.getLogger(__name__)
         logging.basicConfig(level=logging.INFO)
-
-    def set_platforms(self, x11: bool, win: bool) -> None:
-        self.__platforms: Platforms = Platforms(x11=x11, win=win)
-
-    def get_platforms(self) -> Platforms:
-        return self.__platforms
 
     def toggle_logging(self) -> None:
         """
