@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from .configs.core import Config
+from .configs import Config
 
 
 def create_theme(config: Config) -> None:

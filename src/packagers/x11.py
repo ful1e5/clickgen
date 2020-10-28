@@ -5,7 +5,7 @@ from os import path
 from string import Template
 from typing import Dict
 
-from ..configs.core import CursorInfo
+from ..configs import CursorInfo
 from .fixers.fixers import XCursorLinker
 
 templates: Dict[str, Template] = {
