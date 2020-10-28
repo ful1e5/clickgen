@@ -63,7 +63,11 @@ jobs:
         continue-on-error: false
 
       - name: Testing
-        run: python -m unittest -b
+        run: |
+          pip install -U pytest
+          python -m pytest
+        continue-on-error: false
+
 
       - uses: actions/upload-artifact@master
         if: success()
