@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-from setuptools import setup, find_namespace_packages
+from setuptools import setup
 from distutils.command.install import install as _install
 
 
@@ -23,15 +23,21 @@ setup(
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
     description="X11 & Windows cursor building API 👷",
+    keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",
     cmdclass={"install": install},
     scripts=["scripts/clickgen"],
-    keywords=["cursor", "xcursor", "windows", "linux", "anicursorgen", "xcursorgen"],
     install_requires=["Pillow>=7.2.0"],
-    package_dir={"clickgen": "src"},
-    packages=find_namespace_packages(include=["src", "src.*"]),
+    package_dir={"clickgen": "clickgen"},
+    packages=[
+        "clickgen",
+        "clickgen.builders",
+        "clickgen.packagers",
+        "clickgen.packagers.fixers",
+        "clickgen.providers",
+    ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "status_classifier",
