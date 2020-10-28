@@ -3,17 +3,24 @@
 
 import os
 import logging
-from os import PathLike, path
-from typing import AnyStr, NamedTuple
+from os import path
+from typing import NamedTuple, Optional
 
 
 class Platforms(NamedTuple):
-    """
-    Platforms settings(Default True in all platforms).
-    """
+    """ Platforms settings(Default True in all platforms). """
 
     x11: bool = True
     win: bool = True
+
+
+class CursorInfo(NamedTuple):
+    """ Metadata for cursor theme. """
+
+    theme_name: str
+    author: str
+    comment: Optional[str]
+    url: Optional[str]
 
 
 class Config:
@@ -21,20 +28,23 @@ class Config:
 
     def __init__(
         self,
-        theme_name: str,
-        comment: str,
-        configs_dir: PathLike[AnyStr],
-        out_dir: PathLike[AnyStr] = None,
+        info: CursorInfo,
+        configs_dir: str,
+        out_dir: Optional[str] = None,
     ) -> None:
-        self._theme_name = theme_name
-        self._comment = comment
+        # Default Theme comment & url
+        self.info: CursorInfo = info
+        if not self.info.comment:
+            self.info.comment = f"{self.info.theme_name} By {self.info.author}"
+        if not self.info.url:
+            self.info.url = ""
 
-        self._configs_dir = path.abspath(configs_dir)
+        self._configs_dir: str = path.abspath(configs_dir)
         if out_dir is None:
             # Set out_dir to Current Work Directory (Default)
-            self._out_dir = path.abspath(os.getcwd())
+            self._out_dir: str = path.abspath(os.getcwd())
         else:
-            self._out_dir = path.abspath(out_dir)
+            self._out_dir: str = path.abspath(out_dir)
 
         # Cursor platforms
         self.__platforms = Platforms()
@@ -45,7 +55,7 @@ class Config:
         logging.basicConfig(level=logging.INFO)
 
     def set_platforms(self, x11: bool, win: bool) -> None:
-        self.__platforms = Platforms(x11=x11, win=win)
+        self.__platforms: Platforms = Platforms(x11=x11, win=win)
 
     def get_platforms(self) -> Platforms:
         return self.__platforms
