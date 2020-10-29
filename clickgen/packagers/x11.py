@@ -36,7 +36,7 @@ class X11Packager:
         print("XCursors package...")
 
         # Link & Rename XCursors according to db.py
-        XCursorLinker(self.__dir).run()
+        XCursorLinker(path.join(self.__dir, "cursors")).run()
 
         # Write .theme files
         files: Dict[str, str] = self.__index_files()
