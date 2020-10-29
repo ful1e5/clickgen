@@ -8,7 +8,7 @@ from typing import List, NamedTuple, Optional
 from .providers.jsonparser import Hotspots
 
 
-class CursorInfo(NamedTuple):
+class ThemeInfo(NamedTuple):
     """ Metadata for cursor theme. """
 
     theme_name: str
@@ -32,11 +32,11 @@ class Config:
 
     def __init__(
         self,
-        info: CursorInfo,
+        info: ThemeInfo,
         settings: BuildSettings,
     ) -> None:
         # Default Theme comment & url
-        self.info: CursorInfo = info
+        self.info: ThemeInfo = info
         if not self.info.comment:
             self.info.comment = f"{self.info.theme_name} By {self.info.author}"
         if not self.info.url:

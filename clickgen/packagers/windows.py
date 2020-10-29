@@ -5,7 +5,7 @@
 from os import path
 from string import Template
 
-from ..configs import CursorInfo
+from ..configs import ThemeInfo
 from .fixers.fixers import WinCursorsFixer
 
 _inf_template = Template(
@@ -68,9 +68,9 @@ link		  = "Hand.cur"
 class WindowsPackager:
     """ Create a crispy `Windows` cursor theme package. """
 
-    def __init__(self, dir: str, info: CursorInfo) -> None:
+    def __init__(self, dir: str, info: ThemeInfo) -> None:
         self.__dir: str = dir
-        self.__info: CursorInfo = info
+        self.__info: ThemeInfo = info
 
     def __install_file(self) -> str:
         content: str = _inf_template.safe_substitute(

@@ -5,7 +5,7 @@ from os import path
 from string import Template
 from typing import Dict
 
-from ..configs import CursorInfo
+from ..configs import ThemeInfo
 from .fixers.fixers import XCursorLinker
 
 templates: Dict[str, Template] = {
@@ -17,9 +17,9 @@ templates: Dict[str, Template] = {
 class X11Packager:
     """ Create a crispy `XCursors` theme package. """
 
-    def __init__(self, dir: str, info: CursorInfo) -> None:
+    def __init__(self, dir: str, info: ThemeInfo) -> None:
         self.__dir: str = dir
-        self.__info: CursorInfo = info
+        self.__info: ThemeInfo = info
 
     def __index_files(self) -> Dict[str, str]:
         """ XCursors theme files. """
