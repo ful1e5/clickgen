@@ -91,7 +91,7 @@ class WindowsPackager:
 
         # Store install.inf file
         content: str = self.__install_file()
-        f = open(path.join(self.__dir, "install.inf", "w"))
+        f = open(path.join(self.__dir, "install.inf"), "w")
         f.write(content)
         f.close()
 

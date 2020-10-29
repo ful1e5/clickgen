@@ -42,7 +42,7 @@ class X11Packager:
         files: Dict[str, str] = self.__index_files()
 
         for f in files:
-            theme_file = open(path.join(self.__dir, f))
+            theme_file = open(path.join(self.__dir, f), "w")
             theme_file.write(files[f])
             theme_file.close()
 
