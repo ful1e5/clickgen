@@ -23,7 +23,8 @@ class BuildSettings(NamedTuple):
     bitmaps_dir: str
     sizes: List[int]
     hotspots: Hotspots
-    out_dir: Optional[str] = None
+    animation_delay: int = 50
+    out_dir: str = os.getcwd()
 
 
 class Config:
@@ -41,13 +42,10 @@ class Config:
         if not self.info.url:
             self.info.url = "Unknown Source!"
 
+        # Absolute path
         self.settings: BuildSettings = settings
         self.settings.bitmaps_dir = path.abspath(settings.bitmaps_dir)
-        if settings.out_dir is None:
-            # Set out_dir to Current Work Directory (Default)
-            self.settings.out_dir = os.getcwd()
-        else:
-            self.settings.out_dir = path.abspath(settings.out_dir)
+        self.settings.out_dir = path.abspath(settings.out_dir)
 
         # Logging config
         self.logs = False
