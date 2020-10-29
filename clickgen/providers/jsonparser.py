@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import json
-from typing import AnyStr, Dict, Tuple
+from typing import Dict, Tuple
 
 
 class HotspotsParser:
     """ Parse json file,that contains the hotspots."""
 
-    def __init__(self, f: AnyStr) -> None:
+    def __init__(self, f: str) -> None:
         data = open(f, "r")
         self.__hotspots: Dict[str, Dict[str, int]] = json.loads(data.read())
 

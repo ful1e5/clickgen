@@ -5,23 +5,26 @@ from glob import glob
 from os import path
 import os
 import tempfile
-from typing import AnyStr, Callable, Dict, List, Tuple, Union
+from typing import Callable, Dict, List, Tuple, Union
 
 from PIL import Image
 
 from .jsonparser import HotspotsParser
 
 
+def _clean_cur_name(name: str) -> str:
+    """ Remove framing postfix. """
+    return path.splitext(name)[0].split("-")[0]
+
+
 class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
 
-    def __init__(
-        self, bitmaps_dir: str, hotspots_file: AnyStr, sizes: List[int]
-    ) -> None:
-        self.__bitmaps_dir = bitmaps_dir
-        self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
+    def __init__(self, bitmaps_dir: str, hotspots_file: str, sizes: List[int]) -> None:
         self.__sizes = sizes
+        self.__bitmaps_dir = bitmaps_dir
         self.config_dir = tempfile.mkdtemp(prefix="clickgen_")
+        self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -31,8 +34,8 @@ class ThemeConfigsProvider:
         try:
             pngs.extend(list(map(func, glob(path.join(self.__bitmaps_dir, "*.png")))))
             if len(pngs) <= 0:
-                raise Exception("Cursors .png files not found")
-        except Exception as e:
+                raise FileNotFoundError("Cursors .png files not found")
+        except FileNotFoundError as e:
             print(e)
 
         return pngs
@@ -41,6 +44,7 @@ class ThemeConfigsProvider:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
         st_pngs: List[str] = list(filter(func, self.__get_png_files()))
+
         return st_pngs
 
     def __list_animated_png(self) -> Dict[str, List[str]]:
@@ -58,10 +62,6 @@ class ThemeConfigsProvider:
             d[g] = sorted(list(filter(func, an_pngs)))
 
         return d
-
-    def __clean_cur_name(self, name: str) -> str:
-        """ Remove framing postfix. """
-        return path.splitext(name)[0].split("-")[0]
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
         """ Resize cursor .png file as @size. """
@@ -100,28 +100,32 @@ class ThemeConfigsProvider:
         thumb.close()
 
         return self.__cords_parser.get_hotspots(
-            self.__clean_cur_name(cur), (width, height), size
+            _clean_cur_name(cur), (width, height), size
         )
 
     def __write_cfg_file(self, cur: str, lines: List[str]) -> None:
         """ Write {@cur.in} file in @self.config_dir. """
         # sort line, So all lines in order according to size (24x24, 28x28, ..)
         lines.sort()
+
         # remove newline from EOF
         lines[-1] = lines[-1].rstrip("\n")
-        cfg_path = path.join(self.config_dir, f"{self.__clean_cur_name(cur)}.in")
+        cfg_path = path.join(self.config_dir, f"{_clean_cur_name(cur)}.in")
+
         with open(cfg_path, "w") as f:
             f.writelines(lines)
 
     def __generate_cursor(self, cur: str, delay: Union[int, None] = None) -> List[str]:
         """ Resize cursor & return `.in` file content. """
         lines: List[str] = []
+
         for size in self.__sizes:
             (xhot, yhot) = self.__resize_cursor(cur, size)
             if delay:
                 lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur} {delay}\n")
             else:
                 lines.append(f"{size} {xhot} {yhot} {size}x{size}/{cur}\n")
+
         return lines
 
     def __generate_static_cfgs(self) -> None:
@@ -145,4 +149,5 @@ class ThemeConfigsProvider:
         """ Generate `.in` config files of `.png` inside @self.__bitmaps. """
         self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
+
         return self.config_dir
