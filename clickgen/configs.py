@@ -4,7 +4,8 @@
 import os
 import logging
 from os import path
-from typing import NamedTuple, Optional
+from typing import List, NamedTuple, Optional
+from .providers.jsonparser import Hotspots
 
 
 class CursorInfo(NamedTuple):
@@ -16,14 +17,22 @@ class CursorInfo(NamedTuple):
     url: Optional[str]
 
 
+class BuildSettings(NamedTuple):
+    """ Cursors build main settings. """
+
+    bitmaps_dir: str
+    sizes: List[int]
+    hotspots: Hotspots
+    out_dir: Optional[str] = None
+
+
 class Config:
     """ Configure `clickgen` cursor building process. """
 
     def __init__(
         self,
         info: CursorInfo,
-        configs_dir: str,
-        out_dir: Optional[str] = None,
+        settings: BuildSettings,
     ) -> None:
         # Default Theme comment & url
         self.info: CursorInfo = info
@@ -32,12 +41,13 @@ class Config:
         if not self.info.url:
             self.info.url = "Unknown Source!"
 
-        self._configs_dir: str = path.abspath(configs_dir)
-        if out_dir is None:
+        self.settings: BuildSettings = settings
+        self.settings.bitmaps_dir = path.abspath(settings.bitmaps_dir)
+        if settings.out_dir is None:
             # Set out_dir to Current Work Directory (Default)
-            self._out_dir: str = path.abspath(os.getcwd())
+            self.settings.out_dir = os.getcwd()
         else:
-            self._out_dir: str = path.abspath(out_dir)
+            self.settings.out_dir = path.abspath(settings.out_dir)
 
         # Logging config
         self.logs = False
