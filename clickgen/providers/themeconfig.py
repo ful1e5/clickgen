@@ -9,7 +9,7 @@ from typing import Callable, Dict, List, Tuple, Union
 
 from PIL import Image
 
-from .jsonparser import HotspotsParser
+from .jsonparser import HotspotsParser, Hotspots
 
 
 def _clean_cur_name(name: str) -> str:
@@ -20,11 +20,11 @@ def _clean_cur_name(name: str) -> str:
 class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
 
-    def __init__(self, bitmaps_dir: str, hotspots_file: str, sizes: List[int]) -> None:
+    def __init__(self, bitmaps_dir: str, hotspots: Hotspots, sizes: List[int]) -> None:
         self.__sizes = sizes
         self.__bitmaps_dir = bitmaps_dir
         self.config_dir = tempfile.mkdtemp(prefix="clickgen_")
-        self.__cords_parser: HotspotsParser = HotspotsParser(hotspots_file)
+        self.__cords: HotspotsParser = HotspotsParser(hotspots)
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
@@ -99,9 +99,7 @@ class ThemeConfigsProvider:
         image.close()
         thumb.close()
 
-        return self.__cords_parser.get_hotspots(
-            _clean_cur_name(cur), (width, height), size
-        )
+        return self.__cords.get_hotspots(_clean_cur_name(cur), (width, height), size)
 
     def __write_cfg_file(self, cur: str, lines: List[str]) -> None:
         """ Write {@cur.in} file in @self.config_dir. """

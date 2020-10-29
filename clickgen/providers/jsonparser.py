@@ -1,16 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import json
 from typing import Dict, Tuple
+
+# typing
+Hotspots = Dict[str, Dict[str, int]]
 
 
 class HotspotsParser:
     """ Parse json file,that contains the hotspots."""
 
-    def __init__(self, f: str) -> None:
-        data = open(f, "r")
-        self.__hotspots: Dict[str, Dict[str, int]] = json.loads(data.read())
+    __hotspots: Hotspots = {}
+
+    def __init__(self, hotspots: Hotspots) -> None:
+        self.__hotspots = hotspots
 
     def get_hotspots(
         self, c: str, old_size: Tuple[int, int], new_size: int
