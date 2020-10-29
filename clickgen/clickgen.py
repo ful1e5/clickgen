@@ -7,7 +7,7 @@ import tempfile
 
 from .builders.winbuilder import WinCursorsBuilder
 from .builders.x11builder import X11CursorsBuilder
-from .configs import BuildSettings, Config, ThemeInfo
+from .configs import Config, ThemeInfo, ThemeSettings
 from .packagers.windows import WindowsPackager
 from .packagers.x11 import X11Packager
 from .providers.themeconfig import ThemeConfigsProvider
@@ -16,7 +16,7 @@ from .providers.themeconfig import ThemeConfigsProvider
 def create_theme(config: Config) -> None:
     """ Create cursors theme from `bitmaps`.  """
     info: ThemeInfo = config.info
-    sett: BuildSettings = config.settings
+    sett: ThemeSettings = config.settings
 
     # Cursors '.in' files generator
     config_dir: str = ThemeConfigsProvider(

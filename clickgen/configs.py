@@ -17,8 +17,8 @@ class ThemeInfo(NamedTuple):
     url: Optional[str]
 
 
-class BuildSettings(NamedTuple):
-    """ Cursors build main settings. """
+class ThemeSettings(NamedTuple):
+    """ Core settings for building custom cursor theme. """
 
     bitmaps_dir: str
     sizes: List[int]
@@ -33,17 +33,17 @@ class Config:
     def __init__(
         self,
         info: ThemeInfo,
-        settings: BuildSettings,
+        settings: ThemeSettings,
     ) -> None:
         # Default Theme comment & url
         self.info: ThemeInfo = info
-        if not self.info.comment:
-            self.info.comment = f"{self.info.theme_name} By {self.info.author}"
-        if not self.info.url:
-            self.info.url = "Unknown Source!"
+        if not info.comment:
+            self.info.comment = str(f"{info.theme_name} By {info.author}")
+        if not info.url:
+            self.info.url = str("Unknown Source!")
 
         # Absolute path
-        self.settings: BuildSettings = settings
+        self.settings: ThemeSettings = settings
         self.settings.bitmaps_dir = path.abspath(settings.bitmaps_dir)
         self.settings.out_dir = path.abspath(settings.out_dir)
 
