@@ -8,7 +8,9 @@ from os import makedirs, path, remove
 import sys
 from typing import Any, List
 
-lib_xcursorgen: str = path.join(__file__, path.abspath("../../libs/xcursorgen.so"))
+from .. import __path__ as pkg_root
+
+lib_xcursorgen: str = path.join(pkg_root[0], "xcursorgen.so")
 
 
 class X11CursorsBuilder:

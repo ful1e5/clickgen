@@ -1,1 +1,1 @@
-recursive-include libs *.so
+include clickgen/xcursorgen.so
