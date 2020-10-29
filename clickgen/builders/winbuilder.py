@@ -9,7 +9,7 @@ from os import makedirs, path, remove
 import shlex
 import struct
 import sys
-from typing import Any, List, Literal, NamedTuple, Optional, Set, Tuple
+from typing import Any, List, Literal, NamedTuple, Optional, Tuple
 
 from PIL import Image
 from PIL import ImageFilter
@@ -107,7 +107,7 @@ class WinCursorsBuilder:
         self, frames: List[Tuple[int, int, int, str, int]]
     ) -> bool:
         """ For checking @frames have animation. """
-        sizes: Set = set()
+        sizes = set()
         for frame in frames:
             if frame[4] == 0:
                 continue
@@ -119,7 +119,7 @@ class WinCursorsBuilder:
 
     def __make_framesets(self, frames: List[Any]) -> Optional[List[Any]]:
         framesets: List[Any] = []
-        sizes: Set = set()
+        sizes = set()
 
         # This assumes that frames are sorted
         size = counter = 0
