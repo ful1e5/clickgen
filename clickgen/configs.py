@@ -36,16 +36,24 @@ class Config:
         settings: ThemeSettings,
     ) -> None:
         # Default Theme comment & url
-        self.info: ThemeInfo = info
-        if not info.comment:
-            self.info.comment = str(f"{info.theme_name} By {info.author}")
-        if not info.url:
-            self.info.url = str("Unknown Source!")
+        comment: str = f"{info.theme_name} By {info.author}"
+        url: str = "Unknown Source!"
+        if info.comment:
+            comment = info.comment
+        if info.url:
+            url = info.url
 
-        # Absolute path
-        self.settings: ThemeSettings = settings
-        self.settings.bitmaps_dir = path.abspath(settings.bitmaps_dir)
-        self.settings.out_dir = path.abspath(settings.out_dir)
+        self.info: ThemeInfo = ThemeInfo(
+            theme_name=info.theme_name, author=info.author, comment=comment, url=url
+        )
+
+        self.settings: ThemeSettings = ThemeSettings(
+            bitmaps_dir=path.abspath(settings.bitmaps_dir),
+            sizes=settings.sizes,
+            hotspots=settings.hotspots,
+            animation_delay=settings.animation_delay,
+            out_dir=path.abspath(settings.out_dir),
+        )
 
         # Logging config
         self.logs = False
