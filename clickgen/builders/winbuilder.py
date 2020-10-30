@@ -88,13 +88,13 @@ class WinCursorsBuilder:
                 filename = words[3]
                 if not path.isabs(filename):
                     filename = path.join(prefix, filename)
-            except:
+            except Exception:
                 continue
 
             if len(words) > 4:
                 try:
                     duration = int(words[4])
-                except:
+                except Exception:
                     continue
             else:
                 duration = 0
