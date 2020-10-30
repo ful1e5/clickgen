@@ -81,21 +81,15 @@ class WinCursorsBuilder:
             if len(words) < 4:
                 continue
 
-            try:
-                size = int(words[0])
-                xhot = int(words[1]) - 1
-                yhot = int(words[2]) - 1
-                filename = words[3]
-                if not path.isabs(filename):
-                    filename = path.join(prefix, filename)
-            except Exception:
-                continue
+            size = int(words[0])
+            xhot = int(words[1]) - 1
+            yhot = int(words[2]) - 1
+            filename = words[3]
+            if not path.isabs(filename):
+                filename = path.join(prefix, filename)
 
             if len(words) > 4:
-                try:
-                    duration = int(words[4])
-                except Exception:
-                    continue
+                duration = int(words[4])
             else:
                 duration = 0
 
