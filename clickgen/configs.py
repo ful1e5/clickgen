@@ -13,8 +13,8 @@ class ThemeInfo(NamedTuple):
 
     theme_name: str
     author: str
-    comment: Optional[str]
-    url: Optional[str]
+    url: str = "Unknown Source!"
+    comment: Optional[str] = None
 
 
 class ThemeSettings(NamedTuple):
@@ -37,14 +37,14 @@ class Config:
     ) -> None:
         # Default Theme comment & url
         comment: str = f"{info.theme_name} By {info.author}"
-        url: str = "Unknown Source!"
         if info.comment:
             comment = info.comment
-        if info.url:
-            url = info.url
 
         self.info: ThemeInfo = ThemeInfo(
-            theme_name=info.theme_name, author=info.author, comment=comment, url=url
+            theme_name=info.theme_name,
+            author=info.author,
+            comment=comment,
+            url=info.url,
         )
 
         self.settings: ThemeSettings = ThemeSettings(
