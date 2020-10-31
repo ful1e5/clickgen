@@ -9,7 +9,7 @@ from .providers.jsonparser import Hotspots
 
 
 class ThemeInfo(NamedTuple):
-    """ Metadata for cursor theme. """
+    """ Information of cursor theme. """
 
     theme_name: str
     author: str
@@ -18,7 +18,7 @@ class ThemeInfo(NamedTuple):
 
 
 class ThemeSettings(NamedTuple):
-    """ Core settings for building custom cursor theme. """
+    """ Core settings of cursor theme. """
 
     bitmaps_dir: str
     sizes: List[int]
@@ -28,14 +28,14 @@ class ThemeSettings(NamedTuple):
 
 
 class Config:
-    """ Configure `clickgen` cursor building process. """
+    """ Configure `clickgen` modules. """
 
     def __init__(
         self,
         info: ThemeInfo,
         settings: ThemeSettings,
     ) -> None:
-        # Default Theme comment & url
+        # Default "comment" for cursor theme
         comment: str = f"{info.theme_name} By {info.author}"
         if info.comment:
             comment = info.comment
