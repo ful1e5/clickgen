@@ -65,7 +65,7 @@ class WinCursorsFixer(CursorDB):
         # Removing other cursors, That's not in Win DB
         rm_list: List[str] = list(listdir(super().dir) - super().win_db.keys())
         for e in rm_list:
-            print(f"Removing '{path.basename(e)}'")
+            print(f"Deleting '{path.basename(e)}'")
             remove(path.join(super().dir, e))
 
         return listdir(super().dir)
