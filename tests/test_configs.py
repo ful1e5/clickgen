@@ -9,6 +9,8 @@ import pytest
 
 from clickgen.configs import Config, ThemeInfo, ThemeSettings
 
+from .test_jsonparser import hotspots
+
 
 @pytest.fixture
 def ti() -> ThemeInfo:
@@ -16,10 +18,8 @@ def ti() -> ThemeInfo:
 
 
 @pytest.fixture
-def ts() -> ThemeSettings:
-    return ThemeSettings(
-        bitmaps_dir="foo", sizes=[1, 2], hotspots={"a": {"xhot": 1, "yhot": 2}}
-    )
+def ts(hotspots) -> ThemeSettings:
+    return ThemeSettings(bitmaps_dir="foo", sizes=[1, 2], hotspots=hotspots)
 
 
 def test_theme_info(ti) -> None:
