@@ -43,3 +43,7 @@ def test_theme_settings(ts) -> None:
     assert ts.hotspots.get("a").get("xhot") == 1
     assert isinstance(ts.hotspots.get("a").get("yhot"), int)
     assert ts.hotspots.get("a").get("yhot") == 2
+
+
+def test_config(ti, ts) -> None:
+    pass
