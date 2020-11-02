@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import logging
 import os
 from os import path
 from typing import List, NamedTuple, Optional
@@ -55,24 +54,3 @@ class Config:
             animation_delay=settings.animation_delay,
             out_dir=path.abspath(settings.out_dir),
         )
-
-        # Logging config
-        self.logs = False
-        self.logger = logging.getLogger(__name__)
-        logging.basicConfig(level=logging.INFO)
-
-    def toggle_logging(self) -> None:
-        """
-        Enable/Disable logging in clickgen. (@default Disable)
-        """
-        self.logs = not self.logs
-
-        if self.logs:
-            logging.disable(logging.NOTSET)
-        else:
-            logging.disable(logging.CRITICAL)
-
-    def get_logger(self, name: str) -> logging.Logger:
-        """ Get custom logger."""
-        logger = logging.getLogger(name)
-        return logger
