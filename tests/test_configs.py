@@ -3,8 +3,8 @@
 
 import os
 from typing import Dict
-
-from clickgen.configs import ThemeInfo, ThemeSettings
+from os import path
+from clickgen.configs import Config, ThemeInfo, ThemeSettings
 import pytest
 
 
@@ -43,3 +43,11 @@ def test_theme_settings(ts) -> None:
     assert ts.hotspots.get("a").get("xhot") == 1
     assert isinstance(ts.hotspots.get("a").get("yhot"), int)
     assert ts.hotspots.get("a").get("yhot") == 2
+
+
+def test_config(ti, ts) -> None:
+    c = Config(ti, ts)
+
+    # check paths
+    assert path.isabs(c.settings.bitmaps_dir)
+    assert path.isabs(c.settings.out_dir)
