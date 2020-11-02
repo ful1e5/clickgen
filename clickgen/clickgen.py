@@ -14,7 +14,7 @@ from .providers.themeconfig import ThemeConfigsProvider
 
 
 def create_theme(config: Config) -> None:
-    """ Create cursors theme from `bitmaps`.  """
+    """ Create cursors theme from `bitmaps`. """
     info: ThemeInfo = config.info
     sett: ThemeSettings = config.settings
 
