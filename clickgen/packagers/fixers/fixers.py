@@ -12,20 +12,6 @@ from typing import Callable, List, Optional
 from .db import CursorDB
 
 
-@contextmanager
-def _cd(dir_path: str):
-    """ Temporary change directory context manager. """
-
-    CWD = getcwd()
-    chdir(dir_path)
-    try:
-        yield
-    except:
-        print(f"Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
-    finally:
-        chdir(CWD)
-
-
 class WinCursorsFixer(CursorDB):
     """ Rename Windows cursors accordinf to local database. """
 
@@ -79,6 +65,19 @@ class XCursorLinker(CursorDB):
     def __init__(self, dir: str) -> None:
         super().__init__(dir)
 
+    @contextmanager
+    def _goto_cursors_dir(self):
+        """ Temporary change directory to `cursors` using contextmanager. """
+
+        CWD = getcwd()
+        chdir(super().dir)
+        try:
+            yield
+        except:
+            print(f"Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
+        finally:
+            chdir(CWD)
+
     def _find_relative_cursors(self, cur: str) -> Optional[List[str]]:
         """ Find relative cursors from local DB. """
         result: Optional[List[str]] = []
@@ -119,7 +118,7 @@ class XCursorLinker(CursorDB):
         super().rename(self.__files)
 
         # Create symlinks for missing cursors
-        with _cd(super().dir):
+        with self._goto_cursors_dir():
             self._clean_old_symlinks()
             for cur in listdir(super().dir):
                 rel_curs: Optional[List[str]] = self._find_relative_cursors(cur)
