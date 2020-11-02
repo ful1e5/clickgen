@@ -43,11 +43,11 @@ def test_theme_settings(ts) -> None:
     assert ts.out_dir == os.getcwd()
 
     assert isinstance(ts.hotspots, Dict)
-    assert ts.hotspots.get("a") == pytest.approx({"xhot": 1, "yhot": 2})
+    assert ts.hotspots.get("a") == pytest.approx({"xhot": 20, "yhot": 50})
     assert isinstance(ts.hotspots.get("a").get("xhot"), int)
-    assert ts.hotspots.get("a").get("xhot") == 1
+    assert ts.hotspots.get("a").get("xhot") == 20
     assert isinstance(ts.hotspots.get("a").get("yhot"), int)
-    assert ts.hotspots.get("a").get("yhot") == 2
+    assert ts.hotspots.get("a").get("yhot") == 50
 
 
 def test_config(ti, ts) -> None:
