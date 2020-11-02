@@ -32,8 +32,11 @@ def test_theme_info(ti) -> None:
 def test_theme_settings(ts) -> None:
     assert isinstance(ts, ThemeSettings)
 
-    assert isinstance(ts.sizes[0], int)
+    for s in ts.sizes:
+        assert s in [1, 2]
+        assert isinstance(s, int)
 
+    assert isinstance(ts.animation_delay, int)
     assert ts.animation_delay == 50
     assert ts.out_dir == os.getcwd()
 
