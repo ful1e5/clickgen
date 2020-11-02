@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from typing import Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
@@ -10,7 +11,7 @@ from clickgen.providers.jsonparser import Hotspots, HotspotsParser
 
 @pytest.fixture
 def hotspots() -> Hotspots:
-    return {"a": {"xhot": 1, "yhot": 2}, "b": {"xhot": 3, "yhot": 4}}
+    return {"a": {"xhot": 20, "yhot": 50}, "b": {"xhot": 88, "yhot": 42}}
 
 
 def test_hotspots_parser(hotspots) -> None:
@@ -21,3 +22,23 @@ def test_hotspots_parser(hotspots) -> None:
 
         mock_hotspots.return_value = hotspots
         assert hotspots == h._HotspotsParser__hotspots
+
+
+testdata = [
+    ("a", (200, 200), 22, 2, 6),
+    ("a", (200, 200), 24, 2, 6),
+    ("a", (200, 200), 28, 3, 7),
+    ("a", (200, 200), 32, 3, 8),
+    ("b", (200, 200), 38, 17, 8),
+    ("b", (200, 200), 42, 18, 9),
+    ("b", (200, 200), 48, 21, 10),
+]
+
+
+@pytest.mark.parametrize("c, os, ns, x, y", testdata)
+def test_get_hotspots(hotspots, c, os, ns, x, y) -> None:
+    h = HotspotsParser(hotspots)
+    cords = h.get_hotspots(c, os, ns)
+
+    assert cords[0] == x
+    assert cords[1] == y
