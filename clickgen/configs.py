@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import logging
+import os
 from os import path
 from typing import List, NamedTuple, Optional
+
 from .providers.jsonparser import Hotspots
 
 
