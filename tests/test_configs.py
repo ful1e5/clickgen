@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from typing import Dict
 from os import path
-from clickgen.configs import Config, ThemeInfo, ThemeSettings
+from typing import Dict
+
 import pytest
+
+from clickgen.configs import Config, ThemeInfo, ThemeSettings
 
 
 @pytest.fixture
@@ -51,6 +53,13 @@ def test_theme_settings(ts) -> None:
 def test_config(ti, ts) -> None:
     c = Config(ti, ts)
 
+    assert isinstance(c.settings, ThemeSettings)
+    assert isinstance(c.info, ThemeInfo)
+
     # check paths
     assert path.isabs(c.settings.bitmaps_dir)
     assert path.isabs(c.settings.out_dir)
+
+    assert c.info.theme_name == ti.theme_name
+    assert c.info.author == ti.author
+    assert c.info.comment == "foo By bar"
