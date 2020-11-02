@@ -38,6 +38,8 @@ def test_theme_settings(ts) -> None:
     assert ts.out_dir == os.getcwd()
 
     assert isinstance(ts.hotspots, Dict)
-    assert isinstance(ts.hotspots.get("a"), Dict)
+    assert ts.hotspots.get("a") == pytest.approx({"xhot": 1, "yhot": 2})
     assert isinstance(ts.hotspots.get("a").get("xhot"), int)
+    assert ts.hotspots.get("a").get("xhot") == 1
     assert isinstance(ts.hotspots.get("a").get("yhot"), int)
+    assert ts.hotspots.get("a").get("yhot") == 2
