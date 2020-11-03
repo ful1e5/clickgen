@@ -3,28 +3,11 @@
 
 import os
 from os import path
-from typing import Dict, List
+from typing import Dict
 
 import pytest
 
 from clickgen.configs import Config, ThemeInfo, ThemeSettings
-
-from .test_jsonparser import hotspots
-
-
-@pytest.fixture
-def ti() -> ThemeInfo:
-    return ThemeInfo(theme_name="foo", author="bar")
-
-
-@pytest.fixture
-def sizes() -> List[int]:
-    return [1, 2]
-
-
-@pytest.fixture
-def bitmaps_dir() -> str:
-    return "foo"
 
 
 @pytest.fixture

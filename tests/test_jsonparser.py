@@ -6,12 +6,7 @@ from unittest.mock import PropertyMock, patch
 
 import pytest
 
-from clickgen.providers.jsonparser import Hotspots, HotspotsParser
-
-
-@pytest.fixture
-def hotspots() -> Hotspots:
-    return {"a": {"xhot": 20, "yhot": 50}, "b": {"xhot": 88, "yhot": 42}}
+from clickgen.providers.jsonparser import HotspotsParser
 
 
 def test_hotspots_parser(hotspots) -> None:
