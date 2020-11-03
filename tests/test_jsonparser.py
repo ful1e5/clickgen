@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
