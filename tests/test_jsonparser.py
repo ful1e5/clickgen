@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from typing import List, Literal, Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
@@ -23,7 +24,7 @@ def test_hotspots_parser(hotspots) -> None:
         assert hotspots == h._HotspotsParser__hotspots
 
 
-testdata = [
+testdata: List[Tuple[str, Tuple[int, int], int, int, int]] = [
     ("a", (200, 200), 22, 2, 6),
     ("a", (200, 200), 24, 2, 6),
     ("a", (200, 200), 28, 3, 7),
