@@ -57,8 +57,6 @@ def test_theme_configs_provider_cords(bitmaps_dir, sizes, hotspots) -> None:
         assert isinstance(tcp._ThemeConfigsProvider__cords, HotspotsParser)  # type: ignore
 
 
-def test_theme_configs_provider_get_png_files_raise_exception(
-    bitmaps_dir, sizes, hotspots
-) -> None:
+def test_theme_configs_provider_get_png_files_raise_exception(tcp) -> None:
     with pytest.raises(AttributeError):
-        ThemeConfigsProvider(bitmaps_dir, sizes, hotspots).__get_png_files()
+        tcp.__get_png_files()
