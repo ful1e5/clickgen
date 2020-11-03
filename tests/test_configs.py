@@ -13,18 +13,23 @@ from .test_jsonparser import hotspots
 
 
 @pytest.fixture
-def sizes() -> List[int]:
-    return [1, 2]
-
-
-@pytest.fixture
 def ti() -> ThemeInfo:
     return ThemeInfo(theme_name="foo", author="bar")
 
 
 @pytest.fixture
-def ts(hotspots, sizes) -> ThemeSettings:
-    return ThemeSettings(bitmaps_dir="foo", sizes=sizes, hotspots=hotspots)
+def sizes() -> List[int]:
+    return [1, 2]
+
+
+@pytest.fixture
+def bitmaps_dir() -> str:
+    return "foo"
+
+
+@pytest.fixture
+def ts(bitmaps_dir, sizes, hotspots) -> ThemeSettings:
+    return ThemeSettings(bitmaps_dir, sizes, hotspots)
 
 
 def test_theme_info(ti) -> None:
