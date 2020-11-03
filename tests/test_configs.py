@@ -3,7 +3,7 @@
 
 import os
 from os import path
-from typing import Dict
+from typing import Dict, List
 
 import pytest
 
@@ -13,13 +13,18 @@ from .test_jsonparser import hotspots
 
 
 @pytest.fixture
+def sizes() -> List[int]:
+    return [1, 2]
+
+
+@pytest.fixture
 def ti() -> ThemeInfo:
     return ThemeInfo(theme_name="foo", author="bar")
 
 
 @pytest.fixture
-def ts(hotspots) -> ThemeSettings:
-    return ThemeSettings(bitmaps_dir="foo", sizes=[1, 2], hotspots=hotspots)
+def ts(hotspots, sizes) -> ThemeSettings:
+    return ThemeSettings(bitmaps_dir="foo", sizes=sizes, hotspots=hotspots)
 
 
 def test_theme_info(ti) -> None:
