@@ -21,7 +21,7 @@ def test_hotspots_parser(hotspots) -> None:
         h = HotspotsParser(mock_hotspots)
 
         mock_hotspots.return_value = hotspots
-        assert hotspots == h._HotspotsParser__hotspots
+        assert hotspots == h._HotspotsParser__hotspots  # type: ignore
 
 
 testdata: List[Tuple[str, Tuple[int, int], int, int, int]] = [
