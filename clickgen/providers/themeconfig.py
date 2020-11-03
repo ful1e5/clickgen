@@ -23,7 +23,7 @@ class ThemeConfigsProvider:
     __sizes: List[int] = []
     __bitmaps_dir: str = ""
     config_dir: str = tempfile.mkdtemp(prefix="clickgen_")
-    __cords: HotspotsParser
+    __cords: HotspotsParser = HotspotsParser({})
 
     def __init__(self, bitmaps_dir: str, hotspots: Hotspots, sizes: List[int]) -> None:
         self.__sizes = sizes
