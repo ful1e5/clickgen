@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from clickgen.providers.themeconfig import ThemeConfigsProvider
 from typing import List
 
 import pytest
@@ -27,3 +28,13 @@ def bitmaps_dir() -> str:
 @pytest.fixture(scope="module")
 def hotspots() -> Hotspots:
     return {"a": {"xhot": 20, "yhot": 50}, "b": {"xhot": 88, "yhot": 42}}
+
+
+@pytest.fixture(scope="module")
+def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
+    return ThemeConfigsProvider(bitmaps_dir, sizes, hotspots)
+
+
+@pytest.fixture(scope="module")
+def pngs() -> List[str]:
+    return ["a.png", "b.png", "c-01.png", "c-02.png"]
