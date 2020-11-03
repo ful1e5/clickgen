@@ -55,3 +55,10 @@ def test_theme_configs_provider_cords(bitmaps_dir, sizes, hotspots) -> None:
 
         mock_hotspots.return_value = HotspotsParser(hotspots)
         assert isinstance(tcp._ThemeConfigsProvider__cords, HotspotsParser)  # type: ignore
+
+
+def test_theme_configs_provider_get_png_files_raise_exception(
+    bitmaps_dir, sizes, hotspots
+) -> None:
+    with pytest.raises(AttributeError):
+        ThemeConfigsProvider(bitmaps_dir, sizes, hotspots).__get_png_files()
