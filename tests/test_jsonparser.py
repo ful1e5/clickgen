@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List, Literal, Tuple
+from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
