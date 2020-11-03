@@ -20,11 +20,15 @@ def _clean_cur_name(name: str) -> str:
 class ThemeConfigsProvider:
     """ Configure `clickgen` cursor building process. """
 
+    __sizes: List[int] = []
+    __bitmaps_dir: str = ""
+    config_dir: str = tempfile.mkdtemp(prefix="clickgen_")
+    __cords: HotspotsParser
+
     def __init__(self, bitmaps_dir: str, hotspots: Hotspots, sizes: List[int]) -> None:
         self.__sizes = sizes
         self.__bitmaps_dir = bitmaps_dir
-        self.config_dir = tempfile.mkdtemp(prefix="clickgen_")
-        self.__cords: HotspotsParser = HotspotsParser(hotspots)
+        self.__cords = HotspotsParser(hotspots)
 
     def __get_png_files(self) -> List[str]:
         """ Return list of .png files in `bitmaps_dir`. """
