@@ -38,3 +38,8 @@ def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
 @pytest.fixture(scope="module")
 def pngs() -> List[str]:
     return ["a.png", "b.png", "c-01.png", "c-02.png"]
+
+
+@pytest.fixture(scope="module")
+def lines() -> List[str]:
+    return ["firstline", "secondline"]
