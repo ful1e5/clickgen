@@ -3,7 +3,6 @@
 
 import os
 from os import path
-from tests.conftest import sizes
 from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
@@ -138,26 +137,27 @@ def test_theme_configs_provider_generate(tcp: ThemeConfigsProvider) -> None:
     assert a == tcp.config_dir
 
 
-def test_theme_configs_provider_generate_dir_is_not_empty(
-    tcp: ThemeConfigsProvider,
-) -> None:
-    a = tcp.generate(50)
-    assert len(os.listdir(a)) > 0
+def test_theme_configs_provider_generate_dir_is_not_empty(config_dir) -> None:
+    assert len(os.listdir(config_dir)) > 0
 
 
-def test_theme_configs_provider_generate_configs_dir_files(
-    tcp: ThemeConfigsProvider,
-) -> None:
-    a = tcp.generate(50)
-    assert sorted(os.listdir(a)) == sorted(["b.in", "a.in", "c.in", "2x2", "1x1"])
+def test_theme_configs_provider_generate_configs_dir_files(config_dir) -> None:
+    assert sorted(os.listdir(config_dir)) == sorted(
+        ["b.in", "a.in", "c.in", "2x2", "1x1"]
+    )
 
 
 def test_theme_configs_provider_generate_configs_dir_image_files(
-    tcp: ThemeConfigsProvider, sizes
+    config_dir, sizes
 ) -> None:
-    a = tcp.generate(50)
     expected = ["a.png", "b.png", "c-01.png", "c-02.png"]
 
     for s in sizes:
-        d = path.join(a, f"{s}x{s}")
+        d = path.join(config_dir, f"{s}x{s}")
         assert sorted(os.listdir(d)) == sorted(expected)
+
+
+def test_theme_configs_provider_generate_config_files(config_dir, hotspots) -> None:
+    files = os.listdir(config_dir)
+    for c in hotspots:
+        assert f"{c}.in" in files
