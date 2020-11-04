@@ -39,7 +39,7 @@ def hotspots() -> Hotspots:
 
 @pytest.fixture(scope="module")
 def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
-    return ThemeConfigsProvider(bitmaps_dir, sizes, hotspots)
+    return ThemeConfigsProvider(bitmaps_dir, hotspots, sizes)
 
 
 @pytest.fixture(scope="module")
