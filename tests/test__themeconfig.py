@@ -71,3 +71,51 @@ def test_theme_configs_provider_list_static_png_raise_attribute_error_exception(
     with pytest.raises(AttributeError):
         tcp.__list_static_png()
         ThemeConfigsProvider.__list_static_png  # type: ignore
+
+
+def test_theme_configs_provider_list_animated_png_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__list_animated_png()
+        ThemeConfigsProvider.__list_animated_png()  # type: ignore
+
+
+def test_theme_configs_provider_resize_cursor_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider, hotspots, sizes
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__resize_cursor(hotspots[0], sizes[0])
+        ThemeConfigsProvider.__resize_cursor(hotspots[0], sizes[0])  # type: ignore
+
+
+def test_theme_configs_provider_write_cfg_file_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider, hotspots, lines
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__write_cfg_file(hotspots[0], lines)
+        ThemeConfigsProvider.__write_cfg_file(hotspots[0], lines)  # type: ignore
+
+
+def test_theme_configs_provider_generate_cursor_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider, hotspots
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__generate_cursor(hotspots[0])
+        ThemeConfigsProvider.__generate_cursor(hotspots[0])  # type: ignore
+
+
+def test_theme_configs_provider_generate_static_cfgs_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__generate_static_cfgs()
+        ThemeConfigsProvider.__generate_static_cfgs()  # type: ignore
+
+
+def test_theme_configs_provider_generate_animated_cfgs_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__generate_animated_cfgs(50)
+        ThemeConfigsProvider.__generate_animated_cfgs(50)  # type: ignore
