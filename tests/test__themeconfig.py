@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
@@ -133,3 +134,17 @@ def test_theme_configs_provider_generate_animated_cfgs_raise_attribute_error_exc
 def test_theme_configs_provider_generate(tcp: ThemeConfigsProvider) -> None:
     a = tcp.generate(50)
     assert a == tcp.config_dir
+
+
+def test_theme_configs_provider_generate_dir_is_not_empty(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    a = tcp.generate(50)
+    assert len(os.listdir(a)) > 0
+
+
+def test_theme_configs_provider_generate_configs_dir_files(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    a = tcp.generate(50)
+    assert sorted(os.listdir(a)) == sorted(["b.in", "a.in", "c.in", "2x2", "1x1"])
