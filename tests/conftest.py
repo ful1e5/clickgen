@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from clickgen.providers.themeconfig import ThemeConfigsProvider
+from os import path
 from typing import List
 
 import pytest
 
 from clickgen.configs import ThemeInfo
 from clickgen.providers.jsonparser import Hotspots
+from clickgen.providers.themeconfig import ThemeConfigsProvider
+
+from . import __path__ as root
 
 
 @pytest.fixture(scope="module")
@@ -22,12 +25,16 @@ def sizes() -> List[int]:
 
 @pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
-    return "foo"
+    return path.abspath(path.join(root[0], "assets", "bitmaps"))
 
 
 @pytest.fixture(scope="module")
 def hotspots() -> Hotspots:
-    return {"a": {"xhot": 20, "yhot": 50}, "b": {"xhot": 88, "yhot": 42}}
+    return {
+        "a": {"xhot": 20, "yhot": 50},
+        "b": {"xhot": 88, "yhot": 42},
+        "c": {"xhot": 33, "yhot": 56},
+    }
 
 
 @pytest.fixture(scope="module")
