@@ -58,8 +58,16 @@ def test_theme_configs_provider_cords(bitmaps_dir, sizes, hotspots) -> None:
 
 
 def test_theme_configs_provider_get_png_files_raise_attribute_error_exception(
-    tcp,
+    tcp: ThemeConfigsProvider,
 ) -> None:
     with pytest.raises(AttributeError):
         tcp.__get_png_files()
         ThemeConfigsProvider.__get_png_files()  # type: ignore
+
+
+def test_theme_configs_provider_list_static_png_raise_attribute_error_exception(
+    tcp: ThemeConfigsProvider,
+) -> None:
+    with pytest.raises(AttributeError):
+        tcp.__list_static_png()
+        ThemeConfigsProvider.__list_static_png  # type: ignore
