@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+from os import path
+from tests.conftest import sizes
 from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
@@ -148,3 +150,14 @@ def test_theme_configs_provider_generate_configs_dir_files(
 ) -> None:
     a = tcp.generate(50)
     assert sorted(os.listdir(a)) == sorted(["b.in", "a.in", "c.in", "2x2", "1x1"])
+
+
+def test_theme_configs_provider_generate_configs_dir_image_files(
+    tcp: ThemeConfigsProvider, sizes
+) -> None:
+    a = tcp.generate(50)
+    expected = ["a.png", "b.png", "c-01.png", "c-02.png"]
+
+    for s in sizes:
+        d = path.join(a, f"{s}x{s}")
+        assert sorted(os.listdir(d)) == sorted(expected)
