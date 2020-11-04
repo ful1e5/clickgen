@@ -7,9 +7,9 @@ from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
-
 from clickgen.providers.jsonparser import HotspotsParser
 from clickgen.providers.themeconfig import ThemeConfigsProvider, _clean_cur_name
+from PIL import Image
 
 clean_cur_name_parameters: List[Tuple[str, str]] = [
     ("/foo/bar-01", "/foo/bar"),
@@ -155,6 +155,17 @@ def test_theme_configs_provider_generate_configs_dir_image_files(
     for s in sizes:
         d = path.join(config_dir, f"{s}x{s}")
         assert sorted(os.listdir(d)) == sorted(expected)
+
+
+def test_theme_configs_provider_generate_configs_dir_image_files_sizes(
+    config_dir, sizes
+) -> None:
+    for s in sizes:
+        d = path.join(config_dir, f"{s}x{s}")
+        imgs = os.listdir(d)
+        for img in imgs:
+            i = Image.open(path.join(d, img))
+            assert i.size == (s, s)
 
 
 def test_theme_configs_provider_generate_config_files(config_dir, hotspots) -> None:
