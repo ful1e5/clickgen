@@ -125,16 +125,16 @@ def test_theme_configs_provider_generate_static_cfgs_raise_attribute_error_excep
 
 # __generate_animated_cfg
 def test_theme_configs_provider_generate_animated_cfgs_raise_attribute_error_exception(
-    tcp: ThemeConfigsProvider,
+    tcp: ThemeConfigsProvider, delay
 ) -> None:
     with pytest.raises(AttributeError):
-        tcp.__generate_animated_cfgs(50)
-        ThemeConfigsProvider.__generate_animated_cfgs(50)  # type: ignore
+        tcp.__generate_animated_cfgs(delay)
+        ThemeConfigsProvider.__generate_animated_cfgs(delay)  # type: ignore
 
 
 # generate()
-def test_theme_configs_provider_generate(tcp: ThemeConfigsProvider) -> None:
-    a = tcp.generate(50)
+def test_theme_configs_provider_generate(tcp: ThemeConfigsProvider, delay) -> None:
+    a = tcp.generate(delay)
     assert a == tcp.config_dir
 
 

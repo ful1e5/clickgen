@@ -24,6 +24,11 @@ def sizes() -> List[int]:
 
 
 @pytest.fixture(scope="module")
+def delay() -> int:
+    return 50
+
+
+@pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
     return path.abspath(path.join(root[0], "assets", "bitmaps"))
 
@@ -43,8 +48,8 @@ def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
 
 
 @pytest.fixture(scope="module")
-def config_dir(tcp: ThemeConfigsProvider) -> str:
-    return tcp.generate(50)
+def config_dir(tcp: ThemeConfigsProvider, delay) -> str:
+    return tcp.generate(delay)
 
 
 @pytest.fixture(scope="module")
@@ -53,16 +58,16 @@ def pngs() -> List[str]:
 
 
 @pytest.fixture(scope="module")
-def cfg_lines() -> List[str]:
+def cfg_lines(delay) -> List[str]:
     return [
         "1 0 0 1x1/a.png\n",
         "2 0 0 2x2/a.png",
         "1 0 0 1x1/b.png\n",
         "2 1 0 2x2/b.png",
-        "1 0 0 1x1/c-01.png 50\n",
-        "1 0 0 1x1/c-02.png 50\n",
-        "2 0 1 2x2/c-01.png 50\n",
-        "2 0 1 2x2/c-02.png 50",
+        f"1 0 0 1x1/c-01.png {delay}\n",
+        f"1 0 0 1x1/c-02.png {delay}\n",
+        f"2 0 1 2x2/c-01.png {delay}\n",
+        f"2 0 1 2x2/c-02.png {delay}",
     ]
 
 
