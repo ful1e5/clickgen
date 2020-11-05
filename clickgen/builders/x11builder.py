@@ -16,6 +16,10 @@ lib_xcursorgen: str = path.join(pkg_root[0], "xcursorgen.so")
 class X11CursorsBuilder:
     """ Build X11 cursors from `.in` configs files. """
 
+    __config_dir: str = ""
+    __out_dir: str = ""
+    __cursors_dir: str = ""
+
     def __init__(
         self,
         config_dir: str,
