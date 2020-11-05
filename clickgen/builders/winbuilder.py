@@ -50,6 +50,9 @@ class WinCursorsBuilder:
     https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
     """
 
+    __config_dir: str = ""
+    __out_dir: str = ""
+
     def __init__(self, config_dir: str, out_dir: str) -> None:
         self.__config_dir = config_dir
         self.__out_dir = out_dir
