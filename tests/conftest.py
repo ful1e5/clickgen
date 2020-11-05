@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import tempfile
 from os import path
 from typing import List
 
@@ -30,6 +31,11 @@ def delay() -> int:
 @pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
     return path.abspath(path.join(root[0], "assets", "bitmaps"))
+
+
+@pytest.fixture(scope="module")
+def out_dir() -> str:
+    return tempfile.mkdtemp()
 
 
 @pytest.fixture(scope="module")
