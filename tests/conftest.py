@@ -6,6 +6,7 @@ from os import path
 from typing import List
 
 import pytest
+from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider
@@ -36,6 +37,12 @@ def bitmaps_dir() -> str:
 @pytest.fixture(scope="module")
 def out_dir() -> str:
     return tempfile.mkdtemp()
+
+
+@pytest.fixture(scope="module")
+def xcursors_dir(config_dir, out_dir) -> str:
+    X11CursorsBuilder(config_dir, out_dir).build()
+    return path.join(out_dir, "cursors")
 
 
 @pytest.fixture(scope="module")
