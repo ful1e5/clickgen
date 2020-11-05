@@ -53,5 +53,19 @@ def pngs() -> List[str]:
 
 
 @pytest.fixture(scope="module")
+def cfg_lines() -> List[str]:
+    return [
+        "1 0 0 1x1/a.png\n",
+        "2 0 0 2x2/a.png",
+        "1 0 0 1x1/b.png\n",
+        "2 1 0 2x2/b.png",
+        "1 0 0 1x1/c-01.png 50\n",
+        "1 0 0 1x1/c-02.png 50\n",
+        "2 0 1 2x2/c-01.png 50\n",
+        "2 0 1 2x2/c-02.png 50",
+    ]
+
+
+@pytest.fixture(scope="module")
 def lines() -> List[str]:
     return ["firstline", "secondline"]

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from glob import glob
 from os import path
 from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
@@ -168,7 +169,12 @@ def test_theme_configs_provider_generate_configs_dir_image_files_sizes(
             assert i.size == (s, s)
 
 
-def test_theme_configs_provider_generate_config_files(config_dir, hotspots) -> None:
-    files = os.listdir(config_dir)
-    for c in hotspots:
-        assert f"{c}.in" in files
+def test_theme_configs_provider_generate_config_files_content(
+    config_dir, cfg_lines
+) -> None:
+    files = glob(path.join(config_dir, "*.in"))
+
+    for f in files:
+        lines = open(f, "r").readlines()
+        for l in lines:
+            assert l in cfg_lines
