@@ -5,7 +5,6 @@ from typing import List, Tuple
 from unittest.mock import PropertyMock, patch
 
 import pytest
-
 from clickgen.providers.jsonparser import HotspotsParser
 
 

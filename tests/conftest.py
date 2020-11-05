@@ -5,7 +5,6 @@ from os import path
 from typing import List
 
 import pytest
-
 from clickgen.configs import ThemeInfo
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider

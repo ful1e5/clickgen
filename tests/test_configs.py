@@ -6,7 +6,6 @@ from os import path
 from typing import Dict
 
 import pytest
-
 from clickgen.configs import Config, ThemeInfo, ThemeSettings
 
 
