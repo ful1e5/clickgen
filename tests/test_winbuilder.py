@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from clickgen.builders.winbuilder import WinCursorsBuilder
 from unittest.mock import PropertyMock, patch
+
+from clickgen.builders.winbuilder import WinCursorsBuilder
 
 
 @patch.object(
@@ -17,7 +18,16 @@ def test_winbuilder_config_dir(mock_config_dir) -> None:
 @patch.object(
     WinCursorsBuilder, "_WinCursorsBuilder__out_dir", new_callable=PropertyMock
 )
-def test_x11builder_out_dir(mock_out_dir) -> None:
+def test_winbuilder_out_dir(mock_out_dir) -> None:
     x = WinCursorsBuilder("/foo/", mock_out_dir)
     mock_out_dir.return_value = "/foo/out/"
     assert "/foo/out/" == x._WinCursorsBuilder__out_dir  # type: ignore
+
+
+# def test_winbuilder_out_dir_files(config_dir, out_dir) -> None:
+#     # try:
+#     WinCursorsBuilder(config_dir, out_dir).build()
+#     # except Exception:
+#     # print(traceback.format_exc)
+
+#     assert len(os.listdir(out_dir)) > 0
