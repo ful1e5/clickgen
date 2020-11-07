@@ -21,7 +21,7 @@ def ti() -> ThemeInfo:
 
 @pytest.fixture(scope="module")
 def sizes() -> List[int]:
-    return [1, 2]
+    return [24, 32]
 
 
 @pytest.fixture(scope="module")
@@ -65,6 +65,12 @@ def config_dir(tcp: ThemeConfigsProvider, delay) -> str:
 
 
 @pytest.fixture(scope="module")
+def config_dir_with_sizes_1_2(delay) -> str:
+    tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes=[1, 2])
+    return tcp.generate(delay)
+
+
+@pytest.fixture(scope="module")
 def pngs() -> List[str]:
     return ["a.png", "b.png", "c-01.png", "c-02.png"]
 
@@ -72,14 +78,14 @@ def pngs() -> List[str]:
 @pytest.fixture(scope="module")
 def cfg_lines(delay) -> List[str]:
     return [
-        "1 0 0 1x1/a.png\n",
-        "2 0 0 2x2/a.png",
-        "1 0 0 1x1/b.png\n",
-        "2 1 0 2x2/b.png",
-        f"1 0 0 1x1/c-01.png {delay}\n",
-        f"1 0 0 1x1/c-02.png {delay}\n",
-        f"2 0 1 2x2/c-01.png {delay}\n",
-        f"2 0 1 2x2/c-02.png {delay}",
+        "24 2 6 24x24/a.png\n",
+        "32 3 8 32x32/a.png",
+        "24 11 5 24x24/b.png\n",
+        "32 14 7 32x32/b.png",
+        f"24 4 7 24x24/c-01.png {delay}\n",
+        f"24 4 7 24x24/c-02.png {delay}\n",
+        f"32 5 9 32x32/c-01.png {delay}\n",
+        f"32 5 9 32x32/c-02.png {delay}",
     ]
 
 
