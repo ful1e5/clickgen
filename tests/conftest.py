@@ -36,29 +36,17 @@ def bitmaps_dir() -> str:
 
 
 @pytest.fixture(scope="module")
-def out_dir() -> str:
-    return tempfile.mkdtemp()
-
-
-@pytest.fixture(scope="module")
-def xcursors_dir(config_dir, out_dir) -> str:
-    X11CursorsBuilder(config_dir, out_dir).build()
-    return path.join(out_dir, "cursors")
-
-
-@pytest.fixture(scope="module")
-def wincursors_dir(config_dir, out_dir) -> str:
-    WinCursorsBuilder(config_dir, out_dir).build()
-    return out_dir
-
-
-@pytest.fixture(scope="module")
 def hotspots() -> Hotspots:
     return {
         "a": {"xhot": 20, "yhot": 50},
         "b": {"xhot": 88, "yhot": 42},
         "c": {"xhot": 33, "yhot": 56},
     }
+
+
+@pytest.fixture(scope="module")
+def out_dir() -> str:
+    return tempfile.mkdtemp()
 
 
 @pytest.fixture(scope="module")
@@ -69,6 +57,19 @@ def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
 @pytest.fixture(scope="module")
 def config_dir(tcp: ThemeConfigsProvider, delay) -> str:
     return tcp.generate(delay)
+
+
+@pytest.fixture(scope="module")
+def xcursors_dir(config_dir, out_dir) -> str:
+    X11CursorsBuilder(config_dir, out_dir).build()
+    return path.join(out_dir, "cursors")
+
+
+@pytest.fixture(scope="module")
+def wincursors_dir(bitmaps_dir, hotspots, sizes, delay, out_dir) -> str:
+    cfg_dir = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes).generate(delay)
+    WinCursorsBuilder(cfg_dir, out_dir).build()
+    return out_dir
 
 
 @pytest.fixture(scope="module")
