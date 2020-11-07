@@ -36,6 +36,8 @@ def test_winbuilder_out_dir_files(config_dir, out_dir) -> None:
 def test_winbuilder_lower_resolution_exception(
     bitmaps_dir, hotspots, delay, out_dir
 ) -> None:
+    # Exception occur in lower pixel sizes 1, 2, 3, 4, 5
+    # ex: struct.error: ushort format requires 0 <= number <= (0x7fff * 2 + 1)
 
     for s in [[1], [2], [3], [4], [5]]:
         tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, s)
