@@ -144,7 +144,7 @@ def test_theme_configs_provider_generate_dir_is_not_empty(config_dir) -> None:
 
 def test_theme_configs_provider_generate_configs_dir_files(config_dir) -> None:
     assert sorted(os.listdir(config_dir)) == sorted(
-        ["b.in", "a.in", "c.in", "2x2", "1x1"]
+        ["b.in", "a.in", "c.in", "32x32", "24x24"]
     )
 
 
