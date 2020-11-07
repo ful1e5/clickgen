@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from tests.conftest import out_dir
+from clickgen.providers.themeconfig import ThemeConfigsProvider
 import os
 from unittest.mock import PropertyMock, patch
+import pytest
 
 from clickgen.builders.winbuilder import WinCursorsBuilder
 
@@ -28,3 +31,14 @@ def test_winbuilder_out_dir(mock_out_dir) -> None:
 def test_winbuilder_out_dir_files(config_dir, out_dir) -> None:
     WinCursorsBuilder(config_dir, out_dir).build()
     assert len(os.listdir(out_dir)) == 3
+
+
+def test_winbuilder_lower_resolution_exception(
+    bitmaps_dir, hotspots, delay, out_dir
+) -> None:
+
+    for s in [[1], [2], [3], [4], [5]]:
+        tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, s)
+        c = tcp.generate(delay)
+        with pytest.raises(Exception):
+            WinCursorsBuilder(c, out_dir).build()

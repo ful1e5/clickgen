@@ -65,12 +65,6 @@ def config_dir(tcp: ThemeConfigsProvider, delay) -> str:
 
 
 @pytest.fixture(scope="module")
-def config_dir_with_sizes_1_2(delay) -> str:
-    tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes=[1, 2])
-    return tcp.generate(delay)
-
-
-@pytest.fixture(scope="module")
 def pngs() -> List[str]:
     return ["a.png", "b.png", "c-01.png", "c-02.png"]
 
