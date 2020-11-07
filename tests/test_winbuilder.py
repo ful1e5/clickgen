@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tests.conftest import out_dir
-from clickgen.providers.themeconfig import ThemeConfigsProvider
 import os
 from unittest.mock import PropertyMock, patch
-import pytest
 
+import pytest
 from clickgen.builders.winbuilder import WinCursorsBuilder
+from clickgen.providers.themeconfig import ThemeConfigsProvider
 
 
 @patch.object(
@@ -39,8 +38,13 @@ def test_winbuilder_lower_resolution_exception(
     # Exception occur in lower pixel sizes 1, 2, 3, 4, 5
     # ex: struct.error: ushort format requires 0 <= number <= (0x7fff * 2 + 1)
 
-    for s in [[1], [2], [3], [4], [5]]:
-        tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, s)
-        c = tcp.generate(delay)
-        with pytest.raises(Exception):
+    with pytest.raises(Exception):
+        for s in [[1], [2], [3], [4], [5]]:
+            tcp = ThemeConfigsProvider(bitmaps_dir, hotspots, s)
+            c = tcp.generate(delay)
             WinCursorsBuilder(c, out_dir).build()
+
+
+def test_winbuilder_out_dir_wincursors(wincursors_dir) -> None:
+    for c in os.listdir(wincursors_dir):
+        assert c in ["c.ani", "a.cur", "b.cur"]

@@ -6,6 +6,7 @@ from os import path
 from typing import List
 
 import pytest
+from clickgen.builders.winbuilder import WinCursorsBuilder
 from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
 from clickgen.providers.jsonparser import Hotspots
@@ -43,6 +44,12 @@ def out_dir() -> str:
 def xcursors_dir(config_dir, out_dir) -> str:
     X11CursorsBuilder(config_dir, out_dir).build()
     return path.join(out_dir, "cursors")
+
+
+@pytest.fixture(scope="module")
+def wincursors_dir(config_dir, out_dir) -> str:
+    WinCursorsBuilder(config_dir, out_dir).build()
+    return out_dir
 
 
 @pytest.fixture(scope="module")
