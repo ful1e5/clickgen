@@ -27,7 +27,7 @@ def test_theme_settings(ts) -> None:
     assert isinstance(ts, ThemeSettings)
 
     for s in ts.sizes:
-        assert s in [1, 2]
+        assert s in [24, 32]
         assert isinstance(s, int)
 
     assert isinstance(ts.animation_delay, int)
