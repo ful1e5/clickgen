@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+from os import path
+from tests.conftest import wincursors_dir
 from unittest.mock import PropertyMock, patch
 
 import pytest
@@ -48,3 +50,10 @@ def test_winbuilder_lower_resolution_exception(
 def test_winbuilder_out_dir_wincursors(wincursors_dir) -> None:
     for c in os.listdir(wincursors_dir):
         assert c in ["c.ani", "a.cur", "b.cur"]
+
+
+def test_winbuilder_out_dir_wincursors_file_sizes(wincursors_dir) -> None:
+    curs = os.listdir(wincursors_dir)
+
+    for c in curs:
+        assert path.getsize(path.join(wincursors_dir, c)) > 0

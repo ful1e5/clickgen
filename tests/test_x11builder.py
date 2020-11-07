@@ -42,7 +42,7 @@ def test_x11builder_out_dir_xcursors(xcursors_dir, hotspots) -> None:
         assert c in hotspots.keys()
 
 
-def test_x11builder_out_dir_xcursors_sizes(xcursors_dir) -> None:
+def test_x11builder_out_dir_xcursors_file_sizes(xcursors_dir) -> None:
     curs = os.listdir(xcursors_dir)
 
     for c in curs:
