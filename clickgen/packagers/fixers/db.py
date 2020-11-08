@@ -175,7 +175,7 @@ class CursorDB:
                 compare_ratio = ratio
                 result = d
 
-        if result not in data and cur not in " ".join(self.win_db.keys()):
+        if result not in data and cur not in self.win_db.keys():
             print(f"'{result}' is unknown cursor.")
 
         if cur == result:
