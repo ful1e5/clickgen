@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-import sys
 from os import path
 from string import Template
+from typing import List
 
 from ..configs import ThemeInfo
 from .fixers.fixers import WinCursorsFixer
@@ -87,10 +86,10 @@ class WindowsPackager:
         """ Make Windows cursors directory installable. """
         print("Windows package...")
 
-        # Remove unnecessary cursors
-        WinCursorsFixer(self.__dir).run()
         try:
-            if len(os.listdir(self.__dir)) == 0:
+            # Remove unnecessary cursors
+            files: List[str] = WinCursorsFixer(self.__dir).run()
+            if len(files):
                 raise FileNotFoundError(f"Windows cursor not found in {self.__dir}")
 
             # Store install.inf file
