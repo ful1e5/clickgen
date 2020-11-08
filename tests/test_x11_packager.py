@@ -8,7 +8,7 @@ import pytest
 from clickgen.packagers.x11 import X11Packager
 
 
-def test_x11_package(xcursors_dir, ti, hotspots) -> None:
+def test_x11_packager(xcursors_dir, ti, hotspots) -> None:
     directory = path.abspath(path.join(xcursors_dir, "../"))
     X11Packager(directory, ti).pack()
 
