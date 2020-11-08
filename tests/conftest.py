@@ -32,7 +32,7 @@ def delay() -> int:
 
 @pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
-    return path.abspath(path.join(root[0], "assets", "bitmaps"))
+    return path.abspath(path.join(root[0],  "bitmaps"))
 
 
 @pytest.fixture(scope="module")
