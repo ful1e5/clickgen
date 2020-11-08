@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
+import os
+import sys
 from os import path
 from string import Template
 
@@ -88,11 +89,16 @@ class WindowsPackager:
 
         # Remove unnecessary cursors
         WinCursorsFixer(self.__dir).run()
+        try:
+            if len(os.listdir(self.__dir)) == 0:
+                raise FileNotFoundError(f"Windows cursor not found in {self.__dir}")
 
-        # Store install.inf file
-        content: str = self.__install_file()
-        f = open(path.join(self.__dir, "install.inf"), "w")
-        f.write(content)
-        f.close()
+            # Store install.inf file
+            content: str = self.__install_file()
+            f = open(path.join(self.__dir, "install.inf"), "w")
+            f.write(content)
+            f.close()
 
-        print("Windows package... Done")
+            print("Windows package... Done")
+        except FileNotFoundError as e:
+            raise e
