@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import itertools
+import sys
 from contextlib import contextmanager
 from glob import glob
-import itertools
 from os import chdir, getcwd, listdir, path, remove, rename, symlink, unlink
 from os.path import islink
-import sys
 from typing import Callable, List, Optional
 
 from .db import CursorDB
