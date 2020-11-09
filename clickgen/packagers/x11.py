@@ -33,7 +33,7 @@ class X11Packager:
 
     def pack(self):
         """ Make XCursor theme. """
-        print("XCursors package...")
+        print("Linking XCursors...")
 
         # Link & Rename XCursors according to db.py
         cursors: List[str] = XCursorLinker(path.join(self.__dir, "cursors")).run()
@@ -46,5 +46,5 @@ class X11Packager:
             theme_file.write(files[f])
             theme_file.close()
 
-        print(f"Total {len(cursors)} XCursors packed.")
-        print("XCursors package... Done")
+        print(f"Total XCursors = {len(cursors)}")
+        print("Linking XCursors... Done")

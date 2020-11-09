@@ -83,7 +83,7 @@ class WindowsPackager:
 
     def pack(self) -> None:
         """ Make Windows cursors directory installable. """
-        print("Windows package...")
+        print("Cleaning Windows package...")
 
         # Remove unnecessary cursors
         cursors: List[str] = WinCursorsFixer(self.__dir).run()
@@ -97,5 +97,5 @@ class WindowsPackager:
         f.write(content)
         f.close()
 
-        print(f"Total {len(cursors)} Windows cursors packed.")
-        print("Windows package... Done")
+        print(f"Total {len(cursors)} files in Windows package")
+        print("Cleaning Windows package... Done")

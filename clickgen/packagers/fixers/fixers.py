@@ -27,7 +27,7 @@ class WinCursorsFixer(CursorDB):
 
         if len(self.__files) == 0:
             print(
-                f"'Windows' cursors not found in '{super().dir}'",
+                f" 'Windows' cursors not found in '{super().dir}'",
                 file=sys.stderr,
             )
 
@@ -45,13 +45,13 @@ class WinCursorsFixer(CursorDB):
                 src: str = path.join(super().dir, cur)
                 dst: str = path.join(super().dir, key)
 
-                print(f"Renaming '{cur}' to '{key}'")
+                print(f" Renaming '{cur}' to '{key}'")
                 rename(src, dst)
 
         # Removing other cursors, That's not in Win DB
         rm_list: List[str] = list(listdir(super().dir) - super().win_db.keys())
         for e in rm_list:
-            print(f"Deleting '{path.basename(e)}'")
+            print(f" Deleting '{path.basename(e)}'")
             remove(path.join(super().dir, e))
 
         return listdir(super().dir)
@@ -74,7 +74,7 @@ class XCursorLinker(CursorDB):
         try:
             yield
         except:
-            print(f"Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
+            print(f" Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
         finally:
             chdir(CWD)
 
@@ -101,7 +101,7 @@ class XCursorLinker(CursorDB):
         """ Generate symlinks for @target. """
         for l in links:
             symlink(target, l)
-            print(f"'{l}' symlink generated from '{target}'")
+            print(f" '{l}' symlink generated from '{target}'")
 
     def run(self) -> List[str]:
         """ Run linker. """
@@ -110,7 +110,7 @@ class XCursorLinker(CursorDB):
 
         if len(self.__files) == 0:
             print(
-                f"'XCursors' not found in '{super().dir}'",
+                f" 'XCursors' not found in '{super().dir}'",
                 file=sys.stderr,
             )
 
