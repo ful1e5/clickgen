@@ -139,21 +139,21 @@ class CursorDB:
     )
 
     win_db: Dict[str, List[str]] = {
-        "Work.ani": db[0],
+        "Alternate.cur": db[46],
         "Busy.ani": db[55],
-        "Default.cur": db[32],
         "Cross.cur": db[20],
-        "Link.cur": db[7],
+        "Default.cur": db[32],
+        "Diagonal_1.cur": db[10],
+        "Diagonal_2.cur": db[28],
         "Handwriting.cur": db[37],
         "Help.cur": db[21],
-        "IBeam.cur": db[57],
-        "Unavailiable.cur": db[16],
-        "Move.cur": db[9],
-        "Diagonal_2.cur": db[28],
-        "Vertical.cur": db[1],
-        "Diagonal_1.cur": db[10],
         "Horizontal.cur": db[2],
-        "Alternate.cur": db[46],
+        "IBeam.cur": db[57],
+        "Link.cur": db[7],
+        "Move.cur": db[9],
+        "Unavailiable.cur": db[16],
+        "Vertical.cur": db[1],
+        "Work.ani": db[0],
     }
 
     def __init__(self, dir: str) -> None:
