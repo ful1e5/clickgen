@@ -3,7 +3,7 @@
 
 from os import path
 from string import Template
-from typing import Dict
+from typing import Dict, List
 
 from ..configs import ThemeInfo
 from .fixers.fixers import XCursorLinker
@@ -36,7 +36,7 @@ class X11Packager:
         print("XCursors package...")
 
         # Link & Rename XCursors according to db.py
-        XCursorLinker(path.join(self.__dir, "cursors")).run()
+        cursors: List[str] = XCursorLinker(path.join(self.__dir, "cursors")).run()
 
         # Write .theme files
         files: Dict[str, str] = self.__index_files()
@@ -46,4 +46,5 @@ class X11Packager:
             theme_file.write(files[f])
             theme_file.close()
 
+        print(f"Total {len(cursors)} XCursors packed.")
         print("XCursors package... Done")
