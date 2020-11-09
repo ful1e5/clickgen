@@ -9,6 +9,7 @@ import pytest
 from clickgen.builders.winbuilder import WinCursorsBuilder
 from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
+from clickgen.packagers.windows import WindowsPackager
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider
 
@@ -32,7 +33,21 @@ def delay() -> int:
 
 @pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
-    return path.abspath(path.join(root[0],  "bitmaps"))
+    return path.abspath(path.join(root[0], "bitmaps"))
+
+
+@pytest.fixture(scope="module")
+def bit_1_dir() -> str:
+    return path.abspath(path.join(root[0], "bitmaps_1"))
+
+
+@pytest.fixture(scope="module")
+def win_1_dir(bit_1_dir, delay) -> str:
+    c = ThemeConfigsProvider(bit_1_dir, {}, [12]).generate(delay)
+    o = tempfile.mkdtemp()
+    WinCursorsBuilder(c, o).build()
+    WindowsPackager(o, ti).pack()
+    return o
 
 
 @pytest.fixture(scope="module")
