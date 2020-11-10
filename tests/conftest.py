@@ -68,9 +68,7 @@ def config_dir(tcp: ThemeConfigsProvider, delay: int) -> str:
 @pytest.fixture(scope="module")
 def xcursors_dir(config_dir: str) -> str:
     out_dir = tempfile.mkdtemp()
-    X11CursorsBuilder(
-        config_dir,
-    ).build()
+    X11CursorsBuilder(config_dir, out_dir).build()
     return path.join(out_dir, "cursors")
 
 
