@@ -65,7 +65,7 @@ jobs:
       - name: Testing
         run: |
           pip install -U pytest
-          python -m pytest -v
+          python -m pytest -vv
         continue-on-error: false
 
 
