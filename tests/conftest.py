@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from build.lib.clickgen.packagers.windows import WindowsPackager
 import tempfile
 from os import path
 from typing import List
@@ -36,6 +37,11 @@ def bitmaps_dir() -> str:
 
 
 @pytest.fixture(scope="module")
+def win_bitmaps_dir() -> str:
+    return path.abspath(path.join(root[0], "assets", "win_bitmaps"))
+
+
+@pytest.fixture(scope="module")
 def hotspots() -> Hotspots:
     return {
         "a": {"xhot": 20, "yhot": 50},
@@ -60,17 +66,30 @@ def config_dir(tcp: ThemeConfigsProvider, delay: int) -> str:
 
 
 @pytest.fixture(scope="module")
-def xcursors_dir(config_dir: str, out_dir: str) -> str:
-    X11CursorsBuilder(config_dir, out_dir).build()
+def xcursors_dir(config_dir: str) -> str:
+    out_dir = tempfile.mkdtemp()
+    X11CursorsBuilder(
+        config_dir,
+    ).build()
     return path.join(out_dir, "cursors")
 
 
 @pytest.fixture(scope="module")
 def wincursors_dir(
-    bitmaps_dir: str, hotspots: Hotspots, sizes: List[int], delay: int, out_dir: str
+    bitmaps_dir: str, hotspots: Hotspots, sizes: List[int], delay: int
 ) -> str:
+    out_dir = tempfile.mkdtemp()
     cfg_dir = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes).generate(delay)
     WinCursorsBuilder(cfg_dir, out_dir).build()
+    return out_dir
+
+
+@pytest.fixture(scope="module")
+def all_wincursors_dir(win_bitmaps_dir: str, delay: int, ti: ThemeInfo) -> str:
+    out_dir = tempfile.mkdtemp()
+    cfg_dir = ThemeConfigsProvider(win_bitmaps_dir, {}, [12]).generate(delay)
+    WinCursorsBuilder(cfg_dir, out_dir).build()
+    WindowsPackager(out_dir, ti)
     return out_dir
 
 
