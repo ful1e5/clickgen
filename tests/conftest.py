@@ -37,11 +37,6 @@ def bitmaps_dir() -> str:
 
 
 @pytest.fixture(scope="module")
-def win_bitmaps_dir() -> str:
-    return path.abspath(path.join(root[0], "assets", "win_bitmaps"))
-
-
-@pytest.fixture(scope="module")
 def hotspots() -> Hotspots:
     return {
         "a": {"xhot": 20, "yhot": 50},
@@ -79,15 +74,6 @@ def wincursors_dir(
     out_dir = tempfile.mkdtemp()
     cfg_dir = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes).generate(delay)
     WinCursorsBuilder(cfg_dir, out_dir).build()
-    return out_dir
-
-
-@pytest.fixture(scope="module")
-def all_wincursors_dir(win_bitmaps_dir: str, delay: int, ti: ThemeInfo) -> str:
-    out_dir = tempfile.mkdtemp()
-    cfg_dir = ThemeConfigsProvider(win_bitmaps_dir, {}, [12]).generate(delay)
-    WinCursorsBuilder(cfg_dir, out_dir).build()
-    WindowsPackager(out_dir, ti)
     return out_dir
 
 
