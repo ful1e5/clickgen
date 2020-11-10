@@ -9,7 +9,6 @@ import pytest
 from clickgen.builders.winbuilder import WinCursorsBuilder
 from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
-from clickgen.packagers.windows import WindowsPackager
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider
 
@@ -33,21 +32,7 @@ def delay() -> int:
 
 @pytest.fixture(scope="module")
 def bitmaps_dir() -> str:
-    return path.abspath(path.join(root[0], "bitmaps"))
-
-
-@pytest.fixture(scope="module")
-def bit_1_dir() -> str:
-    return path.abspath(path.join(root[0], "bitmaps_1"))
-
-
-@pytest.fixture(scope="module")
-def win_1_dir(bit_1_dir, delay) -> str:
-    c = ThemeConfigsProvider(bit_1_dir, {}, [12]).generate(delay)
-    o = tempfile.mkdtemp()
-    WinCursorsBuilder(c, o).build()
-    WindowsPackager(o, ti).pack()
-    return o
+    return path.abspath(path.join(root[0], "assets", "test_bitmaps"))
 
 
 @pytest.fixture(scope="module")
@@ -65,23 +50,25 @@ def out_dir() -> str:
 
 
 @pytest.fixture(scope="module")
-def tcp(bitmaps_dir, hotspots, sizes) -> ThemeConfigsProvider:
+def tcp(bitmaps_dir: str, hotspots: Hotspots, sizes: List[int]) -> ThemeConfigsProvider:
     return ThemeConfigsProvider(bitmaps_dir, hotspots, sizes)
 
 
 @pytest.fixture(scope="module")
-def config_dir(tcp: ThemeConfigsProvider, delay) -> str:
+def config_dir(tcp: ThemeConfigsProvider, delay: int) -> str:
     return tcp.generate(delay)
 
 
 @pytest.fixture(scope="module")
-def xcursors_dir(config_dir, out_dir) -> str:
+def xcursors_dir(config_dir: str, out_dir: str) -> str:
     X11CursorsBuilder(config_dir, out_dir).build()
     return path.join(out_dir, "cursors")
 
 
 @pytest.fixture(scope="module")
-def wincursors_dir(bitmaps_dir, hotspots, sizes, delay, out_dir) -> str:
+def wincursors_dir(
+    bitmaps_dir: str, hotspots: Hotspots, sizes: List[int], delay: int, out_dir: str
+) -> str:
     cfg_dir = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes).generate(delay)
     WinCursorsBuilder(cfg_dir, out_dir).build()
     return out_dir
@@ -93,7 +80,7 @@ def pngs() -> List[str]:
 
 
 @pytest.fixture(scope="module")
-def cfg_lines(delay) -> List[str]:
+def cfg_lines(delay: int) -> List[str]:
     return [
         "24 2 6 24x24/a.png\n",
         "32 3 8 32x32/a.png",
