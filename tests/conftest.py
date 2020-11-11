@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from build.lib.clickgen.packagers.windows import WindowsPackager
 import tempfile
 from os import path
 from typing import List
@@ -10,6 +9,7 @@ import pytest
 from clickgen.builders.winbuilder import WinCursorsBuilder
 from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
+from clickgen.providers.bitmaps import ThemeBitmapsProvider
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider
 
@@ -75,6 +75,11 @@ def wincursors_dir(
     cfg_dir = ThemeConfigsProvider(bitmaps_dir, hotspots, sizes).generate(delay)
     WinCursorsBuilder(cfg_dir, out_dir).build()
     return out_dir
+
+
+@pytest.fixture(scope="module")
+def bitmaps_provider(bitmaps_dir) -> ThemeBitmapsProvider:
+    return ThemeBitmapsProvider(bitmaps_dir)
 
 
 @pytest.fixture(scope="module")
