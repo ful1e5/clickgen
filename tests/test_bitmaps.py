@@ -18,4 +18,4 @@ def test_theme_bitmaps_provider_animated_bitmaps(
 def test_theme_bitmaps_provider_static_bitmaps(
     bitmaps_provider: ThemeBitmapsProvider,
 ) -> None:
-    assert bitmaps_provider.static_bitmaps() == ["a.png", "b.png"]
+    assert sorted(bitmaps_provider.static_bitmaps()) == ["a.png", "b.png"]
