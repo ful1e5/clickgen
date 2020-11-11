@@ -15,6 +15,10 @@
     <img alt="GitHub Action Build" src="https://github.com/ful1e5/clickgen/workflows/build/badge.svg" />
   </a>
 
+  <a href="https://codecov.io/gh/ful1e5/clickgen">
+    <img src="https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg" />
+  </a>
+
   <a href="https://badge.fury.io/py/clickgen">
     <img src="https://badge.fury.io/py/clickgen.svg" alt="PyPI version" height="20">
   </a>
