@@ -18,7 +18,7 @@ def _clean_cur_name(name: str) -> str:
 
 
 class ThemeConfigsProvider:
-    """ Configure `clickgen` cursor building process. """
+    """ Provide `.in` files for 'xcursorgen' & 'anicursorgen' builder. """
 
     __sizes: List[int] = []
     __bitmaps: ThemeBitmapsProvider = ThemeBitmapsProvider("")
