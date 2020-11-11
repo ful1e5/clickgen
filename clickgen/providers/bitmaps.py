@@ -19,12 +19,9 @@ class ThemeBitmapsProvider:
         func: Callable[[str], str] = lambda x: path.basename(x)
         pngs: List[str] = []
 
-        try:
-            pngs.extend(list(map(func, glob(path.join(self.dir, "*.png")))))
-            if len(pngs) <= 0:
-                raise FileNotFoundError("Cursors .png files not found")
-        except FileNotFoundError as e:
-            print(e)
+        pngs.extend(list(map(func, glob(path.join(self.dir, "*.png")))))
+        if len(pngs) <= 0:
+            raise FileNotFoundError("Cursors .png files not found")
 
         return pngs
 

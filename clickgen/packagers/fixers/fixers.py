@@ -26,10 +26,7 @@ class WinCursorsFixer(CursorDB):
             self.__files.extend(glob(path.join(super().dir, ext)))
 
         if len(self.__files) == 0:
-            print(
-                f" 'Windows' cursors not found in '{super().dir}'",
-                file=sys.stderr,
-            )
+            raise FileNotFoundError(f" 'Windows' cursors not found in '{super().dir}'")
 
         # Renaming cursors according to master DB
         super().rename(self.__files)
@@ -74,7 +71,7 @@ class XCursorLinker(CursorDB):
         try:
             yield
         except:
-            print(f" Exception caught: {sys.exc_info()[0]}", file=sys.stderr)
+            raise Exception(f" Exception caught: {sys.exc_info()[0]}")
         finally:
             chdir(CWD)
 
@@ -109,10 +106,7 @@ class XCursorLinker(CursorDB):
         self.__files.extend(list(filter(func, glob(path.join(super().dir, "*")))))
 
         if len(self.__files) == 0:
-            print(
-                f" 'XCursors' not found in '{super().dir}'",
-                file=sys.stderr,
-            )
+            raise FileNotFoundError(f" 'XCursors' not found in '{super().dir}'")
 
         # Renaming cursors according to master DB
         super().rename(self.__files)

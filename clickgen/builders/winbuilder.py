@@ -428,11 +428,11 @@ class WinCursorsBuilder:
         configs: List[str] = glob(f"{self.__config_dir}/*.in")
 
         if len(configs) <= 0:
-            print(f"Cursors configs not found in {self.__config_dir}", file=sys.stderr)
+            raise FileNotFoundError(f"Cursors configs not found in {self.__config_dir}")
+
         for config in configs:
             exec_code = self.__anicursorgen(config, args)
             if exec_code == 1:
-                print(
-                    f"'anicursorgen.py' can't parse {path.basename(config)}",
-                    file=sys.stderr,
+                raise Exception(
+                    f"'anicursorgen.py' can't parse {path.basename(config)}"
                 )
