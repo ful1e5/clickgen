@@ -36,16 +36,16 @@ def test_theme_configs_provider_sizes(bitmaps_dir, sizes, hotspots) -> None:
         assert sizes == tcp._ThemeConfigsProvider__sizes  # type: ignore
 
 
-def test_theme_configs_provider_bitmaps_dir(bitmaps_dir, sizes, hotspots) -> None:
+def test_theme_configs_provider_bitmaps(bitmaps_dir, sizes, hotspots) -> None:
     with patch.object(
         ThemeConfigsProvider,
-        "_ThemeConfigsProvider__bitmaps_dir",
+        "_ThemeConfigsProvider__bitmaps",
         new_callable=PropertyMock,
     ) as mock_bitmaps_dir:
         tcp = ThemeConfigsProvider(mock_bitmaps_dir, hotspots, sizes)
 
         mock_bitmaps_dir.return_value = bitmaps_dir
-        assert bitmaps_dir == tcp._ThemeConfigsProvider__bitmaps_dir  # type: ignore
+        assert bitmaps_dir == tcp._ThemeConfigsProvider__bitmaps  # type: ignore
 
 
 def test_theme_configs_provider_cords(bitmaps_dir, sizes, hotspots) -> None:
