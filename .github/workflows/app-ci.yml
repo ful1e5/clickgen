@@ -68,11 +68,17 @@ jobs:
           python -m pytest -vv
         continue-on-error: false
 
-      - name: Generation and Uploading 'code-cov' report
+      - name: Generation and Uploading 'code-cov' report to "codecov.io"
         run: |
           pip install -U pytest-cov
           pytest --cov=./ --cov-report=xml
           bash <(curl -s https://codecov.io/bash)
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: coverage
+          path: coverage.xml
 
       - uses: actions/upload-artifact@master
         if: success()
