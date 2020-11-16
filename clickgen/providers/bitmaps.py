@@ -47,3 +47,10 @@ class ThemeBitmapsProvider:
             d[g] = sorted(list(filter(func, an_pngs)))
 
         return d
+
+
+class Bitmaps(ThemeBitmapsProvider):
+    """ .pngs files with cursors information """
+
+    def __init__() -> None:
+        pass
