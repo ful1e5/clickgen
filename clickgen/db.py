@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-class CursorDatabaseAPI:
+class CursorDatabase:
     """Processed cursors information with database."""
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, data) -> None:
+        self.data = data
