@@ -3,58 +3,58 @@
 
 import os
 import tempfile
-from typing import Optional
+from typing import List, Optional
 
 from tinydb import TinyDB
-from tinydb.queries import Query, where
+from tinydb.queries import where
 from tinydb.table import Document
 
 seed_data = [
     {
-        "cursor": "default",
-        "symblinks": ("default", "left_ptr", "top_left_arrow", "left-arrow"),
+        "name": "default",
+        "symlink": ["default", "left_ptr", "top_left_arrow", "left-arrow"],
     },
     {
-        "cursor": "arrow",
-        "symblinks": ("arrow", "right_ptr", "top_right_arrow", "right-arrow"),
+        "name": "arrow",
+        "symlink": ["arrow", "right_ptr", "top_right_arrow", "right-arrow"],
     },
-    {"cursor": "center_ptr", "symblinks": ("center_ptr")},
+    {"name": "center_ptr", "symlink": ["center_ptr"]},
     {
-        "cursor": "link",
-        "symblinks": (
+        "name": "link",
+        "symlink": [
             "link",
             "alias",
             "0876e1c15ff2fc01f906f1c363074c0f",
             "3085a0e285430894940527032f8b26df",
             "640fb0e74195791501fd1ed57b41487f",
             "a2a266d0498c3104214a47bd64ab0fc8",
-        ),
+        ],
     },
-    {"cursor": "dnd_link", "symblinks": ("dnd-link")},
-    {"cursor": "forbidden", "symblinks": ("forbidden", "not-allowed")},
+    {"name": "dnd_link", "symlink": ["dnd-link"]},
+    {"name": "forbidden", "symlink": ["forbidden", "not-allowed"]},
     {
-        "cursor": "crossed_circle",
-        "symblinks": ("crossed_circle", "03b6e0fcb3499374a867c041f52298f0"),
+        "name": "crossed_circle",
+        "symlink": ["crossed_circle", "03b6e0fcb3499374a867c041f52298f0"],
     },
-    {"cursor": "circle", "symblinks": ("circle")},
+    {"name": "circle", "symlink": ["circle"]},
     {
-        "cursor": "dnd_no_drop",
-        "symblinks": (
+        "name": "dnd_no_drop",
+        "symlink": [
             "dnd-no-drop",
             "no-drop",
             "03b6e0fcb3499374a867c041f52298f0",
             "03b6e0fcb3499374a867d041f52298f0",
-        ),
+        ],
     },
-    {"cursor": "pirate", "symblinks": ("pirate", "kill")},
-    {"cursor": "pencil", "symblinks": ("pencil")},
+    {"name": "pirate", "symlink": ["pirate", "kill"]},
+    {"name": "pencil", "symlink": ["pencil"]},
     {
-        "cursor": "wait",
-        "symblinks": ("wait", "watch", "clock", "0426c94ea35c87780ff01dc239897213"),
+        "name": "wait",
+        "symlink": ["wait", "watch", "clock", "0426c94ea35c87780ff01dc239897213"],
     },
     {
-        "cursor": "half_busy",
-        "symblinks": (
+        "name": "half_busy",
+        "symlink": [
             "half-busy",
             "progress",
             "left_ptr_watch",
@@ -62,162 +62,162 @@ seed_data = [
             "08e8e1c95fe2fc01f976f1e063a24ccd",
             "3ecb610c1bf2410f44200f48c40d3599",
             "9116a3ea924ed2162ecab71ba103b17f",
-        ),
+        ],
     },
     {
-        "cursor": "help",
-        "symblinks": (
+        "name": "help",
+        "symlink": [
             "help",
             "question_arrow",
             "whats_this",
             "gumby",
             "5c6cd98b3f3ebcb1f9c7f1c204630408",
             "d9ce0ab605698f320427677b458ad60b",
-        ),
+        ],
     },
-    {"cursor": "dnd_ask", "symblinks": ("dnd-ask")},
+    {"name": "dnd_ask", "symlink": ["dnd-ask"]},
     {
-        "cursor": "ns_resize",
-        "symblinks": (
+        "name": "ns_resize",
+        "symlink": [
             "ns-resize",
             "size_ver",
             "v_double_arrow",
             "double_arrow",
             "00008160000006810000408080010102",
-        ),
+        ],
     },
-    {"cursor": "n_resize", "symblinks": ("n-resize", "top_side")},
-    {"cursor": "s_resize", "symblinks": ("s-resize", "bottom_side")},
+    {"name": "n_resize", "symlink": ["n-resize", "top_side"]},
+    {"name": "s_resize", "symlink": ["s-resize", "bottom_side"]},
     {
-        "cursor": "ew_resize",
-        "symblinks": (
+        "name": "ew_resize",
+        "symlink": [
             "ew-resize",
             "size_hor",
             "h_double_arrow",
             "028006030e0e7ebffc7f7070c0600140",
-        ),
+        ],
     },
-    {"cursor": "e_resize", "symblinks": ("e-resize", "right_side")},
-    {"cursor": "w_resize", "symblinks": ("w-resize", "left_side")},
-    {"cursor": "nw_resize", "symblinks": ("nw-resize", "top_left_corner")},
-    {"cursor": "se_resize", "symblinks": ("se-resize", "bottom_right_corner")},
+    {"name": "e_resize", "symlink": ["e-resize", "right_side"]},
+    {"name": "w_resize", "symlink": ["w-resize", "left_side"]},
+    {"name": "nw_resize", "symlink": ["nw-resize", "top_left_corner"]},
+    {"name": "se_resize", "symlink": ["se-resize", "bottom_right_corner"]},
     {
-        "cursor": "size_fdiag",
-        "symblinks": (
+        "name": "size_fdiag",
+        "symlink": [
             "size_fdiag",
             "nwse-resize",
             "38c5dff7c7b8962045400281044508d2",
             "c7088f0f3e6c8088236ef8e1e3e70000",
-        ),
+        ],
     },
-    {"cursor": "ne_resize", "symblinks": ("ne-resize", "top_right_corner")},
-    {"cursor": "sw_resize", "symblinks": ("sw-resize", "bottom_left_corner")},
+    {"name": "ne_resize", "symlink": ["ne-resize", "top_right_corner"]},
+    {"name": "sw_resize", "symlink": ["sw-resize", "bottom_left_corner"]},
     {
-        "cursor": "size_bdiag",
-        "symblinks": (
+        "name": "size_bdiag",
+        "symlink": [
             "size_bdiag",
             "nesw-resize",
             "50585d75b494802d0151028115016902",
             "fcf1c3c7cd4491d801f1e1c78f100000",
-        ),
+        ],
     },
-    {"cursor": "size_all", "symblinks": ("size_all")},
+    {"name": "size_all", "symlink": ["size_all"]},
     {
-        "cursor": "move",
-        "symblinks": (
+        "name": "move",
+        "symlink": [
             "move",
             "fleur",
             "4498f0e0c1937ffe01fd06f973665830",
             "9081237383d90e509aa00f00170e968f",
             "fcf21c00b30f7e3f83fe0dfd12e71cff",
-        ),
+        ],
     },
-    {"cursor": "dnd_move", "symblinks": ("dnd-move")},
-    {"cursor": "all_scroll", "symblinks": ("all-scroll")},
+    {"name": "dnd_move", "symlink": ["dnd-move"]},
+    {"name": "all_scroll", "symlink": ["all-scroll"]},
     {
-        "cursor": "closedhand",
-        "symblinks": ("closedhand", "grabbing", "208530c400c041818281048008011002"),
+        "name": "closedhand",
+        "symlink": ["closedhand", "grabbing", "208530c400c041818281048008011002"],
     },
-    {"cursor": "dnd_none", "symblinks": ("dnd-none")},
+    {"name": "dnd_none", "symlink": ["dnd-none"]},
     {
-        "cursor": "openhand",
-        "symblinks": (
+        "name": "openhand",
+        "symlink": [
             "openhand",
             "5aca4d189052212118709018842178c0",
             "9d800788f1b08800ae810202380a0822",
-        ),
+        ],
     },
-    {"cursor": "up_arrow", "symblinks": ("up_arrow")},
-    {"cursor": "color_picker", "symblinks": ("color-picker")},
-    {"cursor": "text", "symblinks": ("text", "ibeam", "xterm")},
+    {"name": "up_arrow", "symlink": ["up_arrow"]},
+    {"name": "color_picker", "symlink": ["color-picker"]},
+    {"name": "text", "symlink": ["text", "ibeam", "xterm"]},
     {
-        "cursor": "vertical_text",
-        "symblinks": ("vertical-text", "048008013003cff3c00c801001200000"),
+        "name": "vertical_text",
+        "symlink": ["vertical-text", "048008013003cff3c00c801001200000"],
     },
-    {"cursor": "crosshair", "symblinks": ("crosshair")},
+    {"name": "crosshair", "symlink": ["crosshair"]},
     {
-        "cursor": "copy",
-        "symblinks": (
+        "name": "copy",
+        "symlink": [
             "copy",
             "08ffe1cb5fe6fc01f906f1c063814ccf",
             "1081e37283d90000800003c07f3ef6bf",
             "6407b0e94181790501fd1e167b474872",
             "b66166c04f8c3109214a4fbd64a50fc8",
-        ),
+        ],
     },
-    {"cursor": "dnd_copy", "symblinks": ("dnd-copy")},
+    {"name": "dnd_copy", "symlink": ["dnd-copy"]},
     {
-        "cursor": "pointer",
-        "symblinks": (
+        "name": "pointer",
+        "symlink": [
             "pointer",
             "pointing_hand",
             "hand1",
             "e29285e634086352946a0e7090d73106",
-        ),
+        ],
     },
-    {"cursor": "hand2", "symblinks": ("hand2")},
-    {"cursor": "cross", "symblinks": ("cross", "diamond_cross", "target")},
-    {"cursor": "cell", "symblinks": ("cell")},
+    {"name": "hand2", "symlink": ["hand2"]},
+    {"name": "cross", "symlink": ["cross", "diamond_cross", "target"]},
+    {"name": "cell", "symlink": ["cell"]},
     {
-        "cursor": "col_resize",
-        "symblinks": (
+        "name": "col_resize",
+        "symlink": [
             "col-resize",
             "sb_h_double_arrow",
             "043a9f68147c53184671403ffa811cc5",
             "14fef782d02440884392942c11205230",
-        ),
+        ],
     },
-    {"cursor": "split_h", "symblinks": ("split_h")},
+    {"name": "split_h", "symlink": ["split_h"]},
     {
-        "cursor": "row_resize",
-        "symblinks": (
+        "name": "row_resize",
+        "symlink": [
             "row-resize",
             "sb_v_double_arrow",
             "2870a09082c103050810ffdffffe0204",
             "c07385c7190e701020ff7ffffd08103c",
-        ),
+        ],
     },
-    {"cursor": "split_v", "symblinks": ("split_v")},
-    {"cursor": "plus", "symblinks": ("plus")},
-    {"cursor": "X_cursor", "symblinks": ("X_cursor", "X-cursor")},
+    {"name": "split_v", "symlink": ["split_v"]},
+    {"name": "plus", "symlink": ["plus"]},
+    {"name": "X_name", "symlink": ["X_name", "X-name"]},
     {
-        "cursor": "context_menu",
-        "symblinks": ("context-menu", "08ffe1e65f80fcfdf9fff11263e74c48"),
+        "name": "context_menu",
+        "symlink": ["context-menu", "08ffe1e65f80fcfdf9fff11263e74c48"],
     },
-    {"cursor": "zoom", "symblinks": ("zoom")},
+    {"name": "zoom", "symlink": ["zoom"]},
     {
-        "cursor": "zoom_out",
-        "symblinks": ("zoom-out", "zoom_out", "f41c0e382c97c0938e07017e42800402"),
+        "name": "zoom_out",
+        "symlink": ["zoom-out", "zoom_out", "f41c0e382c97c0938e07017e42800402"],
     },
     {
-        "cursor": "zoom_in",
-        "symblinks": ("zoom-in", "zoom_in", "f41c0e382c94c0958e07017e42b00462"),
+        "name": "zoom_in",
+        "symlink": ["zoom-in", "zoom_in", "f41c0e382c94c0958e07017e42b00462"],
     },
 ]
 
 
-class CursorDatabase:
-    """Processed cursors information with database."""
+class Database:
+    """Database Api."""
 
     def __init__(self) -> None:
         self.db_file = tempfile.NamedTemporaryFile(
@@ -231,21 +231,40 @@ class CursorDatabase:
             self.db.close()
             os.remove(self.db)
 
-    @property
-    def cursors(self) -> None:
-        l = self.db.search(where("cursor") != "")
-        print(l)
+    def get_field_data(self, field: str) -> List[str]:
+        try:
+            return [r[field] for r in self.db]
+        except KeyError as e:
+            raise KeyError(f"{e} Field not Found in 'clickgen' database")
 
-    def get_cursor_info(self, cursor: str) -> Optional[Document]:
-        """ Fetch Cursors information from local DB. """
-        info = self.db.search(Query()["cursor"] == cursor)
+    def cursors(self) -> List[str]:
+        return self.get_field_data("name")
 
-        if info:
-            return info[0]
+    def cursor(self, name: str) -> Optional[Document]:
+        """ Fetch Node from DB. """
+        node = self.db.search(where("name") == name)
+
+        if node:
+            return node[0]
+        else:
+            return None
+
+    def symlinks(self, cursor: str) -> Optional[List[str]]:
+        item: Document = self.cursor(cursor)
+
+        try:
+            item.pop(cursor)
+        except KeyError:
+            pass
+        except AttributeError:
+            return None
+
+        if item and item["symlink"] != []:
+            return item["symlink"]
         else:
             return None
 
 
 if __name__ == "__main__":
-    c = CursorDatabase().get_cursor_info("zoom")
+    c = Database().symlinks("zoom")
     print(c)
