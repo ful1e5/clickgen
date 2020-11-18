@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import os
-from os import rmdir
-from typing import List
-from tinydb import TinyDB
 import tempfile
+from typing import Optional
+
+from tinydb import TinyDB
+from tinydb.queries import Query, where
+from tinydb.table import Document
 
 seed_data = [
     {
@@ -229,16 +231,21 @@ class CursorDatabase:
             self.db.close()
             os.remove(self.db)
 
+    @property
     def cursors(self) -> None:
-        l: List[str] = []
-        for item in self.db:
-            l.append(item.get("cursor"))
-        print(len(l))
+        l = self.db.search(where("cursor") != "")
+        print(l)
 
-    def get_cursor_info(self, cursor: str) -> None:
+    def get_cursor_info(self, cursor: str) -> Optional[Document]:
         """ Fetch Cursors information from local DB. """
-        pass
+        info = self.db.search(Query()["cursor"] == cursor)
+
+        if info:
+            return info[0]
+        else:
+            return None
 
 
 if __name__ == "__main__":
-    CursorDatabase().cursors()
+    c = CursorDatabase().get_cursor_info("zoom")
+    print(c)
