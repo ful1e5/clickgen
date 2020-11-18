@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+from os import rmdir
+from typing import List
 from tinydb import TinyDB
+import tempfile
 
-seed_data = {
+seed_data = [
     {
         "cursor": "default",
         "symblinks": ("default", "left_ptr", "top_left_arrow", "left-arrow"),
@@ -207,13 +211,34 @@ seed_data = {
         "cursor": "zoom_in",
         "symblinks": ("zoom-in", "zoom_in", "f41c0e382c94c0958e07017e42b00462"),
     },
-}
+]
 
 
 class CursorDatabase:
     """Processed cursors information with database."""
 
-    db: TinyDB = TinyDB("db.json")
+    def __init__(self) -> None:
+        self.db_file = tempfile.NamedTemporaryFile(
+            prefix="clickgen_db_", suffix=".json"
+        ).name
+        self.db: TinyDB = TinyDB(self.db_file)
+        for d in seed_data:
+            self.db.insert(d)
 
-    def __init__(self, data) -> None:
-        self.db.insert({})
+        def __del__() -> None:
+            self.db.close()
+            os.remove(self.db)
+
+    def cursors(self) -> None:
+        l: List[str] = []
+        for item in self.db:
+            l.append(item.get("cursor"))
+        print(len(l))
+
+    def get_cursor_info(self, cursor: str) -> None:
+        """ Fetch Cursors information from local DB. """
+        pass
+
+
+if __name__ == "__main__":
+    CursorDatabase().cursors()
