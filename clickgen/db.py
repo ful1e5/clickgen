@@ -235,7 +235,7 @@ class Database:
         try:
             return [r[field] for r in self.db]
         except KeyError as e:
-            raise KeyError(f"{e} Field not Found in 'clickgen' database")
+            raise KeyError(f"{e} Field not found in 'clickgen' database")
 
     def cursors(self) -> List[str]:
         return self.get_field_data("name")
@@ -250,21 +250,22 @@ class Database:
             return None
 
     def symlinks(self, cursor: str) -> Optional[List[str]]:
-        item: Document = self.cursor(cursor)
-
         try:
-            item.pop(cursor)
-        except KeyError:
-            pass
-        except AttributeError:
-            return None
+            item: List[str] = list(self.cursor(cursor)["symlink"])
+            item.remove(cursor)
 
-        if item and item["symlink"] != []:
-            return item["symlink"]
-        else:
-            return None
+            if item:
+                return item
+            else:
+                return None
+        except ValueError:
+            pass
+        except TypeError:
+            raise Exception(
+                f"'{cursor}' cursor's information not found in 'clickgen' database"
+            )
 
 
 if __name__ == "__main__":
-    c = Database().symlinks("zoom")
+    c = Database().symlinks("zoom_in")
     print(c)
