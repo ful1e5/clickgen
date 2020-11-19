@@ -5,6 +5,7 @@ import os
 import tempfile
 from typing import List, Optional
 
+from difflib import SequenceMatcher as SM
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
@@ -199,7 +200,7 @@ seed_data = [
     },
     {"name": "split_v", "symlink": ["split_v"]},
     {"name": "plus", "symlink": ["plus"]},
-    {"name": "X_name", "symlink": ["X_name", "X-name"]},
+    {"name": "X_cursor", "symlink": ["X_cursor", "X-cursor"]},
     {
         "name": "context_menu",
         "symlink": ["context-menu", "08ffe1e65f80fcfdf9fff11263e74c48"],
@@ -240,7 +241,7 @@ class Database:
     def cursors(self) -> List[str]:
         return self.get_field_data("name")
 
-    def cursor(self, name: str) -> Optional[Document]:
+    def cursor_node(self, name: str) -> Optional[Document]:
         """ Fetch one node from clickgen `db`. """
         node = self.db.search(where("name") == name)
 
@@ -249,9 +250,24 @@ class Database:
         else:
             return None
 
+    def match_cursor(self, name: str) -> Optional[str]:
+        compare_ratio: float = 0.5
+        result: str = name
+
+        for cur in self.cursors():
+            ratio: float = SM(None, name.lower(), cur.lower()).ratio()
+            if ratio > compare_ratio:
+                compare_ratio = ratio
+                result = cur
+
+        if name == result:
+            return None
+        else:
+            return result
+
     def symlinks(self, cursor: str) -> Optional[List[str]]:
         try:
-            item: List[str] = list(self.cursor(cursor).get("symlink"))
+            item: List[str] = list(self.cursor_node(cursor).get("symlink"))
             item.remove(cursor)
 
             if item:
