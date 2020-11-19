@@ -3,9 +3,9 @@
 
 import os
 import tempfile
+from difflib import SequenceMatcher as SM
 from typing import List, Optional
 
-from difflib import SequenceMatcher as SM
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
