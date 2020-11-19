@@ -4,7 +4,7 @@
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import List, Optional, Tuple
+from typing import Dict, List, NamedTuple, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -217,6 +217,13 @@ seed_data = [
 ]
 
 
+class RenameCursor(NamedTuple):
+    """ Rename cursor name according @old to @new  """
+
+    old: str
+    new: str
+
+
 class Database:
     """Database Api."""
 
@@ -257,41 +264,58 @@ class Database:
                 f"'{cursor}' cursor's information not found in 'clickgen' database"
             )
 
-    def cursor_node_by_name(self, string: str) -> Optional[Document]:
+    def cursor_node_by_name(self, s: str) -> Optional[Document]:
         """ Fetch one node from db by cursor `name`. """
-        node = self.db.search(where("name") == string)
+        node = self.db.search(where("name") == s)
 
         if node:
             return node[0]
         else:
             return None
 
-    def cursor_node_by_symlink(self, string: str) -> Optional[Document]:
+    def cursor_node_by_symlink(self, s: str) -> Optional[Document]:
         """ Fetch one node from db by cursors `symlinks`"""
-        node = self.db.search(where("symlink").any(string))
+        node = self.db.search(where("symlink").any(s))
 
         if node:
             return node[0]
         else:
             return None
 
-    def match_cursor(self, name: str) -> Optional[str]:
+    def match_string(self, s: str, l: List[str]) -> Optional[str]:
         compare_ratio: float = 0.5
-        result: str = name
+        result: str = s
 
-        for cur in self.cursors():
-            ratio: float = SM(None, name.lower(), cur.lower()).ratio()
+        for e in l:
+            ratio: float = SM(None, s.lower(), e.lower()).ratio()
             if ratio > compare_ratio:
                 compare_ratio = ratio
-                result = cur
+                result = e
             else:
                 continue
 
-        if name == result:
-            return None
-        else:
+        if s != result:
             return result
+        else:
+            return None
 
+    def valid_cursors(self, l: List[str]) -> Optional[List[RenameCursor]]:
+        rename_list: List[RenameCursor] = []
 
-if __name__ == "__main__":
-    print(Database().cursor_node_by_symlink("f41c0e382c94c0958e07017e42b00462"))
+        for s in l:
+            n1 = self.cursor_node_by_symlink(s)
+            if n1:
+                rename_list.append(RenameCursor(old=s, new=n1["name"]))
+                continue
+
+            if not self.cursor_node_by_name(s):
+                new = self.match_string(s, self.cursors())
+                if new:
+                    rename_list.append(RenameCursor(old=s, new=new))
+                else:
+                    continue
+
+        if rename_list:
+            return rename_list
+        else:
+            None
