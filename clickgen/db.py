@@ -241,7 +241,7 @@ class Database:
         return self.get_field_data("name")
 
     def cursor(self, name: str) -> Optional[Document]:
-        """ Fetch Node from DB. """
+        """ Fetch one node from clickgen `db`. """
         node = self.db.search(where("name") == name)
 
         if node:
@@ -251,7 +251,7 @@ class Database:
 
     def symlinks(self, cursor: str) -> Optional[List[str]]:
         try:
-            item: List[str] = list(self.cursor(cursor)["symlink"])
+            item: List[str] = list(self.cursor(cursor).get("symlink"))
             item.remove(cursor)
 
             if item:
