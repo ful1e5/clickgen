@@ -264,8 +264,3 @@ class Database:
             raise Exception(
                 f"'{cursor}' cursor's information not found in 'clickgen' database"
             )
-
-
-if __name__ == "__main__":
-    c = Database().symlinks("zoom_in")
-    print(c)
