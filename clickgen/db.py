@@ -4,7 +4,7 @@
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -241,9 +241,34 @@ class Database:
     def cursors(self) -> List[str]:
         return self.get_field_data("name")
 
-    def cursor_node(self, name: str) -> Optional[Document]:
-        """ Fetch one node from clickgen `db`. """
-        node = self.db.search(where("name") == name)
+    def symlinks(self, cursor: str) -> Optional[List[str]]:
+        try:
+            item: List[str] = list(self.cursor_node_by_name(cursor).get("symlink"))
+            item.remove(cursor)
+
+            if item:
+                return item
+            else:
+                return None
+        except ValueError:
+            pass
+        except TypeError:
+            raise Exception(
+                f"'{cursor}' cursor's information not found in 'clickgen' database"
+            )
+
+    def cursor_node_by_name(self, string: str) -> Optional[Document]:
+        """ Fetch one node from db by cursor `name`. """
+        node = self.db.search(where("name") == string)
+
+        if node:
+            return node[0]
+        else:
+            return None
+
+    def cursor_node_by_symlink(self, string: str) -> Optional[Document]:
+        """ Fetch one node from db by cursors `symlinks`"""
+        node = self.db.search(where("symlink").any(string))
 
         if node:
             return node[0]
@@ -259,24 +284,14 @@ class Database:
             if ratio > compare_ratio:
                 compare_ratio = ratio
                 result = cur
+            else:
+                continue
 
         if name == result:
             return None
         else:
             return result
 
-    def symlinks(self, cursor: str) -> Optional[List[str]]:
-        try:
-            item: List[str] = list(self.cursor_node(cursor).get("symlink"))
-            item.remove(cursor)
 
-            if item:
-                return item
-            else:
-                return None
-        except ValueError:
-            pass
-        except TypeError:
-            raise Exception(
-                f"'{cursor}' cursor's information not found in 'clickgen' database"
-            )
+if __name__ == "__main__":
+    print(Database().cursor_node_by_symlink("f41c0e382c94c0958e07017e42b00462"))
