@@ -8,6 +8,7 @@ with open("./hotspots.json", "r") as hotspot_file:
 info: ThemeInfo = ThemeInfo(
     theme_name="BQ", author="Kaiz Khatri", comment=None, url=None
 )
+
 sett: ThemeSettings = ThemeSettings(
     bitmaps_dir="./bitmaps",
     sizes=[24, 28],

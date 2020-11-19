@@ -3,7 +3,7 @@
 
 import os
 from os import path
-from typing import List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional, Union
 
 from .providers.jsonparser import Hotspots
 
@@ -25,6 +25,7 @@ class ThemeSettings(NamedTuple):
     hotspots: Hotspots
     animation_delay: int = 50
     out_dir: str = os.getcwd()
+    windows_cfg: Optional[Dict[str, str]] = None
 
 
 class Config:
@@ -53,4 +54,5 @@ class Config:
             hotspots=settings.hotspots,
             animation_delay=settings.animation_delay,
             out_dir=path.abspath(settings.out_dir),
+            windows_cfg=settings.windows_cfg,
         )
