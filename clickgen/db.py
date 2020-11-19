@@ -305,7 +305,8 @@ class Database:
         for s in l:
             n1 = self.cursor_node_by_symlink(s)
             if n1:
-                rename_list.append(RenameCursor(old=s, new=n1["name"]))
+                if n1["name"] != s:
+                    rename_list.append(RenameCursor(old=s, new=n1["name"]))
                 continue
 
             if not self.cursor_node_by_name(s):
