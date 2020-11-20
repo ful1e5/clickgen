@@ -7,7 +7,7 @@ from glob import glob
 from os import path
 from typing import Callable, Dict, List
 
-from ..db import Database, RenameCursor
+from ..db import Database
 
 
 class ThemeBitmapsProvider:
@@ -72,7 +72,7 @@ class Bitmaps(ThemeBitmapsProvider):
     def rename_bitmap_png(self, old: str, new: str) -> None:
         try:
             # Moving cursors path
-            src = path.join(self.dir, f"{old}.png")
+            src = path.join(self.dir, old)
             dst = path.join(self.dir, f"{new}.png")
             shutil.move(src, dst)
         except Exception:
@@ -84,12 +84,13 @@ class Bitmaps(ThemeBitmapsProvider):
 
         if valid_curs:
             for c in valid_curs:
+                print(c)
                 self.rename_bitmap_png(c.old, c.new)
 
                 # Updating cursor list
-                index = curs.pop(c.old)
-                curs.insert(index, c.new)
-        return curs
+                curs.remove(c.old)
+                curs.append(c.new)
+        return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
         curs: Dict[str, List[str]] = super().animated_bitmaps()
@@ -97,7 +98,8 @@ class Bitmaps(ThemeBitmapsProvider):
 
         if valid_curs:
             for c in valid_curs:
-                # TODO
+                for png in curs[c.old]:
+                    print(png)
 
                 # Updating cursor dictionary
                 curs[c.new] = curs.pop(c.old)
