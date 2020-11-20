@@ -5,6 +5,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
+import re
 from typing import Callable, Dict, List
 
 from ..db import Database
@@ -98,9 +99,15 @@ class Bitmaps(ThemeBitmapsProvider):
 
         if valid_curs:
             for c in valid_curs:
+                l: List[str] = []
                 for png in curs[c.old]:
-                    print(png)
+                    pattern = "-(.*?).png"
+                    frame = re.search(pattern, png).group(1)
+                    cur = f"{c.new}-{frame}"
+                    l.append(cur)
+                    self.rename_bitmap_png(png, cur)
 
                 # Updating cursor dictionary
-                curs[c.new] = curs.pop(c.old)
+                curs.pop(c.old)
+                curs[c.new] = l
         return curs
