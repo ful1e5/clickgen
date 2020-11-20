@@ -7,7 +7,7 @@ from glob import glob
 from os import path
 from typing import Callable, Dict, List
 
-from ..db import Database
+from ..db import Database, RenameCursor
 
 
 class ThemeBitmapsProvider:
@@ -52,12 +52,13 @@ class ThemeBitmapsProvider:
 class Bitmaps(ThemeBitmapsProvider):
     """ .pngs files with cursors information """
 
-    def __init__(self, dir: str, valid_src: bool = True) -> None:
+    def __init__(self, dir: str, valid_src: bool = False) -> None:
         self.db = Database()
 
         # Cursor validation
         if valid_src:
             super().__init__(dir)
+            self.dir = dir
         else:
             tmp_dir = tempfile.mkdtemp(prefix="clickgen_bits")
             for png in ThemeBitmapsProvider(dir).pngs:
@@ -66,6 +67,20 @@ class Bitmaps(ThemeBitmapsProvider):
                 shutil.copy(src, dst)
 
             super().__init__(tmp_dir)
+            self.dir = tmp_dir
+
+    def correct_bitmap(self, c: RenameCursor, l: List[str]) -> None:
+        try:
+            # Moving cursors path
+            src = path.join(self.dir, c.old)
+            dst = path.join(self.dir, c.new)
+            shutil.move(src, dst)
+
+            # Updating cursor list
+            index = l.pop(c.old)
+            l.insert(index, c.new)
+        except Exception:
+            raise Exception(f"Unavailable to valid cursor bitmap '{c.old}'")
 
     def static_bitmaps(self) -> List[str]:
         curs: List[str] = super().static_bitmaps()
@@ -73,13 +88,5 @@ class Bitmaps(ThemeBitmapsProvider):
 
         if valid_curs:
             for c in valid_curs:
-                # Moving cursors
-                src = path.join(super().dir, c.old)
-                dst = path.join(super().dir, c.new)
-                shutil.move(src, dst)
-
-                # Updating cursor list
-                index = curs.pop(c.old)
-                curs.insert(index, c.new)
-
+                self.correct_bitmap(c, curs)
         return curs
