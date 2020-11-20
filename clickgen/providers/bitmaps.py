@@ -69,4 +69,17 @@ class Bitmaps(ThemeBitmapsProvider):
 
     def static_bitmaps(self) -> List[str]:
         curs: List[str] = super().static_bitmaps()
-        req_validation = self.db.valid_cursors()
+        valid_curs = self.db.valid_cursors(curs)
+
+        if valid_curs:
+            for c in valid_curs:
+                # Moving cursors
+                src = path.join(super().dir, c.old)
+                dst = path.join(super().dir, c.new)
+                shutil.move(src, dst)
+
+                # Updating cursor list
+                index = curs.pop(c.old)
+                curs.insert(index, c.new)
+
+        return curs
