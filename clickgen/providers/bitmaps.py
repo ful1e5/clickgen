@@ -69,18 +69,14 @@ class Bitmaps(ThemeBitmapsProvider):
             super().__init__(tmp_dir)
             self.dir = tmp_dir
 
-    def correct_bitmap(self, c: RenameCursor, l: List[str]) -> None:
+    def rename_bitmap_png(self, old: str, new: str) -> None:
         try:
             # Moving cursors path
-            src = path.join(self.dir, c.old)
-            dst = path.join(self.dir, c.new)
+            src = path.join(self.dir, f"{old}.png")
+            dst = path.join(self.dir, f"{new}.png")
             shutil.move(src, dst)
-
-            # Updating cursor list
-            index = l.pop(c.old)
-            l.insert(index, c.new)
         except Exception:
-            raise Exception(f"Unavailable to valid cursor bitmap '{c.old}'")
+            raise Exception(f"Unavailable to move cursor bitmap '{old}'")
 
     def static_bitmaps(self) -> List[str]:
         curs: List[str] = super().static_bitmaps()
@@ -88,5 +84,21 @@ class Bitmaps(ThemeBitmapsProvider):
 
         if valid_curs:
             for c in valid_curs:
-                self.correct_bitmap(c, curs)
+                self.rename_bitmap_png(c.old, c.new)
+
+                # Updating cursor list
+                index = curs.pop(c.old)
+                curs.insert(index, c.new)
+        return curs
+
+    def animated_bitmaps(self) -> List[str]:
+        curs: Dict[str, List[str]] = super().animated_bitmaps()
+        valid_curs = self.db.valid_cursors(curs.keys())
+
+        if valid_curs:
+            for c in valid_curs:
+                # TODO
+
+                # Updating cursor dictionary
+                curs[c.new] = curs.pop(c.old)
         return curs
