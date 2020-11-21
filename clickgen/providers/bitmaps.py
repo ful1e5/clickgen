@@ -79,7 +79,7 @@ class Bitmaps(ThemeBitmapsProvider):
     def rename_bitmap_png(self, old: str, new: str) -> None:
         try:
             # Moving cursors path
-            src = path.join(self.dir, old)
+            src = path.join(self.dir, f"{old}.png")
             dst = path.join(self.dir, f"{new}.png")
             shutil.move(src, dst)
         except Exception:
@@ -95,8 +95,8 @@ class Bitmaps(ThemeBitmapsProvider):
                 self.rename_bitmap_png(c.old, c.new)
 
                 # Updating cursor list
-                curs.remove(c.old)
-                curs.append(c.new)
+                curs.remove(f"{c.old}.png")
+                curs.append(f"{c.new}.png")
         return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
@@ -110,7 +110,7 @@ class Bitmaps(ThemeBitmapsProvider):
                     pattern = "-(.*?).png"
                     frame = re.search(pattern, png).group(1)
                     cur = f"{c.new}-{frame}"
-                    l.append(cur)
+                    l.append(f"{cur}.png")
                     self.rename_bitmap_png(png, cur)
 
                 # Updating cursor dictionary
