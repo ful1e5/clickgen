@@ -17,6 +17,7 @@ seed_data = [
         "name": "wait",
         "symlink": ["watch", "clock", "0426c94ea35c87780ff01dc239897213"],
     },
+    # --
     {
         "name": "left_ptr_watch",
         "symlink": [
@@ -41,14 +42,19 @@ seed_data = [
             "9116a3ea924ed2162ecab71ba103b17f",
         ],
     },
+    # --
     # ------- Static or Semi-Animated cursors
     {
-        "name": "default",
-        "symlink": ["left_ptr", "top_left_arrow", "left-arrow"],
+        "name": "left_ptr",
+        "symlink": ["top_left_arrow"],
     },
     {
-        "name": "arrow",
-        "symlink": ["right_ptr", "top_right_arrow", "right-arrow"],
+        "name": "left-arrow",
+        "symlink": ["sb_left_arrow"],
+    },
+    {
+        "name": "right_ptr",
+        "symlink": ["top_right_arrow", "right-arrow"],
     },
     {"name": "center_ptr", "symlink": []},
     {
@@ -67,50 +73,34 @@ seed_data = [
         "name": "crossed_circle",
         "symlink": ["03b6e0fcb3499374a867c041f52298f0"],
     },
+    {"name": "pointer-move", "symlink": []},
     {"name": "circle", "symlink": []},
     {
         "name": "dnd_no_drop",
         "symlink": [
-            "dnd-no-drop",
             "no-drop",
+            "dnd-no-drop",
             "03b6e0fcb3499374a867c041f52298f0",
             "03b6e0fcb3499374a867d041f52298f0",
         ],
     },
+    {"name": "pointer-move", "symlink": [""]},
     {"name": "pirate", "symlink": ["kill"]},
     {"name": "pencil", "symlink": []},
     {
         "name": "help",
         "symlink": [
-            "question_arrow",
-            "whats_this",
             "gumby",
+            "whats_this",
+            "left_ptr_help",
+            "question_arrow",
             "5c6cd98b3f3ebcb1f9c7f1c204630408",
             "d9ce0ab605698f320427677b458ad60b",
         ],
     },
     {"name": "dnd_ask", "symlink": ["dnd-ask"]},
-    {
-        "name": "ns_resize",
-        "symlink": [
-            "ns-resize",
-            "size_ver",
-            "v_double_arrow",
-            "double_arrow",
-            "00008160000006810000408080010102",
-        ],
-    },
     {"name": "n_resize", "symlink": ["n-resize", "top_side"]},
     {"name": "s_resize", "symlink": ["s-resize", "bottom_side"]},
-    {
-        "name": "ew_resize",
-        "symlink": [
-            "ew-resize",
-            "size_hor",
-            "h_double_arrow",
-            "028006030e0e7ebffc7f7070c0600140",
-        ],
-    },
     {"name": "e_resize", "symlink": ["e-resize", "right_side"]},
     {"name": "w_resize", "symlink": ["w-resize", "left_side"]},
     # --
@@ -133,6 +123,7 @@ seed_data = [
     # --
     {"name": "bottom_left_corner", "symlink": ["sw-resize", "sw_resize"]},
     {"name": "sw_resize", "symlink": ["sw-resize", "bottom_left_corner"]},
+    # --
     {
         "name": "size_bdiag",
         "symlink": [
@@ -194,27 +185,77 @@ seed_data = [
     {"name": "hand2", "symlink": []},
     {"name": "cross", "symlink": ["diamond_cross", "target"]},
     {"name": "cell", "symlink": []},
+    # --
+    {
+        "name": "ew_resize",
+        "symlink": [
+            "split_h",
+            "size_hor",
+            "ew-resize",
+            "col-resize",
+            "col_resize",
+            "h_double_arrow",
+            "sb_h_double_arrow",
+            "043a9f68147c53184671403ffa811cc5",
+            "14fef782d02440884392942c11205230",
+            "028006030e0e7ebffc7f7070c0600140",
+        ],
+    },
     {
         "name": "col_resize",
         "symlink": [
+            "split_h",
+            "size_hor",
+            "ew-resize",
+            "ew_resize",
             "col-resize",
+            "h_double_arrow",
             "sb_h_double_arrow",
+            "028006030e0e7ebffc7f7070c0600140",
             "043a9f68147c53184671403ffa811cc5",
             "14fef782d02440884392942c11205230",
         ],
     },
+    # --
     {"name": "split_h", "symlink": []},
+    {"name": "split_v", "symlink": []},
+    # --
+    {
+        "name": "ns_resize",
+        "symlink": [
+            "split_v",
+            "size_ver",
+            "ns-resize",
+            "row-resize",
+            "row_resize",
+            "double_arrow",
+            "v_double_arrow",
+            "sb_v_double_arrow",
+            "2870a09082c103050810ffdffffe0204",
+            "c07385c7190e701020ff7ffffd08103c",
+            "00008160000006810000408080010102",
+        ],
+    },
     {
         "name": "row_resize",
         "symlink": [
+            "split_v",
+            "size_ver",
+            "ns-resize",
+            "ns_resize",
             "row-resize",
+            "double_arrow",
+            "v_double_arrow",
             "sb_v_double_arrow",
+            "00008160000006810000408080010102",
             "2870a09082c103050810ffdffffe0204",
             "c07385c7190e701020ff7ffffd08103c",
         ],
     },
-    {"name": "split_v", "symlink": []},
+    # --
+    {"name": "bottom_tee", "symlink": []},
     {"name": "plus", "symlink": []},
+    {"name": "wayland_cursor", "symlink": []},
     {"name": "X_cursor", "symlink": ["X_cursor", "X-cursor"]},
     {
         "name": "context_menu",
