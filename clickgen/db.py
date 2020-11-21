@@ -4,10 +4,10 @@
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import Dict, List, NamedTuple, Optional
+from typing import List, NamedTuple, Optional
 
 from tinydb import TinyDB
-from tinydb.queries import where
+from tinydb.queries import Query, where
 from tinydb.table import Document
 
 seed_data = [
@@ -275,7 +275,7 @@ class Database:
 
     def cursor_node_by_symlink(self, s: str) -> Optional[Document]:
         """ Fetch one node from db by cursors `symlinks`"""
-        node = self.db.search(where("symlink").any(s))
+        node = self.db.search((where("symlink").any([s])))
 
         if node:
             return node[0]
