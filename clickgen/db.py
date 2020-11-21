@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from os import path
 import tempfile
 from difflib import SequenceMatcher as SM
+from os import path
 from typing import List, NamedTuple, Optional
 
 from tinydb import TinyDB
@@ -12,7 +12,7 @@ from tinydb.queries import where
 from tinydb.table import Document
 
 seed_data = [
-    # Animated cursors
+    # ------- Animated cursors
     {
         "name": "wait",
         "symlink": ["watch", "clock", "0426c94ea35c87780ff01dc239897213"],
@@ -41,7 +41,7 @@ seed_data = [
             "9116a3ea924ed2162ecab71ba103b17f",
         ],
     },
-    # Static or Semi-Animated cursors
+    # ------- Static or Semi-Animated cursors
     {
         "name": "default",
         "symlink": ["left_ptr", "top_left_arrow", "left-arrow"],
@@ -311,6 +311,9 @@ class Database:
 
         for s in l:
             s = path.splitext(s)[0]
+            if self.cursor_node_by_name(s):
+                continue
+
             n1 = self.cursor_node_by_symlink(s)
             if n1:
                 if n1["name"] != s:
