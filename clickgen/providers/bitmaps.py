@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+import re
 import shutil
 import tempfile
 from glob import glob
 from os import path
-import re
 from typing import Callable, Dict, List
 
 from ..db import Database
@@ -55,6 +56,7 @@ class Bitmaps(ThemeBitmapsProvider):
 
     def __init__(self, dir: str, valid_src: bool = False) -> None:
         self.db = Database()
+        self.is_tmp_dir = not valid_src
 
         # Cursor validation
         if valid_src:
@@ -69,6 +71,10 @@ class Bitmaps(ThemeBitmapsProvider):
 
             super().__init__(tmp_dir)
             self.dir = tmp_dir
+
+    def free_space(self):
+        if self.is_tmp_dir:
+            os.remove(self.dir)
 
     def rename_bitmap_png(self, old: str, new: str) -> None:
         try:
