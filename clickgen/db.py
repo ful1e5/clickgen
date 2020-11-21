@@ -113,7 +113,11 @@ seed_data = [
     },
     {"name": "e_resize", "symlink": ["e-resize", "right_side"]},
     {"name": "w_resize", "symlink": ["w-resize", "left_side"]},
+    # --
+    {"name": "top_left_corner", "symlink": ["nw-resize", "nw_resize"]},
     {"name": "nw_resize", "symlink": ["nw-resize", "top_left_corner"]},
+    # --
+    {"name": "bottom_right_corner", "symlink": ["se-resize", "se_resize"]},
     {"name": "se_resize", "symlink": ["se-resize", "bottom_right_corner"]},
     {
         "name": "size_fdiag",
@@ -123,7 +127,11 @@ seed_data = [
             "c7088f0f3e6c8088236ef8e1e3e70000",
         ],
     },
+    # --
+    {"name": "top_right_corner", "symlink": ["ne-resize", "ne_resize"]},
     {"name": "ne_resize", "symlink": ["ne-resize", "top_right_corner"]},
+    # --
+    {"name": "bottom_left_corner", "symlink": ["sw-resize", "sw_resize"]},
     {"name": "sw_resize", "symlink": ["sw-resize", "bottom_left_corner"]},
     {
         "name": "size_bdiag",
@@ -325,7 +333,7 @@ class Database:
                 if new:
                     rename_list.append(RenameCursor(old=s, new=new))
                 else:
-                    print(f"{s} is Unknown Cursor")
+                    print(f"'{s}' is Unknown Cursor")
                     continue
 
         if rename_list:
