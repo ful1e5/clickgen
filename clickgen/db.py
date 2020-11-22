@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import itertools
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
@@ -165,22 +166,25 @@ class Database:
 
     cursors: List[str] = []
 
-    def __init__(self, cursors: List[str]) -> None:
-        self.cursors = cursors
-
+    def __init__(self) -> None:
         # Creating database file
         self.db_file = tempfile.NamedTemporaryFile(
             prefix="clickgen_db_", suffix=".json"
         ).name
         self.db: TinyDB = TinyDB(self.db_file)
 
-        for cursor in self.cursors:
-            self.db.insert(cursor)
-
         # Deconstructor
         def __del__() -> None:
             self.db.close()
             os.remove(self.db)
+
+    def seed(cursors: List[str]) -> None:
+        # Seeding data
+        for cursor in cursors:
+            data_skeleton = {"name": "", "symlinks": []}
+            cursor = path.splitext(cursor)[0]
+            if cursor not in list(itertools.chain.from_iterable(cursor_groups)):
+                print(f"'{cursor}' is Unknown cursor")
 
     def get_field_data(self, field: str) -> List[str]:
         try:
@@ -242,10 +246,10 @@ class Database:
         else:
             return None
 
-    def valid_cursors(self) -> Optional[List[RenameCursor]]:
+    def valid_cursors(self, cursors: List[str]) -> Optional[List[RenameCursor]]:
         rename_list: List[RenameCursor] = []
 
-        for cursor in self.cursors:
+        for cursor in cursors:
             cursor = path.splitext(cursor)[0]
             if self.cursor_node_by_name(cursor):
                 continue
