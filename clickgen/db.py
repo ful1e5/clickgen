@@ -12,14 +12,15 @@ from tinydb.queries import where
 from tinydb.table import Document
 
 seed_data: List[Dict[str, List[str]]] = [
-    ["X_cursor", "x-cursor"],
+    ["X_cursor", "x-cursor", "kill", "pirate"],
     ["kill", "pirate"],
     ["all-scroll", "fleur", "size_all"],
     [
         "bd_double_arrow",
         "c7088f0f3e6c8088236ef8e1e3e70000",
-        "nwse-resize",
+        "38c5dff7c7b8962045400281044508d2",
         "size_fdiag",
+        "nwse-resize",
     ],
     ["bottom_left_corner", "sw-resize"],
     ["bottom_right_corner", "se-resize"],
@@ -32,6 +33,7 @@ seed_data: List[Dict[str, List[str]]] = [
         "1081e37283d90000800003c07f3ef6bf",
         "6407b0e94181790501fd1e167b474872",
         "b66166c04f8c3109214a4fbd64a50fc8",
+        "08ffe1cb5fe6fc01f906f1c063814ccf",
         "copy",
     ],
     ["cross", "cross_reverse", "diamond_cross"],
@@ -41,18 +43,24 @@ seed_data: List[Dict[str, List[str]]] = [
     ["dnd-copy"],
     ["dnd-link", "alias"],
     ["dnd-move"],
-    ["dnd-none", "closedhand", "fcf21c00b30f7e3f83fe0dfd12e71cff"],
+    [
+        "dnd-none",
+        "closedhand",
+        "208530c400c041818281048008011002",
+        "fcf21c00b30f7e3f83fe0dfd12e71cff",
+    ],
     ["dnd_no_drop", "no-drop"],
     ["dotbox", "dot_box_mask", "draped_box", "icon", "target"],
     [
         "fcf1c3c7cd4491d801f1e1c78f100000",
+        "50585d75b494802d0151028115016902",
         "fd_double_arrow",
         "nesw-resize",
         "size_bdiag",
     ],
     ["grabbing"],
     ["hand"],
-    ["hand1", "grab", "openhand"],
+    ["hand1", "grab", "5aca4d189052212118709018842178c0", "openhand"],
     [
         "9d800788f1b08800ae810202380a0822",
         "e29285e634086352946a0e7090d73106",
@@ -65,6 +73,7 @@ seed_data: List[Dict[str, List[str]]] = [
         "00000000000000020006000e7e9ffc3f",
         "08e8e1c95fe2fc01f976f1e063a24ccd",
         "3ecb610c1bf2410f44200f48c40d3599",
+        "9116a3ea924ed2162ecab71ba103b17f",
         "left_ptr_watch",
         "progress",
     ],
@@ -74,6 +83,7 @@ seed_data: List[Dict[str, List[str]]] = [
         "3085a0e285430894940527032f8b26df",
         "640fb0e74195791501fd1ed57b41487f",
         "a2a266d0498c3104214a47bd64ab0fc8",
+        "0876e1c15ff2fc01f906f1c363074c0f",
         "link",
     ],
     ["ll_angle"],
@@ -89,6 +99,7 @@ seed_data: List[Dict[str, List[str]]] = [
     [
         "5c6cd98b3f3ebcb1f9c7f1c204630408",
         "d9ce0ab605698f320427677b458ad60b",
+        "gumby",
         "help",
         "left_ptr_help",
         "question_arrow",
@@ -100,7 +111,8 @@ seed_data: List[Dict[str, List[str]]] = [
     ["sb_down_arrow", "down-arrow"],
     [
         "028006030e0e7ebffc7f7070c0600140",
-        "14fef782d02440884392942c1120523",
+        "14fef782d02440884392942c11205230",
+        "043a9f68147c53184671403ffa811cc5",
         "col-resize",
         "ew-resize",
         "h_double_arrow",
@@ -114,6 +126,7 @@ seed_data: List[Dict[str, List[str]]] = [
     ["sb_up_arrow", "up-arrow"],
     [
         "00008160000006810000408080010102",
+        "c07385c7190e701020ff7ffffd08103c",
         "2870a09082c103050810ffdffffe0204",
         "double_arrow",
         "ns-resize",
@@ -131,12 +144,12 @@ seed_data: List[Dict[str, List[str]]] = [
     ["top_tee"],
     ["ul_angle"],
     ["ur_angle"],
-    ["vertical-text"],
-    ["watch", "wait"],
+    ["vertical-text", "048008013003cff3c00c801001200000"],
+    ["watch", "clock", "wait", "0426c94ea35c87780ff01dc239897213"],
     ["wayland-cursor"],
     ["xterm", "text", "ibeam"],
-    ["zoom-in"],
-    ["zoom-out"],
+    ["zoom-in", "f41c0e382c94c0958e07017e42b00462"],
+    ["zoom-out", "f41c0e382c97c0938e07017e42800402"],
 ]
 
 
@@ -151,19 +164,19 @@ class Database:
     """Database Api."""
 
     def __init__(self) -> None:
-        self.__create_json_file()
-        self.db: TinyDB = TinyDB(self.db_file)
-        for d in seed_data:
-            self.db.insert(d)
+        self.__create_db()
 
         def __del__() -> None:
             self.db.close()
             os.remove(self.db)
 
-    def __create_json_file(self):
+    def __create_db(self):
         self.db_file = tempfile.NamedTemporaryFile(
             prefix="clickgen_db_", suffix=".json"
         ).name
+        self.db: TinyDB = TinyDB(self.db_file)
+        for d in seed_data:
+            self.db.insert(d)
 
     def get_field_data(self, field: str) -> List[str]:
         try:
