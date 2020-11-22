@@ -11,7 +11,7 @@ from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
-seed_data: List[Dict[str, List[str]]] = [
+cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],
     ["kill", "pirate"],
     ["all-scroll", "fleur", "size_all"],
@@ -163,20 +163,24 @@ class RenameCursor(NamedTuple):
 class Database:
     """Database Api."""
 
-    def __init__(self) -> None:
-        self.__create_db()
+    cursors: List[str] = []
 
-        def __del__() -> None:
-            self.db.close()
-            os.remove(self.db)
+    def __init__(self, cursors: List[str]) -> None:
+        self.cursors = cursors
 
-    def __create_db(self):
+        # Creating database file
         self.db_file = tempfile.NamedTemporaryFile(
             prefix="clickgen_db_", suffix=".json"
         ).name
         self.db: TinyDB = TinyDB(self.db_file)
-        for d in seed_data:
-            self.db.insert(d)
+
+        for cursor in self.cursors:
+            self.db.insert(cursor)
+
+        # Deconstructor
+        def __del__() -> None:
+            self.db.close()
+            os.remove(self.db)
 
     def get_field_data(self, field: str) -> List[str]:
         try:
@@ -238,26 +242,26 @@ class Database:
         else:
             return None
 
-    def valid_cursors(self, l: List[str]) -> Optional[List[RenameCursor]]:
+    def valid_cursors(self) -> Optional[List[RenameCursor]]:
         rename_list: List[RenameCursor] = []
 
-        for s in l:
-            s = path.splitext(s)[0]
-            if self.cursor_node_by_name(s):
+        for cursor in self.cursors:
+            cursor = path.splitext(cursor)[0]
+            if self.cursor_node_by_name(cursor):
                 continue
 
-            n1 = self.cursor_node_by_symlink(s)
+            n1 = self.cursor_node_by_symlink(cursor)
             if n1:
-                if n1["name"] != s:
-                    rename_list.append(RenameCursor(old=s, new=n1["name"]))
+                if n1["name"] != cursor:
+                    rename_list.append(RenameCursor(old=cursor, new=n1["name"]))
                 continue
 
-            if not self.cursor_node_by_name(s):
-                new = self.match_string(s, self.cursors())
+            if not self.cursor_node_by_name(cursor):
+                new = self.match_string(cursor, self.cursors())
                 if new:
-                    rename_list.append(RenameCursor(old=s, new=new))
+                    rename_list.append(RenameCursor(old=cursor, new=new))
                 else:
-                    print(f"'{s}' is Unknown Cursor")
+                    print(f"'{cursor}' is Unknown Cursor")
                     continue
 
         if rename_list:
