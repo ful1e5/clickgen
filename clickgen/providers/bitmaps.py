@@ -87,16 +87,21 @@ class Bitmaps(ThemeBitmapsProvider):
 
     def static_bitmaps(self) -> List[str]:
         curs: List[str] = super().static_bitmaps()
-        valid_curs = self.db.valid_cursors(curs)
 
-        if valid_curs:
-            for c in valid_curs:
-                print(c)
-                self.rename_bitmap_png(c.old, c.new)
+        for c in curs:
+            c = path.splitext(c)[0]
+            self.db.smart_seed(c)
 
-                # Updating cursor list
-                curs.remove(f"{c.old}.png")
-                curs.append(f"{c.new}.png")
+        # valid_curs = self.db.valid_cursors(curs)
+
+        # if valid_curs:
+        #     for c in valid_curs:
+        #         print(c)
+        #         self.rename_bitmap_png(c.old, c.new)
+
+        #         # Updating cursor list
+        #         curs.remove(f"{c.old}.png")
+        #         curs.append(f"{c.new}.png")
         return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
