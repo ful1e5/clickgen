@@ -5,271 +5,138 @@ import os
 import tempfile
 from difflib import SequenceMatcher as SM
 from os import path
-from typing import List, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
-seed_data = [
-    # ------- Animated cursors
-    {
-        "name": "wait",
-        "symlink": ["watch", "clock", "0426c94ea35c87780ff01dc239897213"],
-    },
-    # --
-    {
-        "name": "left_ptr_watch",
-        "symlink": [
-            "progress",
-            "half_busy",
-            "half-busy",
-            "00000000000000020006000e7e9ffc3f",
-            "08e8e1c95fe2fc01f976f1e063a24ccd",
-            "3ecb610c1bf2410f44200f48c40d3599",
-            "9116a3ea924ed2162ecab71ba103b17f",
-        ],
-    },
-    {
-        "name": "half_busy",
-        "symlink": [
-            "half-busy",
-            "progress",
-            "left_ptr_watch",
-            "00000000000000020006000e7e9ffc3f",
-            "08e8e1c95fe2fc01f976f1e063a24ccd",
-            "3ecb610c1bf2410f44200f48c40d3599",
-            "9116a3ea924ed2162ecab71ba103b17f",
-        ],
-    },
-    # --
-    # ------- Static or Semi-Animated cursors
-    {
-        "name": "left_ptr",
-        "symlink": ["top_left_arrow"],
-    },
-    {
-        "name": "left-arrow",
-        "symlink": ["sb_left_arrow"],
-    },
-    {
-        "name": "right_ptr",
-        "symlink": ["top_right_arrow", "right-arrow"],
-    },
-    {"name": "center_ptr", "symlink": []},
-    {
-        "name": "link",
-        "symlink": [
-            "alias",
-            "0876e1c15ff2fc01f906f1c363074c0f",
-            "3085a0e285430894940527032f8b26df",
-            "640fb0e74195791501fd1ed57b41487f",
-            "a2a266d0498c3104214a47bd64ab0fc8",
-        ],
-    },
-    {"name": "dnd_link", "symlink": ["dnd-link"]},
-    {"name": "forbidden", "symlink": ["not-allowed"]},
-    {
-        "name": "crossed_circle",
-        "symlink": ["03b6e0fcb3499374a867c041f52298f0"],
-    },
-    {"name": "pointer-move", "symlink": []},
-    {"name": "circle", "symlink": []},
-    {
-        "name": "dnd_no_drop",
-        "symlink": [
-            "no-drop",
-            "dnd-no-drop",
-            "03b6e0fcb3499374a867c041f52298f0",
-            "03b6e0fcb3499374a867d041f52298f0",
-        ],
-    },
-    {"name": "pointer-move", "symlink": [""]},
-    {"name": "pirate", "symlink": ["kill"]},
-    {"name": "pencil", "symlink": []},
-    {
-        "name": "help",
-        "symlink": [
-            "gumby",
-            "whats_this",
-            "left_ptr_help",
-            "question_arrow",
-            "5c6cd98b3f3ebcb1f9c7f1c204630408",
-            "d9ce0ab605698f320427677b458ad60b",
-        ],
-    },
-    {"name": "dnd_ask", "symlink": ["dnd-ask"]},
-    {"name": "n_resize", "symlink": ["n-resize", "top_side"]},
-    {"name": "s_resize", "symlink": ["s-resize", "bottom_side"]},
-    {"name": "e_resize", "symlink": ["e-resize", "right_side"]},
-    {"name": "w_resize", "symlink": ["w-resize", "left_side"]},
-    # --
-    {"name": "top_left_corner", "symlink": ["nw-resize", "nw_resize"]},
-    {"name": "nw_resize", "symlink": ["nw-resize", "top_left_corner"]},
-    # --
-    {"name": "bottom_right_corner", "symlink": ["se-resize", "se_resize"]},
-    {"name": "se_resize", "symlink": ["se-resize", "bottom_right_corner"]},
-    {
-        "name": "size_fdiag",
-        "symlink": [
-            "nwse-resize",
-            "38c5dff7c7b8962045400281044508d2",
-            "c7088f0f3e6c8088236ef8e1e3e70000",
-        ],
-    },
-    # --
-    {"name": "top_right_corner", "symlink": ["ne-resize", "ne_resize"]},
-    {"name": "ne_resize", "symlink": ["ne-resize", "top_right_corner"]},
-    # --
-    {"name": "bottom_left_corner", "symlink": ["sw-resize", "sw_resize"]},
-    {"name": "sw_resize", "symlink": ["sw-resize", "bottom_left_corner"]},
-    # --
-    {
-        "name": "size_bdiag",
-        "symlink": [
-            "nesw-resize",
-            "50585d75b494802d0151028115016902",
-            "fcf1c3c7cd4491d801f1e1c78f100000",
-        ],
-    },
-    {"name": "size_all", "symlink": ["size_all"]},
-    {
-        "name": "move",
-        "symlink": [
-            "fleur",
-            "4498f0e0c1937ffe01fd06f973665830",
-            "9081237383d90e509aa00f00170e968f",
-            "fcf21c00b30f7e3f83fe0dfd12e71cff",
-        ],
-    },
-    {"name": "dnd_move", "symlink": ["dnd-move"]},
-    {"name": "all_scroll", "symlink": ["all-scroll"]},
-    {
-        "name": "closedhand",
-        "symlink": ["grabbing", "208530c400c041818281048008011002"],
-    },
-    {"name": "dnd_none", "symlink": ["dnd-none"]},
-    {
-        "name": "openhand",
-        "symlink": [
-            "5aca4d189052212118709018842178c0",
-            "9d800788f1b08800ae810202380a0822",
-        ],
-    },
-    {"name": "up_arrow", "symlink": []},
-    {"name": "color_picker", "symlink": ["color-picker"]},
-    {"name": "text", "symlink": ["ibeam", "xterm"]},
-    {
-        "name": "vertical_text",
-        "symlink": ["vertical-text", "048008013003cff3c00c801001200000"],
-    },
-    {"name": "crosshair", "symlink": []},
-    {
-        "name": "copy",
-        "symlink": [
-            "08ffe1cb5fe6fc01f906f1c063814ccf",
-            "1081e37283d90000800003c07f3ef6bf",
-            "6407b0e94181790501fd1e167b474872",
-            "b66166c04f8c3109214a4fbd64a50fc8",
-        ],
-    },
-    {"name": "dnd_copy", "symlink": ["dnd-copy"]},
-    {
-        "name": "pointer",
-        "symlink": [
-            "pointing_hand",
-            "hand1",
-            "e29285e634086352946a0e7090d73106",
-        ],
-    },
-    {"name": "hand2", "symlink": []},
-    {"name": "cross", "symlink": ["diamond_cross", "target"]},
-    {"name": "cell", "symlink": []},
-    # --
-    {
-        "name": "ew_resize",
-        "symlink": [
-            "split_h",
-            "size_hor",
-            "ew-resize",
-            "col-resize",
-            "col_resize",
-            "h_double_arrow",
-            "sb_h_double_arrow",
-            "043a9f68147c53184671403ffa811cc5",
-            "14fef782d02440884392942c11205230",
-            "028006030e0e7ebffc7f7070c0600140",
-        ],
-    },
-    {
-        "name": "col_resize",
-        "symlink": [
-            "split_h",
-            "size_hor",
-            "ew-resize",
-            "ew_resize",
-            "col-resize",
-            "h_double_arrow",
-            "sb_h_double_arrow",
-            "028006030e0e7ebffc7f7070c0600140",
-            "043a9f68147c53184671403ffa811cc5",
-            "14fef782d02440884392942c11205230",
-        ],
-    },
-    # --
-    {"name": "split_h", "symlink": []},
-    {"name": "split_v", "symlink": []},
-    # --
-    {
-        "name": "ns_resize",
-        "symlink": [
-            "split_v",
-            "size_ver",
-            "ns-resize",
-            "row-resize",
-            "row_resize",
-            "double_arrow",
-            "v_double_arrow",
-            "sb_v_double_arrow",
-            "2870a09082c103050810ffdffffe0204",
-            "c07385c7190e701020ff7ffffd08103c",
-            "00008160000006810000408080010102",
-        ],
-    },
-    {
-        "name": "row_resize",
-        "symlink": [
-            "split_v",
-            "size_ver",
-            "ns-resize",
-            "ns_resize",
-            "row-resize",
-            "double_arrow",
-            "v_double_arrow",
-            "sb_v_double_arrow",
-            "00008160000006810000408080010102",
-            "2870a09082c103050810ffdffffe0204",
-            "c07385c7190e701020ff7ffffd08103c",
-        ],
-    },
-    # --
-    {"name": "bottom_tee", "symlink": []},
-    {"name": "plus", "symlink": []},
-    {"name": "wayland_cursor", "symlink": []},
-    {"name": "X_cursor", "symlink": ["X_cursor", "X-cursor"]},
-    {
-        "name": "context_menu",
-        "symlink": ["context-menu", "08ffe1e65f80fcfdf9fff11263e74c48"],
-    },
-    {"name": "zoom", "symlink": []},
-    {
-        "name": "zoom_out",
-        "symlink": ["zoom-out", "f41c0e382c97c0938e07017e42800402"],
-    },
-    {
-        "name": "zoom_in",
-        "symlink": ["zoom-in", "f41c0e382c94c0958e07017e42b00462"],
-    },
+seed_data: List[Dict[str, List[str]]] = [
+    ["X_cursor", "x-cursor"],
+    ["kill", "pirate"],
+    ["all-scroll", "fleur", "size_all"],
+    [
+        "bd_double_arrow",
+        "c7088f0f3e6c8088236ef8e1e3e70000",
+        "nwse-resize",
+        "size_fdiag",
+    ],
+    ["bottom_left_corner", "sw-resize"],
+    ["bottom_right_corner", "se-resize"],
+    ["bottom_side", "s-resize"],
+    ["bottom_tee"],
+    ["center_ptr"],
+    ["circle", "forbidden"],
+    ["context-menu"],
+    [
+        "1081e37283d90000800003c07f3ef6bf",
+        "6407b0e94181790501fd1e167b474872",
+        "b66166c04f8c3109214a4fbd64a50fc8",
+        "copy",
+    ],
+    ["cross", "cross_reverse", "diamond_cross"],
+    ["crossed_circle", "03b6e0fcb3499374a867c041f52298f0", "not-allowed"],
+    ["crosshair"],
+    ["dnd-ask"],
+    ["dnd-copy"],
+    ["dnd-link", "alias"],
+    ["dnd-move"],
+    ["dnd-none", "closedhand", "fcf21c00b30f7e3f83fe0dfd12e71cff"],
+    ["dnd_no_drop", "no-drop"],
+    ["dotbox", "dot_box_mask", "draped_box", "icon", "target"],
+    [
+        "fcf1c3c7cd4491d801f1e1c78f100000",
+        "fd_double_arrow",
+        "nesw-resize",
+        "size_bdiag",
+    ],
+    ["grabbing"],
+    ["hand"],
+    ["hand1", "grab", "openhand"],
+    [
+        "9d800788f1b08800ae810202380a0822",
+        "e29285e634086352946a0e7090d73106",
+        "hand2",
+        "pointer",
+        "pointing_hand",
+    ],
+    ["left_ptr", "arrow", "default"],
+    [
+        "00000000000000020006000e7e9ffc3f",
+        "08e8e1c95fe2fc01f976f1e063a24ccd",
+        "3ecb610c1bf2410f44200f48c40d3599",
+        "left_ptr_watch",
+        "progress",
+    ],
+    ["left_side", "w-resize"],
+    ["left_tee"],
+    [
+        "3085a0e285430894940527032f8b26df",
+        "640fb0e74195791501fd1ed57b41487f",
+        "a2a266d0498c3104214a47bd64ab0fc8",
+        "link",
+    ],
+    ["ll_angle"],
+    ["lr_angle"],
+    [
+        "4498f0e0c1937ffe01fd06f973665830",
+        "9081237383d90e509aa00f00170e968f",
+        "move",
+    ],
+    ["pencil", "draft"],
+    ["plus", "cell"],
+    ["pointer-move"],
+    [
+        "5c6cd98b3f3ebcb1f9c7f1c204630408",
+        "d9ce0ab605698f320427677b458ad60b",
+        "help",
+        "left_ptr_help",
+        "question_arrow",
+        "whats_this",
+    ],
+    ["right_ptr", "draft_large", "draft_small"],
+    ["right_side", "e-resize"],
+    ["right_tee"],
+    ["sb_down_arrow", "down-arrow"],
+    [
+        "028006030e0e7ebffc7f7070c0600140",
+        "14fef782d02440884392942c1120523",
+        "col-resize",
+        "ew-resize",
+        "h_double_arrow",
+        "sb_h_double_arrow",
+        "size-hor",
+        "size_hor",
+        "split_h",
+    ],
+    ["sb_left_arrow", "left-arrow"],
+    ["sb_right_arrow", "right-arrow"],
+    ["sb_up_arrow", "up-arrow"],
+    [
+        "00008160000006810000408080010102",
+        "2870a09082c103050810ffdffffe0204",
+        "double_arrow",
+        "ns-resize",
+        "row-resize",
+        "sb_v_double_arrow",
+        "size-ver",
+        "size_ver",
+        "split_v",
+        "v_double_arrow",
+    ],
+    ["tcross", "color-picker"],
+    ["top_left_corner", "nw-resize"],
+    ["top_right_corner", "ne-resize"],
+    ["top_side", "n-resize"],
+    ["top_tee"],
+    ["ul_angle"],
+    ["ur_angle"],
+    ["vertical-text"],
+    ["watch", "wait"],
+    ["wayland-cursor"],
+    ["xterm", "text", "ibeam"],
+    ["zoom-in"],
+    ["zoom-out"],
 ]
 
 
@@ -284,9 +151,7 @@ class Database:
     """Database Api."""
 
     def __init__(self) -> None:
-        self.db_file = tempfile.NamedTemporaryFile(
-            prefix="clickgen_db_", suffix=".json"
-        ).name
+        self.__create_json_file()
         self.db: TinyDB = TinyDB(self.db_file)
         for d in seed_data:
             self.db.insert(d)
@@ -294,6 +159,11 @@ class Database:
         def __del__() -> None:
             self.db.close()
             os.remove(self.db)
+
+    def __create_json_file(self):
+        self.db_file = tempfile.NamedTemporaryFile(
+            prefix="clickgen_db_", suffix=".json"
+        ).name
 
     def get_field_data(self, field: str) -> List[str]:
         try:
