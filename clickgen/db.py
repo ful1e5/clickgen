@@ -6,7 +6,7 @@ import os
 import tempfile
 from difflib import SequenceMatcher as SM
 from os import path
-from typing import Dict, List, NamedTuple, Optional
+from typing import List, NamedTuple, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -172,19 +172,34 @@ class Database:
             prefix="clickgen_db_", suffix=".json"
         ).name
         self.db: TinyDB = TinyDB(self.db_file)
+        self.db_cursors = list(itertools.chain.from_iterable(cursor_groups))
+        self.__data_skeleton = {"name": "", "symlinks": []}
 
         # Deconstructor
         def __del__() -> None:
             self.db.close()
             os.remove(self.db)
 
-    def seed(cursors: List[str]) -> None:
+    def seed(self, cursor: str) -> None:
+        print(f"Seeding '{cursor}'")
+
+    def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
         # Seeding data
-        for cursor in cursors:
-            data_skeleton = {"name": "", "symlinks": []}
-            cursor = path.splitext(cursor)[0]
-            if cursor not in list(itertools.chain.from_iterable(cursor_groups)):
+        data = self.__data_skeleton
+
+        if cursor not in self.db_cursors:
+            match = self.match_string(cursor, self.db_cursors)
+            if match:
+                self.seed(match)
+                return RenameCursor(old=cursor, new=match)
+            else:
                 print(f"'{cursor}' is Unknown cursor")
+                data["name"] = cursor
+                self.db.insert(data)
+                return None
+        else:
+            self.seed(cursor)
+            return None
 
     def get_field_data(self, field: str) -> List[str]:
         try:
