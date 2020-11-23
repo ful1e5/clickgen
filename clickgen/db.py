@@ -274,30 +274,3 @@ class Database:
             return result
         else:
             return None
-
-    def valid_cursors(self, cursors: List[str]) -> Optional[List[RenameCursor]]:
-        rename_list: List[RenameCursor] = []
-
-        for cursor in cursors:
-            cursor = path.splitext(cursor)[0]
-            if self.cursor_node_by_name(cursor):
-                continue
-
-            n1 = self.cursor_node_by_symlink(cursor)
-            if n1:
-                if n1["name"] != cursor:
-                    rename_list.append(RenameCursor(old=cursor, new=n1["name"]))
-                continue
-
-            if not self.cursor_node_by_name(cursor):
-                new = self.match_string(cursor, self.cursors())
-                if new:
-                    rename_list.append(RenameCursor(old=cursor, new=new))
-                else:
-                    print(f"'{cursor}' is Unknown Cursor")
-                    continue
-
-        if rename_list:
-            return rename_list
-        else:
-            None
