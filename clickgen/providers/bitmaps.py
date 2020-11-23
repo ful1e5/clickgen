@@ -90,18 +90,14 @@ class Bitmaps(ThemeBitmapsProvider):
 
         for c in curs:
             c = path.splitext(c)[0]
-            self.db.smart_seed(c)
+            ren_c = self.db.smart_seed(c)
+            if ren_c:
+                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
+                self.rename_bitmap_png(ren_c.old, ren_c.new)
 
-        # valid_curs = self.db.valid_cursors(curs)
-
-        # if valid_curs:
-        #     for c in valid_curs:
-        #         print(c)
-        #         self.rename_bitmap_png(c.old, c.new)
-
-        #         # Updating cursor list
-        #         curs.remove(f"{c.old}.png")
-        #         curs.append(f"{c.new}.png")
+                # Updating cursor list
+                curs.remove(f"{ren_c.old}.png")
+                curs.append(f"{ren_c.new}.png")
         return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
