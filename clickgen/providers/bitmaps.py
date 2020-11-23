@@ -54,8 +54,10 @@ class ThemeBitmapsProvider:
 class Bitmaps(ThemeBitmapsProvider):
     """ .pngs files with cursors information """
 
-    def __init__(self, dir: str, valid_src: bool = False) -> None:
-        self.db = Database()
+    def __init__(
+        self, dir: str, valid_src: bool = False, db: Database = Database()
+    ) -> None:
+        self.db = db
         self.is_tmp_dir = not valid_src
 
         # Cursor validation
@@ -101,20 +103,25 @@ class Bitmaps(ThemeBitmapsProvider):
         return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
-        curs: Dict[str, List[str]] = super().animated_bitmaps()
-        valid_curs = self.db.valid_cursors(curs.keys())
+        main_dict: Dict[str, List[str]] = super().animated_bitmaps()
+        curs: Dict[str, List[str]] = {}
 
-        if valid_curs:
-            for c in valid_curs:
+        for g in main_dict:
+            ren_c = self.db.smart_seed(g)
+            if ren_c:
+                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
                 l: List[str] = []
-                for png in curs[c.old]:
+                for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
                     frame = re.search(pattern, png).group(1)
-                    cur = f"{c.new}-{frame}"
-                    l.append(f"{cur}.png")
+
+                    cur = f"{ren_c.new}-{frame}.png"
+                    l.append(cur)
+
+                    png = path.splitext(png)[0]
+                    cur = path.splitext(cur)[0]
                     self.rename_bitmap_png(png, cur)
 
                 # Updating cursor dictionary
-                curs.pop(c.old)
-                curs[c.new] = l
+                curs[ren_c.new] = l
         return curs
