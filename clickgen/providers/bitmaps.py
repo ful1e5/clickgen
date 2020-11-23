@@ -56,7 +56,7 @@ class Bitmaps(ThemeBitmapsProvider):
 
     db: Database = Database()
     dir: str = ""
-    is_tmp_dir: bool = False
+    is_tmp_dir: bool = True
 
     def __init__(
         self, dir: str, valid_src: bool = False, db: Database = Database()
@@ -69,7 +69,7 @@ class Bitmaps(ThemeBitmapsProvider):
             super().__init__(dir)
             self.dir = dir
         else:
-            tmp_dir = tempfile.mkdtemp(prefix="clickgen_bits")
+            tmp_dir = tempfile.mkdtemp(prefix="clickgen_bitmaps_")
             for png in ThemeBitmapsProvider(dir).pngs:
                 src = path.join(dir, png)
                 dst = path.join(tmp_dir, png)
@@ -89,7 +89,7 @@ class Bitmaps(ThemeBitmapsProvider):
             dst = path.join(self.dir, f"{new}.png")
             shutil.move(src, dst)
         except Exception:
-            raise Exception(f"Unavailable to move cursor bitmap '{old}'")
+            raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
     def static_bitmaps(self) -> List[str]:
         curs: List[str] = super().static_bitmaps()
