@@ -181,23 +181,26 @@ class Database:
             os.remove(self.db)
 
     def seed(self, cursor: str) -> None:
-        group = list(filter(lambda group: cursor in group, cursor_groups))
-        group = group[0]
-        data = self.__data_skeleton
+        try:
+            group = list(filter(lambda group: cursor in group, cursor_groups))
+            group = group[0]
+            data = self.__data_skeleton
 
-        if group:
-            group.remove(cursor)
-            data["name"] = cursor
-            if group:
-                print(f" Linking '{cursor}' ==> {group}")
-                data["symlinks"] = group
-            self.db.insert(data)
+            if group != []:
+                group.remove(cursor)
+                data["name"] = cursor
+                if group:
+                    print(f" Linking '{cursor}' ==> {group}")
+                    data["symlinks"] = group
+                self.db.insert(data)
 
-        else:
-            print(f"'{cursor}' is Unknown cursor")
+            else:
+                print(f"'{cursor}' is Unknown cursor")
 
-            data["name"] = cursor
-            self.db.insert(data)
+                data["name"] = cursor
+                self.db.insert(data)
+        except IndexError:
+            pass
 
     def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
