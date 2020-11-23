@@ -78,7 +78,7 @@ class Bitmaps(ThemeBitmapsProvider):
         if self.is_tmp_dir:
             os.remove(self.dir)
 
-    def rename_bitmap_png(self, old: str, new: str) -> None:
+    def rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
             # Moving cursors path
             src = path.join(self.dir, f"{old}.png")
@@ -95,7 +95,7 @@ class Bitmaps(ThemeBitmapsProvider):
             ren_c = self.db.smart_seed(c)
             if ren_c:
                 print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
-                self.rename_bitmap_png(ren_c.old, ren_c.new)
+                self.rename_bitmap_png_file(ren_c.old, ren_c.new)
 
                 # Updating cursor list
                 curs.remove(f"{ren_c.old}.png")
@@ -120,7 +120,7 @@ class Bitmaps(ThemeBitmapsProvider):
 
                     png = path.splitext(png)[0]
                     cur = path.splitext(cur)[0]
-                    self.rename_bitmap_png(png, cur)
+                    self.rename_bitmap_png_file(png, cur)
 
                 # Updating cursor dictionary
                 curs[ren_c.new] = l
