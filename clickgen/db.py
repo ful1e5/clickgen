@@ -164,16 +164,15 @@ class RenameCursor(NamedTuple):
 class Database:
     """Database Api."""
 
-    cursors: List[str] = []
+    db_file: str = tempfile.NamedTemporaryFile(
+        prefix="clickgen_db_", suffix=".json"
+    ).name
+    db_cursors: List[str] = list(itertools.chain.from_iterable(cursor_groups))
+    __data_skeleton = {"name": "", "symlinks": []}
 
     def __init__(self) -> None:
         # Creating database file
-        self.db_file = tempfile.NamedTemporaryFile(
-            prefix="clickgen_db_", suffix=".json"
-        ).name
         self.db: TinyDB = TinyDB(self.db_file)
-        self.db_cursors = list(itertools.chain.from_iterable(cursor_groups))
-        self.__data_skeleton = {"name": "", "symlinks": []}
 
         # Deconstructor
         def __del__() -> None:

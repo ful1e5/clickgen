@@ -54,11 +54,15 @@ class ThemeBitmapsProvider:
 class Bitmaps(ThemeBitmapsProvider):
     """ .pngs files with cursors information """
 
+    db: Database = Database()
+    dir: str = ""
+    is_tmp_dir: bool = False
+
     def __init__(
         self, dir: str, valid_src: bool = False, db: Database = Database()
     ) -> None:
         self.db = db
-        self.is_tmp_dir = not valid_src
+        self.is_tmp_dir: bool = not valid_src
 
         # Cursor validation
         if valid_src:
