@@ -3,15 +3,16 @@
 
 import itertools
 import os
+import re
 import tempfile
 from difflib import SequenceMatcher as SM
-from os import path
 from typing import List, NamedTuple, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
+# Windows cursors are inside "__"
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],
     ["kill", "pirate"],
@@ -22,13 +23,14 @@ cursor_groups: List[List[str]] = [
         "38c5dff7c7b8962045400281044508d2",
         "size_fdiag",
         "nwse-resize",
-    ],
+        "__Diagonal_1__",
+    ],  # Windows
     ["bottom_left_corner", "sw-resize"],
     ["bottom_right_corner", "se-resize"],
     ["bottom_side", "s-resize"],
     ["bottom_tee"],
     ["center_ptr"],
-    ["circle", "forbidden"],
+    ["circle", "forbidden", "__Unavailiable__"],  # Windows
     ["context-menu"],
     [
         "1081e37283d90000800003c07f3ef6bf",
@@ -37,7 +39,7 @@ cursor_groups: List[List[str]] = [
         "08ffe1cb5fe6fc01f906f1c063814ccf",
         "copy",
     ],
-    ["cross", "cross_reverse", "diamond_cross"],
+    ["cross", "cross_reverse", "diamond_cross", "_Cross_"],  # Windows
     ["crossed_circle", "03b6e0fcb3499374a867c041f52298f0", "not-allowed"],
     ["crosshair"],
     ["dnd-ask"],
@@ -58,18 +60,26 @@ cursor_groups: List[List[str]] = [
         "fd_double_arrow",
         "nesw-resize",
         "size_bdiag",
-    ],
+        "__Diagonal_2__",
+    ],  # Windows
     ["grabbing"],
     ["hand"],
-    ["hand1", "grab", "5aca4d189052212118709018842178c0", "openhand"],
+    [
+        "hand1",
+        "grab",
+        "5aca4d189052212118709018842178c0",
+        "openhand",
+        "__Move__",
+    ],  # Windows
     [
         "9d800788f1b08800ae810202380a0822",
         "e29285e634086352946a0e7090d73106",
         "hand2",
         "pointer",
         "pointing_hand",
-    ],
-    ["left_ptr", "arrow", "default"],
+        "__Link__",
+    ],  # Windows
+    ["left_ptr", "arrow", "default", "_Default_"],  # Windows
     [
         "00000000000000020006000e7e9ffc3f",
         "08e8e1c95fe2fc01f976f1e063a24ccd",
@@ -77,7 +87,8 @@ cursor_groups: List[List[str]] = [
         "9116a3ea924ed2162ecab71ba103b17f",
         "left_ptr_watch",
         "progress",
-    ],
+        "__Work__",
+    ],  # Windows
     ["left_side", "w-resize"],
     ["left_tee"],
     [
@@ -94,7 +105,7 @@ cursor_groups: List[List[str]] = [
         "9081237383d90e509aa00f00170e968f",
         "move",
     ],
-    ["pencil", "draft"],
+    ["pencil", "draft", "__Handwriting__"],  # Windows
     ["plus", "cell"],
     ["pointer-move"],
     [
@@ -105,8 +116,9 @@ cursor_groups: List[List[str]] = [
         "left_ptr_help",
         "question_arrow",
         "whats_this",
-    ],
-    ["right_ptr", "draft_large", "draft_small"],
+        "__Help__",
+    ],  # Windows
+    ["right_ptr", "draft_large", "draft_small", "__Alternate__"],  # Windows
     ["right_side", "e-resize"],
     ["right_tee"],
     ["sb_down_arrow", "down-arrow"],
@@ -121,7 +133,8 @@ cursor_groups: List[List[str]] = [
         "size-hor",
         "size_hor",
         "split_h",
-    ],
+        "__Horizontal__",
+    ],  # Windows
     ["sb_left_arrow", "left-arrow"],
     ["sb_right_arrow", "right-arrow"],
     ["sb_up_arrow", "up-arrow"],
@@ -137,7 +150,8 @@ cursor_groups: List[List[str]] = [
         "size_ver",
         "split_v",
         "v_double_arrow",
-    ],
+        "__Vertical__",
+    ],  # Windows
     ["tcross", "color-picker"],
     ["top_left_corner", "nw-resize"],
     ["top_right_corner", "ne-resize"],
@@ -146,9 +160,15 @@ cursor_groups: List[List[str]] = [
     ["ul_angle"],
     ["ur_angle"],
     ["vertical-text", "048008013003cff3c00c801001200000"],
-    ["watch", "clock", "wait", "0426c94ea35c87780ff01dc239897213"],
+    [
+        "watch",
+        "clock",
+        "wait",
+        "0426c94ea35c87780ff01dc239897213",
+        "__Busy__",
+    ],  # Windows
     ["wayland-cursor"],
-    ["xterm", "text", "ibeam"],
+    ["xterm", "text", "ibeam", "__IBeam__"],  # Windows
     ["zoom-in", "f41c0e382c94c0958e07017e42b00462"],
     ["zoom-out", "f41c0e382c97c0938e07017e42800402"],
 ]
@@ -184,11 +204,20 @@ class Database:
             group = list(filter(lambda group: cursor in group, cursor_groups))
             group = group[0]
             data = self.__data_skeleton
+            wsym: str = "__"
 
             if group != []:
                 group.remove(cursor)
                 data["name"] = cursor
                 if group:
+                    raw = "\t".join(group)
+                    if wsym in raw:
+                        win_cursor = re.search(f"{wsym}(.*?){wsym}", raw).group(1)
+                        group.remove(f"{wsym}{win_cursor}{wsym}")
+
+                        print(f" Setting Windows cursor '{win_cursor}' from '{cursor}'")
+                        data["windows"] = win_cursor
+
                     print(f" Linking '{cursor}' ==> {group}")
                     data["symlinks"] = group
                 self.db.insert(data)
