@@ -7,7 +7,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Literal
 
 from ..db import Database
 
@@ -51,6 +51,25 @@ class ThemeBitmapsProvider:
         return d
 
 
+DEFAULT_WIN_CFG = {
+    "Alternate": "right_ptr",
+    "Busy": "wait",
+    "Cross": "cross",
+    "Default": "left_ptr",
+    "Diagonal_1": "bd_double_arrow",
+    "Diagonal_2": "fd_double_arrow",
+    "Handwriting": "pencil",
+    "Help": "help",
+    "Horizontal": "sb_h_double_arrow",
+    "IBeam": "xterm",
+    "Link": "hand2",
+    "Move": "hand1",
+    "Unavailiable": "circle",
+    "Vertical": "sb_v_double_arrow",
+    "Work": "left_ptr_watch",
+}
+
+
 class Bitmaps(ThemeBitmapsProvider):
     """ .pngs files with cursors information """
 
@@ -81,6 +100,14 @@ class Bitmaps(ThemeBitmapsProvider):
     def free_space(self):
         if self.is_tmp_dir:
             os.remove(self.dir)
+
+    def win_bitmaps(
+        self,
+        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
+        size: Literal["normal", "large"] = "normal",
+    ) -> None:
+        canvas_size: int = 32
+        image_size: int = 20 if size == "large" else 16
 
     def rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
