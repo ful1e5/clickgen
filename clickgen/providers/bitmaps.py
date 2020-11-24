@@ -20,24 +20,24 @@ class ThemeBitmapsProvider:
     def __init__(self, bitmaps_dir) -> None:
         self.dir = bitmaps_dir
 
+    def pngs(self) -> List[str]:
         func: Callable[[str], str] = lambda x: path.basename(x)
-        self.pngs: List[str] = []
-
-        self.pngs.extend(list(map(func, glob(path.join(self.dir, "*.png")))))
-        if len(self.pngs) <= 0:
+        pngs = list(map(func, glob(path.join(self.dir, "*.png"))))
+        if len(pngs) <= 0:
             raise FileNotFoundError("Cursors .png files not found")
+        return pngs
 
     def static_bitmaps(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
-        st_pngs: List[str] = list(filter(func, self.pngs))
+        st_pngs: List[str] = list(filter(func, self.pngs()))
 
         return st_pngs
 
     def animated_bitmaps(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
         func: Callable[[str], bool] = lambda x: x.find("-") >= 0
-        an_pngs: List[str] = list(filter(func, self.pngs))
+        an_pngs: List[str] = list(filter(func, self.pngs()))
 
         g_func: Callable[[str], str] = lambda x: x.split("-")[0]
         grps: List[str] = list(set(map(g_func, an_pngs)))
@@ -89,7 +89,7 @@ class Bitmaps(ThemeBitmapsProvider):
             self.dir = dir
         else:
             tmp_dir = tempfile.mkdtemp(prefix="clickgen_bitmaps_")
-            for png in ThemeBitmapsProvider(dir).pngs:
+            for png in ThemeBitmapsProvider(dir).pngs():
                 src = path.join(dir, png)
                 dst = path.join(tmp_dir, png)
                 shutil.copy(src, dst)
@@ -109,9 +109,12 @@ class Bitmaps(ThemeBitmapsProvider):
         canvas_size: int = 32
         image_size: int = 20 if size == "large" else 16
 
+        for key, value in win_cfgs.items():
+
+            print(key, value)
+
     def rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
-            # Moving cursors path
             src = path.join(self.dir, f"{old}.png")
             dst = path.join(self.dir, f"{new}.png")
             shutil.move(src, dst)
