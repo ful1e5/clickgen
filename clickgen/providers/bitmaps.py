@@ -124,7 +124,7 @@ class Bitmaps(ThemeBitmapsProvider):
         main_curs: List[str] = super().static_bitmaps()
         curs = main_curs
 
-        for c in curs:
+        for c in main_curs:
             cursor = path.splitext(c)[0]
             ren_c = self.db.smart_seed(cursor)
             if ren_c:
@@ -132,9 +132,11 @@ class Bitmaps(ThemeBitmapsProvider):
                 self.rename_bitmap_png_file(ren_c.old, ren_c.new)
 
                 # Updating cursor list
-                main_curs.remove(f"{ren_c.old}.png")
-                main_curs.append(f"{ren_c.new}.png")
-        return sorted(main_curs)
+                curs.remove(f"{ren_c.old}.png")
+                curs.append(f"{ren_c.new}.png")
+            else:
+                continue
+        return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
         main_dict: Dict[str, List[str]] = super().animated_bitmaps()
@@ -158,4 +160,6 @@ class Bitmaps(ThemeBitmapsProvider):
 
                 # Updating cursor dictionary
                 curs[ren_c.new] = l
+            else:
+                continue
         return curs

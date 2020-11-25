@@ -226,16 +226,16 @@ class Database:
             if group:
                 print(f" Linking {group} ==> '{cursor}'")
                 data["symlinks"] = group
-                print(f" Creating '{cursor}' entry in database...")
-                self.db.insert(data)
-        elif group and node:
-            pass
-        else:
-            print(f" '{cursor}' is Unknown cursor")
-
-            data["name"] = cursor
             print(f" Creating '{cursor}' entry in database...")
             self.db.insert(data)
+        elif not group and not node:
+            print(f" '{cursor}' is Unknown cursor")
+            print(f" Creating '{cursor}' entry in database...")
+
+            data["name"] = cursor
+            self.db.insert(data)
+        else:
+            pass
 
     def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
