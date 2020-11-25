@@ -3,10 +3,9 @@
 
 import itertools
 import os
-from re import match
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import Callable, Dict, List, NamedTuple, Optional, Union
+from typing import List, NamedTuple, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -240,11 +239,12 @@ class Database:
     def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
             match = self.match_string(cursor, self.db_cursors)
-            self.seed(match)
 
             if match:
+                self.seed(match)
                 return RenameCursor(old=cursor, new=match)
             else:
+                self.seed(cursor)
                 return None
         else:
             self.seed(cursor)
