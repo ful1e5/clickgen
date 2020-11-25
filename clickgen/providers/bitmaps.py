@@ -31,7 +31,7 @@ class ThemeBitmapsProvider:
         func: Callable[[str], bool] = lambda x: x.find("-") <= 0
         st_pngs: List[str] = list(filter(func, self.pngs()))
 
-        return st_pngs
+        return sorted(st_pngs)
 
     def animated_bitmaps(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
@@ -121,7 +121,8 @@ class Bitmaps(ThemeBitmapsProvider):
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
     def static_bitmaps(self) -> List[str]:
-        curs: List[str] = super().static_bitmaps()
+        main_curs: List[str] = super().static_bitmaps()
+        curs = main_curs
 
         for c in curs:
             cursor = path.splitext(c)[0]
@@ -131,9 +132,9 @@ class Bitmaps(ThemeBitmapsProvider):
                 self.rename_bitmap_png_file(ren_c.old, ren_c.new)
 
                 # Updating cursor list
-                curs.remove(f"{ren_c.old}.png")
-                curs.append(f"{ren_c.new}.png")
-        return sorted(curs)
+                main_curs.remove(f"{ren_c.old}.png")
+                main_curs.append(f"{ren_c.new}.png")
+        return sorted(main_curs)
 
     def animated_bitmaps(self) -> List[str]:
         main_dict: Dict[str, List[str]] = super().animated_bitmaps()
