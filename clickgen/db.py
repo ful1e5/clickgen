@@ -3,9 +3,10 @@
 
 import itertools
 import os
+from re import match
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import List, NamedTuple, Optional
+from typing import Callable, Dict, List, NamedTuple, Optional, Union
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -211,27 +212,30 @@ class Database:
             os.remove(self.db)
 
     def seed(self, cursor: str) -> None:
-        try:
-            group = list(filter(lambda group: cursor in group, cursor_groups))
-            group = group[0]
-            data = self.__data_skeleton
-            wsym: str = "__"
+        group: List[str] = []
+        data = self.__data_skeleton
 
-            if group != []:
-                group.remove(cursor)
-                data["name"] = cursor
-                if group:
-                    print(f" Linking '{cursor}' ==> {group}")
-                    data["symlinks"] = group
+        for g in cursor_groups:
+            if cursor in g:
+                group = g
+        node = self.cursor_node_by_name(cursor)
+
+        if group and not node:
+            data["name"] = cursor
+            group.remove(cursor)
+            if group:
+                print(f" Linking {group} ==> '{cursor}'")
+                data["symlinks"] = group
+                print(f" Creating '{cursor}' entry in database...")
                 self.db.insert(data)
-
-            else:
-                print(f"'{cursor}' is Unknown cursor")
-
-                data["name"] = cursor
-                self.db.insert(data)
-        except IndexError:
+        elif group and node:
             pass
+        else:
+            print(f" '{cursor}' is Unknown cursor")
+
+            data["name"] = cursor
+            print(f" Creating '{cursor}' entry in database...")
+            self.db.insert(data)
 
     def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
