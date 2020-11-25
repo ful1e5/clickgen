@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import re
 import shutil
 import tempfile
@@ -99,7 +98,7 @@ class Bitmaps(ThemeBitmapsProvider):
 
     def free_space(self):
         if self.is_tmp_dir:
-            os.remove(self.dir)
+            shutil.rmtree(self.dir)
 
     def win_bitmaps(
         self,
@@ -125,8 +124,8 @@ class Bitmaps(ThemeBitmapsProvider):
         curs: List[str] = super().static_bitmaps()
 
         for c in curs:
-            c = path.splitext(c)[0]
-            ren_c = self.db.smart_seed(c)
+            cursor = path.splitext(c)[0]
+            ren_c = self.db.smart_seed(cursor)
             if ren_c:
                 print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
                 self.rename_bitmap_png_file(ren_c.old, ren_c.new)
@@ -143,7 +142,7 @@ class Bitmaps(ThemeBitmapsProvider):
         for g in main_dict:
             ren_c = self.db.smart_seed(g)
             if ren_c:
-                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
+                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'...")
                 l: List[str] = []
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
