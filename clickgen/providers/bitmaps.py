@@ -167,5 +167,5 @@ class Bitmaps(ThemeBitmapsProvider):
                 # Updating cursor dictionary
                 curs[ren_c.new] = l
             else:
-                continue
+                curs[g] = main_dict[g]
         return curs
