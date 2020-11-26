@@ -122,7 +122,7 @@ class Bitmaps(ThemeBitmapsProvider):
 
     def static_bitmaps(self) -> List[str]:
         main_curs: List[str] = super().static_bitmaps()
-        curs = main_curs
+        curs: List[str] = []
 
         for c in main_curs:
             cursor = path.splitext(c)[0]
@@ -132,10 +132,9 @@ class Bitmaps(ThemeBitmapsProvider):
                 self.rename_bitmap_png_file(ren_c.old, ren_c.new)
 
                 # Updating cursor list
-                curs.remove(f"{ren_c.old}.png")
                 curs.append(f"{ren_c.new}.png")
             else:
-                continue
+                curs.append(f"{cursor}.png")
         return sorted(curs)
 
     def animated_bitmaps(self) -> List[str]:
@@ -161,5 +160,5 @@ class Bitmaps(ThemeBitmapsProvider):
                 # Updating cursor dictionary
                 curs[ren_c.new] = l
             else:
-                continue
+                curs[g] = main_dict[g]
         return curs
