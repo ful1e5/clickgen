@@ -6,7 +6,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List, Literal
+from typing import Callable, Dict, List, Literal, Union
 
 from ..db import Database
 
@@ -26,16 +26,24 @@ class ThemeBitmapsProvider:
             raise FileNotFoundError("Cursors .png files not found")
         return pngs
 
+    def bitmap_type(self, f: str) -> Union[Literal["static"], Literal["animated"]]:
+        f_name = path.splitext(f)[0]
+        po_fix = f_name.split("-")[-1]
+        if po_fix.isnumeric():
+            return "animated"
+        else:
+            return "static"
+
     def static_bitmaps(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
-        func: Callable[[str], bool] = lambda x: x.find("-") <= 0
+        func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "static"
         st_pngs: List[str] = list(filter(func, self.pngs()))
 
         return sorted(st_pngs)
 
     def animated_bitmaps(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
-        func: Callable[[str], bool] = lambda x: x.find("-") >= 0
+        func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "animated"
         an_pngs: List[str] = list(filter(func, self.pngs()))
 
         g_func: Callable[[str], str] = lambda x: x.split("-")[0]
@@ -109,7 +117,6 @@ class Bitmaps(ThemeBitmapsProvider):
         image_size: int = 20 if size == "large" else 16
 
         for key, value in win_cfgs.items():
-
             print(key, value)
 
     def rename_bitmap_png_file(self, old: str, new: str) -> None:
@@ -137,7 +144,7 @@ class Bitmaps(ThemeBitmapsProvider):
                 curs.append(f"{cursor}.png")
         return sorted(curs)
 
-    def animated_bitmaps(self) -> List[str]:
+    def animated_bitmaps(self) -> Dict[str, List[str]]:
         main_dict: Dict[str, List[str]] = super().animated_bitmaps()
         curs: Dict[str, List[str]] = {}
 
@@ -160,5 +167,5 @@ class Bitmaps(ThemeBitmapsProvider):
                 # Updating cursor dictionary
                 curs[ren_c.new] = l
             else:
-                curs[g] = main_dict[g]
+                continue
         return curs
