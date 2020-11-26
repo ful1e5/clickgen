@@ -11,7 +11,7 @@ from typing import Callable, Dict, List, Literal, Union
 from ..db import Database
 
 
-class ThemeBitmapsProvider:
+class PNG:
     """ Provide cursors bitmaps."""
 
     dir: str = ""
@@ -34,14 +34,14 @@ class ThemeBitmapsProvider:
         else:
             return "static"
 
-    def static_bitmaps(self) -> List[str]:
+    def static_pngs(self) -> List[str]:
         """ Return cursors list inside `bitmaps_dir` that doesn't had frames. """
         func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "static"
         st_pngs: List[str] = list(filter(func, self.pngs()))
 
         return sorted(st_pngs)
 
-    def animated_bitmaps(self) -> Dict[str, List[str]]:
+    def animated_pngs(self) -> Dict[str, List[str]]:
         """ Return cursors list inside `bitmaps_dir` that had frames. """
         func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "animated"
         an_pngs: List[str] = list(filter(func, self.pngs()))
@@ -77,7 +77,7 @@ DEFAULT_WIN_CFG = {
 }
 
 
-class Bitmaps(ThemeBitmapsProvider):
+class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
     db: Database = Database()
@@ -96,7 +96,7 @@ class Bitmaps(ThemeBitmapsProvider):
             self.dir = dir
         else:
             tmp_dir = tempfile.mkdtemp(prefix="clickgen_bitmaps_")
-            for png in ThemeBitmapsProvider(dir).pngs():
+            for png in PNG(dir).pngs():
                 src = path.join(dir, png)
                 dst = path.join(tmp_dir, png)
                 shutil.copy(src, dst)
@@ -128,7 +128,7 @@ class Bitmaps(ThemeBitmapsProvider):
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
     def static_bitmaps(self) -> List[str]:
-        main_curs: List[str] = super().static_bitmaps()
+        main_curs: List[str] = super().static_pngs()
         curs: List[str] = []
 
         for c in main_curs:
@@ -145,7 +145,7 @@ class Bitmaps(ThemeBitmapsProvider):
         return sorted(curs)
 
     def animated_bitmaps(self) -> Dict[str, List[str]]:
-        main_dict: Dict[str, List[str]] = super().animated_bitmaps()
+        main_dict: Dict[str, List[str]] = super().animated_pngs()
         curs: Dict[str, List[str]] = {}
 
         for g in main_dict:

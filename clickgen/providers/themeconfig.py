@@ -6,7 +6,7 @@ import tempfile
 from os import path
 from typing import Dict, List, Tuple, Union
 
-from clickgen.providers.bitmaps import ThemeBitmapsProvider
+from clickgen.providers.bitmaps import PNG
 from PIL import Image
 
 from .jsonparser import Hotspots, HotspotsParser
@@ -21,13 +21,13 @@ class ThemeConfigsProvider:
     """ Provide `.in` files for 'xcursorgen' & 'anicursorgen' builder. """
 
     __sizes: List[int] = []
-    __bitmaps: ThemeBitmapsProvider = ThemeBitmapsProvider("")
+    __bitmaps: PNG = PNG("")
     __cords: HotspotsParser = HotspotsParser({})
     config_dir: str = tempfile.mkdtemp(prefix="clickgen_")
 
     def __init__(self, bitmaps_dir: str, hotspots: Hotspots, sizes: List[int]) -> None:
         self.__sizes = sizes
-        self.__bitmaps = ThemeBitmapsProvider(bitmaps_dir)
+        self.__bitmaps = PNG(bitmaps_dir)
         self.__cords = HotspotsParser(hotspots)
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
@@ -95,14 +95,14 @@ class ThemeConfigsProvider:
 
     def __generate_static_cfgs(self) -> None:
         """ Generate static cursors `.in` config files according to @self.__sizes. """
-        cursors = self.__bitmaps.static_bitmaps()
+        cursors = self.__bitmaps.static_pngs()
         for cur in cursors:
             lines: List[str] = self.__generate_cursor(cur)
             self.__write_cfg_file(cur, lines)
 
     def __generate_animated_cfgs(self, delay: int) -> None:
         """ Generate animated cursors `.in` config files according to @self.__sizes. """
-        d: Dict[str, List[str]] = self.__bitmaps.animated_bitmaps()
+        d: Dict[str, List[str]] = self.__bitmaps.animated_pngs()
 
         for key in d:
             lines: List[str] = []

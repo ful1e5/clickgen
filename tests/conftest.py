@@ -9,7 +9,7 @@ import pytest
 from clickgen.builders.winbuilder import WinCursorsBuilder
 from clickgen.builders.x11builder import X11CursorsBuilder
 from clickgen.configs import ThemeInfo
-from clickgen.providers.bitmaps import ThemeBitmapsProvider
+from clickgen.providers.bitmaps import PNG
 from clickgen.providers.jsonparser import Hotspots
 from clickgen.providers.themeconfig import ThemeConfigsProvider
 
@@ -78,8 +78,8 @@ def wincursors_dir(
 
 
 @pytest.fixture(scope="module")
-def bitmaps_provider(bitmaps_dir) -> ThemeBitmapsProvider:
-    return ThemeBitmapsProvider(bitmaps_dir)
+def bitmaps_provider(bitmaps_dir) -> PNG:
+    return PNG(bitmaps_dir)
 
 
 @pytest.fixture(scope="module")

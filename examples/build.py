@@ -24,4 +24,3 @@ from clickgen.providers.bitmaps import Bitmaps
 
 
 b = Bitmaps(path.abspath("./bitmaps"))
-print(b.static_bitmaps())
