@@ -47,7 +47,7 @@ class PNG:
         an_pngs: List[str] = list(filter(func, self.pngs()))
 
         g_func: Callable[[str], str] = lambda x: x.split("-")[0]
-        grps: List[str] = list(set(map(g_func, an_pngs)))
+        grps: List[str] = sorted(list(set(map(g_func, an_pngs))))
 
         d: Dict[str, List[str]] = {}
 
@@ -88,7 +88,7 @@ class Bitmaps(PNG):
         self, dir: str, valid_src: bool = False, db: Database = Database()
     ) -> None:
         self.db = db
-        self.is_tmp_dir: bool = not valid_src
+        self.is_tmp_dir = not valid_src
 
         # Cursor validation
         if valid_src:
@@ -104,7 +104,7 @@ class Bitmaps(PNG):
             super().__init__(tmp_dir)
             self.dir = tmp_dir
 
-        # Seeding database
+        # Seeding data to local database
         self._seed_animated_bitmaps()
         self._seed_static_bitmaps()
 
@@ -120,7 +120,7 @@ class Bitmaps(PNG):
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
-    def _seed_static_bitmaps(self) -> List[str]:
+    def _seed_static_bitmaps(self) -> None:
         main_curs: List[str] = super().static_pngs()
 
         for c in main_curs:
@@ -150,7 +150,7 @@ class Bitmaps(PNG):
                 continue
 
     def static_xcursors_bitmaps(self) -> List[str]:
-        return sorted(super().static_pngs())
+        return super().static_pngs()
 
     def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
         return super().animated_pngs()
