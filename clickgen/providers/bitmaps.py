@@ -104,22 +104,15 @@ class Bitmaps(PNG):
             super().__init__(tmp_dir)
             self.dir = tmp_dir
 
+        # Seeding database
+        self._seed_animated_bitmaps()
+        self._seed_static_bitmaps()
+
     def free_space(self):
         if self.is_tmp_dir:
             shutil.rmtree(self.dir)
 
-    def win_bitmaps(
-        self,
-        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
-        size: Literal["normal", "large"] = "normal",
-    ) -> None:
-        canvas_size: int = 32
-        image_size: int = 20 if size == "large" else 16
-
-        for key, value in win_cfgs.items():
-            print(key, value)
-
-    def rename_bitmap_png_file(self, old: str, new: str) -> None:
+    def __rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
             src = path.join(self.dir, f"{old}.png")
             dst = path.join(self.dir, f"{new}.png")
@@ -127,45 +120,49 @@ class Bitmaps(PNG):
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
-    def static_bitmaps(self) -> List[str]:
+    def _seed_static_bitmaps(self) -> List[str]:
         main_curs: List[str] = super().static_pngs()
-        curs: List[str] = []
 
         for c in main_curs:
             cursor = path.splitext(c)[0]
             ren_c = self.db.smart_seed(cursor)
             if ren_c:
                 print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
-                self.rename_bitmap_png_file(ren_c.old, ren_c.new)
-
-                # Updating cursor list
-                curs.append(f"{ren_c.new}.png")
+                self.__rename_bitmap_png_file(ren_c.old, ren_c.new)
             else:
-                curs.append(f"{cursor}.png")
-        return sorted(curs)
+                continue
 
-    def animated_bitmaps(self) -> Dict[str, List[str]]:
+    def _seed_animated_bitmaps(self) -> None:
         main_dict: Dict[str, List[str]] = super().animated_pngs()
-        curs: Dict[str, List[str]] = {}
 
         for g in main_dict:
             ren_c = self.db.smart_seed(g)
             if ren_c:
                 print(f" Renaming '{ren_c.old}' to '{ren_c.new}'...")
-                l: List[str] = []
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
                     frame = re.search(pattern, png).group(1)
-
-                    cur = f"{ren_c.new}-{frame}.png"
-                    l.append(cur)
-
                     png = path.splitext(png)[0]
-                    cur = path.splitext(cur)[0]
-                    self.rename_bitmap_png_file(png, cur)
 
-                # Updating cursor dictionary
-                curs[ren_c.new] = l
+                    cur = f"{ren_c.new}-{frame}"
+                    self.__rename_bitmap_png_file(png, cur)
             else:
-                curs[g] = main_dict[g]
-        return curs
+                continue
+
+    def static_xcursors_bitmaps(self) -> List[str]:
+        return sorted(super().static_pngs())
+
+    def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
+        return super().animated_pngs()
+
+    def create_win_bitmaps(
+        self,
+        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
+        size: Literal["normal", "large"] = "normal",
+    ) -> None:
+        canvas_size: int = 32
+        image_size: int = 20 if size == "large" else 16
+
+        for win_cursor, x_cursor in win_cfgs.items():
+            node = self.db.cursor_node_by_name(x_cursor)
+            print(node)
