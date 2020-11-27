@@ -6,7 +6,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List, Literal, Union
+from typing import Callable, Dict, List, Literal, Tuple, Union
 
 from PIL import Image
 
@@ -85,6 +85,9 @@ class Bitmaps(PNG):
     db: Database = Database()
     dir: str = ""
     is_tmp_dir: bool = True
+    CANVAS_SIZE: Tuple[int, int] = (32, 32)
+    LARGE_SIZE: Tuple[int, int] = (20, 20)
+    NORMAL_SIZE: Tuple[int, int] = (16, 16)
 
     def __init__(
         self, dir: str, valid_src: bool = False, db: Database = Database()
@@ -164,11 +167,13 @@ class Bitmaps(PNG):
         size: Literal["normal", "large"] = "normal",
     ) -> None:
 
-        canvas: Image = Image.new("RGBA", (32, 32), (255, 0, 0, 0))
-        draw_size: int = (20, 20) if size == "large" else (16, 16)
+        canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
+        draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
 
         draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
-        canvas.paste(draw, (0, 0), draw)
+        canvas.paste(
+            draw, (int((32 - draw_size[0]) / 2), int((32 - draw_size[1]) / 2)), draw
+        )
         canvas.save(out_path, quality=100)
 
         canvas.close()
