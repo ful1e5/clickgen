@@ -8,6 +8,8 @@ from glob import glob
 from os import path
 from typing import Callable, Dict, List, Literal, Union
 
+from PIL import Image
+
 from ..db import Database
 
 
@@ -155,14 +157,27 @@ class Bitmaps(PNG):
     def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
         return super().animated_pngs()
 
-    def create_win_bitmaps(
+    def create_win_bitmap(
         self,
-        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
+        png_path: str,
+        out_path: str,
         size: Literal["normal", "large"] = "normal",
     ) -> None:
-        canvas_size: int = 32
-        image_size: int = 20 if size == "large" else 16
 
-        for win_cursor, x_cursor in win_cfgs.items():
-            node = self.db.cursor_node_by_name(x_cursor)
-            print(node)
+        canvas: Image = Image.new("RGBA", (32, 32), (255, 0, 0, 0))
+        draw_size: int = (20, 20) if size == "large" else (16, 16)
+
+        draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
+        canvas.paste(draw, (0, 0), draw)
+        canvas.save(out_path, quality=100)
+
+        canvas.close()
+        draw.close()
+
+    def static_windows_bitmaps(
+        self,
+        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
+    ) -> List[str]:
+        func: Callable[[str], str] = lambda x: f"{x}.png"
+        bitmaps = list(map(func, win_cfgs.values()))
+        return bitmaps
