@@ -60,7 +60,7 @@ class PNG:
         return d
 
 
-DEFAULT_WIN_CFG = {
+WINDOWS_CURSORS: Dict[str, str] = {
     "Alternate": "right_ptr",
     "Busy": "wait",
     "Cross": "cross",
@@ -90,10 +90,15 @@ class Bitmaps(PNG):
     NORMAL_SIZE: Tuple[int, int] = (16, 16)
 
     def __init__(
-        self, dir: str, valid_src: bool = False, db: Database = Database()
+        self,
+        dir: str,
+        valid_src: bool = False,
+        db: Database = Database(),
+        windows_cursors: Dict[str, str] = WINDOWS_CURSORS,
     ) -> None:
         self.db = db
         self.is_tmp_dir = not valid_src
+        self.win_cursors = windows_cursors
 
         # Cursor validation
         if valid_src:
@@ -179,10 +184,7 @@ class Bitmaps(PNG):
         canvas.close()
         draw.close()
 
-    def static_windows_bitmaps(
-        self,
-        win_cfgs: Dict[str, str] = DEFAULT_WIN_CFG,
-    ) -> List[str]:
+    def static_windows_bitmaps(self) -> List[str]:
         func: Callable[[str], str] = lambda x: f"{x}.png"
-        bitmaps = list(map(func, win_cfgs.values()))
+        bitmaps = list(map(func, self.win_cursors.values()))
         return bitmaps
