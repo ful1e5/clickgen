@@ -61,7 +61,7 @@ class ThemeConfigsProvider:
 
         # save resized image
         thumb = image.crop(resize).resize((ideal_width, ideal_height), Image.ANTIALIAS)
-        thumb.save(out_path)
+        thumb.save(out_path, quality=100)
 
         image.close()
         thumb.close()
