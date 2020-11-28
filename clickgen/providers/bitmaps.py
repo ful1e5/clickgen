@@ -177,7 +177,6 @@ class Bitmaps(PNG):
 
         x = canvas_width - width
         y = canvas_height - height
-
         cords = {
             "top_left": (0, 0),
             "top_right": (x, 0),
@@ -185,6 +184,7 @@ class Bitmaps(PNG):
             "bottom_right": (x, y),
             "center": (round(x / 2), round(y / 2)),
         }
+
         return cords.get(placement, "center")
 
     def create_win_bitmap(
@@ -197,7 +197,7 @@ class Bitmaps(PNG):
         canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
         draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
         cords: Tuple[int, int] = self.canvas_cursor_cords(
-            draw_size, placement="bottom_right"
+            draw_size, placement="top_left"
         )
 
         draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
@@ -208,10 +208,21 @@ class Bitmaps(PNG):
         draw.close()
 
     def static_windows_bitmaps(self) -> List[str]:
-        static_pngs: List[str] = super().static_pngs()
+        pngs: List[str] = self.static_pngs()
         bitmaps: List[str] = []
 
-        for k, y in self.win_cursors.items():
-            print(k, y)
+        for win_png, x_png in self.win_cursors.items():
+            win_png: str = f"{win_png}.png"
+            x_png: str = f"{x_png}.png"
 
+            if x_png in pngs:
+                src = path.join(self.dir, x_png)
+                dest = path.join(self.dir, win_png)
+
+                # Recreating already provided Windows cursor bitmap
+                self.create_win_bitmap(src, dest)
+                bitmaps.append(win_png)
+            else:
+                continue
+        print(self.dir)
         return bitmaps
