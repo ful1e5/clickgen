@@ -6,7 +6,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List, Literal, Tuple, Union
+from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 
 from PIL import Image
 
@@ -60,22 +60,22 @@ class PNG:
         return d
 
 
-WINDOWS_CURSORS: Dict[str, str] = {
-    "Alternate": "right_ptr",
-    "Busy": "wait",
-    "Cross": "cross",
-    "Default": "left_ptr",
-    "Diagonal_1": "bd_double_arrow",
-    "Diagonal_2": "fd_double_arrow",
-    "Handwriting": "pencil",
-    "Help": "help",
-    "Horizontal": "sb_h_double_arrow",
-    "IBeam": "xterm",
-    "Link": "hand2",
-    "Move": "hand1",
-    "Unavailiable": "circle",
-    "Vertical": "sb_v_double_arrow",
-    "Work": "left_ptr_watch",
+WINDOWS_CURSORS: Dict[str, Dict[str, str]] = {
+    "Alternate": {"xcursor": "right_ptr", "placement": "top_left"},
+    "Busy": {"xcursor": "wait"},
+    "Cross": {"xcursor": "cross", "placement": "top_left"},
+    "Default": {"xcursor": "left_ptr", "placement": "top_left"},
+    "Diagonal_1": {"xcursor": "bd_double_arrow"},
+    "Diagonal_2": {"xcursor": "fd_double_arrow"},
+    "Handwriting": {"xcursor": "pencil"},
+    "Help": {"xcursor": "help", "placement": "top_left"},
+    "Horizontal": {"xcursor": "sb_h_double_arrow"},
+    "IBeam": {"xcursor": "xterm", "placement": "top_left"},
+    "Link": {"xcursor": "hand2", "placement": "top_left"},
+    "Move": {"xcursor": "hand1"},
+    "Unavailiable": {"xcursor": "circle", "placement": "top_left"},
+    "Vertical": {"xcursor": "sb_v_double_arrow"},
+    "Work": {"xcursor": "left_ptr_watch", "placement": "top_left"},
 }
 
 
@@ -94,7 +94,7 @@ class Bitmaps(PNG):
         dir: str,
         valid_src: bool = False,
         db: Database = Database(),
-        windows_cursors: Dict[str, str] = WINDOWS_CURSORS,
+        windows_cursors: Dict[str, Dict[str, str]] = WINDOWS_CURSORS,
     ) -> None:
         self.db = db
         self.is_tmp_dir = not valid_src
@@ -191,14 +191,13 @@ class Bitmaps(PNG):
         self,
         png_path: str,
         out_path: str,
+        placement: str,
         size: Literal["normal", "large"] = "normal",
     ) -> None:
 
         canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
         draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
-        cords: Tuple[int, int] = self.canvas_cursor_cords(
-            draw_size, placement="top_left"
-        )
+        cords: Tuple[int, int] = self.canvas_cursor_cords(draw_size, placement)
 
         draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
         canvas.paste(draw, cords, draw)
@@ -207,20 +206,27 @@ class Bitmaps(PNG):
         canvas.close()
         draw.close()
 
-    def static_windows_bitmaps(self) -> List[str]:
+    def static_windows_bitmaps(
+        self,
+        size: Literal["normal", "large"] = "normal",
+    ) -> List[str]:
         pngs: List[str] = self.static_pngs()
         bitmaps: List[str] = []
 
-        for win_png, x_png in self.win_cursors.items():
+        for win_png, data in self.win_cursors.items():
             win_png: str = f"{win_png}.png"
-            x_png: str = f"{x_png}.png"
+            x_png: str = data.get("xcursor") + ".png"
+            placement: str = (
+                data.get("placement") if data.get("placement") != None else "center"
+            )
 
+            # checking it's really static png!
             if x_png in pngs:
                 src = path.join(self.dir, x_png)
                 dest = path.join(self.dir, win_png)
 
                 # Recreating already provided Windows cursor bitmap
-                self.create_win_bitmap(src, dest)
+                self.create_win_bitmap(src, dest, placement, size)
                 bitmaps.append(win_png)
             else:
                 continue
