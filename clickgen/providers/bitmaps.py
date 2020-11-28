@@ -165,6 +165,28 @@ class Bitmaps(PNG):
     def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
         return super().animated_pngs()
 
+    def canvas_cursor_cords(
+        self,
+        cursor_size: Tuple[int, int],
+        placement: Literal[
+            "top_left", "top_right", "bottom_right", "bottom_right", "center"
+        ] = "center",
+    ) -> Tuple[int, int]:
+        (canvas_width, canvas_height) = self.CANVAS_SIZE
+        (width, height) = cursor_size
+
+        x = canvas_width - width
+        y = canvas_height - height
+
+        cords = {
+            "top_left": (0, 0),
+            "top_right": (x, 0),
+            "bottom_left": (0, y),
+            "bottom_right": (x, y),
+            "center": (round(x / 2), round(y / 2)),
+        }
+        return cords.get(placement, "center")
+
     def create_win_bitmap(
         self,
         png_path: str,
@@ -174,17 +196,22 @@ class Bitmaps(PNG):
 
         canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
         draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
+        cords: Tuple[int, int] = self.canvas_cursor_cords(
+            draw_size, placement="bottom_right"
+        )
 
         draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
-        canvas.paste(
-            draw, (int((32 - draw_size[0]) / 2), int((32 - draw_size[1]) / 2)), draw
-        )
+        canvas.paste(draw, cords, draw)
         canvas.save(out_path, quality=100)
 
         canvas.close()
         draw.close()
 
     def static_windows_bitmaps(self) -> List[str]:
-        func: Callable[[str], str] = lambda x: f"{x}.png"
-        bitmaps = list(map(func, self.win_cursors.values()))
+        static_pngs: List[str] = super().static_pngs()
+        bitmaps: List[str] = []
+
+        for k, y in self.win_cursors.items():
+            print(k, y)
+
         return bitmaps
