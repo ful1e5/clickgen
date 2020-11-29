@@ -63,10 +63,10 @@ class PNG:
 WINDOWS_CURSORS: Dict[str, Dict[str, str]] = {
     "Alternate": {"xcursor": "right_ptr", "placement": "top_left"},
     "Busy": {"xcursor": "wait"},
-    "Cross": {"xcursor": "cross", "placement": "top_left"},
+    "Cross": {"xcursor": "cross"},
     "Default": {"xcursor": "left_ptr", "placement": "top_left"},
-    "Diagonal_1": {"xcursor": "bd_double_arrow"},
-    "Diagonal_2": {"xcursor": "fd_double_arrow"},
+    "Diagonal_1": {"xcursor": "fd_double_arrow"},
+    "Diagonal_2": {"xcursor": "bd_double_arrow"},
     "Handwriting": {"xcursor": "pencil"},
     "Help": {"xcursor": "help", "placement": "top_left"},
     "Horizontal": {"xcursor": "sb_h_double_arrow"},
