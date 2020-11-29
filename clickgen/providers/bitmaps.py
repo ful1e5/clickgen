@@ -206,29 +206,40 @@ class Bitmaps(PNG):
         canvas.close()
         draw.close()
 
-    def static_windows_bitmaps(
+    def windows_bitmaps(
         self,
         size: Literal["normal", "large"] = "normal",
     ) -> List[str]:
-        pngs: List[str] = self.static_pngs()
+        static_pngs: List[str] = self.static_pngs()
+        animated_pngs: List[str] = self.animated_pngs().values()
         bitmaps: List[str] = []
 
         for win_png, data in self.win_cursors.items():
-            win_png: str = f"{win_png}.png"
-            x_png: str = data.get("xcursor") + ".png"
+            src: str = f"{win_png}.png"
+            x_cursor: str = data.get("xcursor")
+            x_png: str = f"{x_cursor}.png"
+
+            # Replace to original png file, If "symlink" png provided in `win_cfg`
+            symlink = self.db.cursor_node_by_symlink(x_cursor)
+            if symlink != None:
+                name: str = symlink["name"]
+                x_png = f"{name}.png"
+
             placement: str = (
                 data.get("placement") if data.get("placement") != None else "center"
             )
 
             # checking it's really static png!
-            if x_png in pngs:
+            if x_png in static_pngs:
                 src = path.join(self.dir, x_png)
-                dest = path.join(self.dir, win_png)
+                dest = path.join(self.dir, src)
 
                 # Recreating already provided Windows cursor bitmap
                 self.create_win_bitmap(src, dest, placement, size)
-                bitmaps.append(win_png)
+                bitmaps.append(x_png)
+            # We know it's animated, Because we already filtered pngs
             else:
-                continue
+                print(x_cursor)
+
         print(self.dir)
         return bitmaps
