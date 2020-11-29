@@ -6,7 +6,7 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
+from typing import Callable, Dict, List, Literal, NamedTuple, Tuple, Union
 
 from PIL import Image
 
@@ -77,6 +77,11 @@ WINDOWS_CURSORS: Dict[str, Dict[str, str]] = {
     "Vertical": {"xcursor": "sb_v_double_arrow"},
     "Work": {"xcursor": "left_ptr_watch", "placement": "top_left"},
 }
+
+
+class BITMAPS(NamedTuple):
+    static: List[str]
+    animated: Dict[str, List[str]]
 
 
 class Bitmaps(PNG):
@@ -151,7 +156,7 @@ class Bitmaps(PNG):
                 print(f" Renaming '{ren_c.old}' to '{ren_c.new}'...")
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
-                    frame = re.search(pattern, png).group(1)
+                    frame: str = re.search(pattern, png).group(1)
                     png = path.splitext(png)[0]
 
                     cur = f"{ren_c.new}-{frame}"
@@ -160,10 +165,10 @@ class Bitmaps(PNG):
                 continue
 
     def static_xcursors_bitmaps(self) -> List[str]:
-        return super().static_pngs()
+        return self.static_pngs()
 
     def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
-        return super().animated_pngs()
+        return self.animated_pngs()
 
     def canvas_cursor_cords(
         self,
@@ -209,18 +214,20 @@ class Bitmaps(PNG):
     def windows_bitmaps(
         self,
         size: Literal["normal", "large"] = "normal",
-    ) -> List[str]:
+    ) -> BITMAPS:
         static_pngs: List[str] = self.static_pngs()
-        animated_pngs: List[str] = self.animated_pngs().values()
-        bitmaps: List[str] = []
+        animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
-        for win_png, data in self.win_cursors.items():
-            src: str = f"{win_png}.png"
-            x_cursor: str = data.get("xcursor")
-            x_png: str = f"{x_cursor}.png"
+        s_pngs: List[str] = []
+        a_pngs: Dict[str, List[str]] = {}
 
-            # Replace to original png file, If "symlink" png provided in `win_cfg`
-            symlink = self.db.cursor_node_by_symlink(x_cursor)
+        for win_key, data in self.win_cursors.items():
+            x_key: str = data.get("xcursor")
+            x_png: str = f"{x_key}.png"
+            win_png: str = f"{win_key}.png"
+
+            # Replace to original png file, If "symlink cursor" provided in `win_cfg`
+            symlink = self.db.cursor_node_by_symlink(x_key)
             if symlink != None:
                 name: str = symlink["name"]
                 x_png = f"{name}.png"
@@ -232,14 +239,28 @@ class Bitmaps(PNG):
             # checking it's really static png!
             if x_png in static_pngs:
                 src = path.join(self.dir, x_png)
-                dest = path.join(self.dir, src)
+                dest = path.join(self.dir, win_png)
 
-                # Recreating already provided Windows cursor bitmap
+                # Creating Windows cursor bitmap
                 self.create_win_bitmap(src, dest, placement, size)
-                bitmaps.append(x_png)
-            # We know it's animated, Because we already filtered pngs
-            else:
-                print(x_cursor)
+                s_pngs.append(win_png)
 
-        print(self.dir)
+            # We know it's animated, Because pngs are filtered
+            elif x_key in animated_pngs.keys():
+                pngs: List[str] = animated_pngs.get(x_key)
+                l: List[str] = []
+                for png in pngs:
+                    src = path.join(self.dir, png)
+                    cur: str = png.replace(png.split("-")[0], win_key)
+                    dest = path.join(self.dir, cur)
+
+                    # Creating Windows cursor bitmap
+                    self.create_win_bitmap(src, dest, placement, size)
+                    l.append(cur)
+                a_pngs[win_key] = l
+
+            else:
+                raise FileNotFoundError(f"Unable to find '{x_key}' for '{win_key}'")
+
+        bitmaps: BITMAPS = BITMAPS(static=s_pngs, animated=a_pngs)
         return bitmaps
