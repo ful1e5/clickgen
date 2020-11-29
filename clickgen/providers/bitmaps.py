@@ -88,7 +88,8 @@ class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
     db: Database = Database()
-    dir: str = ""
+    x_dir: str = ""
+    win_dir: str = ""
     is_tmp_dir: bool = True
     CANVAS_SIZE: Tuple[int, int] = (32, 32)
     LARGE_SIZE: Tuple[int, int] = (20, 20)
@@ -108,29 +109,30 @@ class Bitmaps(PNG):
         # Cursor validation
         if valid_src:
             super().__init__(dir)
-            self.dir = dir
+            self.x_dir = dir
         else:
-            tmp_dir = tempfile.mkdtemp(prefix="clickgen_bitmaps_")
+            tmp_dir = tempfile.mkdtemp(prefix="clickgen_x_bitmaps_")
             for png in PNG(dir).pngs():
                 src = path.join(dir, png)
                 dst = path.join(tmp_dir, png)
                 shutil.copy(src, dst)
 
             super().__init__(tmp_dir)
-            self.dir = tmp_dir
+            self.x_dir = tmp_dir
 
+        self.win_dir = tempfile.mkdtemp(prefix="clickgen_win_bitmaps_")
         # Seeding data to local database
         self._seed_animated_bitmaps()
         self._seed_static_bitmaps()
 
     def free_space(self):
         if self.is_tmp_dir:
-            shutil.rmtree(self.dir)
+            shutil.rmtree(self.x_dir)
 
     def __rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
-            src = path.join(self.dir, f"{old}.png")
-            dst = path.join(self.dir, f"{new}.png")
+            src = path.join(self.x_dir, f"{old}.png")
+            dst = path.join(self.x_dir, f"{new}.png")
             shutil.move(src, dst)
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
@@ -164,11 +166,8 @@ class Bitmaps(PNG):
             else:
                 continue
 
-    def static_xcursors_bitmaps(self) -> List[str]:
-        return self.static_pngs()
-
-    def animated_xcursors_bitmaps(self) -> Dict[str, List[str]]:
-        return self.animated_pngs()
+    def x_bitmaps(self) -> BITMAPS:
+        return BITMAPS(static=self.static_pngs(), animated=self.animated_pngs())
 
     def canvas_cursor_cords(
         self,
@@ -238,8 +237,8 @@ class Bitmaps(PNG):
 
             # checking it's really static png!
             if x_png in static_pngs:
-                src = path.join(self.dir, x_png)
-                dest = path.join(self.dir, win_png)
+                src = path.join(self.x_dir, x_png)
+                dest = path.join(self.win_dir, win_png)
 
                 # Creating Windows cursor bitmap
                 self.create_win_bitmap(src, dest, placement, size)
@@ -250,9 +249,9 @@ class Bitmaps(PNG):
                 pngs: List[str] = animated_pngs.get(x_key)
                 l: List[str] = []
                 for png in pngs:
-                    src = path.join(self.dir, png)
+                    src = path.join(self.x_dir, png)
                     cur: str = png.replace(png.split("-")[0], win_key)
-                    dest = path.join(self.dir, cur)
+                    dest = path.join(self.win_dir, cur)
 
                     # Creating Windows cursor bitmap
                     self.create_win_bitmap(src, dest, placement, size)
