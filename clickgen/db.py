@@ -224,7 +224,7 @@ class Database:
             group.remove(cursor)
             if group:
                 print(f" Linking {group} ==> '{cursor}'")
-                data["symlinks"] = group
+                data["symlink"] = group
             print(f" Creating '{cursor}' entry in database...")
             self.db.insert(data)
         elif not group and not node:
@@ -287,7 +287,6 @@ class Database:
     def cursor_node_by_symlink(self, s: str) -> Optional[Document]:
         """ Fetch one node from db by cursors `symlinks`"""
         node = self.db.search((where("symlink").any([s])))
-
         if node:
             return node[0]
         else:
