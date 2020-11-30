@@ -223,13 +223,13 @@ class Database:
             data["name"] = cursor
             group.remove(cursor)
             if group:
-                print(f" Linking {group} ==> '{cursor}'")
+                print(f"-- Linking {group} ==> '{cursor}'")
                 data["symlink"] = group
-            print(f" Creating '{cursor}' entry in database...")
+            print(f"-- Creating '{cursor}' entry in database...")
             self.db.insert(data)
         elif not group and not node:
-            print(f" '{cursor}' is Unknown cursor")
-            print(f" Creating '{cursor}' entry in database...")
+            print(f"== '{cursor}' is Unknown cursor")
+            print(f"-- Creating '{cursor}' entry in database...")
 
             data["name"] = cursor
             self.db.insert(data)
