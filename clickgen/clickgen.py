@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os import makedirs, path
 import shutil
 import tempfile
+from os import makedirs, path
 
 from .builders.winbuilder import WinCursorsBuilder
 from .builders.x11builder import X11CursorsBuilder
 from .configs import Config, ThemeInfo, ThemeSettings
+from .db import Database
 from .packagers.windows import WindowsPackager
 from .packagers.x11 import X11Packager
+from .providers.bitmaps import Bitmaps
 from .providers.themeconfig import ThemeConfigsProvider
 
 
@@ -49,3 +51,13 @@ def create_theme(config: Config) -> None:
     if path.exists(wdst):
         shutil.rmtree(wdst)
     shutil.move(wtmp, wdst)
+
+
+def create_theme_with_db(config: Config):
+    info: ThemeInfo = config.info
+    sett: ThemeSettings = config.settings
+
+    db = Database()
+    b = Bitmaps(sett.bitmaps_dir, db=db, windows_cursors=sett.windows_cfg)
+    print(b.x_bitmaps())
+    print(b.win_bitmaps())

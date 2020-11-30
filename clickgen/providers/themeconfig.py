@@ -6,10 +6,10 @@ import tempfile
 from os import path
 from typing import Dict, List, Tuple, Union
 
-from clickgen.providers.bitmaps import PNG
 from PIL import Image
 
 from .jsonparser import Hotspots, HotspotsParser
+from .bitmaps import PNG
 
 
 def _clean_cur_name(name: str) -> str:
