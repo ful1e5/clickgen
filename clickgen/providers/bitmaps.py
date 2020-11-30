@@ -6,11 +6,16 @@ import shutil
 import tempfile
 from glob import glob
 from os import path
-from typing import Callable, Dict, List, Literal, NamedTuple, Tuple, Union
+from typing import Callable, Dict, List, Literal, NamedTuple, Optional, Tuple, Union
 
 from PIL import Image
 
 from ..db import Database
+
+
+class BITMAPS(NamedTuple):
+    static: List[str]
+    animated: Dict[str, List[str]]
 
 
 class PNG:
@@ -20,6 +25,17 @@ class PNG:
 
     def __init__(self, bitmaps_dir) -> None:
         self.bitmap_dir = bitmaps_dir
+
+    def bitmaps(self, directory: str) -> BITMAPS:
+        tmp_dir: str = self.bitmap_dir
+        self.bitmap_dir = directory
+
+        bitmaps: BITMAPS = BITMAPS(
+            static=self.static_pngs(), animated=self.animated_pngs()
+        )
+        self.bitmap_dir = tmp_dir
+
+        return bitmaps
 
     def pngs(self) -> List[str]:
         func: Callable[[str], str] = lambda x: path.basename(x)
@@ -79,11 +95,6 @@ WINDOWS_CURSORS: Dict[str, Dict[str, str]] = {
 }
 
 
-class BITMAPS(NamedTuple):
-    static: List[str]
-    animated: Dict[str, List[str]]
-
-
 class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
@@ -98,17 +109,20 @@ class Bitmaps(PNG):
     def __init__(
         self,
         bitmap_dir: str,
+        windows_cursors: Optional[Dict[str, Dict[str, str]]],
         valid_src: bool = False,
         db: Database = Database(),
-        windows_cursors: Dict[str, Dict[str, str]] = WINDOWS_CURSORS,
     ) -> None:
         self.db = db
         self.is_tmp_dir = not valid_src
-        self.win_cursors = windows_cursors
+
+        if not windows_cursors:
+            self.win_cursors = WINDOWS_CURSORS
+        else:
+            self.win_cursors = windows_cursors
 
         # Cursor validation
         if valid_src:
-            super().__init__(bitmap_dir)
             self.x_dir = bitmap_dir
         else:
             tmp_dir = tempfile.mkdtemp(prefix="clickgen_x_bitmaps_")
@@ -116,14 +130,15 @@ class Bitmaps(PNG):
                 src = path.join(bitmap_dir, png)
                 dst = path.join(tmp_dir, png)
                 shutil.copy(src, dst)
-
-            super().__init__(tmp_dir)
             self.x_dir = tmp_dir
 
+        super().__init__(self.x_dir)
         self.win_dir = tempfile.mkdtemp(prefix="clickgen_win_bitmaps_")
+
         # Seeding data to local database
         self._seed_animated_bitmaps()
         self._seed_static_bitmaps()
+        self._seed_windows_bitmaps()
 
     def free_space(self):
         if self.is_tmp_dir:
@@ -144,7 +159,7 @@ class Bitmaps(PNG):
             cursor = path.splitext(c)[0]
             ren_c = self.db.smart_seed(cursor)
             if ren_c:
-                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'")
+                print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
                 self.__rename_bitmap_png_file(ren_c.old, ren_c.new)
             else:
                 continue
@@ -155,7 +170,7 @@ class Bitmaps(PNG):
         for g in main_dict:
             ren_c = self.db.smart_seed(g)
             if ren_c:
-                print(f" Renaming '{ren_c.old}' to '{ren_c.new}'...")
+                print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
                     frame: str = re.search(pattern, png).group(1)
@@ -166,10 +181,7 @@ class Bitmaps(PNG):
             else:
                 continue
 
-    def x_bitmaps(self) -> BITMAPS:
-        return BITMAPS(static=self.static_pngs(), animated=self.animated_pngs())
-
-    def canvas_cursor_cords(
+    def _canvas_cursor_cords(
         self,
         cursor_size: Tuple[int, int],
         placement: Literal[
@@ -201,7 +213,7 @@ class Bitmaps(PNG):
 
         canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
         draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
-        cords: Tuple[int, int] = self.canvas_cursor_cords(draw_size, placement)
+        cords: Tuple[int, int] = self._canvas_cursor_cords(draw_size, placement)
 
         draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
         canvas.paste(draw, cords, draw)
@@ -210,7 +222,7 @@ class Bitmaps(PNG):
         canvas.close()
         draw.close()
 
-    def windows_bitmaps(
+    def _seed_windows_bitmaps(
         self,
         size: Literal["normal", "large"] = "normal",
     ) -> BITMAPS:
@@ -263,3 +275,9 @@ class Bitmaps(PNG):
 
         bitmaps: BITMAPS = BITMAPS(static=s_pngs, animated=a_pngs)
         return bitmaps
+
+    def win_bitmaps(self) -> BITMAPS:
+        return self.bitmaps(self.win_dir)
+
+    def x_bitmaps(self) -> BITMAPS:
+        return self.bitmaps(self.x_dir)
