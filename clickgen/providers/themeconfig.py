@@ -32,7 +32,7 @@ class ThemeConfigsProvider:
 
     def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
         """ Resize cursor .png file as @size. """
-        in_path = path.join(self.__bitmaps.dir, cur)
+        in_path = path.join(self.__bitmaps.bitmap_dir, cur)
         out_dir = path.join(self.config_dir, f"{size}x{size}")
         out_path = path.join(out_dir, cur)
         if not path.exists(out_dir):
@@ -43,28 +43,31 @@ class ThemeConfigsProvider:
         width: int = image.size[0]
         height: int = image.size[1]
 
-        aspect: float = width / height
-        ideal_width: int = size
-        ideal_height: int = size
-        ideal_aspect: float = ideal_width / float(ideal_height)
+        if (width, height) != (size, size):
+            aspect: float = width / height
+            ideal_width: int = size
+            ideal_height: int = size
+            ideal_aspect: float = ideal_width / float(ideal_height)
 
-        if aspect > ideal_aspect:
-            # Then crop the left and right edges:
-            new_width: int = int(ideal_aspect * height)
-            offset: float = (width - new_width) / 2
-            resize = (offset, 0, width - offset, height)
-        else:
-            # ... crop the top and bottom:
-            new_height = int(width / ideal_aspect)
-            offset: float = (height - new_height) / 2
-            resize = (0, offset, width, height - offset)
+            if aspect > ideal_aspect:
+                # Then crop the left and right edges:
+                new_width: int = int(ideal_aspect * height)
+                offset: float = (width - new_width) / 2
+                resize = (offset, 0, width - offset, height)
+            else:
+                # ... crop the top and bottom:
+                new_height = int(width / ideal_aspect)
+                offset: float = (height - new_height) / 2
+                resize = (0, offset, width, height - offset)
 
-        # save resized image
-        thumb = image.crop(resize).resize((ideal_width, ideal_height), Image.ANTIALIAS)
-        thumb.save(out_path, quality=100)
+            # save resized image
+            thumb = image.crop(resize).resize(
+                (ideal_width, ideal_height), Image.ANTIALIAS
+            )
+            thumb.save(out_path, quality=100)
 
-        image.close()
-        thumb.close()
+            image.close()
+            thumb.close()
 
         return self.__cords.get_hotspots(_clean_cur_name(cur), (width, height), size)
 
