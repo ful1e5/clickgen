@@ -1,26 +1,22 @@
-# from clickgen.configs import Config, ThemeInfo, ThemeSettings
-# import json
-# from clickgen.clickgen import create_theme
+import json
 
-# with open("./hotspots.json", "r") as hotspot_file:
-#     hotspots = json.loads(hotspot_file.read())
+from clickgen.clickgen import create_theme, create_theme_with_db
+from clickgen.configs import Config, ThemeInfo, ThemeSettings
 
-# info: ThemeInfo = ThemeInfo(
-#     theme_name="BQ", author="Kaiz Khatri", comment=None, url=None
-# )
+with open("./hotspots.json", "r") as hotspot_file:
+    hotspots = json.loads(hotspot_file.read())
 
-# sett: ThemeSettings = ThemeSettings(
-#     bitmaps_dir="./bitmaps",
-#     sizes=[24, 28],
-#     hotspots=hotspots,
-#     animation_delay=60,
-#     out_dir="./themes",
-# )
-# cfg: Config = Config(info, sett)
-# create_theme(cfg)
+info: ThemeInfo = ThemeInfo(
+    theme_name="BQ", author="Kaiz Khatri", comment=None, url=None
+)
 
-from os import path
-from clickgen.providers.bitmaps import Bitmaps
+sett: ThemeSettings = ThemeSettings(
+    bitmaps_dir="./bitmaps",
+    sizes=[24, 28],
+    hotspots=hotspots,
+    animation_delay=60,
+    out_dir="./themes",
+)
+cfg: Config = Config(info, sett)
 
-
-b = Bitmaps(path.abspath("./bitmaps"))
+create_theme_with_db(cfg)
