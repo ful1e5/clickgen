@@ -6,7 +6,7 @@ from clickgen.providers.bitmaps import PNG
 
 def test_theme_bitmaps_provider_dir(bitmaps_dir: str) -> None:
     t = PNG(bitmaps_dir)
-    assert t.dir == bitmaps_dir
+    assert t.bitmap_dir == bitmaps_dir
 
 
 def test_theme_bitmaps_provider_animated_bitmaps(

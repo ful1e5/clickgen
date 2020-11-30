@@ -16,14 +16,14 @@ from ..db import Database
 class PNG:
     """ Provide cursors bitmaps."""
 
-    dir: str = ""
+    bitmap_dir: str = ""
 
     def __init__(self, bitmaps_dir) -> None:
-        self.dir = bitmaps_dir
+        self.bitmap_dir = bitmaps_dir
 
     def pngs(self) -> List[str]:
         func: Callable[[str], str] = lambda x: path.basename(x)
-        pngs = list(map(func, glob(path.join(self.dir, "*.png"))))
+        pngs = list(map(func, glob(path.join(self.bitmap_dir, "*.png"))))
         if len(pngs) <= 0:
             raise FileNotFoundError("Cursors .png files not found")
         return pngs
@@ -97,7 +97,7 @@ class Bitmaps(PNG):
 
     def __init__(
         self,
-        dir: str,
+        bitmap_dir: str,
         valid_src: bool = False,
         db: Database = Database(),
         windows_cursors: Dict[str, Dict[str, str]] = WINDOWS_CURSORS,
@@ -108,12 +108,12 @@ class Bitmaps(PNG):
 
         # Cursor validation
         if valid_src:
-            super().__init__(dir)
-            self.x_dir = dir
+            super().__init__(bitmap_dir)
+            self.x_dir = bitmap_dir
         else:
             tmp_dir = tempfile.mkdtemp(prefix="clickgen_x_bitmaps_")
-            for png in PNG(dir).pngs():
-                src = path.join(dir, png)
+            for png in PNG(bitmap_dir).pngs():
+                src = path.join(bitmap_dir, png)
                 dst = path.join(tmp_dir, png)
                 shutil.copy(src, dst)
 
