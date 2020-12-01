@@ -4,12 +4,14 @@
 import re
 import shutil
 import tempfile
-from glob import glob
 from os import path
+from pathlib import Path
 from typing import Callable, Dict, List, Literal, NamedTuple, Optional, Tuple, Union
 
 from PIL import Image
 
+from .._constants import WINDOWS_CURSORS
+from .._typing import WindowsCursorsConfig
 from ..db import Database
 
 
@@ -21,27 +23,27 @@ class BITMAPS(NamedTuple):
 class PNG:
     """ Provide cursors bitmaps."""
 
-    bitmap_dir: str = ""
+    bitmap_dir: Path = ""
 
-    def __init__(self, bitmaps_dir) -> None:
+    def __init__(self, bitmaps_dir: Path) -> None:
         self.bitmap_dir = bitmaps_dir
 
-    def bitmaps(self, directory: str) -> BITMAPS:
-        tmp_dir: str = self.bitmap_dir
-        self.bitmap_dir = directory
+    def bitmaps(self, d: str) -> BITMAPS:
+        original_dir: Path = self.bitmap_dir
 
+        self.bitmap_dir = d
         bitmaps: BITMAPS = BITMAPS(
             static=self.static_pngs(), animated=self.animated_pngs()
         )
-        self.bitmap_dir = tmp_dir
 
+        self.bitmap_dir = original_dir
         return bitmaps
 
     def pngs(self) -> List[str]:
-        func: Callable[[str], str] = lambda x: path.basename(x)
-        pngs = list(map(func, glob(path.join(self.bitmap_dir, "*.png"))))
+        pngs = list(map(lambda x: x.name, self.bitmap_dir.glob("*.png")))
+
         if len(pngs) <= 0:
-            raise FileNotFoundError("Cursors .png files not found")
+            raise FileNotFoundError(".png files not found")
         return pngs
 
     def bitmap_type(self, f: str) -> Union[Literal["static"], Literal["animated"]]:
@@ -76,25 +78,6 @@ class PNG:
         return d
 
 
-WINDOWS_CURSORS: Dict[str, Dict[str, str]] = {
-    "Alternate": {"xcursor": "right_ptr", "placement": "top_left"},
-    "Busy": {"xcursor": "wait"},
-    "Cross": {"xcursor": "cross"},
-    "Default": {"xcursor": "left_ptr", "placement": "top_left"},
-    "Diagonal_1": {"xcursor": "fd_double_arrow"},
-    "Diagonal_2": {"xcursor": "bd_double_arrow"},
-    "Handwriting": {"xcursor": "pencil"},
-    "Help": {"xcursor": "help", "placement": "top_left"},
-    "Horizontal": {"xcursor": "sb_h_double_arrow"},
-    "IBeam": {"xcursor": "xterm", "placement": "top_left"},
-    "Link": {"xcursor": "hand2", "placement": "top_left"},
-    "Move": {"xcursor": "hand1"},
-    "Unavailiable": {"xcursor": "circle", "placement": "top_left"},
-    "Vertical": {"xcursor": "sb_v_double_arrow"},
-    "Work": {"xcursor": "left_ptr_watch", "placement": "top_left"},
-}
-
-
 class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
@@ -108,8 +91,8 @@ class Bitmaps(PNG):
 
     def __init__(
         self,
-        bitmap_dir: str,
-        windows_cursors: Optional[Dict[str, Dict[str, str]]],
+        bitmap_dir: Path,
+        windows_cursors: Optional[WindowsCursorsConfig],
         valid_src: bool = False,
         db: Database = Database(),
     ) -> None:
