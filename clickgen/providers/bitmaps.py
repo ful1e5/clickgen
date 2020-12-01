@@ -82,9 +82,11 @@ class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
     db: Database = Database()
-    x_dir: str = ""
-    win_dir: str = ""
-    is_tmp_dir: bool = True
+
+    x_bitmaps_dir: Path = Path()
+    win_bitmaps_dir: str = Path()
+    using_tmp_dir: bool = True
+
     CANVAS_SIZE: Tuple[int, int] = (32, 32)
     LARGE_SIZE: Tuple[int, int] = (20, 20)
     NORMAL_SIZE: Tuple[int, int] = (16, 16)
@@ -97,7 +99,7 @@ class Bitmaps(PNG):
         db: Database = Database(),
     ) -> None:
         self.db = db
-        self.is_tmp_dir = not valid_src
+        self.using_tmp_dir = not valid_src
 
         if not windows_cursors:
             self.win_cursors = WINDOWS_CURSORS
@@ -106,31 +108,29 @@ class Bitmaps(PNG):
 
         # Cursor validation
         if valid_src:
-            self.x_dir = bitmap_dir
+            self.x_bitmaps_dir = bitmap_dir
         else:
-            tmp_dir = tempfile.mkdtemp(prefix="clickgen_x_bitmaps_")
+            tmp_dir = Path(tempfile.mkdtemp(prefix="clickgen_x_bitmaps_"))
             for png in PNG(bitmap_dir).pngs():
-                src = path.join(bitmap_dir, png)
-                dst = path.join(tmp_dir, png)
-                shutil.copy(src, dst)
-            self.x_dir = tmp_dir
+                shutil.copy(bitmap_dir / png, tmp_dir / png)
+            self.x_bitmaps_dir = tmp_dir
 
-        super().__init__(self.x_dir)
-        self.win_dir = tempfile.mkdtemp(prefix="clickgen_win_bitmaps_")
+        super().__init__(self.x_bitmaps_dir)
+        self.win_bitmaps_dir = Path(tempfile.mkdtemp(prefix="clickgen_win_bitmaps_"))
 
         # Seeding data to local database
-        self._seed_animated_bitmaps()
         self._seed_static_bitmaps()
+        self._seed_animated_bitmaps()
         self._seed_windows_bitmaps()
 
     def free_space(self):
-        if self.is_tmp_dir:
-            shutil.rmtree(self.x_dir)
+        if self.using_tmp_dir:
+            shutil.rmtree(self.x_bitmaps_dir)
 
     def __rename_bitmap_png_file(self, old: str, new: str) -> None:
         try:
-            src = path.join(self.x_dir, f"{old}.png")
-            dst = path.join(self.x_dir, f"{new}.png")
+            src = self.x_bitmaps_dir / f"{old}.png"
+            dst = self.x_bitmaps_dir / f"{new}.png"
             shutil.move(src, dst)
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
@@ -188,8 +188,8 @@ class Bitmaps(PNG):
 
     def create_win_bitmap(
         self,
-        png_path: str,
-        out_path: str,
+        src_p: Union[str, Path],
+        out_p: Union[str, Path],
         placement: str,
         size: Literal["normal", "large"] = "normal",
     ) -> None:
@@ -198,9 +198,9 @@ class Bitmaps(PNG):
         draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
         cords: Tuple[int, int] = self._canvas_cursor_cords(draw_size, placement)
 
-        draw: Image = Image.open(png_path).resize(draw_size, Image.ANTIALIAS)
+        draw: Image = Image.open(src_p).resize(draw_size, Image.ANTIALIAS)
         canvas.paste(draw, cords, draw)
-        canvas.save(out_path, quality=100)
+        canvas.save(out_p, quality=100)
 
         canvas.close()
         draw.close()
@@ -232,8 +232,8 @@ class Bitmaps(PNG):
 
             # checking it's really static png!
             if x_png in static_pngs:
-                src = path.join(self.x_dir, x_png)
-                dest = path.join(self.win_dir, win_png)
+                src: Path = self.x_bitmaps_dir / x_png
+                dest: Path = self.win_bitmaps_dir / win_png
 
                 # Creating Windows cursor bitmap
                 self.create_win_bitmap(src, dest, placement, size)
@@ -244,9 +244,9 @@ class Bitmaps(PNG):
                 pngs: List[str] = animated_pngs.get(x_key)
                 l: List[str] = []
                 for png in pngs:
-                    src = path.join(self.x_dir, png)
+                    src: Path = self.x_bitmaps_dir / png
                     cur: str = png.replace(png.split("-")[0], win_key)
-                    dest = path.join(self.win_dir, cur)
+                    dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
                     self.create_win_bitmap(src, dest, placement, size)
@@ -260,7 +260,7 @@ class Bitmaps(PNG):
         return bitmaps
 
     def win_bitmaps(self) -> BITMAPS:
-        return self.bitmaps(self.win_dir)
+        return self.bitmaps(self.win_bitmaps_dir)
 
     def x_bitmaps(self) -> BITMAPS:
-        return self.bitmaps(self.x_dir)
+        return self.bitmaps(self.x_bitmaps_dir)
