@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import re
 import shutil
 import tempfile
@@ -112,7 +113,7 @@ class Bitmaps(PNG):
         else:
             tmp_dir = Path(tempfile.mkdtemp(prefix="clickgen_x_bitmaps_"))
             for png in PNG(bitmap_dir).pngs():
-                shutil.copy(bitmap_dir / png, tmp_dir / png)
+                os.symlink(bitmap_dir / png, tmp_dir / png)
             self.x_bitmaps_dir = tmp_dir
 
         super().__init__(self.x_bitmaps_dir)
@@ -127,11 +128,14 @@ class Bitmaps(PNG):
         if self.using_tmp_dir:
             shutil.rmtree(self.x_bitmaps_dir)
 
-    def __rename_bitmap_png_file(self, old: str, new: str) -> None:
+    def __relink_file(self, old: str, new: str) -> None:
         try:
             src = self.x_bitmaps_dir / f"{old}.png"
+            parent = os.readlink(src)
+            os.unlink(src)
             dst = self.x_bitmaps_dir / f"{new}.png"
-            shutil.move(src, dst)
+
+            os.symlink(parent, dst)
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
@@ -143,7 +147,7 @@ class Bitmaps(PNG):
             ren_c = self.db.smart_seed(cursor)
             if ren_c:
                 print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
-                self.__rename_bitmap_png_file(ren_c.old, ren_c.new)
+                self.__relink_file(ren_c.old, ren_c.new)
             else:
                 continue
 
@@ -160,7 +164,7 @@ class Bitmaps(PNG):
                     png = path.splitext(png)[0]
 
                     cur = f"{ren_c.new}-{frame}"
-                    self.__rename_bitmap_png_file(png, cur)
+                    self.__relink_file(png, cur)
             else:
                 continue
 
