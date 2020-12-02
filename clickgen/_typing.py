@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, NamedTuple, Tuple, Union
+from typing import Dict, List, NamedTuple
 
 
 class Hotspot(NamedTuple):
@@ -9,7 +9,14 @@ class Hotspot(NamedTuple):
     y: int
 
 
-IntegerTuple = Tuple[int, int]
-Sizes = Union[IntegerTuple, List[IntegerTuple]]
+class ImageSize(NamedTuple):
+    width: int
+    height: int
+
+
+class Bitmaps(NamedTuple):
+    static: List[str]
+    animated: Dict[str, List[str]]
+
 
 WindowsCursorsConfig = Dict[str, Dict[str, str]]

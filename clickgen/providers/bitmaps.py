@@ -7,18 +7,13 @@ import shutil
 import tempfile
 from os import path
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, NamedTuple, Optional, Tuple, Union
+from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 
 from PIL import Image
 
-from .._constants import WINDOWS_CURSORS
-from .._typing import WindowsCursorsConfig
+from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
+from .._typing import Bitmaps, ImageSize, WindowsCursorsConfig
 from ..db import Database
-
-
-class BITMAPS(NamedTuple):
-    static: List[str]
-    animated: Dict[str, List[str]]
 
 
 class PNG:
@@ -29,11 +24,11 @@ class PNG:
     def __init__(self, bitmaps_dir: Path) -> None:
         self.bitmap_dir = bitmaps_dir
 
-    def bitmaps(self, d: str) -> BITMAPS:
+    def bitmaps(self, d: str) -> Bitmaps:
         original_dir: Path = self.bitmap_dir
 
         self.bitmap_dir = d
-        bitmaps: BITMAPS = BITMAPS(
+        bitmaps: Bitmaps = Bitmaps(
             static=self.static_pngs(), animated=self.animated_pngs()
         )
 
@@ -88,10 +83,6 @@ class Bitmaps(PNG):
     win_bitmaps_dir: str = Path()
     using_tmp_dir: bool = True
 
-    CANVAS_SIZE: Tuple[int, int] = (32, 32)
-    LARGE_SIZE: Tuple[int, int] = (20, 20)
-    NORMAL_SIZE: Tuple[int, int] = (16, 16)
-
     def __init__(
         self,
         bitmap_dir: Path,
@@ -105,7 +96,7 @@ class Bitmaps(PNG):
         if not windows_cursors:
             self.win_cursors = WINDOWS_CURSORS
         else:
-            self.win_cursors = windows_cursors
+            self.win_cursors: WindowsCursorsConfig = windows_cursors
 
         # Cursor validation
         if valid_src:
@@ -170,17 +161,16 @@ class Bitmaps(PNG):
 
     def _canvas_cursor_cords(
         self,
-        cursor_size: Tuple[int, int],
+        image: ImageSize,
         placement: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",
     ) -> Tuple[int, int]:
-        (canvas_width, canvas_height) = self.CANVAS_SIZE
-        (width, height) = cursor_size
 
-        x = canvas_width - width
-        y = canvas_height - height
-        cords = {
+        x = CANVAS_SIZE.width - image.width
+        y = CANVAS_SIZE.height - image.height
+
+        switch = {
             "top_left": (0, 0),
             "top_right": (x, 0),
             "bottom_left": (0, y),
@@ -188,7 +178,7 @@ class Bitmaps(PNG):
             "center": (round(x / 2), round(y / 2)),
         }
 
-        return cords.get(placement, "center")
+        return switch.get(placement, "center")
 
     def create_win_bitmap(
         self,
@@ -198,12 +188,12 @@ class Bitmaps(PNG):
         size: Literal["normal", "large"] = "normal",
     ) -> None:
 
-        canvas: Image = Image.new("RGBA", self.CANVAS_SIZE, (255, 0, 0, 0))
-        draw_size: int = self.LARGE_SIZE if size == "large" else self.NORMAL_SIZE
-        cords: Tuple[int, int] = self._canvas_cursor_cords(draw_size, placement)
+        canvas: Image = Image.new("RGBA", CANVAS_SIZE, (255, 0, 0, 0))
+        draw_size: int = LARGE_SIZE if size == "large" else NORMAL_SIZE
+        box = self._canvas_cursor_cords(draw_size, placement)
 
         draw: Image = Image.open(src_p).resize(draw_size, Image.ANTIALIAS)
-        canvas.paste(draw, cords, draw)
+        canvas.paste(draw, box, draw)
         canvas.save(out_p, quality=100)
 
         canvas.close()
@@ -212,7 +202,7 @@ class Bitmaps(PNG):
     def _seed_windows_bitmaps(
         self,
         size: Literal["normal", "large"] = "normal",
-    ) -> BITMAPS:
+    ) -> Bitmaps:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
@@ -260,11 +250,11 @@ class Bitmaps(PNG):
             else:
                 raise FileNotFoundError(f"Unable to find '{x_key}' for '{win_key}'")
 
-        bitmaps: BITMAPS = BITMAPS(static=s_pngs, animated=a_pngs)
+        bitmaps: Bitmaps = Bitmaps(static=s_pngs, animated=a_pngs)
         return bitmaps
 
-    def win_bitmaps(self) -> BITMAPS:
+    def win_bitmaps(self) -> Bitmaps:
         return self.bitmaps(self.win_bitmaps_dir)
 
-    def x_bitmaps(self) -> BITMAPS:
+    def x_bitmaps(self) -> Bitmaps:
         return self.bitmaps(self.x_bitmaps_dir)

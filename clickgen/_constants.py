@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from ._typing import WindowsCursorsConfig
+from ._typing import WindowsCursorsConfig, ImageSize
+
+# -- Bitmaps Constants
+
+CANVAS_SIZE: ImageSize = ImageSize(width=32, height=32)
+LARGE_SIZE: ImageSize = ImageSize(width=20, height=20)
+NORMAL_SIZE: ImageSize = ImageSize(width=16, height=16)
 
 WINDOWS_CURSORS: WindowsCursorsConfig = {
     "Alternate": {"xcursor": "right_ptr", "placement": "top_left"},
