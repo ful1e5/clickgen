@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+from pathlib import Path
 import tempfile
 from os import path
 from typing import Dict, List, Tuple, Union
@@ -10,6 +11,7 @@ from PIL import Image
 
 from .jsonparser import Hotspots, HotspotsParser
 from .bitmaps import PNG
+from .._typing import ImageSize, Hotspot, JsonData
 
 
 def _clean_cur_name(name: str) -> str:
@@ -117,5 +119,119 @@ class ThemeConfigsProvider:
         """ Generate `.in` config files of `.png` inside @self.__bitmaps. """
         self.__generate_animated_cfgs(animation_delay)
         self.__generate_static_cfgs()
+
+        return self.config_dir
+
+
+class HotspotJsonParser:
+    """ Parse json file,that contains the hotspots."""
+
+    hotspots: JsonData = {}
+
+    def __init__(self, hotspots: JsonData) -> None:
+        self.__hotspots = hotspots
+
+    def get_hotspot(self, c: str, old_size: ImageSize, new_size: ImageSize) -> Hotspot:
+        try:
+            c = path.splitext(c)[0]
+            x = self.__hotspots[c]["xhot"]
+            y = self.__hotspots[c]["yhot"]
+
+            xhot = int(round(new_size.width / old_size.width * x))
+            yhot = int(round(new_size.height / old_size.height * y))
+
+            return Hotspot(xhot, yhot)
+
+        except KeyError as key:
+            xhot = int(new_size / 2)
+            yhot = int(new_size / 2)
+            print(
+                f"{key} hotspots not provided for {new_size.width}x{new_size.height}, Setting to ({xhot},{yhot})"
+            )
+
+            return Hotspot(xhot, yhot)
+
+
+class CursorConfig:
+    src_png: Path = Path()
+    sizes: List[ImageSize]
+    hotspot: JsonData
+    config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
+
+    def __init__(
+        self,
+        fp: Path,
+        hotspot: JsonData,
+        sizes: List[ImageSize],
+    ) -> None:
+
+        if fp.suffix != "png":
+            raise IOError(f"Invalid file format '{fp.suffix}' in {fp.name}")
+
+        self.src_png = fp
+        self.png_name = self.src_png.stem
+        self.sizes = sizes
+        self.hotspot = hotspot
+
+    # TODO
+    def __resize_cursor(self, cur: str, size: int) -> Tuple[int, int]:
+        """ Resize cursor .png file as @size. """
+        in_path = path.join(self.__bitmaps.bitmap_dir, cur)
+        out_dir = path.join(self.config_dir, f"{size}x{size}")
+        out_path = path.join(out_dir, cur)
+        if not path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        # opening original image
+        image = Image.open(in_path)
+        width: int = image.size[0]
+        height: int = image.size[1]
+
+        if (width, height) != (size, size):
+            aspect: float = width / height
+            ideal_width: int = size
+            ideal_height: int = size
+            ideal_aspect: float = ideal_width / float(ideal_height)
+
+            if aspect > ideal_aspect:
+                # Then crop the left and right edges:
+                new_width: int = int(ideal_aspect * height)
+                offset: float = (width - new_width) / 2
+                resize = (offset, 0, width - offset, height)
+            else:
+                # ... crop the top and bottom:
+                new_height = int(width / ideal_aspect)
+                offset: float = (height - new_height) / 2
+                resize = (0, offset, width, height - offset)
+
+            # save resized image
+            thumb = image.crop(resize).resize(
+                (ideal_width, ideal_height), Image.ANTIALIAS
+            )
+            thumb.save(out_path, quality=100)
+
+            image.close()
+            thumb.close()
+
+        return self.__cords.get_hotspots(_clean_cur_name(cur), (width, height), size)
+
+    def generate_cursor(self, delay: Union[int, None] = None) -> List[str]:
+        """ Resize cursor & return `.in` file content. """
+        lines: List[str] = []
+
+        for size in self.sizes:
+            (xhot, yhot) = self.__resize_cursor(self.png_name, size)
+            if delay:
+                lines.append(
+                    f"{size.width} {xhot} {yhot} {size.width}x{size.height}/{self.png_name} {delay}\n"
+                )
+            else:
+                lines.append(
+                    f"{size.width} {xhot} {yhot} {size.width}x{size.height}/{self.png_name}\n"
+                )
+
+        return lines
+
+    def create_static(self) -> Path:
 
         return self.config_dir
