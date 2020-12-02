@@ -4,6 +4,9 @@
 from typing import Dict, List, NamedTuple
 
 
+JsonData = Dict[str, Dict[str, int]]
+
+
 class Hotspot(NamedTuple):
     x: int
     y: int
@@ -14,7 +17,7 @@ class ImageSize(NamedTuple):
     height: int
 
 
-class Bitmaps(NamedTuple):
+class MappedBitmaps(NamedTuple):
     static: List[str]
     animated: Dict[str, List[str]]
 

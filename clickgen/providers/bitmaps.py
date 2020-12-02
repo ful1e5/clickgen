@@ -12,7 +12,7 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 from PIL import Image
 
 from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
-from .._typing import Bitmaps, ImageSize, WindowsCursorsConfig
+from .._typing import MappedBitmaps, ImageSize, WindowsCursorsConfig
 from ..db import Database
 
 
@@ -24,11 +24,11 @@ class PNG:
     def __init__(self, bitmaps_dir: Path) -> None:
         self.bitmap_dir = bitmaps_dir
 
-    def bitmaps(self, d: str) -> Bitmaps:
+    def bitmaps(self, d: str) -> MappedBitmaps:
         original_dir: Path = self.bitmap_dir
 
         self.bitmap_dir = d
-        bitmaps: Bitmaps = Bitmaps(
+        bitmaps: MappedBitmaps = MappedBitmaps(
             static=self.static_pngs(), animated=self.animated_pngs()
         )
 
@@ -202,7 +202,7 @@ class Bitmaps(PNG):
     def _seed_windows_bitmaps(
         self,
         size: Literal["normal", "large"] = "normal",
-    ) -> Bitmaps:
+    ) -> MappedBitmaps:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
@@ -250,11 +250,11 @@ class Bitmaps(PNG):
             else:
                 raise FileNotFoundError(f"Unable to find '{x_key}' for '{win_key}'")
 
-        bitmaps: Bitmaps = Bitmaps(static=s_pngs, animated=a_pngs)
+        bitmaps: MappedBitmaps = MappedBitmaps(static=s_pngs, animated=a_pngs)
         return bitmaps
 
-    def win_bitmaps(self) -> Bitmaps:
+    def win_bitmaps(self) -> MappedBitmaps:
         return self.bitmaps(self.win_bitmaps_dir)
 
-    def x_bitmaps(self) -> Bitmaps:
+    def x_bitmaps(self) -> MappedBitmaps:
         return self.bitmaps(self.x_bitmaps_dir)
