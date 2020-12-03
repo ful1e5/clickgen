@@ -12,7 +12,13 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 from PIL import Image
 
 from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
-from .._typing import ImageSize, JsonData, MappedBitmaps, WindowsCursorsConfig
+from .._typing import (
+    ImageSize,
+    JsonData,
+    MappedBitmaps,
+    WindowsCursorsConfig,
+    OptionalHotspot,
+)
 from ..db import Database
 
 
@@ -131,6 +137,14 @@ class Bitmaps(PNG):
             except KeyError:
                 self.hotspots[new_key] = {"xhot": None, "yhot": None}
 
+    def get_hotspots(self, key) -> OptionalHotspot:
+        try:
+            x = self.hotspots[key]["xhot"]
+            y = self.hotspots[key]["yhot"]
+            return OptionalHotspot(x, y)
+        except KeyError:
+            return OptionalHotspot(x=None, y=None)
+
     def __relink_file(self, old: str, new: str) -> None:
         try:
             src = self.x_bitmaps_dir / f"{old}.png"
@@ -147,7 +161,8 @@ class Bitmaps(PNG):
 
         for c in main_curs:
             cursor = path.splitext(c)[0]
-            ren_c = self.db.smart_seed(cursor)
+            hot = self.get_hotspots(cursor)
+            ren_c = self.db.smart_seed(cursor, hot)
             if ren_c:
                 print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
                 self.update_hotspots_key(ren_c.old, ren_c.new)
@@ -159,7 +174,8 @@ class Bitmaps(PNG):
         main_dict: Dict[str, List[str]] = super().animated_pngs()
 
         for g in main_dict:
-            ren_c = self.db.smart_seed(g)
+            hot = self.get_hotspots(g)
+            ren_c = self.db.smart_seed(g, hot)
             if ren_c:
                 print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
                 self.update_hotspots_key(ren_c.old, ren_c.new)

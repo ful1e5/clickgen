@@ -6,6 +6,7 @@ import os
 import tempfile
 from difflib import SequenceMatcher as SM
 from typing import List, NamedTuple, Optional
+from ._typing import OptionalHotspot
 
 from tinydb import TinyDB
 from tinydb.queries import where
@@ -199,7 +200,7 @@ class Database:
         prefix="clickgen_db_", suffix=".json"
     ).name
     db_cursors: List[str] = list(itertools.chain.from_iterable(cursor_groups))
-    __data_skeleton = {"name": "", "symlinks": []}
+    __data_skeleton = {"name": "", "symlink": [], "hotspots": {}}
 
     def __init__(self) -> None:
         # Creating database file
@@ -210,7 +211,7 @@ class Database:
             self.db.close()
             os.remove(self.db)
 
-    def seed(self, cursor: str) -> None:
+    def seed(self, cursor: str, hotspot: OptionalHotspot) -> None:
         group: List[str] = []
         data = self.__data_skeleton
 
@@ -221,6 +222,7 @@ class Database:
 
         if group and not node:
             data["name"] = cursor
+            data["hotspots"] = {"x": hotspot.x, "y": hotspot.y}
             group.remove(cursor)
             if group:
                 print(f"-- Linking {group} ==> '{cursor}'")
@@ -232,22 +234,25 @@ class Database:
             print(f"-- Creating '{cursor}' entry in database...")
 
             data["name"] = cursor
+            data["hotspots"] = {"x": hotspot.x, "y": hotspot.y}
             self.db.insert(data)
         else:
             pass
 
-    def smart_seed(self, cursor: str) -> Optional[RenameCursor]:
+    def smart_seed(
+        self, cursor: str, hotspot: OptionalHotspot
+    ) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
             match = self.match_string(cursor, self.db_cursors)
 
             if match:
-                self.seed(match)
+                self.seed(match, hotspot)
                 return RenameCursor(old=cursor, new=match)
             else:
-                self.seed(cursor)
+                self.seed(cursor, hotspot)
                 return None
         else:
-            self.seed(cursor)
+            self.seed(cursor, hotspot)
             return None
 
     def get_field_data(self, field: str) -> List[str]:
