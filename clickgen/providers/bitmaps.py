@@ -12,7 +12,7 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 from PIL import Image
 
 from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
-from .._typing import MappedBitmaps, ImageSize, WindowsCursorsConfig
+from .._typing import ImageSize, JsonData, MappedBitmaps, WindowsCursorsConfig
 from ..db import Database
 
 
@@ -78,6 +78,7 @@ class Bitmaps(PNG):
     """ .pngs files with cursors information """
 
     db: Database = Database()
+    hotspots: JsonData = {}
 
     x_bitmaps_dir: Path = Path()
     win_bitmaps_dir: str = Path()
@@ -86,11 +87,13 @@ class Bitmaps(PNG):
     def __init__(
         self,
         bitmap_dir: Path,
+        hotspots: JsonData,
         windows_cursors: Optional[WindowsCursorsConfig],
         valid_src: bool = False,
         db: Database = Database(),
     ) -> None:
         self.db = db
+        self.hotspots = hotspots
         self.using_tmp_dir = not valid_src
 
         if not windows_cursors:
@@ -119,6 +122,15 @@ class Bitmaps(PNG):
         if self.using_tmp_dir:
             shutil.rmtree(self.x_bitmaps_dir)
 
+    def update_hotspots_key(self, old_key: str, new_key: str) -> None:
+
+        if new_key != old_key:
+            try:
+                self.hotspots[new_key] = self.hotspots[old_key]
+                del self.hotspots[old_key]
+            except KeyError:
+                self.hotspots[new_key] = {"xhot": None, "yhot": None}
+
     def __relink_file(self, old: str, new: str) -> None:
         try:
             src = self.x_bitmaps_dir / f"{old}.png"
@@ -138,6 +150,7 @@ class Bitmaps(PNG):
             ren_c = self.db.smart_seed(cursor)
             if ren_c:
                 print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
+                self.update_hotspots_key(ren_c.old, ren_c.new)
                 self.__relink_file(ren_c.old, ren_c.new)
             else:
                 continue
@@ -149,6 +162,7 @@ class Bitmaps(PNG):
             ren_c = self.db.smart_seed(g)
             if ren_c:
                 print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
+                self.update_hotspots_key(ren_c.old, ren_c.new)
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
                     frame: str = re.search(pattern, png).group(1)

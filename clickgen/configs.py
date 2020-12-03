@@ -3,7 +3,8 @@
 
 import os
 from os import path
-from typing import Dict, List, NamedTuple, Optional, Union
+from typing import Dict, List, NamedTuple, Optional
+from ._typing import JsonData
 
 from .providers.jsonparser import Hotspots
 
@@ -22,7 +23,7 @@ class ThemeSettings(NamedTuple):
 
     bitmaps_dir: str
     sizes: List[int]
-    hotspots: Hotspots
+    hotspots: JsonData
     animation_delay: int = 50
     out_dir: str = os.getcwd()
     windows_cfg: Optional[Dict[str, str]] = None
