@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 import tempfile
 from os import path
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from PIL import Image
 
@@ -145,8 +145,8 @@ class HotspotJsonParser:
             return Hotspot(xhot, yhot)
 
         except KeyError as key:
-            xhot = int(new_size / 2)
-            yhot = int(new_size / 2)
+            xhot = int(new_size.width / 2)
+            yhot = int(new_size.height / 2)
             print(
                 f"{key} hotspots not provided for {new_size.width}x{new_size.height}, Setting to ({xhot},{yhot})"
             )
@@ -167,7 +167,7 @@ class CursorConfig:
         sizes: List[ImageSize],
     ) -> None:
 
-        if fp.suffix != "png":
+        if fp.suffix != ".png":
             raise IOError(f"Invalid file format '{fp.suffix}' in {fp.name}")
 
         self.src_png = fp
@@ -223,29 +223,30 @@ class CursorConfig:
 
         # remove newline from EOF
         lines[-1] = lines[-1].rstrip("\n")
-        cfg_path = self.config_dir / f"{self.cursor}.in"
+        cfg_file: Path = self.config_dir / f"{self.cursor}.in"
 
-        # TODO: writing with pathlib
-        with open(cfg_path, "w") as f:
+        with cfg_file.open(mode="w") as f:
             f.writelines(lines)
 
-    def generate_cursor(self, delay: Union[int, None] = None) -> List[str]:
+    def prepare_cfg_file(self, delay: Optional[int] = None) -> List[str]:
         """ Resize cursor & return `.in` file content. """
         lines: List[str] = []
 
         for size in self.sizes:
-            (xhot, yhot) = self.__resize_cursor(size)
+            hotspot: Hotspot = self.resize_cursor(size)
             if delay:
                 lines.append(
-                    f"{size.width} {xhot} {yhot} {size.width}x{size.height}/{self.cursor} {delay}\n"
+                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.cursor} {delay}\n"
                 )
             else:
                 lines.append(
-                    f"{size.width} {xhot} {yhot} {size.width}x{size.height}/{self.cursor}\n"
+                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.cursor}\n"
                 )
 
         return lines
 
     def create_static(self) -> Path:
-
+        # delay=None means static
+        lines: List[str] = self.prepare_cfg_file(delay=None)
+        self.write_cfg_file(lines)
         return self.config_dir
