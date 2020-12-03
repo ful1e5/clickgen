@@ -11,7 +11,6 @@ from ._typing import ImageSize
 from .builders.winbuilder import WinCursorsBuilder
 from .builders.x11builder import X11CursorsBuilder
 from .configs import Config, ThemeInfo, ThemeSettings
-from .db import Database
 from .packagers.windows import WindowsPackager
 from .packagers.x11 import X11Packager
 from .providers.bitmaps import Bitmaps
@@ -60,17 +59,16 @@ def create_theme_with_db(config: Config):
     info: ThemeInfo = config.info
     sett: ThemeSettings = config.settings
 
-    db = Database()
-
     bits_dir = Path(sett.bitmaps_dir)
     sizes: List[ImageSize] = []
     for s in sett.sizes:
         sizes.append(ImageSize(width=s, height=s))
 
-    bits = Bitmaps(bits_dir, db=db, windows_cursors=sett.windows_cfg)
+    bits = Bitmaps(bits_dir, hotspots=sett.hotspots, windows_cursors=sett.windows_cfg)
 
     # Creating 'XCursors'
     x_bitmaps = bits.x_bitmaps()
     for png in x_bitmaps.static:
         fp: Path = bits.x_bitmaps_dir / png
-        CursorConfig(fp, hotspot=sett.hotspots, sizes=sizes)
+        d = CursorConfig(fp, hotspot=sett.hotspots, sizes=sizes).create_static()
+        print(d.absolute())

@@ -126,30 +126,29 @@ class ThemeConfigsProvider:
 class HotspotJsonParser:
     """ Parse json file,that contains the hotspots."""
 
-    hotspots: JsonData = {}
+    data: JsonData = {}
 
     def __init__(self, hotspots: JsonData) -> None:
-        self.__hotspots = hotspots
+        self.data = hotspots
 
     def get_hotspot(
         self, key: str, old_size: ImageSize, new_size: ImageSize
     ) -> Hotspot:
-        try:
-            key = path.splitext(key)[0]
-            x = self.__hotspots[key]["xhot"]
-            y = self.__hotspots[key]["yhot"]
+        key = path.splitext(key)[0]
+        x = self.data[key]["xhot"]
+        y = self.data[key]["yhot"]
 
-            xhot = int(round(new_size.width / old_size.width * x))
-            yhot = int(round(new_size.height / old_size.height * y))
-
-            return Hotspot(xhot, yhot)
-
-        except KeyError as key:
+        if not x and not y:
             xhot = int(new_size.width / 2)
             yhot = int(new_size.height / 2)
             print(
-                f"{key} hotspots not provided for {new_size.width}x{new_size.height}, Setting to ({xhot},{yhot})"
+                f"-- Apply Default Hotspots: {key} => ({xhot},{yhot}), size={new_size.width}x{new_size.height}"
             )
+
+            return Hotspot(xhot, yhot)
+        else:
+            xhot = int(round(new_size.width / old_size.width * x))
+            yhot = int(round(new_size.height / old_size.height * y))
 
             return Hotspot(xhot, yhot)
 
