@@ -200,7 +200,7 @@ class Database:
         prefix="clickgen_db_", suffix=".json"
     ).name
     db_cursors: List[str] = list(itertools.chain.from_iterable(cursor_groups))
-    __data_skeleton = {"name": "", "symlink": [], "hotspots": {}}
+    __data_skeleton = {"name": "", "symlink": [], "hotspots": None}
 
     def __init__(self) -> None:
         # Creating database file
@@ -222,7 +222,7 @@ class Database:
 
         if group and not node:
             data["name"] = cursor
-            data["hotspots"] = {"x": hotspot.x, "y": hotspot.y}
+            data["hotspots"] = hotspot
             group.remove(cursor)
             if group:
                 print(f"-- Linking {group} ==> '{cursor}'")
@@ -234,7 +234,7 @@ class Database:
             print(f"-- Creating '{cursor}' entry in database...")
 
             data["name"] = cursor
-            data["hotspots"] = {"x": hotspot.x, "y": hotspot.y}
+            data["hotspots"] = hotspot
             self.db.insert(data)
         else:
             pass
