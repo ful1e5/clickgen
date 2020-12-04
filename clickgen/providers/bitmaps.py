@@ -18,6 +18,7 @@ from .._typing import (
     MappedBitmaps,
     WindowsCursorsConfig,
     OptionalHotspot,
+    Hotspot,
 )
 from ..db import Database
 
@@ -210,24 +211,53 @@ class Bitmaps(PNG):
 
         return switch.get(placement, "center")
 
+    def fetch_x_cursor_hotspot(self, x_key: str, size: ImageSize) -> Hotspot:
+        node = self.db.cursor_node_by_name(x_key)
+        x: int = int(round(size.width / 2))
+        y: int = int(round(size.height / 2))
+        try:
+            hot = OptionalHotspot(*node["hotspots"])
+            x: int = hot.x
+            y: int = hot.y
+            if not hot.x:
+                x: int = x
+            if not hot.y:
+                y: int = y
+            return Hotspot(x, y)
+        except Exception:
+            return Hotspot(x, y)
+
     def create_win_bitmap(
         self,
         src_p: Union[str, Path],
         out_p: Union[str, Path],
         placement: str,
         size: Literal["normal", "large"] = "normal",
-    ) -> None:
+    ) -> Hotspot:
 
         canvas: Image = Image.new("RGBA", CANVAS_SIZE, (255, 0, 0, 0))
-        draw_size: int = LARGE_SIZE if size == "large" else NORMAL_SIZE
+        draw_size: ImageSize = LARGE_SIZE if size == "large" else NORMAL_SIZE
         box = self._canvas_cursor_cords(draw_size, placement)
 
-        draw: Image = Image.open(src_p).resize(draw_size, Image.ANTIALIAS)
+        original_image: Image = Image.open(src_p)
+        draw: Image = original_image.resize(draw_size, Image.ANTIALIAS)
         canvas.paste(draw, box, draw)
         canvas.save(out_p, quality=100)
 
+        size: ImageSize = ImageSize(
+            width=original_image.size[0], height=original_image.size[1]
+        )
+
+        original_image.close()
         canvas.close()
         draw.close()
+
+        # Calculate Hotspot
+        x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, size)
+        x: int = int(round(draw_size.width / size.width * x_hotspot.x) + box[0])
+        y: int = int(round(draw_size.height / size.height * x_hotspot.y) + box[1])
+
+        return Hotspot(x, y)
 
     def _seed_windows_bitmaps(
         self,
@@ -260,22 +290,29 @@ class Bitmaps(PNG):
                 dest: Path = self.win_bitmaps_dir / win_png
 
                 # Creating Windows cursor bitmap
-                self.create_win_bitmap(src, dest, placement, size)
+                hotspot = self.create_win_bitmap(src, dest, placement, size)
                 s_pngs.append(win_png)
+
+                # Insert Windows Cursors data to database
+                self.db.seed(win_key, hotspot)
 
             # We know it's animated, Because pngs are filtered
             elif x_key in animated_pngs.keys():
                 pngs: List[str] = animated_pngs.get(x_key)
                 l: List[str] = []
+                hotspot: Hotspot = Hotspot(0, 0)
                 for png in pngs:
                     src: Path = self.x_bitmaps_dir / png
                     cur: str = png.replace(png.split("-")[0], win_key)
                     dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
-                    self.create_win_bitmap(src, dest, placement, size)
+                    hotspot = self.create_win_bitmap(src, dest, placement, size)
                     l.append(cur)
                 a_pngs[win_key] = l
+
+                # Insert Windows Cursors data to database
+                self.db.seed(win_key, hotspot)
 
             else:
                 raise FileNotFoundError(f"Unable to find '{x_key}' for '{win_key}'")
