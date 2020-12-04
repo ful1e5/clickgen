@@ -7,7 +7,8 @@ from os import makedirs, path
 from pathlib import Path
 from typing import List
 
-from ._typing import ImageSize
+from ._constants import CANVAS_SIZE
+from ._typing import ImageSize, OptionalHotspot
 from .builders.winbuilder import WinCursorsBuilder
 from .builders.x11builder import X11CursorsBuilder
 from .configs import Config, ThemeInfo, ThemeSettings
@@ -64,11 +65,26 @@ def create_theme_with_db(config: Config):
     for s in sett.sizes:
         sizes.append(ImageSize(width=s, height=s))
 
-    bits = Bitmaps(bits_dir, hotspots=sett.hotspots, windows_cursors=sett.windows_cfg)
+    x_config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_x_configs_"))
+    win_config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_win_configs_"))
 
+    bits = Bitmaps(bits_dir, hotspots=sett.hotspots, windows_cursors=sett.windows_cfg)
     # Creating 'XCursors'
     x_bitmaps = bits.x_bitmaps()
     for png in x_bitmaps.static:
         fp: Path = bits.x_bitmaps_dir / png
-        d = CursorConfig(fp, hotspot=sett.hotspots, sizes=sizes).create_static()
+        node = bits.db.cursor_node_by_name(fp.stem)
+        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+
+        CursorConfig(fp, hotspot, sizes=sizes, config_dir=x_config_dir).create_static()
+
+    win_bitmaps = bits.win_bitmaps()
+    for png in win_bitmaps.static:
+        fp: Path = bits.win_bitmaps_dir / png
+        node = bits.db.cursor_node_by_name(fp.stem)
+
+        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+        d = CursorConfig(
+            fp, hotspot, sizes=[CANVAS_SIZE], config_dir=win_config_dir
+        ).create_static()
         print(d.absolute())
