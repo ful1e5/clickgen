@@ -5,13 +5,13 @@ import itertools
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
-from ._typing import OptionalHotspot, RenameCursor
+from ._typing import OptionalHotspot, RenameCursor, Hotspot
 
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],
@@ -205,7 +205,7 @@ class Database:
             self.db.close()
             os.remove(self.db)
 
-    def seed(self, cursor: str, hotspot: OptionalHotspot) -> None:
+    def seed(self, cursor: str, hotspot: Union[OptionalHotspot, Hotspot]) -> None:
         group: List[str] = []
         data = self.__data_skeleton
 
@@ -234,7 +234,7 @@ class Database:
             pass
 
     def smart_seed(
-        self, cursor: str, hotspot: OptionalHotspot
+        self, cursor: str, hotspot: Union[OptionalHotspot, Hotspot]
     ) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
             match = self.match_string(cursor, self.db_cursors)
