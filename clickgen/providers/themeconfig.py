@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import os
-from pathlib import Path
 import tempfile
 from os import path
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
 
 from PIL import Image
 
-from .jsonparser import Hotspots, HotspotsParser
+from .._typing import Hotspot, ImageSize, OptionalHotspot
 from .bitmaps import PNG
-from .._typing import ImageSize, OptionalHotspot, Hotspot
+from .jsonparser import Hotspots, HotspotsParser
 
 
 def _clean_cur_name(name: str) -> str:
@@ -134,11 +134,14 @@ class CursorConfig:
         fp: Path,
         hotspot: OptionalHotspot,
         sizes: List[ImageSize],
+        config_dir: Optional[Path] = None,
     ) -> None:
 
         if fp.suffix != ".png":
             raise IOError(f"Invalid file format '{fp.suffix}' in {fp.name}")
 
+        if config_dir:
+            self.config_dir = config_dir
         self.src_png = fp
         self.cursor = self.src_png.stem
         self.sizes = sizes
@@ -198,8 +201,11 @@ class CursorConfig:
             image.close()
             thumb.close()
 
-        hotspot: Hotspot = self.calc_hotspot(image_size, new_size)
-        return hotspot
+            hotspot: Hotspot = self.calc_hotspot(image_size, new_size)
+            return hotspot
+        else:
+            os.symlink(self.src_png, out_path)
+            return Hotspot(self.hotspot.x, self.hotspot.y)
 
     def write_cfg_file(self, lines: List[str]) -> None:
         """ Write {@cur.in} file in @self.config_dir. """
@@ -221,11 +227,11 @@ class CursorConfig:
             hotspot: Hotspot = self.resize_cursor(size)
             if delay:
                 lines.append(
-                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.cursor} {delay}\n"
+                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.src_png.name} {delay}\n"
                 )
             else:
                 lines.append(
-                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.cursor}\n"
+                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.src_png.name}\n"
                 )
 
         return lines
