@@ -11,7 +11,7 @@ from PIL import Image
 
 from .jsonparser import Hotspots, HotspotsParser
 from .bitmaps import PNG
-from .._typing import ImageSize, Hotspot, JsonData
+from .._typing import ImageSize, OptionalHotspot, JsonData, Hotspot
 
 
 def _clean_cur_name(name: str) -> str:
@@ -123,46 +123,16 @@ class ThemeConfigsProvider:
         return self.config_dir
 
 
-class HotspotJsonParser:
-    """ Parse json file,that contains the hotspots."""
-
-    data: JsonData = {}
-
-    def __init__(self, hotspots: JsonData) -> None:
-        self.data = hotspots
-
-    def get_hotspot(
-        self, key: str, old_size: ImageSize, new_size: ImageSize
-    ) -> Hotspot:
-        key = path.splitext(key)[0]
-        x = self.data[key]["xhot"]
-        y = self.data[key]["yhot"]
-
-        if not x and not y:
-            xhot = int(new_size.width / 2)
-            yhot = int(new_size.height / 2)
-            print(
-                f"-- Apply Default Hotspots: {key} => ({xhot},{yhot}), size={new_size.width}x{new_size.height}"
-            )
-
-            return Hotspot(xhot, yhot)
-        else:
-            xhot = int(round(new_size.width / old_size.width * x))
-            yhot = int(round(new_size.height / old_size.height * y))
-
-            return Hotspot(xhot, yhot)
-
-
 class CursorConfig:
     src_png: Path = Path()
     sizes: List[ImageSize]
-    hotspot: HotspotJsonParser
+    hotspot: OptionalHotspot
     config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
 
     def __init__(
         self,
         fp: Path,
-        hotspot: JsonData,
+        hotspot: OptionalHotspot,
         sizes: List[ImageSize],
     ) -> None:
 
@@ -172,7 +142,23 @@ class CursorConfig:
         self.src_png = fp
         self.cursor = self.src_png.stem
         self.sizes = sizes
-        self.hotspot = HotspotJsonParser(hotspot)
+        self.hotspot = hotspot
+
+    def get_hotspot(self, old_size: ImageSize, new_size: ImageSize) -> Hotspot:
+
+        if not self.hotspot.x and not self.hotspot.y:
+            x = int(new_size.width / 2)
+            y = int(new_size.height / 2)
+            print(
+                f"-- Apply Default Hotspots: {self.cursor} => ({x},{y}), size={new_size.width}x{new_size.height}"
+            )
+
+            return Hotspot(x, y)
+        else:
+            x = int(round(new_size.width / old_size.width * self.hotspot.x))
+            y = int(round(new_size.height / old_size.height * self.hotspot.y))
+
+            return Hotspot(x, y)
 
     def resize_cursor(self, new_size: ImageSize) -> Hotspot:
         """ Resize cursor .png file as @size. """
@@ -212,7 +198,7 @@ class CursorConfig:
             image.close()
             thumb.close()
 
-        hotspot: Hotspot = self.hotspot.get_hotspot(self.cursor, image_size, new_size)
+        hotspot: Hotspot = self.get_hotspot(image_size, new_size)
         return hotspot
 
     def write_cfg_file(self, lines: List[str]) -> None:
