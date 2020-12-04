@@ -5,12 +5,13 @@ import itertools
 import os
 import tempfile
 from difflib import SequenceMatcher as SM
-from typing import List, NamedTuple, Optional
-from ._typing import OptionalHotspot
+from typing import List, Optional
 
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
+
+from ._typing import OptionalHotspot, RenameCursor
 
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],
@@ -184,13 +185,6 @@ cursor_groups: List[List[str]] = [
     ["zoom-in", "f41c0e382c94c0958e07017e42b00462"],
     ["zoom-out", "f41c0e382c97c0938e07017e42800402"],
 ]
-
-
-class RenameCursor(NamedTuple):
-    """ Rename cursor name according @old to @new  """
-
-    old: str
-    new: str
 
 
 class Database:

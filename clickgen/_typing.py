@@ -11,13 +11,20 @@ class Hotspot(NamedTuple):
     x: int
     y: int
 
+
 class OptionalHotspot(NamedTuple):
-    x:Optional[int]
-    y:Optional[int]
+    x: Optional[int]
+    y: Optional[int]
+
 
 class ImageSize(NamedTuple):
     width: int
     height: int
+
+
+class RenameCursor(NamedTuple):
+    old: str
+    new: str
 
 
 class MappedBitmaps(NamedTuple):
