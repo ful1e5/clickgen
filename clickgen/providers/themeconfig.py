@@ -11,7 +11,7 @@ from PIL import Image
 
 from .jsonparser import Hotspots, HotspotsParser
 from .bitmaps import PNG
-from .._typing import ImageSize, OptionalHotspot, JsonData, Hotspot
+from .._typing import ImageSize, OptionalHotspot, Hotspot
 
 
 def _clean_cur_name(name: str) -> str:
@@ -144,7 +144,7 @@ class CursorConfig:
         self.sizes = sizes
         self.hotspot = hotspot
 
-    def get_hotspot(self, old_size: ImageSize, new_size: ImageSize) -> Hotspot:
+    def calc_hotspot(self, old_size: ImageSize, new_size: ImageSize) -> Hotspot:
 
         if not self.hotspot.x and not self.hotspot.y:
             x = int(new_size.width / 2)
@@ -198,7 +198,7 @@ class CursorConfig:
             image.close()
             thumb.close()
 
-        hotspot: Hotspot = self.get_hotspot(image_size, new_size)
+        hotspot: Hotspot = self.calc_hotspot(image_size, new_size)
         return hotspot
 
     def write_cfg_file(self, lines: List[str]) -> None:
