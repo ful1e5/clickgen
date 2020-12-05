@@ -126,6 +126,7 @@ class ThemeConfigsProvider:
 class CursorConfig:
     bitmaps_dir: Path = Path()
     src_png: Path = Path()
+    cfg_file: Path = Path()
     cursor: str = ""
     sizes: List[ImageSize]
     hotspot: OptionalHotspot
@@ -223,9 +224,9 @@ class CursorConfig:
 
         # remove newline from EOF
         lines[-1] = lines[-1].rstrip("\n")
-        cfg_file: Path = self.config_dir / f"{self.cursor}.in"
+        self.cfg_file: Path = self.config_dir / f"{self.cursor}.in"
 
-        with cfg_file.open(mode="w") as f:
+        with self.cfg_file.open(mode="w") as f:
             f.writelines(lines)
 
     def prepare_cfg_file(self, delay: Optional[int] = None) -> List[str]:
@@ -250,7 +251,7 @@ class CursorConfig:
         # delay=None means static
         lines: List[str] = self.prepare_cfg_file(delay=None)
         self.write_cfg_file(lines)
-        return self.config_dir
+        return self.cfg_file
 
     def create_animated(self, key: str, pngs: List[str], delay: int) -> Path:
         lines: List[str] = []
@@ -258,4 +259,4 @@ class CursorConfig:
             self.set_cursor_info(png, key)
             lines.extend(self.prepare_cfg_file(delay))
         self.write_cfg_file(lines)
-        return self.config_dir
+        return self.cfg_file
