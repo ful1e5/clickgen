@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import shutil
+import sys
 import tempfile
-from os import makedirs, path
+from contextlib import contextmanager
+from os import path
 from pathlib import Path
 from typing import List
 
@@ -16,6 +19,20 @@ from .packagers.windows import WindowsPackager
 from .packagers.x11 import X11Packager
 from .providers.bitmaps import Bitmaps
 from .providers.themeconfig import CursorConfig, ThemeConfigsProvider
+
+
+@contextmanager
+def goto_cursors_dir(dir: Path):
+    """ Temporary change directory to `cursors` using contextmanager. """
+
+    CWD = os.getcwd()
+    os.chdir(dir.absolute())
+    try:
+        yield
+    except:
+        raise Exception(f" Exception caught: {sys.exc_info()[0]}")
+    finally:
+        os.chdir(CWD)
 
 
 def create_theme(config: Config) -> None:
@@ -43,7 +60,7 @@ def create_theme(config: Config) -> None:
 
     # Move themes to @out_dir
     if not path.exists(sett.out_dir):
-        makedirs(sett.out_dir)
+        os.makedirs(sett.out_dir)
 
     xdst: str = path.join(sett.out_dir, info.theme_name)
     if path.exists(xdst):
@@ -54,6 +71,15 @@ def create_theme(config: Config) -> None:
     if path.exists(wdst):
         shutil.rmtree(wdst)
     shutil.move(wtmp, wdst)
+
+
+def link_missing_cursors(cursors_dir: Path, root: str, symlink: List[str]) -> None:
+    with goto_cursors_dir(cursors_dir):
+        for link in symlink:
+            try:
+                os.symlink(root, link)
+            except FileExistsError:
+                continue
 
 
 def create_theme_with_db(config: Config):
@@ -79,20 +105,30 @@ def create_theme_with_db(config: Config):
     for png in x_bitmaps.static:
         node = bits.db.cursor_node_by_name(png.split(".")[0])
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+        symlink: List[str] = node["symlink"]
 
         cfg_file: Path = CursorConfig(
             bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
         ).create_static(png)
-        XCursorBuilder(cfg_file, xtmp).generate()
+        x = XCursorBuilder(cfg_file, xtmp)
+        x.generate()
+
+        if symlink:
+            link_missing_cursors(x.cursors_dir, cfg_file.stem, symlink)
 
     for key, pngs in x_bitmaps.animated.items():
         node = bits.db.cursor_node_by_name(key)
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+        symlink: List[str] = node["symlink"]
 
         cfg_file: Path = CursorConfig(
             bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
         ).create_animated(key, pngs, sett.animation_delay)
-        XCursorBuilder(cfg_file, xtmp).generate()
+        x = XCursorBuilder(cfg_file, xtmp)
+        x.generate()
+
+        if symlink:
+            link_missing_cursors(x.cursors_dir, cfg_file.stem, symlink)
 
     # Creating 'Windows Cursors'
     win_bitmaps = bits.win_bitmaps()
