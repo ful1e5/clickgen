@@ -72,19 +72,41 @@ def create_theme_with_db(config: Config):
     # Creating 'XCursors'
     x_bitmaps = bits.x_bitmaps()
     for png in x_bitmaps.static:
-        fp: Path = bits.x_bitmaps_dir / png
-        node = bits.db.cursor_node_by_name(fp.stem)
+        node = bits.db.cursor_node_by_name(png.split(".")[0])
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
 
-        CursorConfig(fp, hotspot, sizes=sizes, config_dir=x_config_dir).create_static()
+        CursorConfig(
+            bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
+        ).create_static(png)
+
+    for key, pngs in x_bitmaps.animated.items():
+        node = bits.db.cursor_node_by_name(key)
+        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+
+        CursorConfig(
+            bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
+        ).create_animated(key, pngs, sett.animation_delay)
 
     win_bitmaps = bits.win_bitmaps()
+    win_size: List[ImageSize] = [CANVAS_SIZE]
     for png in win_bitmaps.static:
-        fp: Path = bits.win_bitmaps_dir / png
-        node = bits.db.cursor_node_by_name(fp.stem)
-
+        node = bits.db.cursor_node_by_name(png.split(".")[0])
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
-        d = CursorConfig(
-            fp, hotspot, sizes=[CANVAS_SIZE], config_dir=win_config_dir
-        ).create_static()
-        print(d.absolute())
+
+        CursorConfig(
+            bits.win_bitmaps_dir,
+            hotspot,
+            sizes=win_size,
+            config_dir=win_config_dir,
+        ).create_static(png)
+
+    for key, pngs in win_bitmaps.animated.items():
+        node = bits.db.cursor_node_by_name(key)
+        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+
+        CursorConfig(
+            bits.win_bitmaps_dir, hotspot, sizes=win_size, config_dir=win_config_dir
+        ).create_animated(key, pngs, sett.animation_delay)
+
+    print(x_config_dir)
+    print(win_config_dir)
