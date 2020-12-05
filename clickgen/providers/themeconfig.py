@@ -124,28 +124,37 @@ class ThemeConfigsProvider:
 
 
 class CursorConfig:
+    bitmaps_dir: Path = Path()
     src_png: Path = Path()
+    cursor: str = ""
     sizes: List[ImageSize]
     hotspot: OptionalHotspot
     config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
 
     def __init__(
         self,
-        fp: Path,
+        bitmaps_dir: Path,
         hotspot: OptionalHotspot,
         sizes: List[ImageSize],
         config_dir: Optional[Path] = None,
     ) -> None:
-
-        if fp.suffix != ".png":
-            raise IOError(f"Invalid file format '{fp.suffix}' in {fp.name}")
-
+        self.bitmaps_dir = bitmaps_dir
         if config_dir:
             self.config_dir = config_dir
-        self.src_png = fp
-        self.cursor = self.src_png.stem
         self.sizes = sizes
         self.hotspot = hotspot
+
+    def set_cursor_info(self, png_file: str, key: Optional[str] = None) -> None:
+        self.src_png = self.bitmaps_dir / png_file
+        if self.src_png.suffix != ".png":
+            raise IOError(
+                f"Invalid file format '{self.src_png.suffix}' in {self.src_png.name}"
+            )
+
+        if not key:
+            self.cursor = self.src_png.stem
+        else:
+            self.cursor = key
 
     def calc_hotspot(self, old_size: ImageSize, new_size: ImageSize) -> Hotspot:
 
@@ -236,8 +245,17 @@ class CursorConfig:
 
         return lines
 
-    def create_static(self) -> Path:
+    def create_static(self, png: str) -> Path:
+        self.set_cursor_info(png)
         # delay=None means static
         lines: List[str] = self.prepare_cfg_file(delay=None)
+        self.write_cfg_file(lines)
+        return self.config_dir
+
+    def create_animated(self, key: str, pngs: List[str], delay: int) -> Path:
+        lines: List[str] = []
+        for png in pngs:
+            self.set_cursor_info(png, key)
+            lines.extend(self.prepare_cfg_file(delay))
         self.write_cfg_file(lines)
         return self.config_dir
