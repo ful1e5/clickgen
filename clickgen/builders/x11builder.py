@@ -140,7 +140,6 @@ class XCursorBuilder:
             self.config_file.absolute(),  # {cursor}.in file
             self.out.absolute(),
         ]
-        print(argv)
         kwargs: pointer[c_char] = self.gen_argv_ctypes(argv)
         args: ctypes.c_int = ctypes.c_int(len(argv))
         self.__lib.main(args, kwargs)
