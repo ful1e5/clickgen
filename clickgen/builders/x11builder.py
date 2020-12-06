@@ -88,7 +88,7 @@ class XCursorBuilder:
     """ Build X11 cursor from `.in` config file. """
 
     config_file: Path = Path()
-    config_dir: Path = Path()
+    prefix: Path = Path()
     out_dir: Path = Path()
     cursors_dir: Path = Path()
     out: Path = Path()
@@ -102,12 +102,13 @@ class XCursorBuilder:
             raise FileNotFoundError(f"'{config_file.name}' Config file not found")
 
         self.config_file = config_file
-        self.config_dir: Path = config_file.parent
+        self.prefix: Path = config_file.parent
         self.out_dir = out_dir
         self.cursors_dir = self.out_dir / "cursors"
 
         if not self.cursors_dir.exists():
             makedirs(self.cursors_dir)
+
         self.out = self.cursors_dir / self.config_file.stem
         # main function ctypes define
         self.__lib: CDLL = CDLL(lib_xcursorgen)
@@ -136,7 +137,7 @@ class XCursorBuilder:
         argv: List[str] = [
             "xcursorgen",
             "-p",  # prefix args for xcursorgen (do not remove)
-            self.config_dir.absolute(),  # prefix args for xcursorgen (do not remove)
+            self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
             self.config_file.absolute(),  # {cursor}.in file
             self.out.absolute(),
         ]
