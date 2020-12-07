@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from os import path
+from pathlib import Path
 from string import Template
 from typing import List
 
@@ -62,6 +63,37 @@ alternate	  = "Alternate.cur"
 link		  = "Link.cur"
 """
 )
+
+
+class WinPackager:
+    """ Create a crispy `Windows` cursor theme package. """
+
+    dir: Path = Path()
+    info: ThemeInfo = ThemeInfo(theme_name="Unknown", author="clickgen")
+
+    def __init__(self, dir: Path, info: ThemeInfo) -> None:
+        self.dir = dir
+        self.info: ThemeInfo = info
+
+        cursors: List[str] = []
+        for ext in ("*.ani", "*.cur"):
+            cursors.append(self.dir.glob(ext))
+
+        if not cursors:
+            raise FileNotFoundError(f"Windows cursors not found in {self.dir}")
+
+    def save(self) -> None:
+        """ Make Windows cursors directory installable. """
+        data: str = _inf_template.safe_substitute(
+            theme_name=self.info.theme_name,
+            comment=self.info.comment,
+            author=self.info.author,
+            url=self.info.url,
+        )
+
+        # Store install.inf file
+        install_inf: Path = self.dir / "install.inf"
+        install_inf.write_text(data)
 
 
 class WindowsPackager:
