@@ -1,6 +1,6 @@
 import json
 
-from clickgen.clickgen import create_theme, create_theme_with_db
+from clickgen.clickgen import create_theme
 from clickgen.configs import Config, ThemeInfo, ThemeSettings
 
 with open("./hotspots.json", "r") as hotspot_file:
@@ -19,4 +19,4 @@ sett: ThemeSettings = ThemeSettings(
 )
 cfg: Config = Config(info, sett)
 
-create_theme_with_db(cfg)
+create_theme(cfg)

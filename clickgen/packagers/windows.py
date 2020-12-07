@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os import path
 from pathlib import Path
 from string import Template
 from typing import List
 
 from ..configs import ThemeInfo
-from .fixers.fixers import WinCursorsFixer
 
 _inf_template = Template(
     """[Version]
@@ -94,40 +92,3 @@ class WinPackager:
         # Store install.inf file
         install_inf: Path = self.dir / "install.inf"
         install_inf.write_text(data)
-
-
-class WindowsPackager:
-    """ Create a crispy `Windows` cursor theme package. """
-
-    def __init__(self, dir: str, info: ThemeInfo) -> None:
-        self.__dir: str = dir
-        self.__info: ThemeInfo = info
-
-    def __install_file(self) -> str:
-        content: str = _inf_template.safe_substitute(
-            theme_name=self.__info.theme_name,
-            comment=self.__info.comment,
-            author=self.__info.author,
-            url=self.__info.url,
-        )
-
-        return content
-
-    def pack(self) -> None:
-        """ Make Windows cursors directory installable. """
-        print("Cleaning Windows package...")
-
-        # Remove unnecessary cursors
-        cursors: List[str] = WinCursorsFixer(self.__dir).run()
-
-        if len(cursors) == 0:
-            raise FileNotFoundError(f"Windows cursor not found in {self.__dir}")
-
-        # Store install.inf file
-        content: str = self.__install_file()
-        f = open(path.join(self.__dir, "install.inf"), "w")
-        f.write(content)
-        f.close()
-
-        print(f"Total {len(cursors)} files in Windows package")
-        print("Cleaning Windows package... Done")

@@ -6,8 +6,6 @@ from os import path
 from typing import Dict, List, NamedTuple, Optional
 from ._typing import JsonData
 
-from .providers.jsonparser import Hotspots
-
 
 class ThemeInfo(NamedTuple):
     """ Information of cursor theme. """
