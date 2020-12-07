@@ -71,7 +71,7 @@ class WinCursorBuilder:
             if len(words) > 4:
                 self.out = self.out_dir / f"{stem}.ani"
 
-    def __parse_config_from(
+    def parse_config_from(
         self, in_buffer: BufferedReader, prefix: str
     ) -> List[Tuple[int, int, int, str, int]]:
         """ Parse config file buffer. """
@@ -99,7 +99,7 @@ class WinCursorBuilder:
 
         return frames
 
-    def __frames_have_animation(
+    def frames_have_animation(
         self, frames: List[Tuple[int, int, int, str, int]]
     ) -> bool:
         """ For checking @frames have animation. """
@@ -113,7 +113,7 @@ class WinCursorBuilder:
 
         return False
 
-    def __make_framesets(self, frames: List[Any]) -> Optional[List[Any]]:
+    def make_framesets(self, frames: List[Any]) -> Optional[List[Any]]:
         framesets: List[Any] = []
         sizes = set()
 
@@ -160,7 +160,7 @@ class WinCursorBuilder:
 
         return framesets
 
-    def __copy_to(self, out: Any, buf: BytesIO) -> None:
+    def copy_to(self, out: Any, buf: BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -168,13 +168,13 @@ class WinCursorBuilder:
                 break
             out.write(b)
 
-    def __make_ani(
+    def make_ani(
         self,
         frames: List[Tuple[int, int, int, str, int]],
         out_buffer: BufferedWriter,
         args: AnicursorgenArgs,
     ) -> Literal[0, 1]:
-        framesets = self.__make_framesets(frames)
+        framesets = self.make_framesets(frames)
 
         if framesets is None:
             return 1
@@ -223,13 +223,13 @@ class WinCursorBuilder:
 
         for frameset in framesets:
             buf.write(b"icon")
-            cur = self.__make_cur(frameset, args, animated=True)
+            cur = self.make_cur(frameset, args, animated=True)
             cur_size = cur.seek(0, io.SEEK_END)
             # aligned_cur_size = cur_size
             # if cur_size % 4 != 0:
             #  aligned_cur_size += 4 - cur_size % 2
             buf.write(p("<i", cur_size))
-            self.__copy_to(buf, cur)
+            self.copy_to(buf, cur)
             pos = buf.seek(0, io.SEEK_END)
             if pos % 2 != 0:
                 buf.write(("\x00" * (2 - (pos % 2))).encode())
@@ -240,11 +240,11 @@ class WinCursorBuilder:
         buf.seek(list_len_pos, io.SEEK_SET)
         buf.write(p("<I", end_at - list_len_start))
 
-        self.__copy_to(out_buffer, buf)
+        self.copy_to(out_buffer, buf)
 
         return 0
 
-    def __shadowize(self, shadow: Image, orig, color) -> None:
+    def shadowize(self, shadow: Image, orig, color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -258,7 +258,7 @@ class WinCursorBuilder:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def __create_shadow(
+    def create_shadow(
         self, orig: Any, args: AnicursorgenArgs
     ) -> Tuple[Literal[0], Any]:
         blur_px = orig.size[0] / 100.0 * args.blur
@@ -266,7 +266,7 @@ class WinCursorBuilder:
         down_px = int(orig.size[1] / 100.0 * args.down_shift)
 
         shadow = Image.new("RGBA", orig.size, (0, 0, 0, 0))
-        self.__shadowize(shadow, orig, args.color)
+        self.shadowize(shadow, orig, args.color)
         shadow.load()
 
         if args.blur > 0:
@@ -290,10 +290,10 @@ class WinCursorBuilder:
 
         return (0, shadowed)
 
-    def __write_png(self, out: Any, frame_png: Any) -> None:
+    def write_png(self, out: Any, frame_png: Any) -> None:
         frame_png.save(out, "png", optimize=True)
 
-    def __write_cur(self, out: Any, frame: Any, frame_png: Any) -> None:
+    def write_cur(self, out: Any, frame: Any, frame_png: Any) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -320,7 +320,7 @@ class WinCursorBuilder:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def __make_cur(
+    def make_cur(
         self, frames: List[Any], args: AnicursorgenArgs, animated: bool = False
     ) -> BytesIO:
         buf = io.BytesIO()
@@ -346,7 +346,7 @@ class WinCursorBuilder:
             frame_png = Image.open(frame[3])
 
             if args.add_shadows:
-                succeeded, shadowed = self.__create_shadow(frame_png, args)
+                succeeded, shadowed = self.create_shadow(frame_png, args)
                 if succeeded == 0:
                     frame_png.close()
                     frame_png = shadowed
@@ -364,9 +364,9 @@ class WinCursorBuilder:
                 compressed = True
 
             if compressed:
-                self.__write_png(buf, frame_png)
+                self.write_png(buf, frame_png)
             else:
-                self.__write_cur(buf, frame, frame_png)
+                self.write_cur(buf, frame, frame_png)
 
             frame_png.close()
 
@@ -379,7 +379,7 @@ class WinCursorBuilder:
 
         return buf
 
-    def __make_cursor_from(
+    def make_cursor_from(
         self,
         in_buffer: BufferedReader,
         out_buffer: BufferedWriter,
@@ -388,15 +388,15 @@ class WinCursorBuilder:
         """ Generate Windows cursor from `.in` file. """
 
         exec_code: Literal[0, 1] = 0
-        frames = self.__parse_config_from(in_buffer, prefix=self.prefix.absolute())
+        frames = self.parse_config_from(in_buffer, prefix=self.prefix.absolute())
 
-        animated = self.__frames_have_animation(frames)
+        animated = self.frames_have_animation(frames)
 
         if animated:
-            exec_code = self.__make_ani(frames, out_buffer, args)
+            exec_code = self.make_ani(frames, out_buffer, args)
         else:
-            buf = self.__make_cur(frames, args)
-            self.__copy_to(out_buffer, buf)
+            buf = self.make_cur(frames, args)
+            self.copy_to(out_buffer, buf)
 
         return exec_code
 
@@ -410,14 +410,14 @@ class WinCursorBuilder:
             remove(self.out)
 
         out_buffer = self.out.open(mode="wb")
-        exec_code = self.__make_cursor_from(in_cfg_buffer, out_buffer, args)
+        exec_code = self.make_cursor_from(in_cfg_buffer, out_buffer, args)
 
         in_cfg_buffer.close()
         out_buffer.close()
 
         return exec_code
 
-    def build(self, args: AnicursorgenArgs = AnicursorgenArgs()) -> None:
+    def generate(self, args: AnicursorgenArgs = AnicursorgenArgs()) -> None:
         """ Generate Windows cursors from config files(look inside @self.__config_dir). """
 
         exec_code = self.anicursorgen(args)

@@ -15,8 +15,9 @@ from ._typing import ImageSize, OptionalHotspot
 from .builders.winbuilder import WinCursorsBuilder
 from .builders.x11builder import X11CursorsBuilder, XCursorBuilder
 from .configs import Config, ThemeInfo, ThemeSettings
-from .packagers.windows import WindowsPackager
-from .packagers.x11 import X11Packager
+from .packagers.windows import WinPackager, WindowsPackager
+from .builders.win import WinCursorBuilder
+from .packagers.x11 import X11Packager, XPackager
 from .providers.bitmaps import Bitmaps
 from .providers.themeconfig import CursorConfig, ThemeConfigsProvider
 
@@ -96,7 +97,7 @@ def create_theme_with_db(config: Config):
     win_config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_win_configs_"))
 
     xtmp: Path = Path(tempfile.mkdtemp(prefix="xbu"))
-    wtmp: str = tempfile.mkdtemp(prefix="wbu")
+    wtmp: Path = Path(tempfile.mkdtemp(prefix="wbu"))
 
     bits = Bitmaps(bits_dir, hotspots=sett.hotspots, windows_cursors=sett.windows_cfg)
 
@@ -130,6 +131,8 @@ def create_theme_with_db(config: Config):
         if symlink:
             link_missing_cursors(x.cursors_dir, cfg_file.stem, symlink)
 
+    XPackager(xtmp, info).save()
+
     # Creating 'Windows Cursors'
     win_bitmaps = bits.win_bitmaps()
     win_size: List[ImageSize] = [CANVAS_SIZE]
@@ -137,21 +140,24 @@ def create_theme_with_db(config: Config):
         node = bits.db.cursor_node_by_name(png.split(".")[0])
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
 
-        CursorConfig(
+        cfg_file: Path = CursorConfig(
             bits.win_bitmaps_dir,
             hotspot,
             sizes=win_size,
             config_dir=win_config_dir,
         ).create_static(png)
+        WinCursorBuilder(cfg_file, wtmp).generate()
 
     for key, pngs in win_bitmaps.animated.items():
         node = bits.db.cursor_node_by_name(key)
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
 
-        CursorConfig(
+        cfg_file: Path = CursorConfig(
             bits.win_bitmaps_dir, hotspot, sizes=win_size, config_dir=win_config_dir
         ).create_animated(key, pngs, delay=3)
+        WinCursorBuilder(cfg_file, wtmp).generate()
 
+    WinPackager(wtmp, info).save()
     print(x_config_dir)
     print(xtmp)
     print(win_config_dir)
