@@ -10,13 +10,13 @@ from typing import List
 
 from ._constants import CANVAS_SIZE
 from ._typing import ImageSize, OptionalHotspot
-from .builders.win import WinCursorBuilder
-from .builders.x import XCursorBuilder
 from .configs import Config, ThemeInfo, ThemeSettings
-from .packagers.windows import WinPackager
-from .packagers.x11 import XPackager
 from .providers.bitmaps import Bitmaps
-from .providers.themeconfig import CursorConfig
+from .providers.cursorconfig import CursorConfig
+from .windows.builder import WinCursorBuilder
+from .windows.packager import WinPackager
+from .x11.builder import XCursorBuilder
+from .x11.packager import XPackager
 
 
 @contextmanager

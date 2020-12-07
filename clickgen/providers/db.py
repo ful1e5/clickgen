@@ -11,7 +11,7 @@ from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
-from ._typing import OptionalHotspot, RenameCursor, Hotspot
+from .._typing import Hotspot, OptionalHotspot, RenameCursor
 
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],

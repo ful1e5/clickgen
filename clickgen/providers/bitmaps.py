@@ -13,14 +13,14 @@ from PIL import Image
 
 from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
 from .._typing import (
+    Hotspot,
     ImageSize,
     JsonData,
     MappedBitmaps,
-    WindowsCursorsConfig,
     OptionalHotspot,
-    Hotspot,
+    WindowsCursorsConfig,
 )
-from ..db import Database
+from .db import Database
 
 
 class PNG:
