@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from clickgen.clickgen import create_theme
 from clickgen.configs import Config, ThemeInfo, ThemeSettings
@@ -9,13 +10,15 @@ with open("./hotspots.json", "r") as hotspot_file:
 info: ThemeInfo = ThemeInfo(
     theme_name="BQ", author="Kaiz Khatri", comment=None, url=None
 )
+bitmap_dir = Path("./bitmaps")
+out_dir = Path("./themes")
 
 sett: ThemeSettings = ThemeSettings(
-    bitmaps_dir="./bitmaps",
+    bitmaps_dir=bitmap_dir,
     sizes=[24, 28],
     hotspots=hotspots,
     animation_delay=60,
-    out_dir="./themes",
+    out_dir=out_dir,
 )
 cfg: Config = Config(info, sett)
 
