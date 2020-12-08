@@ -3,6 +3,7 @@
 
 import os
 from os import path
+from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional
 from ._typing import JsonData
 
@@ -19,11 +20,11 @@ class ThemeInfo(NamedTuple):
 class ThemeSettings(NamedTuple):
     """ Core settings of cursor theme. """
 
-    bitmaps_dir: str
+    bitmaps_dir: Path
     sizes: List[int]
     hotspots: JsonData
     animation_delay: int = 50
-    out_dir: str = os.getcwd()
+    out_dir: Path = Path.cwd()
     windows_cfg: Optional[Dict[str, str]] = None
 
 
@@ -47,11 +48,4 @@ class Config:
             url=info.url,
         )
 
-        self.settings: ThemeSettings = ThemeSettings(
-            bitmaps_dir=path.abspath(settings.bitmaps_dir),
-            sizes=settings.sizes,
-            hotspots=settings.hotspots,
-            animation_delay=settings.animation_delay,
-            out_dir=path.abspath(settings.out_dir),
-            windows_cfg=settings.windows_cfg,
-        )
+        self.settings: ThemeSettings = settings

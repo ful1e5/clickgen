@@ -3,6 +3,7 @@
 
 import os
 import sys
+import shutil
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
@@ -46,7 +47,6 @@ def create_theme(config: Config):
     info: ThemeInfo = config.info
     sett: ThemeSettings = config.settings
 
-    bits_dir = Path(sett.bitmaps_dir)
     sizes: List[ImageSize] = []
     for s in sett.sizes:
         sizes.append(ImageSize(width=s, height=s))
@@ -58,7 +58,11 @@ def create_theme(config: Config):
     xtmp: Path = Path(tempfile.mkdtemp(prefix="xbu"))
     wtmp: Path = Path(tempfile.mkdtemp(prefix="wbu"))
 
-    bits = Bitmaps(bits_dir, hotspots=sett.hotspots, windows_cursors=sett.windows_cfg)
+    bits = Bitmaps(
+        sett.bitmaps_dir.absolute(),
+        hotspots=sett.hotspots,
+        windows_cursors=sett.windows_cfg,
+    )
 
     # Creating 'XCursors'
     x_bitmaps = bits.x_bitmaps()
@@ -117,7 +121,21 @@ def create_theme(config: Config):
         WinCursorBuilder(cfg_file, wtmp).generate()
 
     WinPackager(wtmp, info).save()
-    print(x_config_dir)
-    print(xtmp)
-    print(win_config_dir)
-    print(wtmp)
+
+    if not sett.out_dir.exists():
+        os.makedirs(sett.out_dir)
+
+    x_dir = sett.out_dir / info.theme_name
+    win_dir = sett.out_dir / f"{info.theme_name}-Windows"
+
+    if x_dir.exists():
+        shutil.rmtree(x_dir)
+    if win_dir.exists():
+        shutil.rmtree(win_dir)
+
+    shutil.copytree(xtmp, x_dir)
+    shutil.copytree(wtmp, win_dir)
+
+    shutil.rmtree(xtmp)
+    shutil.rmtree(wtmp)
+    bits.free_space()

@@ -129,6 +129,7 @@ class Bitmaps(PNG):
     def free_space(self):
         if self.using_tmp_dir:
             shutil.rmtree(self.x_bitmaps_dir)
+        shutil.rmtree(self.win_bitmaps_dir)
 
     def update_hotspots_key(self, old_key: str, new_key: str) -> None:
 
