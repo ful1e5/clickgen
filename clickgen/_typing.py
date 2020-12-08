@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, Literal, NamedTuple, Optional
 
 
 JsonData = Dict[str, Dict[str, int]]
@@ -33,3 +33,4 @@ class MappedBitmaps(NamedTuple):
 
 
 WindowsCursorsConfig = Dict[str, Dict[str, str]]
+WindowsSizes = Literal["normal", "large"]

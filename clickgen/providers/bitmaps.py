@@ -19,6 +19,7 @@ from .._typing import (
     MappedBitmaps,
     OptionalHotspot,
     WindowsCursorsConfig,
+    WindowsSizes,
 )
 from .db import Database
 
@@ -232,7 +233,7 @@ class Bitmaps(PNG):
         src_p: Union[str, Path],
         out_p: Union[str, Path],
         placement: str,
-        size: Literal["normal", "large"] = "normal",
+        size: WindowsSizes,
     ) -> Hotspot:
 
         canvas: Image = Image.new("RGBA", CANVAS_SIZE, (255, 0, 0, 0))
@@ -240,9 +241,11 @@ class Bitmaps(PNG):
         box = self._canvas_cursor_cords(draw_size, placement)
 
         original_image: Image = Image.open(src_p)
-        draw: Image = original_image.resize(draw_size, Image.ANTIALIAS)
+        draw: Image = original_image
+        if original_image != draw_size:
+            draw.resize(draw_size, Image.ANTIALIAS)
         canvas.paste(draw, box, draw)
-        canvas.save(out_p, quality=100)
+        canvas.save(out_p, quality=95)
 
         size: ImageSize = ImageSize(
             width=original_image.size[0], height=original_image.size[1]
@@ -261,7 +264,7 @@ class Bitmaps(PNG):
 
     def _seed_windows_bitmaps(
         self,
-        size: Literal["normal", "large"] = "normal",
+        size: WindowsSizes = "normal",
     ) -> MappedBitmaps:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
