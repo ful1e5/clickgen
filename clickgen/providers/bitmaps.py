@@ -128,6 +128,9 @@ class Bitmaps(PNG):
         self._seed_animated_bitmaps()
         self._seed_windows_bitmaps()
 
+        def __del__()->None:
+            self.free_space()
+
     def __entry_win_info(self, entry: Union[str, List[str]]) -> None:
         if isinstance(entry, str):
             self.db.db_cursors.append(entry)

@@ -138,4 +138,3 @@ def create_theme(config: Config):
 
     shutil.rmtree(xtmp)
     shutil.rmtree(wtmp)
-    bits.free_space()
