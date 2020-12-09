@@ -89,7 +89,7 @@ class Bitmaps(PNG):
     hotspots: JsonData = {}
 
     x_bitmaps_dir: Path = Path()
-    win_bitmaps_dir: str = Path()
+    win_bitmaps_dir: Path = Path()
     using_tmp_dir: bool = True
 
     def __init__(
@@ -109,6 +109,8 @@ class Bitmaps(PNG):
         else:
             self.win_cursors: WindowsCursorsConfig = windows_cursors
 
+        self.__entry_win_info(list(self.win_cursors.keys()))
+
         # Cursor validation
         if valid_src:
             self.x_bitmaps_dir = bitmap_dir
@@ -125,6 +127,15 @@ class Bitmaps(PNG):
         self._seed_static_bitmaps()
         self._seed_animated_bitmaps()
         self._seed_windows_bitmaps()
+
+    def __entry_win_info(self, entry: Union[str, List[str]]) -> None:
+        if isinstance(entry, str):
+            self.db.db_cursors.append(entry)
+        elif isinstance(entry, list):
+            for e in entry:
+                self.db.db_cursors.append(e)
+        else:
+            raise TypeError(f"'entry' argument must 'str' or 'List[str]'")
 
     def free_space(self):
         if self.using_tmp_dir:
@@ -242,11 +253,10 @@ class Bitmaps(PNG):
         box = self._canvas_cursor_cords(draw_size, placement)
 
         original_image: Image = Image.open(src_p)
-        draw: Image = original_image
-        if original_image != draw_size:
-            draw.resize(draw_size, Image.ANTIALIAS)
+        draw: Image = original_image.resize(draw_size, Image.LANCZOS)
+
         canvas.paste(draw, box, draw)
-        canvas.save(out_p, quality=95)
+        canvas.save(out_p)
 
         size: ImageSize = ImageSize(
             width=original_image.size[0], height=original_image.size[1]
