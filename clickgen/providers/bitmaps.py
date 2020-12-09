@@ -19,7 +19,6 @@ from .._typing import (
     MappedBitmaps,
     OptionalHotspot,
     WindowsCursorsConfig,
-    WindowsSizes,
 )
 from .db import Database
 
@@ -87,6 +86,7 @@ class Bitmaps(PNG):
 
     db: Database = Database()
     hotspots: JsonData = {}
+    win_cursors_size: Literal["normal", "large"]
 
     x_bitmaps_dir: Path = Path()
     win_bitmaps_dir: Path = Path()
@@ -97,11 +97,13 @@ class Bitmaps(PNG):
         bitmap_dir: Path,
         hotspots: JsonData,
         windows_cursors: Optional[WindowsCursorsConfig],
+        windows_cursors_size: Literal["normal", "large"] = "normal",
         valid_src: bool = False,
         db: Database = Database(),
     ) -> None:
         self.db = db
         self.hotspots = hotspots
+        self.win_cursors_size = windows_cursors_size
         self.using_tmp_dir = not valid_src
 
         if not windows_cursors:
@@ -128,7 +130,7 @@ class Bitmaps(PNG):
         self._seed_animated_bitmaps()
         self._seed_windows_bitmaps()
 
-        def __del__()->None:
+        def __del__() -> None:
             self.free_space()
 
     def __entry_win_info(self, entry: Union[str, List[str]]) -> None:
@@ -244,15 +246,13 @@ class Bitmaps(PNG):
             return Hotspot(x, y)
 
     def create_win_bitmap(
-        self,
-        src_p: Union[str, Path],
-        out_p: Union[str, Path],
-        placement: str,
-        size: WindowsSizes,
+        self, src_p: Union[str, Path], out_p: Union[str, Path], placement: str
     ) -> Hotspot:
 
         canvas: Image = Image.new("RGBA", CANVAS_SIZE, (255, 0, 0, 0))
-        draw_size: ImageSize = LARGE_SIZE if size == "large" else NORMAL_SIZE
+        draw_size: ImageSize = (
+            LARGE_SIZE if self.win_cursors_size == "large" else NORMAL_SIZE
+        )
         box = self._canvas_cursor_cords(draw_size, placement)
 
         original_image: Image = Image.open(src_p)
@@ -276,10 +276,7 @@ class Bitmaps(PNG):
 
         return Hotspot(x, y)
 
-    def _seed_windows_bitmaps(
-        self,
-        size: WindowsSizes = "normal",
-    ) -> MappedBitmaps:
+    def _seed_windows_bitmaps(self) -> MappedBitmaps:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
@@ -307,7 +304,7 @@ class Bitmaps(PNG):
                 dest: Path = self.win_bitmaps_dir / win_png
 
                 # Creating Windows cursor bitmap
-                hotspot = self.create_win_bitmap(src, dest, placement, size)
+                hotspot = self.create_win_bitmap(src, dest, placement)
                 s_pngs.append(win_png)
 
                 # Insert Windows Cursors data to database
@@ -324,7 +321,7 @@ class Bitmaps(PNG):
                     dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
-                    hotspot = self.create_win_bitmap(src, dest, placement, size)
+                    hotspot = self.create_win_bitmap(src, dest, placement)
                     l.append(cur)
                 a_pngs[win_key] = l
 

@@ -62,6 +62,7 @@ def create_theme(config: Config):
         sett.bitmaps_dir.absolute(),
         hotspots=sett.hotspots,
         windows_cursors=sett.windows_cfg,
+        windows_cursors_size="large",
     )
 
     # Creating 'XCursors'

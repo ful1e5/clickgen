@@ -33,4 +33,3 @@ class MappedBitmaps(NamedTuple):
 
 
 WindowsCursorsConfig = Dict[str, Dict[str, str]]
-WindowsSizes = Literal["normal", "large"]
