@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import List
 
-from ._constants import CANVAS_SIZE
+from ._constants import WIN_BITMAPS_SIZE
 from ._typing import ImageSize, OptionalHotspot
 from ._util import remove_directory
 from .configs import Config, ThemeInfo, ThemeSettings
@@ -62,8 +62,7 @@ def create_theme(config: Config):
     bits = Bitmaps(
         sett.bitmaps_dir.absolute(),
         hotspots=sett.hotspots,
-        windows_cursors=sett.windows_cfg,
-        windows_cursors_size="large",
+        win_cursors=sett.windows_cfg,
     )
 
     # Creating 'XCursors'
@@ -100,7 +99,7 @@ def create_theme(config: Config):
 
     # Creating 'Windows Cursors'
     win_bitmaps = bits.win_bitmaps()
-    win_size: List[ImageSize] = [CANVAS_SIZE]
+    win_size: List[ImageSize] = [WIN_BITMAPS_SIZE]
     for png in win_bitmaps.static:
         node = bits.db.cursor_node_by_name(png.split(".")[0])
         hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])

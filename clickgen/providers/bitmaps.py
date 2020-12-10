@@ -11,7 +11,7 @@ from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 
 from PIL import Image
 
-from .._constants import CANVAS_SIZE, LARGE_SIZE, NORMAL_SIZE, WINDOWS_CURSORS
+from .._constants import WIN_BITMAPS_SIZE, WIN_NORMAL_SIZE, WIN_CURSORS
 from .._typing import (
     Hotspot,
     ImageSize,
@@ -86,7 +86,10 @@ class Bitmaps(PNG):
 
     db: Database = Database()
     hotspots: JsonData = {}
-    win_cursors_size: Literal["normal", "large"]
+
+    win_cursors: WindowsCursorsConfig = WIN_CURSORS
+    win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
+    win_cursors_size: ImageSize = WIN_NORMAL_SIZE
 
     x_bitmaps_dir: Path = Path()
     win_bitmaps_dir: Path = Path()
@@ -96,20 +99,23 @@ class Bitmaps(PNG):
         self,
         bitmap_dir: Path,
         hotspots: JsonData,
-        windows_cursors: Optional[WindowsCursorsConfig],
-        windows_cursors_size: Literal["normal", "large"] = "normal",
+        win_cursors: Optional[WindowsCursorsConfig],
+        win_cursors_size: Optional[ImageSize] = None,
+        win_bitmaps_size: Optional[ImageSize] = None,
         valid_src: bool = False,
         db: Database = Database(),
     ) -> None:
         self.db = db
         self.hotspots = hotspots
-        self.win_cursors_size = windows_cursors_size
         self.using_tmp_dir = not valid_src
 
-        if not windows_cursors:
-            self.win_cursors = WINDOWS_CURSORS
-        else:
-            self.win_cursors: WindowsCursorsConfig = windows_cursors
+        # Setting Windows Cursors settings
+        if win_cursors:
+            self.win_cursors: WindowsCursorsConfig = win_cursors
+        if win_bitmaps_size:
+            self.win_cursors_size = win_bitmaps_size
+        if win_cursors_size:
+            self.win_cursors_size = win_cursors_size
 
         self.__entry_win_info(list(self.win_cursors.keys()))
 
@@ -213,8 +219,8 @@ class Bitmaps(PNG):
         ] = "center",
     ) -> Tuple[int, int]:
 
-        x = CANVAS_SIZE.width - image.width
-        y = CANVAS_SIZE.height - image.height
+        x = WIN_BITMAPS_SIZE.width - image.width
+        y = WIN_BITMAPS_SIZE.height - image.height
 
         switch = {
             "top_left": (0, 0),
@@ -246,14 +252,11 @@ class Bitmaps(PNG):
         self, src_p: Union[str, Path], out_p: Union[str, Path], placement: str
     ) -> Hotspot:
 
-        canvas: Image = Image.new("RGBA", CANVAS_SIZE, (255, 0, 0, 0))
-        draw_size: ImageSize = (
-            LARGE_SIZE if self.win_cursors_size == "large" else NORMAL_SIZE
-        )
-        box = self._canvas_cursor_cords(draw_size, placement)
+        canvas: Image = Image.new("RGBA", WIN_BITMAPS_SIZE, (255, 0, 0, 0))
+        box = self._canvas_cursor_cords(self.win_cursors_size, placement)
 
         original_image: Image = Image.open(src_p)
-        draw: Image = original_image.resize(draw_size, Image.LANCZOS)
+        draw: Image = original_image.resize(self.win_cursors_size, Image.LANCZOS)
 
         canvas.paste(draw, box, draw)
         canvas.save(out_p)
@@ -268,8 +271,12 @@ class Bitmaps(PNG):
 
         # Calculate Hotspot
         x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, size)
-        x: int = int(round(draw_size.width / size.width * x_hotspot.x) + box[0])
-        y: int = int(round(draw_size.height / size.height * x_hotspot.y) + box[1])
+        x: int = int(
+            round(self.win_cursors_size.width / size.width * x_hotspot.x) + box[0]
+        )
+        y: int = int(
+            round(self.win_cursors_size.height / size.height * x_hotspot.y) + box[1]
+        )
 
         return Hotspot(x, y)
 
