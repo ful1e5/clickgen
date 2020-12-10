@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import shutil
+import sys
 import tempfile
 from contextlib import contextmanager
 from pathlib import Path
@@ -11,6 +11,7 @@ from typing import List
 
 from ._constants import CANVAS_SIZE
 from ._typing import ImageSize, OptionalHotspot
+from ._util import remove_directory
 from .configs import Config, ThemeInfo, ThemeSettings
 from .providers.bitmaps import Bitmaps
 from .providers.cursorconfig import CursorConfig
@@ -129,13 +130,13 @@ def create_theme(config: Config):
     x_dir = sett.out_dir / info.theme_name
     win_dir = sett.out_dir / f"{info.theme_name}-Windows"
 
-    if x_dir.exists():
-        shutil.rmtree(x_dir)
-    if win_dir.exists():
-        shutil.rmtree(win_dir)
+    remove_directory(x_dir)
+    remove_directory(win_dir)
 
     shutil.copytree(xtmp, x_dir)
     shutil.copytree(wtmp, win_dir)
 
-    shutil.rmtree(xtmp)
-    shutil.rmtree(wtmp)
+    print(bits.win_bitmaps_dir.absolute())
+    # bits.remove_tmp_dirs()
+    # shutil.rmtree(xtmp)
+    # shutil.rmtree(wtmp)

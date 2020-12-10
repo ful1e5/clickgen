@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict, List, Literal, NamedTuple, Optional
+from typing import Dict, List, NamedTuple, Optional
 
 
 JsonData = Dict[str, Dict[str, int]]
