@@ -50,9 +50,9 @@ class CursorConfig:
         if not self.hotspot.x and not self.hotspot.y:
             x = int(new_size.width / 2)
             y = int(new_size.height / 2)
-            print(
-                f"-- Apply Default Hotspots: {self.cursor} => ({x},{y}), size={new_size.width}x{new_size.height}"
-            )
+            # print(
+            #     f"-- Apply Default Hotspots: {self.cursor} => ({x},{y}), size={new_size.width}x{new_size.height}"
+            # )
 
             return Hotspot(x, y)
         else:

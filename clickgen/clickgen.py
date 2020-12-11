@@ -135,7 +135,6 @@ def create_theme(config: Config):
     shutil.copytree(xtmp, x_dir)
     shutil.copytree(wtmp, win_dir)
 
-    print(bits.win_bitmaps_dir)
-    # bits.remove_tmp_bitmaps()
+    bits.remove_tmp_bitmaps()
     shutil.rmtree(xtmp)
     shutil.rmtree(wtmp)
