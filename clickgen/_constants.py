@@ -23,4 +23,4 @@ WIN_CURSORS: WindowsCursorsConfig = {
     "Work": {"xcursor": "left_ptr_watch", "placement": "top_left"},
 }
 WIN_BITMAPS_SIZE: ImageSize = ImageSize(width=32, height=32)
-WIN_NORMAL_SIZE: ImageSize = ImageSize(width=16, height=16)
+WIN_CURSOR_SIZE: ImageSize = ImageSize(width=24, height=24)

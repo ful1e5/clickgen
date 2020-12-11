@@ -9,9 +9,9 @@ from os import path
 from pathlib import Path
 from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 
-from PIL import Image
+from PIL import Image, ImageEnhance, ImageFilter
 
-from .._constants import WIN_BITMAPS_SIZE, WIN_NORMAL_SIZE, WIN_CURSORS
+from .._constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS
 from .._typing import (
     Hotspot,
     ImageSize,
@@ -89,7 +89,7 @@ class Bitmaps(PNG):
 
     win_cursors: WindowsCursorsConfig = WIN_CURSORS
     win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
-    win_cursors_size: ImageSize = WIN_NORMAL_SIZE
+    win_cursors_size: ImageSize = WIN_CURSOR_SIZE
 
     x_bitmaps_dir: Path = Path()
     win_bitmaps_dir: Path = Path()
@@ -256,19 +256,22 @@ class Bitmaps(PNG):
         box = self._canvas_cursor_cords(self.win_cursors_size, placement)
 
         original_image: Image = Image.open(src_p)
-        draw: Image = original_image.resize(self.win_cursors_size, Image.LANCZOS)
-
+        draw: Image = original_image.resize(self.win_cursors_size, Image.BICUBIC)
         canvas.paste(draw, box, draw)
-        canvas.save(out_p)
+        draw.close()
+
+        out = ImageEnhance.Sharpness(canvas).enhance(1.6)
+        canvas.close()
+
+        out.filter(ImageFilter.SHARPEN)
+        out.save(out_p, compress_level=0, dpi=(600, 600))
+        out.close()
 
         size: ImageSize = ImageSize(
             width=original_image.size[0], height=original_image.size[1]
         )
 
         original_image.close()
-        canvas.close()
-        draw.close()
-
         # Calculate Hotspot
         x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, size)
         x: int = int(
