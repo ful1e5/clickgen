@@ -94,7 +94,7 @@ class CursorConfig:
             thumb = image.crop(resize).resize(
                 (ideal_width, ideal_height), Image.LANCZOS
             )
-            thumb.save(out_path)
+            thumb.save(out_path, compress_level=0)
 
             image.close()
             thumb.close()

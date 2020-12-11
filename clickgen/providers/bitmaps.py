@@ -9,7 +9,7 @@ from os import path
 from pathlib import Path
 from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
 
-from PIL import Image, ImageEnhance, ImageFilter
+from PIL import Image, ImageFilter
 
 from .._constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS
 from .._typing import (
@@ -186,7 +186,7 @@ class Bitmaps(PNG):
             hot = self.get_hotspots(cursor)
             ren_c = self.db.smart_seed(cursor, hot)
             if ren_c:
-                print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
+                # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
                 self.update_hotspots_key(ren_c.old, ren_c.new)
                 self.__relink_file(ren_c.old, ren_c.new)
             else:
@@ -199,7 +199,7 @@ class Bitmaps(PNG):
             hot = self.get_hotspots(g)
             ren_c = self.db.smart_seed(g, hot)
             if ren_c:
-                print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
+                # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
                 self.update_hotspots_key(ren_c.old, ren_c.new)
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
@@ -252,33 +252,26 @@ class Bitmaps(PNG):
         self, src_p: Union[str, Path], out_p: Union[str, Path], placement: str
     ) -> Hotspot:
 
-        canvas: Image = Image.new("RGBA", WIN_BITMAPS_SIZE, (255, 0, 0, 0))
+        canvas: Image = Image.new("RGBA", self.win_bitmaps_size, (255, 0, 0, 0))
         box = self._canvas_cursor_cords(self.win_cursors_size, placement)
 
-        original_image: Image = Image.open(src_p)
-        draw: Image = original_image.resize(self.win_cursors_size, Image.BICUBIC)
-        canvas.paste(draw, box, draw)
-        draw.close()
+        image: Image = Image.open(src_p)
+        image_size: ImageSize = ImageSize(width=image.size[0], height=image.size[1])
 
-        out = ImageEnhance.Sharpness(canvas).enhance(1.6)
-        canvas.close()
-
-        out.filter(ImageFilter.SHARPEN)
-        out.save(out_p, compress_level=0, dpi=(600, 600))
-        out.close()
-
-        size: ImageSize = ImageSize(
-            width=original_image.size[0], height=original_image.size[1]
+        cursor: Image = image.resize(self.win_cursors_size, Image.LANCZOS).filter(
+            ImageFilter.SHARPEN
         )
+        canvas.paste(cursor, box, cursor)
+        canvas.save(out_p, compress_level=0)
 
-        original_image.close()
         # Calculate Hotspot
-        x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, size)
+        x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, image_size)
         x: int = int(
-            round(self.win_cursors_size.width / size.width * x_hotspot.x) + box[0]
+            round(self.win_cursors_size.width / image_size.width * x_hotspot.x) + box[0]
         )
         y: int = int(
-            round(self.win_cursors_size.height / size.height * x_hotspot.y) + box[1]
+            round(self.win_cursors_size.height / image_size.height * x_hotspot.y)
+            + box[1]
         )
 
         return Hotspot(x, y)
