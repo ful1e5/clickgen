@@ -13,12 +13,6 @@ from .._util import remove
 class XCursorBuilder:
     """ Build X11 cursor from `.in` config file. """
 
-    config_file: Path = Path()
-    prefix: Path = Path()
-    out_dir: Path = Path()
-    cursors_dir: Path = Path()
-    out: Path = Path()
-
     # main function ctypes define
     _lib_location: Path = Path(pkg_root[0]) / "xcursorgen.so"
     _lib: CDLL = CDLL(_lib_location)
@@ -34,15 +28,15 @@ class XCursorBuilder:
         if not config_file.exists() or not config_file.is_file():
             raise FileNotFoundError(f"'{config_file.name}' Config file not found")
 
-        self.config_file = config_file
+        self.config_file: Path = config_file
         self.prefix: Path = config_file.parent
-        self.out_dir = out_dir
-        self.cursors_dir = self.out_dir / "cursors"
+        self.out_dir: Path = out_dir
+        self.cursors_dir: Path = self.out_dir / "cursors"
 
         if not self.cursors_dir.exists():
             self.cursors_dir.mkdir()
 
-        self.out = self.cursors_dir / self.config_file.stem
+        self.out: Path = self.cursors_dir / self.config_file.stem
 
     def gen_argv_ctypes(self, argv: List[str]) -> Any:
         """ Convert `string` arguments to `ctypes` pointer. """

@@ -7,17 +7,16 @@ from typing import Dict
 
 from ..configs import ThemeInfo
 
-templates: Dict[str, Template] = {
-    "cursor.theme": Template("[Icon Theme]\nInherits=$theme_name"),
-    "index.theme": Template("[Icon Theme]\nName=$theme_name\nComment=$comment"),
-}
-
 
 class XPackager:
     """ Create a crispy `XCursors` theme package. """
 
-    dir: Path = Path()
-    package_info: ThemeInfo
+    templates: Dict[str, Template] = {
+        "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="hicolor"'),
+        "index.theme": Template(
+            '[Icon Theme]\nName=$theme_name\nComment=$comment\nInherits="hicolor"'
+        ),
+    }
 
     def __init__(self, dir: Path, info: ThemeInfo) -> None:
         self.dir: Path = dir
@@ -26,8 +25,8 @@ class XPackager:
     def index_files(self) -> Dict[str, str]:
         """ XCursors theme files. """
         files: Dict[str, str] = {}
-        for key in templates:
-            files[key] = templates[key].safe_substitute(
+        for key in self.templates:
+            files[key] = self.templates[key].safe_substitute(
                 theme_name=self.package_info.theme_name,
                 comment=self.package_info.comment,
             )
