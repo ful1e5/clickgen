@@ -2,14 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import ctypes
-from ctypes import CDLL, c_char, pointer
-from os import makedirs, path, remove
+from ctypes import CDLL
 from pathlib import Path
 from typing import Any, List
 
 from .. import __path__ as pkg_root
-
-lib_xcursorgen: str = path.join(pkg_root[0], "xcursorgen.so")
+from .._util import remove
 
 
 class XCursorBuilder:
@@ -20,8 +18,10 @@ class XCursorBuilder:
     out_dir: Path = Path()
     cursors_dir: Path = Path()
     out: Path = Path()
+
     # main function ctypes define
-    _lib: CDLL = CDLL(lib_xcursorgen)
+    _lib_location: Path = Path(pkg_root[0]) / "xcursorgen.so"
+    _lib: CDLL = CDLL(_lib_location)
     _LP_c_char = ctypes.POINTER(ctypes.c_char)
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)
     _lib.main.argtypes = (ctypes.c_int, _LP_LP_c_char)
@@ -40,7 +40,7 @@ class XCursorBuilder:
         self.cursors_dir = self.out_dir / "cursors"
 
         if not self.cursors_dir.exists():
-            makedirs(self.cursors_dir)
+            self.cursors_dir.mkdir()
 
         self.out = self.cursors_dir / self.config_file.stem
 
@@ -56,11 +56,9 @@ class XCursorBuilder:
 
     def generate(self) -> None:
         """ Generate x11 cursor from `.in` file."""
-        out: Path = self.cursors_dir / self.config_file.stem
 
         # remove old cursor file
-        if out.exists():
-            remove(out)
+        remove(self.out)
 
         argv: List[str] = [
             "xcursorgen",
@@ -69,6 +67,8 @@ class XCursorBuilder:
             self.config_file.absolute(),  # {cursor}.in file
             self.out.absolute(),
         ]
-        kwargs: pointer[c_char] = self.gen_argv_ctypes(argv)
+
+        kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
         args: ctypes.c_int = ctypes.c_int(len(argv))
+
         self._lib.main(args, kwargs)
