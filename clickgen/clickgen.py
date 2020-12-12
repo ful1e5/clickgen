@@ -11,7 +11,7 @@ from typing import List
 
 from ._constants import WIN_BITMAPS_SIZE
 from ._typing import ImageSize, OptionalHotspot
-from ._util import remove_directory
+from ._util import remove
 from .configs import Config, ThemeInfo, ThemeSettings
 from .providers.bitmaps import Bitmaps
 from .providers.cursorconfig import CursorConfig
@@ -128,9 +128,8 @@ def create_theme(config: Config):
 
     x_dir = sett.out_dir / info.theme_name
     win_dir = sett.out_dir / f"{info.theme_name}-Windows"
-
-    remove_directory(x_dir)
-    remove_directory(win_dir)
+    remove(win_dir)
+    remove(x_dir)
 
     shutil.copytree(xtmp, x_dir)
     shutil.copytree(wtmp, win_dir)

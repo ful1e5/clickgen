@@ -6,12 +6,16 @@ from pathlib import Path
 from typing import Union
 
 
-def remove_directory(directory: Union[str, Path]) -> None:
-    """ Utility for removing directory if directory is existed in filesystem. """
-    if isinstance(directory, str):
-        d: Path = Path(directory)
-    else:
-        d: Path = directory
+def remove(p: Union[str, Path]) -> None:
+    """ Utility for removing file, directory or symlink, If it's existed in filesystem. """
 
-    if d.exists():
-        shutil.rmtree(d)
+    if isinstance(p, str):
+        p: Path = Path(p)
+
+    if p.exists():
+        if p.is_dir():
+            shutil.rmtree(p)
+        else:
+            p.unlink()
+    else:
+        pass
