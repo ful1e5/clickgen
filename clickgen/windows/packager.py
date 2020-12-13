@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pathlib import Path
+from pathlib import Path, PosixPath
 from string import Template
-from typing import List
+from typing import Generator, List
 
 from ..configs import ThemeInfo
 
@@ -68,16 +68,17 @@ class WinPackager:
 
     dir: Path = Path()
     info: ThemeInfo = ThemeInfo(theme_name="Unknown", author="clickgen")
+    cursors: List[PosixPath] = []
 
     def __init__(self, dir: Path, info: ThemeInfo) -> None:
         self.dir = dir
         self.info: ThemeInfo = info
 
-        cursors: List[str] = []
         for ext in ("*.ani", "*.cur"):
-            cursors.append(self.dir.glob(ext))
+            for i in sorted(self.dir.glob(ext)):
+                self.cursors.append(i)
 
-        if not cursors:
+        if not self.cursors:
             raise FileNotFoundError(f"Windows cursors not found in {self.dir}")
 
     def save(self) -> None:
@@ -92,6 +93,15 @@ class WinPackager:
             comment=comment,
             author=self.info.author,
         )
+
+        # Change cursor .cur or .ani according to cursor files provided.
+        for p in self.cursors:
+            if p.name in data:
+                continue
+            else:
+                old_ext: List[str] = ["ani", "cur"]
+                old_ext.remove(p.suffix)
+                data.replace(f"{p.name}.{old_ext[0]}", p.name)
 
         # Store install.inf file
         install_inf: Path = self.dir / "install.inf"
