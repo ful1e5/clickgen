@@ -11,7 +11,6 @@ _inf_template = Template(
     """[Version]
 signature="$CHICAGO$"
 $comment
-$url
 
 [DefaultInstall]
 CopyFiles = Scheme.Cur, Scheme.Txt
@@ -84,11 +83,15 @@ class WinPackager:
 
     def save(self) -> None:
         """ Make Windows cursors directory installable. """
+        comment = self.info.comment
+
+        if self.info.url:
+            comment: str = f"{comment}\n{self.info.url}"
+
         data: str = _inf_template.safe_substitute(
             theme_name=self.info.theme_name,
-            comment=self.info.comment,
+            comment=comment,
             author=self.info.author,
-            url=self.info.url,
         )
 
         # Store install.inf file

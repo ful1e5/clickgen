@@ -13,7 +13,7 @@ class ThemeInfo(NamedTuple):
 
     theme_name: str
     author: str
-    url: str = "Unknown Source!"
+    url: Optional[str] = None
     comment: Optional[str] = None
 
 
