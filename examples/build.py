@@ -7,9 +7,7 @@ from clickgen.configs import Config, ThemeInfo, ThemeSettings
 with open("./hotspots.json", "r") as hotspot_file:
     hotspots = json.loads(hotspot_file.read())
 
-info: ThemeInfo = ThemeInfo(
-    theme_name="BQ", author="Kaiz Khatri", comment=None, url=None
-)
+info: ThemeInfo = ThemeInfo(theme_name="BQ", author="Kaiz Khatri")
 bitmap_dir = Path("./bitmaps")
 out_dir = Path("./themes")
 
