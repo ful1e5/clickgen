@@ -14,36 +14,38 @@ $comment
 $url
 
 [DefaultInstall]
-CopyFiles = Scheme.Cur
+CopyFiles = Scheme.Cur, Scheme.Txt
 AddReg    = Scheme.Reg
 
 [DestinationDirs]
 Scheme.Cur = 10,"%CUR_DIR%"
 
 [Scheme.Reg]
-HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%pointer%,%10%\\%CUR_DIR%\\%help%,%10%\\%CUR_DIR%\\%work%,%10%\\%CUR_DIR%\\%busy%,%10%\\%CUR_DIR%\\%Cross%,%10%\\%CUR_DIR%\\%Text%,%10%\\%CUR_DIR%\\%Hand%,%10%\\%CUR_DIR%\\%Unavailiable%,%10%\\%CUR_DIR%\\%Vert%,%10%\\%CUR_DIR%\\%Horz%,%10%\\%CUR_DIR%\\%Dgn1%,%10%\\%CUR_DIR%\\%Dgn2%,%10%\\%CUR_DIR%\\%move%,%10%\\%CUR_DIR%\\%alternate%,%10%\\%CUR_DIR%\\%link%"
+HKCU,"Control Panel\Cursors\Schemes","%SCHEME_NAME%",,"%10%\%CUR_DIR%\%pointer%,%10%\%CUR_DIR%\%help%,%10%\%CUR_DIR%\%work%,%10%\%CUR_DIR%\%busy%,%10%\%CUR_DIR%\%cross%,%10%\%CUR_DIR%\%Text%,%10%\%CUR_DIR%\%Hand%,%10%\%CUR_DIR%\%unavailiable%,%10%\%CUR_DIR%\%Vert%,%10%\%CUR_DIR%\%Horz%,%10%\%CUR_DIR%\%Dgn1%,%10%\%CUR_DIR%\%Dgn2%,%10%\%CUR_DIR%\%move%,%10%\%CUR_DIR%\%alternate%,%10%\%CUR_DIR%\%link%"
 
 ; -- Installed files
 
 [Scheme.Cur]
-"Default.cur"
-"Help.cur"
-"Work.ani"
-"Busy.ani"
-"Cross.cur"       
-"IBeam.cur"
-"Handwriting.cur"
-"Unavailiable.cur"
-"Vertical.cur"
-"Horizontal.cur"
-"Diagonal_1.cur"
-"Diagonal_2.cur"
-"Move.cur"
-"Alternate.cur"
-"Link.cur"
+Work.ani
+Busy.ani
+Default.cur
+Help.cur
+Link.cur
+Move.cur
+Diagonal_2.cur
+install.inf
+Vertical.cur
+Horizontal.cur
+Diagonal_1.cur
+Handwriting.cur
+Cross.cur       
+IBeam.cur
+Unavailiable.cur
+Alternate.cur
 
-CUR_DIR       = "Cursors\\$theme_name"
-SCHEME_NAME   = "$theme_name"
+[Strings]
+CUR_DIR       = "Cursors\\$theme_name Cursors"
+SCHEME_NAME   = "$theme_name Cursors"
 pointer       = "Default.cur"
 help		  = "Help.cur"
 work		  = "Work.ani"
