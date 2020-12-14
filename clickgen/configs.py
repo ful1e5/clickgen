@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-from os import path
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional
 from ._typing import JsonData
