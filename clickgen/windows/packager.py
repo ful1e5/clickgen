@@ -99,9 +99,9 @@ class WinPackager:
             if p.name in data:
                 continue
             else:
-                old_ext: List[str] = ["ani", "cur"]
+                old_ext: List[str] = [".ani", ".cur"]
                 old_ext.remove(p.suffix)
-                data.replace(f"{p.name}.{old_ext[0]}", p.name)
+                data = data.replace(f"{p.stem}{old_ext[0]}", p.name)
 
         # Store install.inf file
         install_inf: Path = self.dir / "install.inf"
