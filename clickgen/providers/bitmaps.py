@@ -44,14 +44,13 @@ class PNG:
 
     def pngs(self) -> List[str]:
         pngs = list(map(lambda x: x.name, self.bitmap_dir.glob("*.png")))
-
         if len(pngs) <= 0:
             raise FileNotFoundError(".png files not found")
         return pngs
 
     def bitmap_type(self, f: str) -> Union[Literal["static"], Literal["animated"]]:
         f_name = path.splitext(f)[0]
-        po_fix = f_name.rsplit("-")[-1]
+        po_fix = f_name.rsplit("-", 1)[-1]
         if po_fix.isnumeric():
             return "animated"
         else:
@@ -69,8 +68,8 @@ class PNG:
         func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "animated"
         an_pngs: List[str] = list(filter(func, self.pngs()))
 
-        g_func: Callable[[str], str] = lambda x: x.rsplit("-")[0]
-        grps: Set[str] = sorted(set(map(g_func, an_pngs)))
+        g_func: Callable[[str], str] = lambda x: x.rsplit("-", 1)[0]
+        grps: Set[str] = sorted(list(map(g_func, an_pngs)))
 
         d: Dict[str, List[str]] = {}
         for g in grps:
@@ -287,7 +286,7 @@ class Bitmaps(PNG):
                 src: Path = self.x_bitmaps_dir / x_png
                 dest: Path = self.win_bitmaps_dir / win_png
 
-                # Creating Windows cursor bitmap
+                # Creating Windows cursor bitmap,1
                 hotspot = self.create_win_bitmap(src, dest, placement)
 
                 # Insert Windows Cursors data to database
@@ -299,7 +298,7 @@ class Bitmaps(PNG):
                 hotspot: Hotspot = Hotspot(0, 0)
                 for png in pngs:
                     src: Path = self.x_bitmaps_dir / png
-                    cur: str = png.replace(png.rsplit("-")[0], win_key)
+                    cur: str = png.replace(png.rsplit("-", 1)[0], win_key)
                     dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
