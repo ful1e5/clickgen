@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List
 
 from ._constants import WIN_BITMAPS_SIZE
-from ._typing import ImageSize, OptionalHotspot
+from ._typing import ImageSize
 from ._util import remove
 from .configs import Config, ThemeInfo, ThemeSettings
 from .providers.bitmaps import Bitmaps
@@ -69,8 +69,7 @@ def create_theme(config: Config):
     x_bitmaps = bits.x_bitmaps()
     for png in x_bitmaps.static:
         node = bits.db.cursor_node_by_name(png.split(".")[0])
-        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
-        symlink: List[str] = node["symlink"]
+        hotspot = node.hotspot
 
         cfg_file: Path = CursorConfig(
             bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
@@ -78,13 +77,13 @@ def create_theme(config: Config):
         x = XCursorBuilder(cfg_file, xtmp)
         x.generate()
 
-        if symlink:
-            link_missing_cursors(x.cursors_dir, cfg_file.stem, symlink)
+        if node.symlink:
+            link_missing_cursors(x.cursors_dir, cfg_file.stem, node.symlink)
 
     for key, pngs in x_bitmaps.animated.items():
         node = bits.db.cursor_node_by_name(key)
-        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
-        symlink: List[str] = node["symlink"]
+
+        hotspot = node.hotspot
 
         cfg_file: Path = CursorConfig(
             bits.x_bitmaps_dir, hotspot, sizes=sizes, config_dir=x_config_dir
@@ -92,8 +91,8 @@ def create_theme(config: Config):
         x = XCursorBuilder(cfg_file, xtmp)
         x.generate()
 
-        if symlink:
-            link_missing_cursors(x.cursors_dir, cfg_file.stem, symlink)
+        if node.symlink:
+            link_missing_cursors(x.cursors_dir, cfg_file.stem, node.symlink)
 
     XPackager(xtmp, info).save()
 
@@ -102,7 +101,7 @@ def create_theme(config: Config):
     win_size: List[ImageSize] = [WIN_BITMAPS_SIZE]
     for png in win_bitmaps.static:
         node = bits.db.cursor_node_by_name(png.split(".")[0])
-        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+        hotspot = node.hotspot
 
         cfg_file: Path = CursorConfig(
             bits.win_bitmaps_dir,
@@ -114,10 +113,13 @@ def create_theme(config: Config):
 
     for key, pngs in win_bitmaps.animated.items():
         node = bits.db.cursor_node_by_name(key)
-        hotspot: OptionalHotspot = OptionalHotspot(*node["hotspots"])
+        hotspot = node.hotspot
 
         cfg_file: Path = CursorConfig(
-            bits.win_bitmaps_dir, hotspot, sizes=win_size, config_dir=win_config_dir
+            bits.win_bitmaps_dir,
+            hotspot,
+            sizes=win_size,
+            config_dir=win_config_dir,
         ).create_animated(key, pngs, delay=3)
         WinCursorBuilder(cfg_file, wtmp).generate()
 
