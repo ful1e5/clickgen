@@ -7,7 +7,7 @@ import shutil
 import tempfile
 from os import path
 from pathlib import Path
-from typing import Callable, Dict, List, Literal, Optional, Tuple, Union
+from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 
 from PIL import Image, ImageFilter
 
@@ -17,7 +17,7 @@ from .._typing import (
     ImageSize,
     JsonData,
     MappedBitmaps,
-    OptionalHotspot,
+    Hotspot,
     WindowsCursorsConfig,
 )
 from .db import Database
@@ -31,7 +31,7 @@ class PNG:
     def __init__(self, bitmaps_dir: Path) -> None:
         self.bitmap_dir = bitmaps_dir
 
-    def bitmaps(self, d: str) -> MappedBitmaps:
+    def bitmaps(self, d: Path) -> MappedBitmaps:
         original_dir: Path = self.bitmap_dir
 
         self.bitmap_dir = d
@@ -51,7 +51,7 @@ class PNG:
 
     def bitmap_type(self, f: str) -> Union[Literal["static"], Literal["animated"]]:
         f_name = path.splitext(f)[0]
-        po_fix = f_name.split("-")[-1]
+        po_fix = f_name.rsplit("-")[-1]
         if po_fix.isnumeric():
             return "animated"
         else:
@@ -69,11 +69,10 @@ class PNG:
         func: Callable[[str], bool] = lambda x: self.bitmap_type(x) == "animated"
         an_pngs: List[str] = list(filter(func, self.pngs()))
 
-        g_func: Callable[[str], str] = lambda x: x.split("-")[0]
-        grps: List[str] = sorted(list(set(map(g_func, an_pngs))))
+        g_func: Callable[[str], str] = lambda x: x.rsplit("-")[0]
+        grps: Set[str] = sorted(set(map(g_func, an_pngs)))
 
         d: Dict[str, List[str]] = {}
-
         for g in grps:
             func: Callable[[str], bool] = lambda x: x.find(g) >= 0
             d[g] = sorted(list(filter(func, an_pngs)))
@@ -150,22 +149,13 @@ class Bitmaps(PNG):
             shutil.rmtree(self.x_bitmaps_dir)
         shutil.rmtree(self.win_bitmaps_dir)
 
-    def update_hotspots_key(self, old_key: str, new_key: str) -> None:
-
-        if new_key != old_key:
-            try:
-                self.hotspots[new_key] = self.hotspots[old_key]
-                del self.hotspots[old_key]
-            except KeyError:
-                self.hotspots[new_key] = {"xhot": None, "yhot": None}
-
-    def get_hotspots(self, key) -> OptionalHotspot:
+    def get_hotspots(self, key) -> Hotspot:
         try:
             x = self.hotspots[key]["xhot"]
             y = self.hotspots[key]["yhot"]
-            return OptionalHotspot(x, y)
+            return Hotspot(x, y)
         except KeyError:
-            return OptionalHotspot(x=None, y=None)
+            return Hotspot(x=None, y=None)
 
     def __relink_file(self, old: str, new: str) -> None:
         try:
@@ -179,7 +169,7 @@ class Bitmaps(PNG):
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
     def _seed_static_bitmaps(self) -> None:
-        main_curs: List[str] = super().static_pngs()
+        main_curs: List[str] = self.static_pngs()
 
         for c in main_curs:
             cursor = path.splitext(c)[0]
@@ -187,20 +177,18 @@ class Bitmaps(PNG):
             ren_c = self.db.smart_seed(cursor, hot)
             if ren_c:
                 # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
-                self.update_hotspots_key(ren_c.old, ren_c.new)
                 self.__relink_file(ren_c.old, ren_c.new)
             else:
                 continue
 
     def _seed_animated_bitmaps(self) -> None:
-        main_dict: Dict[str, List[str]] = super().animated_pngs()
+        main_dict: Dict[str, List[str]] = self.animated_pngs()
 
-        for g in main_dict:
+        for g in main_dict.keys():
             hot = self.get_hotspots(g)
             ren_c = self.db.smart_seed(g, hot)
             if ren_c:
                 # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
-                self.update_hotspots_key(ren_c.old, ren_c.new)
                 for png in main_dict[ren_c.old]:
                     pattern = "-(.*?).png"
                     frame: str = re.search(pattern, png).group(1)
@@ -237,7 +225,7 @@ class Bitmaps(PNG):
         x: int = int(round(size.width / 2))
         y: int = int(round(size.height / 2))
         try:
-            hot = OptionalHotspot(*node["hotspots"])
+            hot = Hotspot(*node["hotspots"])
             x: int = hot.x
             y: int = hot.y
             if not hot.x:
@@ -276,12 +264,9 @@ class Bitmaps(PNG):
 
         return Hotspot(x, y)
 
-    def _seed_windows_bitmaps(self) -> MappedBitmaps:
+    def _seed_windows_bitmaps(self) -> None:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
-
-        s_pngs: List[str] = []
-        a_pngs: Dict[str, List[str]] = {}
 
         for win_key, data in self.win_cursors.items():
             x_key: str = data.get("xcursor")
@@ -291,8 +276,7 @@ class Bitmaps(PNG):
             # Replace to original png file, If "symlink cursor" provided in `win_cfg`
             symlink = self.db.cursor_node_by_symlink(x_key)
             if symlink != None:
-                name: str = symlink["name"]
-                x_png = f"{name}.png"
+                x_png = f"{symlink.name}.png"
 
             placement: str = (
                 data.get("placement") if data.get("placement") != None else "center"
@@ -305,7 +289,6 @@ class Bitmaps(PNG):
 
                 # Creating Windows cursor bitmap
                 hotspot = self.create_win_bitmap(src, dest, placement)
-                s_pngs.append(win_png)
 
                 # Insert Windows Cursors data to database
                 self.db.seed(win_key, hotspot)
@@ -313,26 +296,20 @@ class Bitmaps(PNG):
             # We know it's animated, Because pngs are filtered
             elif x_key in animated_pngs.keys():
                 pngs: List[str] = animated_pngs.get(x_key)
-                l: List[str] = []
                 hotspot: Hotspot = Hotspot(0, 0)
                 for png in pngs:
                     src: Path = self.x_bitmaps_dir / png
-                    cur: str = png.replace(png.split("-")[0], win_key)
+                    cur: str = png.replace(png.rsplit("-")[0], win_key)
                     dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
                     hotspot = self.create_win_bitmap(src, dest, placement)
-                    l.append(cur)
-                a_pngs[win_key] = l
 
                 # Insert Windows Cursors data to database
                 self.db.seed(win_key, hotspot)
 
             else:
                 raise FileNotFoundError(f"Unable to find '{x_key}' for '{win_key}'")
-
-        bitmaps: MappedBitmaps = MappedBitmaps(static=s_pngs, animated=a_pngs)
-        return bitmaps
 
     def win_bitmaps(self) -> MappedBitmaps:
         return self.bitmaps(self.win_bitmaps_dir)
