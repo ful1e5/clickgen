@@ -11,7 +11,7 @@ from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
 
-from .._typing import Hotspot, OptionalHotspot, RenameCursor
+from .._typing import DBDocument, Hotspot, RenameCursor
 
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],
@@ -194,7 +194,11 @@ class Database:
         prefix="clickgen_db_", suffix=".json"
     ).name
     db_cursors: List[str] = list(itertools.chain.from_iterable(cursor_groups))
-    __data_skeleton = {"name": "", "symlink": [], "hotspots": None}
+    __data_skeleton = {
+        "name": "",
+        "symlink": [],
+        "hotspots": Hotspot(None, None),
+    }
 
     def __init__(self) -> None:
         # Creating database file
@@ -205,7 +209,7 @@ class Database:
             self.db.close()
             os.remove(self.db)
 
-    def seed(self, cursor: str, hotspot: Union[OptionalHotspot, Hotspot]) -> None:
+    def seed(self, cursor: str, hotspot: Union[Hotspot, Hotspot]) -> None:
         group: List[str] = []
         data = self.__data_skeleton
 
@@ -234,7 +238,7 @@ class Database:
             pass
 
     def smart_seed(
-        self, cursor: str, hotspot: Union[OptionalHotspot, Hotspot]
+        self, cursor: str, hotspot: Union[Hotspot, Hotspot]
     ) -> Optional[RenameCursor]:
         if cursor not in self.db_cursors:
             match = self.match_string(cursor, self.db_cursors)
@@ -274,20 +278,32 @@ class Database:
                 f"'{cursor}' cursor's information not found in 'clickgen' database"
             )
 
-    def cursor_node_by_name(self, s: str) -> Optional[Document]:
-        """ Fetch one node from db by cursor `name`. """
-        node = self.db.search(where("name") == s)
+    def _type_node(self, node) -> DBDocument:
+        hd = node["hotspots"]
+        hotspot: Hotspot
+        hotspot = Hotspot(None, None)
+        if hd != [None, None]:
+            hotspot = Hotspot(x=hd[0], y=hd[1])
 
+        return DBDocument(name=node["name"], symlink=node["symlink"], hotspot=hotspot)
+
+    def cursor_node_by_name(self, s: str) -> Optional[DBDocument]:
+        """ Fetch one node from db by cursor `name`. """
+        node: Document = self.db.search(where("name") == s)
         if node:
-            return node[0]
+            node = node[0]
+            data = self._type_node(node)
+            return data
         else:
             return None
 
-    def cursor_node_by_symlink(self, s: str) -> Optional[Document]:
+    def cursor_node_by_symlink(self, s: str) -> Optional[DBDocument]:
         """ Fetch one node from db by cursors `symlinks`"""
-        node = self.db.search((where("symlink").any([s])))
+        node: Document = self.db.search((where("symlink").any([s])))
         if node:
-            return node[0]
+            node = node[0]
+            data = self._type_node(node)
+            return data
         else:
             return None
 

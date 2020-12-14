@@ -8,7 +8,7 @@ from typing import List, Optional
 
 from PIL import Image
 
-from .._typing import Hotspot, ImageSize, OptionalHotspot
+from .._typing import Hotspot, ImageSize, Hotspot
 
 
 class CursorConfig:
@@ -17,13 +17,13 @@ class CursorConfig:
     cfg_file: Path = Path()
     cursor: str = ""
     sizes: List[ImageSize]
-    hotspot: OptionalHotspot
+    hotspot: Hotspot
     config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
 
     def __init__(
         self,
         bitmaps_dir: Path,
-        hotspot: OptionalHotspot,
+        hotspot: Hotspot,
         sizes: List[ImageSize],
         config_dir: Optional[Path] = None,
     ) -> None:

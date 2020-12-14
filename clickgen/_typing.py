@@ -8,13 +8,8 @@ JsonData = Dict[str, Dict[str, int]]
 
 
 class Hotspot(NamedTuple):
-    x: int
-    y: int
-
-
-class OptionalHotspot(NamedTuple):
-    x: Optional[int]
-    y: Optional[int]
+    x: Optional[int] = None
+    y: Optional[int] = None
 
 
 class ImageSize(NamedTuple):
@@ -30,6 +25,12 @@ class RenameCursor(NamedTuple):
 class MappedBitmaps(NamedTuple):
     static: List[str]
     animated: Dict[str, List[str]]
+
+
+class DBDocument(NamedTuple):
+    name: str
+    symlink: List[str]
+    hotspot: Hotspot
 
 
 WindowsCursorsConfig = Dict[str, Dict[str, str]]
