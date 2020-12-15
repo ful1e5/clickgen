@@ -1,18 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from io import BufferedReader, BufferedWriter, BytesIO
 import io
 import math
-from os import makedirs, path, remove
 import shlex
-from pathlib import Path
 import struct
 import sys
+from io import BufferedReader, BufferedWriter, BytesIO
+from os import makedirs, path, remove
+from pathlib import Path
 from typing import Any, List, Literal, NamedTuple, Optional, Tuple
 
-from PIL import Image
-from PIL import ImageFilter
+from PIL import Image, ImageFilter
 
 p = struct.pack
 

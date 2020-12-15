@@ -3,7 +3,6 @@
 
 from typing import Dict, List, NamedTuple, Optional
 
-
 JsonData = Dict[str, Dict[str, int]]
 
 

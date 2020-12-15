@@ -12,14 +12,7 @@ from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 from PIL import Image, ImageFilter
 
 from .._constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS
-from .._typing import (
-    Hotspot,
-    ImageSize,
-    JsonData,
-    MappedBitmaps,
-    Hotspot,
-    WindowsCursorsConfig,
-)
+from .._typing import Hotspot, ImageSize, JsonData, MappedBitmaps, WindowsCursorsConfig
 from .db import Database
 
 

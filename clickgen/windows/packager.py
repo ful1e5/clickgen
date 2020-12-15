@@ -3,7 +3,7 @@
 
 from pathlib import Path, PosixPath
 from string import Template
-from typing import Generator, List
+from typing import List
 
 from ..configs import ThemeInfo
 

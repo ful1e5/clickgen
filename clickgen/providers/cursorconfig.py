@@ -8,7 +8,7 @@ from typing import List, Optional
 
 from PIL import Image
 
-from .._typing import Hotspot, ImageSize, Hotspot
+from .._typing import Hotspot, ImageSize
 
 
 class CursorConfig:
