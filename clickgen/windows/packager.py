@@ -70,7 +70,7 @@ class WinPackager:
     info: ThemeInfo = ThemeInfo(theme_name="Unknown", author="clickgen")
     cursors: List[PosixPath] = []
 
-    def __init__(self, dir: Path, info: ThemeInfo) -> None:
+    def __init__(self, dir: Path, info: ThemeInfo, cursors: List[str]) -> None:
         self.dir = dir
         self.info: ThemeInfo = info
 
@@ -80,6 +80,10 @@ class WinPackager:
 
         if not self.cursors:
             raise FileNotFoundError(f"Windows cursors not found in {self.dir}")
+        else:
+            for c in self.cursors:
+                if not c.stem in cursors:
+                    raise FileNotFoundError(f"'{c.name}' not found")
 
     def save(self) -> None:
         """ Make Windows cursors directory installable. """
@@ -94,7 +98,7 @@ class WinPackager:
             author=self.info.author,
         )
 
-        # Change cursor .cur or .ani according to cursor files provided.
+        # Change cursors extension (.cur||.ani) according to cursor files provided.
         for p in self.cursors:
             if p.name in data:
                 continue

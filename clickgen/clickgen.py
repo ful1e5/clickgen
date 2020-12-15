@@ -123,7 +123,7 @@ def create_theme(config: Config):
         ).create_animated(key, pngs, delay=3)
         WinCursorBuilder(cfg_file, wtmp).generate()
 
-    WinPackager(wtmp, info).save()
+    WinPackager(wtmp, info, cursors=bits.win_cursors.keys()).save()
 
     if not sett.out_dir.exists():
         os.makedirs(sett.out_dir)
