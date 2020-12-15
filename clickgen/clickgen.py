@@ -3,15 +3,13 @@
 
 import os
 import shutil
-import sys
 import tempfile
-from contextlib import contextmanager
 from pathlib import Path
 from typing import List
 
 from ._constants import WIN_BITMAPS_SIZE
 from ._typing import ImageSize
-from ._util import remove
+from ._util import goto_cursors_dir, remove
 from .configs import Config, ThemeInfo, ThemeSettings
 from .providers.bitmaps import Bitmaps
 from .providers.cursorconfig import CursorConfig
@@ -19,20 +17,6 @@ from .windows.builder import WinCursorBuilder
 from .windows.packager import WinPackager
 from .x11.builder import XCursorBuilder
 from .x11.packager import XPackager
-
-
-@contextmanager
-def goto_cursors_dir(dir: Path):
-    """ Temporary change directory to `cursors` using contextmanager. """
-
-    CWD = os.getcwd()
-    os.chdir(dir.absolute())
-    try:
-        yield
-    except:
-        raise Exception(f" Exception caught: {sys.exc_info()[0]}")
-    finally:
-        os.chdir(CWD)
 
 
 def link_missing_cursors(cursors_dir: Path, root: str, symlink: List[str]) -> None:
