@@ -85,7 +85,7 @@ class Bitmaps(PNG):
     db: Database = Database()
     hotspots: JsonData = {}
 
-    win_cursors: WindowsCursorsConfig = WIN_CURSORS
+    win_cursors_cfg: WindowsCursorsConfig = WIN_CURSORS
     win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
     win_cursors_size: ImageSize = WIN_CURSOR_SIZE
 
@@ -97,7 +97,7 @@ class Bitmaps(PNG):
         self,
         bitmap_dir: Path,
         hotspots: JsonData,
-        win_cursors: Optional[WindowsCursorsConfig],
+        win_cursors_cfg: Optional[WindowsCursorsConfig],
         win_cursors_size: Optional[ImageSize] = None,
         win_bitmaps_size: Optional[ImageSize] = None,
         valid_src: bool = False,
@@ -108,14 +108,14 @@ class Bitmaps(PNG):
         self.using_tmp_dir = not valid_src
 
         # Setting Windows Cursors settings
-        if win_cursors:
-            self.win_cursors: WindowsCursorsConfig = win_cursors
+        if win_cursors_cfg:
+            self.win_cursors_cfg: WindowsCursorsConfig = win_cursors_cfg
         if win_bitmaps_size:
             self.win_cursors_size = win_bitmaps_size
         if win_cursors_size:
             self.win_cursors_size = win_cursors_size
 
-        self.__entry_win_info(list(self.win_cursors.keys()))
+        self.__entry_win_info(list(self.win_cursors_cfg.keys()))
 
         # Cursor validation
         if valid_src:
@@ -130,9 +130,9 @@ class Bitmaps(PNG):
         self.win_bitmaps_dir = Path(tempfile.mkdtemp(prefix="clickgen_win_bitmaps_"))
 
         # Seeding data to local database
-        self._seed_static_bitmaps()
-        self._seed_animated_bitmaps()
-        self._seed_windows_bitmaps()
+        self.__seed_static_bitmaps()
+        self.__seed_animated_bitmaps()
+        self.__seed_windows_bitmaps()
 
     def __entry_win_info(self, entry: Union[str, List[str]]) -> None:
         if isinstance(entry, str):
@@ -167,7 +167,7 @@ class Bitmaps(PNG):
         except Exception:
             raise Exception(f"Unavailable to rename cursor .png files '{old}'")
 
-    def _seed_static_bitmaps(self) -> None:
+    def __seed_static_bitmaps(self) -> None:
         main_curs: List[str] = self.static_pngs()
 
         for c in main_curs:
@@ -180,7 +180,7 @@ class Bitmaps(PNG):
             else:
                 continue
 
-    def _seed_animated_bitmaps(self) -> None:
+    def __seed_animated_bitmaps(self) -> None:
         main_dict: Dict[str, List[str]] = self.animated_pngs()
 
         for g in main_dict.keys():
@@ -263,11 +263,11 @@ class Bitmaps(PNG):
 
         return Hotspot(x, y)
 
-    def _seed_windows_bitmaps(self) -> None:
+    def __seed_windows_bitmaps(self) -> None:
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
-        for win_key, data in self.win_cursors.items():
+        for win_key, data in self.win_cursors_cfg.items():
             x_key: str = data.get("xcursor")
             x_png: str = f"{x_key}.png"
             win_png: str = f"{win_key}.png"

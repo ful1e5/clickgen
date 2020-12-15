@@ -13,12 +13,13 @@ from .._typing import Hotspot, ImageSize, Hotspot
 
 class CursorConfig:
     bitmaps_dir: Path = Path()
+    hotspot: Hotspot
+    sizes: List[ImageSize]
+    config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
+
     src_png: Path = Path()
     cfg_file: Path = Path()
     cursor: str = ""
-    sizes: List[ImageSize]
-    hotspot: Hotspot
-    config_dir: Path = Path(tempfile.mkdtemp(prefix="clickgen_"))
 
     def __init__(
         self,
@@ -122,15 +123,14 @@ class CursorConfig:
         lines: List[str] = []
 
         for size in self.sizes:
+            # Creating .in file line
             hotspot: Hotspot = self.resize_cursor(size)
+            line: str = f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.src_png.name}"
+
             if delay:
-                lines.append(
-                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.src_png.name} {delay}\n"
-                )
+                lines.append(f"{line} {delay}\n")
             else:
-                lines.append(
-                    f"{size.width} {hotspot.x} {hotspot.y} {size.width}x{size.height}/{self.src_png.name}\n"
-                )
+                lines.append(f"{line}\n")
 
         return lines
 
@@ -145,6 +145,6 @@ class CursorConfig:
         lines: List[str] = []
         for png in pngs:
             self.set_cursor_info(png, key)
-            lines.extend(self.prepare_cfg_file(delay))
+            lines.extend(self.prepare_cfg_file(delay=delay))
         self.write_cfg_file(lines)
         return self.cfg_file

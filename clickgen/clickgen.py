@@ -62,7 +62,7 @@ def create_theme(config: Config):
     bits = Bitmaps(
         sett.bitmaps_dir.absolute(),
         hotspots=sett.hotspots,
-        win_cursors=sett.windows_cfg,
+        win_cursors_cfg=sett.windows_cfg,
     )
 
     # Creating 'XCursors'
@@ -123,7 +123,7 @@ def create_theme(config: Config):
         ).create_animated(key, pngs, delay=3)
         WinCursorBuilder(cfg_file, wtmp).generate()
 
-    WinPackager(wtmp, info, cursors=bits.win_cursors.keys()).save()
+    WinPackager(wtmp, info, cursors=bits.win_cursors_cfg.keys()).save()
 
     if not sett.out_dir.exists():
         os.makedirs(sett.out_dir)
