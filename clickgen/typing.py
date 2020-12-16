@@ -4,7 +4,12 @@
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional
 
+
+# ***** Importants *****
+
+
 JsonData = Dict[str, Dict[str, int]]
+WindowsCursorsConfig = Dict[str, Dict[str, str]]
 
 
 class ThemeInfo(NamedTuple):
@@ -24,7 +29,10 @@ class ThemeSettings(NamedTuple):
     hotspots: JsonData
     animation_delay: int = 50
     out_dir: Path = Path.cwd()
-    windows_cfg: Optional[Dict[str, str]] = None
+    windows_cfg: Optional[WindowsCursorsConfig] = None
+
+
+# ***** Image Related *****
 
 
 class Hotspot(NamedTuple):
@@ -47,10 +55,11 @@ class MappedBitmaps(NamedTuple):
     animated: Dict[str, List[str]]
 
 
+# ***** Database Related *****
+
+
 class DBDocument(NamedTuple):
     name: str
     symlink: List[str]
     hotspot: Hotspot
 
-
-WindowsCursorsConfig = Dict[str, Dict[str, str]]
