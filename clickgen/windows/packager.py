@@ -5,7 +5,7 @@ from pathlib import Path, PosixPath
 from string import Template
 from typing import List
 
-from ..configs import ThemeInfo
+from clickgen.typing import ThemeInfo
 
 _inf_template = Template(
     """[Version]

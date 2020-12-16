@@ -9,17 +9,23 @@ from os import path
 from pathlib import Path
 from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 
+from clickgen.constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS_CFG
+from clickgen.typing import (
+    Hotspot,
+    ImageSize,
+    JsonData,
+    MappedBitmaps,
+    WindowsCursorsConfig,
+)
 from PIL import Image, ImageFilter
 
-from .._constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS
-from .._typing import Hotspot, ImageSize, JsonData, MappedBitmaps, WindowsCursorsConfig
 from .db import Database
 
 
 class PNG:
     """ Provide cursors bitmaps."""
 
-    bitmap_dir: Path = ""
+    bitmap_dir: Path
 
     def __init__(self, bitmaps_dir: Path) -> None:
         self.bitmap_dir = bitmaps_dir
@@ -78,7 +84,7 @@ class Bitmaps(PNG):
     db: Database = Database()
     hotspots: JsonData = {}
 
-    win_cursors_cfg: WindowsCursorsConfig = WIN_CURSORS
+    win_cursors_cfg: WindowsCursorsConfig = WIN_CURSORS_CFG
     win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
     win_cursors_size: ImageSize = WIN_CURSOR_SIZE
 
@@ -308,3 +314,8 @@ class Bitmaps(PNG):
 
     def x_bitmaps(self) -> MappedBitmaps:
         return self.bitmaps(self.x_bitmaps_dir)
+
+
+# %%
+
+# %%

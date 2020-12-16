@@ -6,15 +6,15 @@ from ctypes import CDLL
 from pathlib import Path
 from typing import Any, List
 
-from .. import __path__ as pkg_root
-from .._util import remove
+from clickgen import __path__ as clickgen_pkg_root
+from clickgen.util import remove
 
 
 class XCursorBuilder:
     """ Build X11 cursor from `.in` config file. """
 
     # main function ctypes define
-    _lib_location: Path = Path(pkg_root[0]) / "xcursorgen.so"
+    _lib_location: Path = Path(clickgen_pkg_root[0]) / "xcursorgen.so"
     _lib: CDLL = CDLL(_lib_location)
     _LP_c_char = ctypes.POINTER(ctypes.c_char)
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)

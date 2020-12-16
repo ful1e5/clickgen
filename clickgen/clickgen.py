@@ -7,16 +7,16 @@ import tempfile
 from pathlib import Path
 from typing import List
 
-from ._constants import WIN_BITMAPS_SIZE
-from ._typing import ImageSize
-from ._util import goto_cursors_dir, remove
-from .configs import Config, ThemeInfo, ThemeSettings
-from .providers.bitmaps import Bitmaps
-from .providers.cursorconfig import CursorConfig
-from .windows.builder import WinCursorBuilder
-from .windows.packager import WinPackager
-from .x11.builder import XCursorBuilder
-from .x11.packager import XPackager
+from clickgen.config import Config
+from clickgen.constants import WIN_BITMAPS_SIZE
+from clickgen.providers.bitmaps import Bitmaps
+from clickgen.providers.cursorconfig import CursorConfig
+from clickgen.typing import ImageSize, ThemeInfo, ThemeSettings
+from clickgen.util import goto_cursors_dir, remove
+from clickgen.windows.builder import WinCursorBuilder
+from clickgen.windows.packager import WinPackager
+from clickgen.x11.builder import XCursorBuilder
+from clickgen.x11.packager import XPackager
 
 
 def link_missing_cursors(cursors_dir: Path, root: str, symlink: List[str]) -> None:

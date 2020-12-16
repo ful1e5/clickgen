@@ -7,11 +7,10 @@ import tempfile
 from difflib import SequenceMatcher as SM
 from typing import List, Optional, Union
 
+from clickgen.typing import DBDocument, Hotspot, RenameCursor
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
-
-from .._typing import DBDocument, Hotspot, RenameCursor
 
 cursor_groups: List[List[str]] = [
     ["X_cursor", "x-cursor", "kill", "pirate"],

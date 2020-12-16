@@ -5,7 +5,7 @@ from pathlib import Path
 from string import Template
 from typing import Dict
 
-from ..configs import ThemeInfo
+from clickgen.typing import ThemeInfo
 
 
 class XPackager:

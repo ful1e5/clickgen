@@ -6,9 +6,8 @@ import tempfile
 from pathlib import Path
 from typing import List, Optional
 
+from clickgen.typing import Hotspot, ImageSize
 from PIL import Image
-
-from .._typing import Hotspot, ImageSize
 
 
 class CursorConfig:
