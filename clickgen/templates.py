@@ -5,7 +5,6 @@ from typing import Dict
 
 from string import Template
 
-# '.theme' extension tagged in `ref:XPackager` module
 
 THEME_FILES_TEMPLATES: Dict[str, Template] = {
     "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="hicolor"'),

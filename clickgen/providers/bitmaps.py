@@ -15,7 +15,7 @@ from clickgen.typing import (
     ImageSize,
     JsonData,
     MappedBitmaps,
-    WindowsCursorsConfig,
+    WindowsConfig,
 )
 from PIL import Image, ImageFilter
 
@@ -84,7 +84,7 @@ class Bitmaps(PNG):
     db: Database = Database()
     hotspots: JsonData = {}
 
-    win_cursors_cfg: WindowsCursorsConfig = WIN_CURSORS_CFG
+    win_cursors_cfg: WindowsConfig = WIN_CURSORS_CFG
     win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
     win_cursors_size: ImageSize = WIN_CURSOR_SIZE
 
@@ -96,7 +96,7 @@ class Bitmaps(PNG):
         self,
         bitmap_dir: Path,
         hotspots: JsonData,
-        win_cursors_cfg: Optional[WindowsCursorsConfig],
+        win_cursors_cfg: Optional[WindowsConfig],
         win_cursors_size: Optional[ImageSize] = None,
         win_bitmaps_size: Optional[ImageSize] = None,
         valid_src: bool = False,
@@ -108,7 +108,7 @@ class Bitmaps(PNG):
 
         # Setting Windows Cursors settings
         if win_cursors_cfg:
-            self.win_cursors_cfg: WindowsCursorsConfig = win_cursors_cfg
+            self.win_cursors_cfg: WindowsConfig = win_cursors_cfg
         if win_bitmaps_size:
             self.win_cursors_size = win_bitmaps_size
         if win_cursors_size:

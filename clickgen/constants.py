@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from clickgen.typing import WindowsCursorsConfig, ImageSize
+from clickgen.typing import WindowsConfig, ImageSize
 
-# -- Windows Bitmaps Constants
+# -- Windows bitmaps constants
 
-WIN_CURSORS_CFG: WindowsCursorsConfig = {
+WIN_CURSORS_CFG: WindowsConfig = {
     "Alternate": {"xcursor": "right_ptr", "placement": "top_left"},
     "Busy": {"xcursor": "wait"},
     "Cross": {"xcursor": "cross"},
