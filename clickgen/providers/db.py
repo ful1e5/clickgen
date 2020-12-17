@@ -4,10 +4,9 @@
 import itertools
 import os
 import tempfile
-from difflib import SequenceMatcher as SM
 from typing import List, Optional, Union
 
-from clickgen.typing import DBDocument, Hotspot, RenameCursor
+from clickgen.typing import DBDocument, Hotspot
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document
@@ -238,13 +237,17 @@ class Database:
 
     def smart_seed(
         self, cursor: str, hotspot: Union[Hotspot, Hotspot]
-    ) -> Optional[RenameCursor]:
+    ) -> Optional[str]:
+
+        # Importing "util" function from clickgen
+        from clickgen import util
+
         if cursor not in self.db_cursors:
-            match = self.match_string(cursor, self.db_cursors)
+            match = util.match_string(cursor, self.db_cursors)
 
             if match:
                 self.seed(match, hotspot)
-                return RenameCursor(old=cursor, new=match)
+                return match
             else:
                 self.seed(cursor, hotspot)
                 return None
@@ -303,22 +306,5 @@ class Database:
             node = node[0]
             data = self._type_node(node)
             return data
-        else:
-            return None
-
-    def match_string(self, s: str, l: List[str]) -> Optional[str]:
-        compare_ratio: float = 0.5
-        result: str = s
-
-        for e in l:
-            ratio: float = SM(None, s.lower(), e.lower()).ratio()
-            if ratio > compare_ratio:
-                compare_ratio = ratio
-                result = e
-            else:
-                continue
-
-        if s != result:
-            return result
         else:
             return None

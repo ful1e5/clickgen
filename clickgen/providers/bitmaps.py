@@ -172,27 +172,27 @@ class Bitmaps(PNG):
         for c in main_curs:
             cursor = path.splitext(c)[0]
             hot = self.get_hotspots(cursor)
-            ren_c = self.db.smart_seed(cursor, hot)
-            if ren_c:
-                # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'")
-                self.__relink_file(ren_c.old, ren_c.new)
+            rename_cursor = self.db.smart_seed(cursor, hot)
+            if rename_cursor:
+                print(f"-- Renaming '{cursor}' to '{rename_cursor}'")
+                self.__relink_file(cursor, rename_cursor)
             else:
                 continue
 
     def __seed_animated_bitmaps(self) -> None:
         main_dict: Dict[str, List[str]] = self.animated_pngs()
 
-        for g in main_dict.keys():
-            hot = self.get_hotspots(g)
-            ren_c = self.db.smart_seed(g, hot)
-            if ren_c:
-                # print(f"-- Renaming '{ren_c.old}' to '{ren_c.new}'...")
-                for png in main_dict[ren_c.old]:
+        for group, pngs in main_dict.items():
+            hot = self.get_hotspots(group)
+            rename_group = self.db.smart_seed(group, hot)
+            if rename_group:
+                print(f"-- Renaming '{group}' to '{rename_group}'...")
+                for png in pngs:
                     pattern = "-(.*?).png"
                     frame: str = re.search(pattern, png).group(1)
                     png = path.splitext(png)[0]
 
-                    cur = f"{ren_c.new}-{frame}"
+                    cur = f"{rename_group}-{frame}"
                     self.__relink_file(png, cur)
             else:
                 continue
@@ -314,8 +314,3 @@ class Bitmaps(PNG):
 
     def x_bitmaps(self) -> MappedBitmaps:
         return self.bitmaps(self.x_bitmaps_dir)
-
-
-# %%
-
-# %%

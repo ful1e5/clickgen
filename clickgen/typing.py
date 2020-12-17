@@ -68,11 +68,6 @@ class ImageSize(NamedTuple):
     height: int
 
 
-class RenameCursor(NamedTuple):
-    old: str
-    new: str
-
-
 class MappedBitmaps(NamedTuple):
     static: List[str]
     animated: Dict[str, List[str]]
