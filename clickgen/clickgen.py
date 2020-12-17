@@ -9,7 +9,7 @@ from typing import List
 
 from clickgen.constants import WIN_BITMAPS_SIZE
 from clickgen.providers.bitmaps import Bitmaps
-from clickgen.providers.cursorconfig import CursorConfig
+from clickgen.providers.config import CursorConfig
 from clickgen.typing import Config, ImageSize, ThemeInfo, ThemeSettings
 from clickgen.util import goto_cursors_dir, remove
 from clickgen.windows.builder import WinCursorBuilder
