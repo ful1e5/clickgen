@@ -1,11 +1,11 @@
 import json
 from pathlib import Path
 
-from clickgen.clickgen import create_theme
-from clickgen.typing.core import Config, ThemeInfo, ThemeSettings
+from clickgen import clickgen
+from clickgen.typing.core import Config, ThemeInfo, ThemeSettings, JsonData
 
 with open("./hotspots.json", "r") as hotspot_file:
-    hotspots = json.loads(hotspot_file.read())
+    hotspots: JsonData = json.loads(hotspot_file.read())
 
 info: ThemeInfo = ThemeInfo(theme_name="BQ", author="Kaiz Khatri")
 bitmap_dir = Path("./bitmaps")
@@ -20,4 +20,4 @@ sett: ThemeSettings = ThemeSettings(
 )
 cfg: Config = Config(info, sett)
 
-create_theme(cfg)
+clickgen.create_theme(cfg)
