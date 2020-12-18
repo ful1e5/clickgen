@@ -2,14 +2,23 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
-from typing import Dict, List, NamedTuple, Optional
+from typing import Dict, List, Literal, NamedTuple, Optional
 
-
-# ***** Importants *****
-
+from clickgen.typing.image import ImageSize
 
 JsonData = Dict[str, Dict[str, int]]
-WindowsConfig = Dict[str, Dict[str, str]]
+
+
+class WinConfigData(NamedTuple):
+    x_cursor: str
+    size: ImageSize = ImageSize(24, 24)
+    placement: Literal[
+        "top_left", "top_right", "bottom_right", "bottom_right", "center"
+    ] = "center"
+    bitmap_size: ImageSize = ImageSize(32, 32)
+
+
+WindowsConfig = Dict[str, WinConfigData]
 
 
 class ThemeInfo(NamedTuple):
@@ -53,30 +62,3 @@ class Config:
         )
 
         self.settings: ThemeSettings = settings
-
-
-# ***** Image Related *****
-
-
-class Hotspot(NamedTuple):
-    x: Optional[int] = None
-    y: Optional[int] = None
-
-
-class ImageSize(NamedTuple):
-    width: int
-    height: int
-
-
-class MappedBitmaps(NamedTuple):
-    static: List[str]
-    animated: Dict[str, List[str]]
-
-
-# ***** Database Related *****
-
-
-class DBDocument(NamedTuple):
-    name: str
-    symlink: List[str]
-    hotspot: Hotspot
