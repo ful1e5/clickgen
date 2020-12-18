@@ -9,14 +9,9 @@ from os import path
 from pathlib import Path
 from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 
-from clickgen.constants import WIN_BITMAPS_SIZE, WIN_CURSOR_SIZE, WIN_CURSORS_CFG
-from clickgen.typing import (
-    Hotspot,
-    ImageSize,
-    JsonData,
-    MappedBitmaps,
-    WindowsConfig,
-)
+from clickgen.constants import WIN_CURSORS_CFG
+from clickgen.typing.core import JsonData, WinConfigData, WindowsConfig
+from clickgen.typing.image import Hotspot, ImageSize, MappedBitmaps
 from PIL import Image, ImageFilter
 
 from .db import Database
@@ -84,9 +79,7 @@ class Bitmaps(PNG):
     db: Database = Database()
     hotspots: JsonData = {}
 
-    win_cursors_cfg: WindowsConfig = WIN_CURSORS_CFG
-    win_bitmaps_size: ImageSize = WIN_BITMAPS_SIZE
-    win_cursors_size: ImageSize = WIN_CURSOR_SIZE
+    win_cursors_cfg: WindowsConfig
 
     x_bitmaps_dir: Path = Path()
     win_bitmaps_dir: Path = Path()
@@ -97,8 +90,6 @@ class Bitmaps(PNG):
         bitmap_dir: Path,
         hotspots: JsonData,
         win_cursors_cfg: Optional[WindowsConfig],
-        win_cursors_size: Optional[ImageSize] = None,
-        win_bitmaps_size: Optional[ImageSize] = None,
         valid_src: bool = False,
         db: Database = Database(),
     ) -> None:
@@ -107,12 +98,8 @@ class Bitmaps(PNG):
         self.using_tmp_dir = not valid_src
 
         # Setting Windows Cursors settings
-        if win_cursors_cfg:
-            self.win_cursors_cfg: WindowsConfig = win_cursors_cfg
-        if win_bitmaps_size:
-            self.win_cursors_size = win_bitmaps_size
-        if win_cursors_size:
-            self.win_cursors_size = win_cursors_size
+        if not win_cursors_cfg:
+            self.win_cursors_cfg: WindowsConfig = WIN_CURSORS_CFG
 
         self.__entry_win_info(list(self.win_cursors_cfg.keys()))
 
@@ -199,14 +186,11 @@ class Bitmaps(PNG):
 
     def _canvas_cursor_cords(
         self,
-        image: ImageSize,
-        placement: Literal[
-            "top_left", "top_right", "bottom_right", "bottom_right", "center"
-        ] = "center",
+        data: WinConfigData,
     ) -> Tuple[int, int]:
 
-        x = WIN_BITMAPS_SIZE.width - image.width
-        y = WIN_BITMAPS_SIZE.height - image.height
+        x = data.bitmap_size.width - data.size.width
+        y = data.bitmap_size.height - data.size.height
 
         switch = {
             "top_left": (0, 0),
@@ -216,12 +200,12 @@ class Bitmaps(PNG):
             "center": (round(x / 2), round(y / 2)),
         }
 
-        return switch.get(placement, "center")
+        return switch.get(data.placement)
 
-    def fetch_x_cursor_hotspot(self, x_key: str, size: ImageSize) -> Hotspot:
-        node = self.db.cursor_node_by_name(x_key)
-        x: int = int(round(size.width / 2))
-        y: int = int(round(size.height / 2))
+    def fetch_x_cursor_hotspot(self, data: WinConfigData) -> Hotspot:
+        node = self.db.cursor_node_by_name(data.x_cursor)
+        x: int = int(round(data.size.width / 2))
+        y: int = int(round(data.size.height / 2))
         try:
             hot = Hotspot(*node["hotspots"])
             x: int = hot.x
@@ -235,30 +219,28 @@ class Bitmaps(PNG):
             return Hotspot(x, y)
 
     def create_win_bitmap(
-        self, src_p: Union[str, Path], out_p: Union[str, Path], placement: str
+        self,
+        src_p: Union[str, Path],
+        out_p: Union[str, Path],
+        data: WinConfigData,
     ) -> Hotspot:
 
-        canvas: Image = Image.new("RGBA", self.win_bitmaps_size, (255, 0, 0, 0))
-        box = self._canvas_cursor_cords(self.win_cursors_size, placement)
+        canvas: Image = Image.new("RGBA", data.bitmap_size, (255, 0, 0, 0))
+        box = self._canvas_cursor_cords(data)
 
         image: Image = Image.open(src_p)
         image_size: ImageSize = ImageSize(width=image.size[0], height=image.size[1])
 
-        cursor: Image = image.resize(self.win_cursors_size, Image.LANCZOS).filter(
+        cursor: Image = image.resize(data.size, Image.LANCZOS).filter(
             ImageFilter.SHARPEN
         )
         canvas.paste(cursor, box, cursor)
         canvas.save(out_p, compress_level=0)
 
         # Calculate Hotspot
-        x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(src_p.stem, image_size)
-        x: int = int(
-            round(self.win_cursors_size.width / image_size.width * x_hotspot.x) + box[0]
-        )
-        y: int = int(
-            round(self.win_cursors_size.height / image_size.height * x_hotspot.y)
-            + box[1]
-        )
+        x_hotspot: Hotspot = self.fetch_x_cursor_hotspot(data)
+        x: int = int(round(data.size.width / image_size.width * x_hotspot.x) + box[0])
+        y: int = int(round(data.size.height / image_size.height * x_hotspot.y) + box[1])
 
         return Hotspot(x, y)
 
@@ -266,8 +248,8 @@ class Bitmaps(PNG):
         static_pngs: List[str] = self.static_pngs()
         animated_pngs: Dict[str, List[str]] = self.animated_pngs()
 
-        for win_key, data in self.win_cursors_cfg.items():
-            x_key: str = data.get("xcursor")
+        for win_key, config in self.win_cursors_cfg.items():
+            x_key: str = config.x_cursor
             x_png: str = f"{x_key}.png"
             win_png: str = f"{win_key}.png"
 
@@ -276,17 +258,13 @@ class Bitmaps(PNG):
             if symlink != None:
                 x_png = f"{symlink.name}.png"
 
-            placement: str = (
-                data.get("placement") if data.get("placement") != None else "center"
-            )
-
             # checking it's really static png!
             if x_png in static_pngs:
                 src: Path = self.x_bitmaps_dir / x_png
                 dest: Path = self.win_bitmaps_dir / win_png
 
-                # Creating Windows cursor bitmap,1
-                hotspot = self.create_win_bitmap(src, dest, placement)
+                # Creating Windows cursor bitmap
+                hotspot = self.create_win_bitmap(src, dest, config)
 
                 # Insert Windows Cursors data to database
                 self.db.seed(win_key, hotspot)
@@ -301,7 +279,7 @@ class Bitmaps(PNG):
                     dest: Path = self.win_bitmaps_dir / cur
 
                     # Creating Windows cursor bitmap
-                    hotspot = self.create_win_bitmap(src, dest, placement)
+                    hotspot = self.create_win_bitmap(src, dest, config)
 
                 # Insert Windows Cursors data to database
                 self.db.seed(win_key, hotspot)

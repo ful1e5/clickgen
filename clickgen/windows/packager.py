@@ -5,7 +5,7 @@ from pathlib import Path, PosixPath
 from typing import List
 
 from clickgen.templates import INSTALL_INF
-from clickgen.typing import ThemeInfo
+from clickgen.typing.core import ThemeInfo
 
 
 class WinPackager:

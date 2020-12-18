@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import Dict
-
 from string import Template
-
+from typing import Dict
 
 THEME_FILES_TEMPLATES: Dict[str, Template] = {
     "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="hicolor"'),

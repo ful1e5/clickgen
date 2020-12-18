@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from clickgen.clickgen import create_theme
-from clickgen.typing import Config, ThemeInfo, ThemeSettings
+from clickgen.typing.core import Config, ThemeInfo, ThemeSettings
 
 with open("./hotspots.json", "r") as hotspot_file:
     hotspots = json.loads(hotspot_file.read())
