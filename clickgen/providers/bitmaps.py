@@ -161,7 +161,7 @@ class Bitmaps(PNG):
             hot = self.get_hotspots(cursor)
             rename_cursor = self.db.smart_seed(cursor, hot)
             if rename_cursor:
-                print(f"-- Renaming '{cursor}' to '{rename_cursor}'")
+                # print(f"-- Renaming '{cursor}' to '{rename_cursor}'")
                 self.__relink_file(cursor, rename_cursor)
             else:
                 continue
@@ -173,7 +173,7 @@ class Bitmaps(PNG):
             hot = self.get_hotspots(group)
             rename_group = self.db.smart_seed(group, hot)
             if rename_group:
-                print(f"-- Renaming '{group}' to '{rename_group}'...")
+                # print(f"-- Renaming '{group}' to '{rename_group}'...")
                 for png in pngs:
                     pattern = "-(.*?).png"
                     frame: str = re.search(pattern, png).group(1)
