@@ -4,7 +4,7 @@
 from pathlib import Path
 from typing import Dict, List, Literal, NamedTuple, Optional
 
-from clickgen.typing.image import ImageSize
+from clickgen.Type.image import ImageSize
 
 JsonData = Dict[str, Dict[str, int]]
 

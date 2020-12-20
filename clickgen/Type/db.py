@@ -3,7 +3,7 @@
 
 from typing import List, NamedTuple
 
-from clickgen.typing.image import Hotspot
+from clickgen.Type.image import Hotspot
 
 
 class DBDocument(NamedTuple):
