@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from clickgen.typing.core import WindowsConfig, ImageSize, WinConfigData
+from clickgen.Type.core import WindowsConfig, ImageSize, WinConfigData
 
 # -- Windows bitmaps constants
 WIN_BITMAPS_SIZE: ImageSize = ImageSize(width=32, height=32)

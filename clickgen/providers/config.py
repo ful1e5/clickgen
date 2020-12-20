@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 from typing import List, Optional
 
-from clickgen.typing.image import Hotspot, ImageSize
+from clickgen.Type.image import Hotspot, ImageSize
 from PIL import Image
 
 

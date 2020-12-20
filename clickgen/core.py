@@ -4,14 +4,14 @@
 import os
 import shutil
 import tempfile
-from pathlib import Path, PurePath
-from typing import List, Sequence, Union
+from pathlib import Path
+from typing import List
 
 from clickgen.constants import WIN_BITMAPS_SIZE
 from clickgen.providers.bitmaps import Bitmaps
 from clickgen.providers.config import CursorConfig
-from clickgen.typing.core import Config, ThemeInfo, ThemeSettings
-from clickgen.typing.image import ImageSize
+from clickgen.Type.core import Config, ThemeInfo, ThemeSettings
+from clickgen.Type.image import ImageSize
 from clickgen.util import goto_cursors_dir, remove
 from clickgen.windows.builder import WinCursorBuilder
 from clickgen.windows.packager import WinPackager
@@ -123,31 +123,3 @@ def create_theme(config: Config):
     bits.remove_tmp_bitmaps()
     shutil.rmtree(xtmp)
     shutil.rmtree(wtmp)
-
-
-_P = Union[str, Path]
-_PSequence = List[_P]
-
-PurePath
-
-
-class CursorBitmap:
-    animated: bool
-    png: Path
-    cursor_key: str
-    pngs: List[Path] = []
-
-    def __init__(self, png: Union[_P, _PSequence]) -> None:
-        if isinstance(png, str) or isinstance(png, Path):
-            self.animated = False
-            self.png = Path(png)
-            self.cursor_key = self.png.stem
-        elif isinstance(png, list):
-            for p in png.sort():
-                self.pngs.append(Path(p))
-            self.animated = True
-            self.cursor_key = self.pngs[0].stem.rsplit("-", 1)
-        else:
-            raise Exception(
-                f"CursorBitmap: Unable to parse argument 'png' with Type {type(png)}"
-            )

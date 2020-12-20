@@ -6,8 +6,8 @@ import os
 import tempfile
 from typing import List, Optional, Union
 
-from clickgen.typing.db import DBDocument
-from clickgen.typing.image import Hotspot
+from clickgen.Type.db import DBDocument
+from clickgen.Type.image import Hotspot
 from tinydb import TinyDB
 from tinydb.queries import where
 from tinydb.table import Document

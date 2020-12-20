@@ -4,7 +4,7 @@
 from pathlib import Path
 from typing import Dict
 
-from clickgen.typing.core import ThemeInfo
+from clickgen.Type.core import ThemeInfo
 from clickgen.templates import THEME_FILES_TEMPLATES
 
 

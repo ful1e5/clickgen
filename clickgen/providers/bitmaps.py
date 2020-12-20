@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import Callable, Dict, List, Literal, Optional, Set, Tuple, Union
 
 from clickgen.constants import WIN_CURSORS_CFG
-from clickgen.typing.core import JsonData, WinConfigData, WindowsConfig
-from clickgen.typing.image import Hotspot, ImageSize, MappedBitmaps
+from clickgen.Type.core import JsonData, WinConfigData, WindowsConfig
+from clickgen.Type.image import Hotspot, ImageSize, MappedBitmaps
 from PIL import Image, ImageFilter
 
 from .db import Database
