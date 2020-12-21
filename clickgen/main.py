@@ -3,9 +3,9 @@
 
 from os import PathLike
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, TypeVar, Union
 
-_P = Union[str, Path, PathLike]
+_P = TypeVar("_P", str, Path, PathLike)
 
 
 class Bmp(object):
@@ -16,8 +16,8 @@ class Bmp(object):
 
     def __init__(self, png: Union[_P, List[_P]], key: Optional[str] = None) -> None:
 
-        # Is png == str|Path        => 'static' bitmap
-        # Or png == [str|Path]      => 'animated' bitmap
+        # Is png == _P        => 'static' bitmap
+        # Or png == [_P]      => 'animated' bitmap
         # else TypeError()
 
         if isinstance(png, str) or isinstance(png, Path):
@@ -48,6 +48,15 @@ class Bmp(object):
             raise FileNotFoundError(
                 f"Not a such file '{path.name}' in '{path.parent.absolute()}'"
             )
+
+        # Supported bitmap extension
+        # => *.png
+        # =>
+        ext: str = path.suffix
+        if ext != ".png":
+            raise IOError(
+                f"{self.__class__} only supports '.png' bitmaps type, not '{ext}'"
+            )
         return path
 
     def __set_key(self, p: Path, check: bool) -> None:
@@ -70,3 +79,6 @@ class Bmp(object):
                 self.key = k
         else:
             self.key = p.stem
+
+
+print(Bmp("a000.a").key)
