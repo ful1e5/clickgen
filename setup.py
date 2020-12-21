@@ -38,7 +38,7 @@ setup(
     packages=[
         "clickgen",
         "clickgen.providers",
-        "clickgen.typing",
+        "clickgen.Type",
         "clickgen.windows",
         "clickgen.x11",
     ],
