@@ -3,7 +3,7 @@
 
 from os import PathLike
 from pathlib import Path
-from typing import List, Union
+from typing import List, Optional, Union
 
 _P = Union[str, Path, PathLike]
 
@@ -11,16 +11,25 @@ _P = Union[str, Path, PathLike]
 class Bmp(object):
     animated: bool
     png: Path
-    grouped_png: List[Path] = []
+    grouped_png: List[Path]
     key: str
 
-    def __init__(self, png: Union[_P, List[_P]]) -> None:
+    def __init__(self, png: Union[_P, List[_P]], key: Optional[str] = None) -> None:
+
+        # Is png == str|Path        => 'static' bitmap
+        # Or png == [str|Path]      => 'animated' bitmap
+        # else TypeError()
+
         if isinstance(png, str) or isinstance(png, Path):
             self.png = self.__get_Path(png)
             self.__set_key(self.png, check=False)
             self.animated = False
 
         elif isinstance(png, list):
+            if key:
+                self.key, _ = key.rsplit("-", 1)
+
+            self.grouped_png = []
             for index, p in enumerate(png):
                 self.grouped_png.append(self.__get_Path(p))
                 self.__set_key(self.grouped_png[index], check=True)
@@ -42,27 +51,22 @@ class Bmp(object):
         return path
 
     def __set_key(self, p: Path, check: bool) -> None:
-        def key(s: str) -> str:
+        if check:
             try:
-                k, value = s.rsplit("-", 1)
+                k, _ = p.stem.rsplit("-", 1)
             except ValueError:
                 raise ValueError(
-                    f"Invalid Bitmap name '{s}': Grouped Bitmaps must-have frame number followed by '-'. Like 'bitmap-001.png'"
+                    f"Invalid Bitmap name '{p.name}': Grouped Bitmaps must-have frame number followed by '-'. Like 'bitmap-000.png'"
                 ) from None
 
-            return k
-
-        k: str = key(p.name)
-
-        try:
-            if check and self.key != k:
-                raise IOError(
-                    "Bitmaps group's key not matched, Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-001.png','image-002.png' "
-                )
-            else:
+            try:
+                if self.key != k:
+                    raise IOError(
+                        f"Bitmap '{p.name}' not matched with key '{self.key}'. Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-000.png','bitmap-001.png' "
+                    )
+                else:
+                    self.key = k
+            except AttributeError as e:
                 self.key = k
-        except AttributeError as e:
-            self.key = k
-
-
-print(Bmp(["a-002.png", "a.png", "a-003.png"]).grouped_png[0].absolute())
+        else:
+            self.key = p.stem
