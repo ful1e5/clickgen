@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from copy import deepcopy
+from itertools import compress
 from os import PathLike
 from pathlib import Path
 from typing import List, Literal, Optional, TypeVar, Union
@@ -90,11 +91,18 @@ class Bmp(object):
             return self.png
 
     def resize(
-        self, width: int, height: int, resample: Optional[int] = Img.BICUBIC
-    ) -> Union[Image, List[Image]]:
+        self,
+        width: int,
+        height: int,
+        save: bool = False,
+        resample: int = Img.NONE,
+    ) -> Optional[Union[Image, List[Image]]]:
         def __resize(p: Path) -> Image:
             img: Image = Img.open(p)
             img.resize((width, height), resample=resample)
+
+            if save:
+                img.save(p, compress=0)
             return img
 
         try:
@@ -102,11 +110,17 @@ class Bmp(object):
             for png in self.grouped_png:
                 img: Image = __resize(png)
                 images.append(img)
-            return images
+            if not save:
+                return images
+            else:
+                return None
 
         except AttributeError:
             img: Image = __resize(self.png)
-            return img
+            if not save:
+                return img
+            else:
+                return None
 
     @classmethod
     def rename(cls, obj: "Bmp", key: str) -> "Bmp":
