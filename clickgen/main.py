@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from build.lib.clickgen.Type.image import ImageSize
 from os import PathLike
 from pathlib import Path
-from typing import List, Optional, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, TypeVar, Union
+
+from PIL.Image import Image
 
 _P = TypeVar("_P", str, Path, PathLike)
 
@@ -21,8 +24,8 @@ class Bmp(object):
         # else TypeError()
 
         if isinstance(png, str) or isinstance(png, Path):
-            self.png = self.__get_Path(png)
-            self.__set_key(self.png, check=False)
+            self.png = self._get_Path(png)
+            self._set_key(self.png, check=False)
             self.animated = False
 
         elif isinstance(png, list):
@@ -31,8 +34,8 @@ class Bmp(object):
 
             self.grouped_png = []
             for index, p in enumerate(png):
-                self.grouped_png.append(self.__get_Path(p))
-                self.__set_key(self.grouped_png[index], check=True)
+                self.grouped_png.append(self._get_Path(p))
+                self._set_key(self.grouped_png[index], check=True)
 
             self.grouped_png.sort()
             self.animated = True
@@ -42,7 +45,7 @@ class Bmp(object):
                 f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
             )
 
-    def __get_Path(self, p: _P) -> Path:
+    def _get_Path(self, p: _P) -> Path:
         path = Path(p)
         if not path.exists():
             raise FileNotFoundError(
@@ -58,7 +61,7 @@ class Bmp(object):
             )
         return path
 
-    def __set_key(self, p: Path, check: bool) -> None:
+    def _set_key(self, p: Path, check: bool) -> None:
         if check:
             try:
                 k, _ = p.stem.rsplit("-", 1)
@@ -84,3 +87,28 @@ class Bmp(object):
             return self.grouped_png
         except AttributeError:
             return self.png
+
+    @classmethod
+    def rename(cls, name: str, key: Optional[str]) -> "Bmp":
+
+        try:
+            for png in cls.grouped_png:
+                path: Path = png.parent
+
+        except AttributeError:
+            pass
+
+    @classmethod
+    def reposition(
+        self,
+        position: Literal[
+            "top_left", "top_right", "bottom_right", "bottom_right", "center"
+        ] = "center",
+    ) -> "Bmp":
+
+        try:
+            for png in super().grouped_png:
+                pass
+
+        except AttributeError:
+            pass
