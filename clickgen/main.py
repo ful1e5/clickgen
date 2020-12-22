@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from build.lib.clickgen.Type.image import ImageSize
 from os import PathLike
 from pathlib import Path
-from typing import List, Literal, Optional, Tuple, TypeVar, Union
+from typing import List, Literal, Optional, TypeVar, Union
+from copy import deepcopy
 
 from PIL.Image import Image
 
@@ -89,14 +89,24 @@ class Bmp(object):
             return self.png
 
     @classmethod
-    def rename(cls, name: str, key: Optional[str]) -> "Bmp":
+    def rename(cls, obj: "Bmp", key: str) -> "Bmp":
+        copy_obj = deepcopy(obj)
 
         try:
-            for png in cls.grouped_png:
-                path: Path = png.parent
-
+            for png in copy_obj.grouped_png:
+                name: str = png.name.replace(copy_obj.key, key)
+                path: Path = png.with_name(name)
+                png.rename(path)
+                copy_obj._set_key(png, check=True)
         except AttributeError:
-            pass
+            png: Path = copy_obj.png
+
+            name: str = png.name.replace(copy_obj.key, key)
+            path: Path = png.with_name(name)
+            png.rename(path)
+            copy_obj._set_key(png, check=False)
+
+        return copy_obj
 
     @classmethod
     def reposition(
