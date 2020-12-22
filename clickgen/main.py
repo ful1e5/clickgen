@@ -51,7 +51,6 @@ class Bmp(object):
 
         # Supported bitmap extension
         # => *.png
-        # =>
         ext: str = path.suffix
         if ext != ".png":
             raise IOError(
@@ -80,5 +79,8 @@ class Bmp(object):
         else:
             self.key = p.stem
 
-
-print(Bmp("a000.a").key)
+    def bitmap(self) -> Union[Path, List[Path]]:
+        try:
+            return self.grouped_png
+        except AttributeError:
+            return self.png
