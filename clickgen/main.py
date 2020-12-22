@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from copy import deepcopy
 from os import PathLike
 from pathlib import Path
 from typing import List, Literal, Optional, TypeVar, Union
-from copy import deepcopy
 
+from PIL import Image as Img
 from PIL.Image import Image
 
 _P = TypeVar("_P", str, Path, PathLike)
@@ -88,23 +89,42 @@ class Bmp(object):
         except AttributeError:
             return self.png
 
+    def resize(
+        self, width: int, height: int, resample: Optional[int] = Img.BICUBIC
+    ) -> Union[Image, List[Image]]:
+        def __resize(p: Path) -> Image:
+            img: Image = Img.open(p)
+            img.resize((width, height), resample=resample)
+            return img
+
+        try:
+            images: List[Image] = []
+            for png in self.grouped_png:
+                img: Image = __resize(png)
+                images.append(img)
+            return images
+
+        except AttributeError:
+            img: Image = __resize(self.png)
+            return img
+
     @classmethod
     def rename(cls, obj: "Bmp", key: str) -> "Bmp":
+
         copy_obj = deepcopy(obj)
+        old_key = copy_obj.key
+
+        def __rename(png: Path, check: bool) -> None:
+            name: str = png.name.replace(old_key, key)
+            path: Path = png.with_name(name)
+            png.rename(path)
+            copy_obj._set_key(png, check)
 
         try:
             for png in copy_obj.grouped_png:
-                name: str = png.name.replace(copy_obj.key, key)
-                path: Path = png.with_name(name)
-                png.rename(path)
-                copy_obj._set_key(png, check=True)
+                __rename(png, check=True)
         except AttributeError:
-            png: Path = copy_obj.png
-
-            name: str = png.name.replace(copy_obj.key, key)
-            path: Path = png.with_name(name)
-            png.rename(path)
-            copy_obj._set_key(png, check=False)
+            __rename(copy_obj.png, check=False)
 
         return copy_obj
 
