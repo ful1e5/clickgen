@@ -4,7 +4,7 @@
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from typing import List, Literal, Optional, Tuple, TypeVar, Union
+from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -85,6 +85,21 @@ class Bmp(object):
                 self.key = k
         else:
             self.key = p.stem
+
+    def __print__(self) -> str:
+        try:
+            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated})"
+        except AttributeError:
+            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated})"
+
+    def __repr__(self) -> str:
+
+        try:
+            return f"{{ 'grouped_png': {self.grouped_png},'key':{self.key},'animated':{self.animated} }}"
+        except AttributeError:
+            return (
+                f"{{ 'png': {self.png},'key':{self.key},'animated':{self.animated} }}"
+            )
 
     def bitmap(self) -> Union[Path, List[Path]]:
         try:
