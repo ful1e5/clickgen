@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from copy import deepcopy
-from itertools import compress
 from os import PathLike
 from pathlib import Path
 from typing import List, Literal, Optional, Tuple, TypeVar, Union
@@ -19,6 +18,8 @@ class Bmp(object):
     png: Path
     grouped_png: List[Path]
     key: str
+
+    compress: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] = 0
 
     def __init__(self, png: Union[_P, List[_P]], key: Optional[str] = None) -> None:
 
@@ -94,13 +95,17 @@ class Bmp(object):
     def resize(
         self,
         size: _Size,
-        save: bool = False,
+        save: bool = True,
         resample: int = Img.NONE,
     ) -> Optional[Union[Image, List[Image]]]:
         def __resize(p: Path) -> Image:
-            img: Image = Img.open(p).resize(size, resample=resample)
-            if save:
-                img.save(p, compress=0)
+            img: Image = Img.open(p)
+
+            # Preventing image quality degrades
+            if img.size != size:
+                img = img.resize(size, resample=resample)
+                if save:
+                    img.save(p, compress=self.compress)
             return img
 
         try:
@@ -120,10 +125,9 @@ class Bmp(object):
             else:
                 return None
 
-    @classmethod
-    def rename(cls, obj: "Bmp", key: str) -> "Bmp":
+    def rename(self, key: str) -> "Bmp":
 
-        copy_obj = deepcopy(obj)
+        copy_obj = deepcopy(self)
         old_key = copy_obj.key
 
         def __rename(png: Path, check: bool) -> None:
@@ -140,17 +144,51 @@ class Bmp(object):
 
         return copy_obj
 
-    @classmethod
-    def reposition(
+    def reproduce(
         self,
+        size: Tuple[int, int] = (24, 24),
+        canvas_size: Tuple[int, int] = (32, 32),
         position: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",
-    ) -> "Bmp":
+        save=True,
+    ) -> Optional[Union[Image, List[Image]]]:
+        def __reproduce(p: Path) -> Image:
+            x = canvas_size[0] - size[0]
+            y = canvas_size[1] - size[1]
+
+            switch = {
+                "top_left": (0, 0),
+                "top_right": (x, 0),
+                "bottom_left": (0, y),
+                "bottom_right": (x, y),
+                "center": (round(x / 2), round(y / 2)),
+            }
+
+            box: Tuple[int, int] = switch.get(position)
+
+            canvas: Image = Img.new("RGBA", canvas_size, color=(256, 0, 0, 0))
+            i: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
+            canvas.paste(i, box=box)
+            if save:
+                canvas.save(p, compress=self.compress)
+            return canvas
 
         try:
-            for png in super().grouped_png:
-                pass
+            images: List[Image] = []
+            for png in self.grouped_png:
+                images.append(__reproduce(png))
+            if not save:
+                return images
+            else:
+                return None
 
         except AttributeError:
-            pass
+            image: Image = __reproduce(self.png)
+            if not save:
+                return image
+            else:
+                return None
+
+
+f = Bmp("b.png").reproduce(position="top_left")
