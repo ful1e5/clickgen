@@ -5,12 +5,13 @@ from copy import deepcopy
 from itertools import compress
 from os import PathLike
 from pathlib import Path
-from typing import List, Literal, Optional, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
 
 _P = TypeVar("_P", str, Path, PathLike)
+_Size = Tuple[int, int]
 
 
 class Bmp(object):
@@ -92,15 +93,12 @@ class Bmp(object):
 
     def resize(
         self,
-        width: int,
-        height: int,
+        size: _Size,
         save: bool = False,
         resample: int = Img.NONE,
     ) -> Optional[Union[Image, List[Image]]]:
         def __resize(p: Path) -> Image:
-            img: Image = Img.open(p)
-            img.resize((width, height), resample=resample)
-
+            img: Image = Img.open(p).resize(size, resample=resample)
             if save:
                 img.save(p, compress=0)
             return img
