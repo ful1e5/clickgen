@@ -95,8 +95,8 @@ class Bmp(object):
     def resize(
         self,
         size: _Size,
-        save: bool = True,
         resample: int = Img.NONE,
+        save: bool = True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __resize(p: Path) -> Image:
             img: Image = Img.open(p)
@@ -189,6 +189,3 @@ class Bmp(object):
                 return image
             else:
                 return None
-
-
-f = Bmp("b.png").reproduce(position="top_left")
