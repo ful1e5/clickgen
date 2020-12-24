@@ -4,7 +4,7 @@
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Tuple, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, Type, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -13,7 +13,7 @@ _P = TypeVar("_P", str, Path, PathLike)
 _Size = Tuple[int, int]
 
 
-class Bmp(object):
+class Bitmap(object):
     animated: bool
     png: Path
     grouped_png: List[Path]
@@ -22,6 +22,7 @@ class Bmp(object):
     compress: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] = 0
 
     def __init__(self, png: Union[_P, List[_P]], key: Optional[str] = None) -> None:
+        super().__init__()
 
         # Is png == _P        => 'static' bitmap
         # Or png == [_P]      => 'animated' bitmap
@@ -86,7 +87,7 @@ class Bmp(object):
         else:
             self.key = p.stem
 
-    def __print__(self) -> str:
+    def __str__(self) -> str:
         try:
             return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated})"
         except AttributeError:
@@ -95,10 +96,10 @@ class Bmp(object):
     def __repr__(self) -> str:
 
         try:
-            return f"{{ 'grouped_png': {self.grouped_png},'key':{self.key},'animated':{self.animated} }}"
+            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} }}"
         except AttributeError:
             return (
-                f"{{ 'png': {self.png},'key':{self.key},'animated':{self.animated} }}"
+                f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} }}"
             )
 
     def bitmap(self) -> Union[Path, List[Path]]:
@@ -140,7 +141,7 @@ class Bmp(object):
             else:
                 return None
 
-    def rename(self, key: str) -> "Bmp":
+    def rename(self, key: str) -> "Bitmap":
 
         copy_obj = deepcopy(self)
         old_key = copy_obj.key
@@ -169,8 +170,7 @@ class Bmp(object):
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
-            x = canvas_size[0] - size[0]
-            y = canvas_size[1] - size[1]
+            x, y = canvas_size - size
 
             switch = {
                 "top_left": (0, 0),
@@ -204,3 +204,16 @@ class Bmp(object):
                 return image
             else:
                 return None
+
+
+class CursorAlias(object):
+    bitmap: Bitmap
+
+    def __init__(self, bitmap: Bitmap) -> None:
+        super().__init__()
+        self.bitmap = bitmap
+
+    @classmethod
+    def open(cls, png: Union[_P, List[_P]], key: Optional[str] = None) -> "CursorAlias":
+        bitmaps: Bitmap = Bitmap(png, key)
+        return cls(bitmaps)
