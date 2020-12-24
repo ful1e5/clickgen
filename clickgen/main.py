@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from tempfile import mkdtemp
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from typing import List, Literal, Optional, Tuple, Type, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -221,19 +222,49 @@ class Bitmap(object):
 
 class CursorAlias(object):
     bitmap: Bitmap
+    prefix: Path
+    hotspot: Tuple[int, int]
+    alias_p: Path
 
-    def __init__(self, bitmap: Bitmap) -> None:
+    def __init__(
+        self,
+        bitmap: Bitmap,
+        hotspot: Tuple[int, int],
+        directory: _P = mkdtemp(prefix="clickgen_alias_"),
+    ) -> None:
         super().__init__()
+
         self.bitmap = bitmap
+        self.hotspot = hotspot
+        self.prefix = Path(directory)
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
         return self
 
     def __exit__(self, *args) -> None:
+        # Bitmap attr
         self.bitmap.__exit__()
+        self.bitmap = None
+
+        # Clean files
+        # TODO: Manual check
+        self.prefix.rmdir()
+
+        # Current attr
+        self.prefix = None
+        self.hotspot = None
+        self.alias_p = None
 
     @classmethod
-    def open(cls, png: Union[_P, List[_P]], key: Optional[str] = None) -> "CursorAlias":
-        bitmaps: Bitmap = Bitmap(png, key)
-        return cls(bitmaps)
+    def open(
+        cls,
+        png: Union[_P, List[_P]],
+        hotspot: Tuple[int, int],
+        key: Optional[str] = None,
+    ) -> "CursorAlias":
+        bmp: Bitmap = Bitmap(png, key)
+        return cls(bmp, hotspot)
+
+    def generate(self) -> Path:
+        return self.prefix
