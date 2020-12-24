@@ -7,6 +7,7 @@ from os import PathLike
 from pathlib import Path
 from typing import List, Literal, Optional, Tuple, TypeVar, Union
 
+import shutil
 from PIL import Image as Img
 from PIL.Image import Image
 
@@ -157,20 +158,46 @@ class Bitmap(object):
 
     def rename(self, key: str) -> "Bitmap":
 
-        copy_obj = deepcopy(self)
-        old_key = copy_obj.key
+        old_key = self.key
+        if key != old_key:
+            copy_obj = deepcopy(self)
 
-        def __rename(png: Path, check: bool) -> None:
-            name: str = png.name.replace(old_key, key)
-            path: Path = png.with_name(name)
-            png.rename(path)
-            copy_obj._set_key(png, check)
+            def __rename(png: Path, check: bool) -> None:
+                name: str = png.name.replace(old_key, key)
+                path: Path = png.with_name(name)
+                # TODO:Check path & png is equal or not
+                png.rename(path)
+                copy_obj._set_key(png, check)
+
+            if self.animated:
+                for png in copy_obj.grouped_png:
+                    __rename(png, check=True)
+            else:
+                __rename(copy_obj.png, check=False)
+
+            return copy_obj
+
+        else:
+            return self
+
+    def copy(self, path: Path) -> "Bitmap":
+        copy_obj = deepcopy(self)
+
+        if path.is_file():
+            raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
+
+        path.mkdir(parents=True, exist_ok=True)
+
+        def __copy(src: Path) -> Path:
+            dst: Path = path / src.name
+            shutil.copy2(src, dst)
+            return dst
 
         if self.animated:
-            for png in copy_obj.grouped_png:
-                __rename(png, check=True)
+            for index, png in enumerate(copy_obj.grouped_png):
+                copy_obj[index] = __copy(png)
         else:
-            __rename(copy_obj.png, check=False)
+            copy_obj.png = __copy(copy_obj.png)
 
         return copy_obj
 
@@ -184,7 +211,7 @@ class Bitmap(object):
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
-            x, y = canvas_size - size
+            x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch = {
                 "top_left": (0, 0),
@@ -266,5 +293,10 @@ class CursorAlias(object):
         bmp: Bitmap = Bitmap(png, key)
         return cls(bmp, hotspot)
 
-    def generate(self) -> Path:
+    def generate(self, sizes: List[_Size]) -> Path:
+
+        for size in sizes:
+
+            d: Path = self.prefix / f"{size[0]}x{size[1]}"
+            self.bitmap.copy(d)
         return self.prefix
