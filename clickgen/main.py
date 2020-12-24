@@ -275,8 +275,8 @@ class CursorAlias(object):
         self.bitmap = None
 
         # Clean files
-        # TODO: Manual check
-        self.prefix.rmdir()
+        # TODO: uncomment remove dir
+        # shutil.rmtree(self.prefix)
 
         # Current attr
         self.prefix = None
@@ -296,7 +296,14 @@ class CursorAlias(object):
     def generate(self, sizes: List[_Size]) -> Path:
 
         for size in sizes:
-
             d: Path = self.prefix / f"{size[0]}x{size[1]}"
-            self.bitmap.copy(d)
+            bmp: Bitmap = self.bitmap.copy(d)
+
+            bmp.resize(size, resample=Img.BICUBIC)
+
         return self.prefix
+
+
+with CursorAlias.open("a.png", (30, 30)) as b:
+    pp = b.generate([(40, 40)])
+    print(pp)
