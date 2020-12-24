@@ -32,6 +32,7 @@ class Bitmap(object):
             self.png = self._get_Path(png)
             self._set_key(self.png, check=False)
             self.animated = False
+            self.png
 
         elif isinstance(png, list):
             if key:
@@ -50,6 +51,33 @@ class Bitmap(object):
                 f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
             )
 
+    def __str__(self) -> str:
+        if self.animated:
+            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated})"
+        else:
+            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated})"
+
+    def __repr__(self) -> str:
+
+        if self.animated:
+            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} }}"
+        else:
+            return (
+                f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} }}"
+            )
+
+    # Context manager support
+    def __enter__(self) -> "Bitmap":
+        return self
+
+    def __exit__(self, *args) -> None:
+        self.animated = None
+        self.key = None
+        if hasattr(self, "grouped_png"):
+            self.grouped_png = None
+        else:
+            self.png = None
+
     def _get_Path(self, p: _P) -> Path:
         path = Path(p)
         if not path.exists():
@@ -59,11 +87,11 @@ class Bitmap(object):
 
         # Supported bitmap extension
         # => *.png
-        ext: str = path.suffix
-        if ext != ".png":
-            raise IOError(
-                f"{self.__class__} only supports '.png' bitmaps type, not '{ext}'"
-            )
+        for path_pattern in ("*.png",):
+            if not path.match(path_pattern):
+                raise IOError(
+                    f"{self.__class__} only supports '.png' bitmaps type, not ''"
+                )
         return path
 
     def _set_key(self, p: Path, check: bool) -> None:
@@ -87,25 +115,10 @@ class Bitmap(object):
         else:
             self.key = p.stem
 
-    def __str__(self) -> str:
-        try:
-            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated})"
-        except AttributeError:
-            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated})"
-
-    def __repr__(self) -> str:
-
-        try:
-            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} }}"
-        except AttributeError:
-            return (
-                f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} }}"
-            )
-
     def bitmap(self) -> Union[Path, List[Path]]:
-        try:
+        if self.animated:
             return self.grouped_png
-        except AttributeError:
+        else:
             return self.png
 
     def resize(
@@ -124,7 +137,7 @@ class Bitmap(object):
                     img.save(p, compress=self.compress)
             return img
 
-        try:
+        if self.animated:
             images: List[Image] = []
             for png in self.grouped_png:
                 img: Image = __resize(png)
@@ -134,7 +147,7 @@ class Bitmap(object):
             else:
                 return None
 
-        except AttributeError:
+        else:
             img: Image = __resize(self.png)
             if not save:
                 return img
@@ -152,10 +165,10 @@ class Bitmap(object):
             png.rename(path)
             copy_obj._set_key(png, check)
 
-        try:
+        if self.animated:
             for png in copy_obj.grouped_png:
                 __rename(png, check=True)
-        except AttributeError:
+        else:
             __rename(copy_obj.png, check=False)
 
         return copy_obj
@@ -189,7 +202,7 @@ class Bitmap(object):
                 canvas.save(p, compress=self.compress)
             return canvas
 
-        try:
+        if self.animated:
             images: List[Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
@@ -198,7 +211,7 @@ class Bitmap(object):
             else:
                 return None
 
-        except AttributeError:
+        else:
             image: Image = __reproduce(self.png)
             if not save:
                 return image
@@ -212,6 +225,13 @@ class CursorAlias(object):
     def __init__(self, bitmap: Bitmap) -> None:
         super().__init__()
         self.bitmap = bitmap
+
+    # Context manager support
+    def __enter__(self) -> "CursorAlias":
+        return self
+
+    def __exit__(self, *args) -> None:
+        self.bitmap.__exit__()
 
     @classmethod
     def open(cls, png: Union[_P, List[_P]], key: Optional[str] = None) -> "CursorAlias":
