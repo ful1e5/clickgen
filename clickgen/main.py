@@ -405,7 +405,7 @@ class CursorAlias(object):
         if isinstance(sizes, list):
             lines: List[str] = []
             for size in sizes:
-                lines.append(__generate(size))
+                lines.append(*__generate(size))
             __write_alias(lines)
 
         elif isinstance(sizes, tuple):
