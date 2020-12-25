@@ -37,39 +37,41 @@ class Bitmap(object):
     animated: bool
     png: Path
     grouped_png: List[Path]
+
     key: str
+    size: Tuple[int, int]
+    width: int
+    height: int
 
     compress: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] = 0
 
-    def __init__(self, png: Union[_P, List[_P]], key: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        png: Union[_P, List[_P]],
+        hotspot: Optional[Tuple[int, int]] = None,
+        key: Optional[str] = None,
+    ) -> None:
         super().__init__()
 
         # Is png == _P        => 'static' bitmap
-        # Or png == [_P]      => 'animated' bitmap
+        # Or png == [_P, _P]  => 'animated' bitmap
+        # Or png == [_P]      => 'static' bitmap
         # else TypeError()
+        err: str = f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
 
         if isinstance(png, str) or isinstance(png, Path):
-            self.png = self._get_Path(png)
-            self._set_key(self.png, check=False)
-            self.animated = False
-            self.png
+            self.__set_as_static(png)
 
         elif isinstance(png, list):
             if key:
                 self.key, _ = key.rsplit("-", 1)
 
-            self.grouped_png = []
-            for index, p in enumerate(png):
-                self.grouped_png.append(self._get_Path(p))
-                self._set_key(self.grouped_png[index], check=True)
-
-            self.grouped_png.sort()
-            self.animated = True
-
+            if len(png) == 1:
+                self.__set_as_static(png[0])
+            else:
+                self.__set_as_animated(png)
         else:
-            raise TypeError(
-                f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
-            )
+            raise TypeError(err)
 
     def __str__(self) -> str:
         if self.animated:
@@ -93,10 +95,33 @@ class Bitmap(object):
     def __exit__(self, *args) -> None:
         self.animated = None
         self.key = None
+        self.size = None
+        self.height = None
+        self.width = None
         if hasattr(self, "grouped_png"):
             self.grouped_png = None
         else:
             self.png = None
+
+    def __set_as_static(self, png: _P) -> None:
+        self.png = self._get_Path(png)
+
+        self._set_key(self.png, check=False)
+        self._set_size(self.png)
+        self.animated = False
+
+    def __set_as_animated(self, png: List[_P]) -> None:
+
+        self.grouped_png = []
+        for p in png:
+            frame: Path = self._get_Path(p)
+
+            self.grouped_png.append(frame)
+            self._set_key(frame, check=True)
+            self._set_size(frame)
+
+        self.grouped_png.sort()
+        self.animated = True
 
     def _get_Path(self, p: _P) -> Path:
         path = Path(p)
@@ -110,9 +135,28 @@ class Bitmap(object):
         for path_pattern in ("*.png",):
             if not path.match(path_pattern):
                 raise IOError(
-                    f"{self.__class__} only supports '.png' bitmaps type, not ''"
+                    f"{self.__class__} only supports '.png' bitmaps type, not '{path.suffix}'"
                 )
         return path
+
+    def _set_size(self, p: Path) -> None:
+        with Img.open(p) as i:
+            if i.width == i.height:
+
+                def __set() -> None:
+                    self.size = i.size
+                    self.width = i.width
+                    self.height = i.height
+
+                if not self.size:
+                    __set()
+                if self.size != i.size:
+                    raise IOError("All .png file's size must be equal")
+                else:
+                    pass
+
+            else:
+                raise IOError(f"frame '{p.name}' must had equal width & height.")
 
     def _set_key(self, p: Path, check: bool) -> None:
         if check:
@@ -154,6 +198,7 @@ class Bitmap(object):
             if img.size != size:
                 img = img.resize(size, resample=resample)
                 if save:
+                    self._set_size(p)
                     img.save(p, compress=self.compress)
             return img
 
@@ -229,6 +274,7 @@ class Bitmap(object):
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
+            i: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch = {
@@ -242,9 +288,10 @@ class Bitmap(object):
             box: Tuple[int, int] = switch.get(position)
 
             canvas: Image = Img.new("RGBA", canvas_size, color=(256, 0, 0, 0))
-            i: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
             canvas.paste(i, box=box)
+
             if save:
+                self._set_size(p)
                 canvas.save(p, compress=self.compress)
             return canvas
 
@@ -315,14 +362,11 @@ class CursorAlias(object):
 
     def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
-
             if size[0] == size[1]:
                 d: Path = self.prefix / f"{size[0]}x{size[1]}"
 
                 bmp: Bitmap = self.bitmap.copy(path=d)
                 bmp.resize(size, resample=Img.BICUBIC)
-
-                # TODO: Hotspots calc
 
                 l: List[str] = []
                 for file in d.glob("*.png"):
