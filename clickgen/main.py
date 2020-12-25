@@ -1,18 +1,36 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from tempfile import mkdtemp
+import functools
+import shutil
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from typing import List, Literal, Optional, Tuple, TypeVar, Union
+from tempfile import mkdtemp
+from typing import Any, List, Literal, Optional, Tuple, TypeVar, Union
 
-import shutil
 from PIL import Image as Img
 from PIL.Image import Image
 
 _P = TypeVar("_P", str, Path, PathLike)
 _Size = Tuple[int, int]
+
+
+def to_path(param: str):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper_decorator(*args, **kwargs) -> Any:
+            p = kwargs[param]
+            if isinstance(p, str) or isinstance(p, PathLike):
+                kwargs[param] = Path(p)
+
+            value = func(*args, **kwargs)
+
+            return value
+
+        return wrapper_decorator
+
+    return decorator
 
 
 class Bitmap(object):
@@ -165,7 +183,6 @@ class Bitmap(object):
             def __rename(png: Path, check: bool) -> None:
                 name: str = png.name.replace(old_key, key)
                 path: Path = png.with_name(name)
-                # TODO:Check path & png is equal or not
                 png.rename(path)
                 copy_obj._set_key(png, check)
 
@@ -180,7 +197,8 @@ class Bitmap(object):
         else:
             return self
 
-    def copy(self, path: Path) -> "Bitmap":
+    @to_path("path")
+    def copy(self, path: _P) -> "Bitmap":
         copy_obj = deepcopy(self)
 
         if path.is_file():
@@ -195,7 +213,7 @@ class Bitmap(object):
 
         if self.animated:
             for index, png in enumerate(copy_obj.grouped_png):
-                copy_obj[index] = __copy(png)
+                copy_obj.grouped_png[index] = __copy(png)
         else:
             copy_obj.png = __copy(copy_obj.png)
 
@@ -301,7 +319,7 @@ class CursorAlias(object):
             if size[0] == size[1]:
                 d: Path = self.prefix / f"{size[0]}x{size[1]}"
 
-                bmp: Bitmap = self.bitmap.copy(d)
+                bmp: Bitmap = self.bitmap.copy(path=d)
                 bmp.resize(size, resample=Img.BICUBIC)
 
                 # TODO: Hotspots calc
@@ -352,4 +370,3 @@ class CursorAlias(object):
 
 with CursorAlias.open("a.png", (30, 30)) as b:
     pp = b.alias((20, 20))
-    print(pp.read_text())
