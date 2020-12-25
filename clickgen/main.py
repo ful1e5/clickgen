@@ -250,7 +250,8 @@ class Bitmap(object):
 class CursorAlias(object):
     bitmap: Bitmap
     prefix: Path
-    hotspot: Tuple[int, int]
+    x: int
+    y: int
     alias_p: Path
 
     def __init__(
@@ -262,7 +263,8 @@ class CursorAlias(object):
         super().__init__()
 
         self.bitmap = bitmap
-        self.hotspot = hotspot
+        self.x = hotspot[0]
+        self.y = hotspot[1]
         self.prefix = Path(directory)
 
     # Context manager support
@@ -293,17 +295,60 @@ class CursorAlias(object):
         bmp: Bitmap = Bitmap(png, key)
         return cls(bmp, hotspot)
 
-    def generate(self, sizes: List[_Size]) -> Path:
+    def generate(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
+        def __generate(size: _Size) -> List[str]:
 
-        for size in sizes:
-            d: Path = self.prefix / f"{size[0]}x{size[1]}"
-            bmp: Bitmap = self.bitmap.copy(d)
+            if size[0] == size[1]:
+                d: Path = self.prefix / f"{size[0]}x{size[1]}"
 
-            bmp.resize(size, resample=Img.BICUBIC)
+                bmp: Bitmap = self.bitmap.copy(d)
+                bmp.resize(size, resample=Img.BICUBIC)
+
+                # TODO: Hotspots calc
+
+                l: List[str] = []
+                for file in d.glob("*.png"):
+                    fp: str = f"{file.relative_to(self.prefix)}"
+
+                    line: str = f"{size[0]} {self.x} {self.y} {fp}"
+                    if self.bitmap.animated:
+                        line = f"{line} {delay}"
+
+                    l.append(f"{line}\n")
+                return l
+
+            else:
+                raise ValueError(f"Got different width & height in argument 'size'.")
+
+        def __write_alias(lines: List[str]) -> None:
+            # sort line, So all lines in order according to size (24x24, 28x28, ..)
+            lines.sort()
+
+            # remove newline from EOF
+            lines[-1] = lines[-1].rstrip("\n")
+            cfg: Path = self.prefix / f"{self.bitmap.key}.alias"
+
+            with cfg.open("w") as f:
+                f.writelines(lines)
+
+        if isinstance(sizes, list):
+            lines: List[str] = []
+            for size in sizes:
+                lines.append(__generate(size))
+            __write_alias(lines)
+
+        elif isinstance(sizes, tuple):
+            lines = __generate(sizes)
+            __write_alias(lines)
+        else:
+            raise TypeError(
+                f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
+            )
 
         return self.prefix
 
 
 with CursorAlias.open("a.png", (30, 30)) as b:
-    pp = b.generate([(40, 40)])
+    pp = b.generate((20, 20))
+
     print(pp)
