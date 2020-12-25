@@ -39,6 +39,10 @@ class Bitmap(object):
     grouped_png: List[Path]
 
     key: str
+
+    x_hot: int
+    y_hot: int
+
     size: Tuple[int, int]
     width: int
     height: int
@@ -48,10 +52,13 @@ class Bitmap(object):
     def __init__(
         self,
         png: Union[_P, List[_P]],
-        hotspot: Optional[Tuple[int, int]] = None,
+        hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
     ) -> None:
         super().__init__()
+
+        self.x_hot = hotspot[0]
+        self.y_hot = hotspot[1]
 
         # Is png == _P        => 'static' bitmap
         # Or png == [_P, _P]  => 'animated' bitmap
@@ -75,18 +82,16 @@ class Bitmap(object):
 
     def __str__(self) -> str:
         if self.animated:
-            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated})"
+            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height})"
         else:
-            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated})"
+            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height})"
 
     def __repr__(self) -> str:
 
         if self.animated:
-            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} }}"
+            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}}}"
         else:
-            return (
-                f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} }}"
-            )
+            return f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}}}"
 
     # Context manager support
     def __enter__(self) -> "Bitmap":
@@ -148,12 +153,13 @@ class Bitmap(object):
                     self.width = i.width
                     self.height = i.height
 
-                if not self.size:
+                try:
+                    if self.size != i.size:
+                        raise IOError("All .png file's size must be equal")
+                    else:
+                        pass
+                except AttributeError:
                     __set()
-                if self.size != i.size:
-                    raise IOError("All .png file's size must be equal")
-                else:
-                    pass
 
             else:
                 raise IOError(f"frame '{p.name}' must had equal width & height.")
@@ -174,10 +180,14 @@ class Bitmap(object):
                     )
                 else:
                     self.key = k
-            except AttributeError as e:
+            except AttributeError:
                 self.key = k
         else:
             self.key = p.stem
+
+    def _update_hotspots(self, new_size: _Size) -> None:
+        self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
+        self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
 
     def bitmap(self) -> Union[Path, List[Path]]:
         if self.animated:
@@ -199,6 +209,7 @@ class Bitmap(object):
                 img = img.resize(size, resample=resample)
                 if save:
                     self._set_size(p)
+                    self._update_hotspots(size)
                     img.save(p, compress=self.compress)
             return img
 
@@ -266,8 +277,8 @@ class Bitmap(object):
 
     def reproduce(
         self,
-        size: Tuple[int, int] = (24, 24),
-        canvas_size: Tuple[int, int] = (32, 32),
+        size: _Size = (24, 24),
+        canvas_size: _Size = (32, 32),
         position: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",
@@ -292,6 +303,7 @@ class Bitmap(object):
 
             if save:
                 self._set_size(p)
+                self._update_hotspots(canvas_size)
                 canvas.save(p, compress=self.compress)
             return canvas
 
@@ -315,21 +327,16 @@ class Bitmap(object):
 class CursorAlias(object):
     bitmap: Bitmap
     prefix: Path
-    x: int
-    y: int
     alias_p: Path
 
     def __init__(
         self,
         bitmap: Bitmap,
-        hotspot: Tuple[int, int],
         directory: _P = mkdtemp(prefix="clickgen_alias_"),
     ) -> None:
         super().__init__()
 
         self.bitmap = bitmap
-        self.x = hotspot[0]
-        self.y = hotspot[1]
         self.prefix = Path(directory)
 
     # Context manager support
@@ -357,8 +364,8 @@ class CursorAlias(object):
         hotspot: Tuple[int, int],
         key: Optional[str] = None,
     ) -> "CursorAlias":
-        bmp: Bitmap = Bitmap(png, key)
-        return cls(bmp, hotspot)
+        bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
+        return cls(bmp)
 
     def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
@@ -372,7 +379,7 @@ class CursorAlias(object):
                 for file in d.glob("*.png"):
                     fp: str = f"{file.relative_to(self.prefix)}"
 
-                    line: str = f"{size[0]} {self.x} {self.y} {fp}"
+                    line: str = f"{size[0]} {bmp.x_hot} {bmp.y_hot} {fp}"
                     if self.bitmap.animated:
                         line = f"{line} {delay}"
 
@@ -410,7 +417,3 @@ class CursorAlias(object):
             )
 
         return self.alias_p
-
-
-with CursorAlias.open("a.png", (30, 30)) as b:
-    pp = b.alias((20, 20))
