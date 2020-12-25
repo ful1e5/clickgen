@@ -277,13 +277,13 @@ class CursorAlias(object):
         self.bitmap = None
 
         # Clean files
-        # TODO: uncomment remove dir
-        # shutil.rmtree(self.prefix)
+        if hasattr(self, "alias_p"):
+            shutil.rmtree(self.prefix)
+            self.alias_p = None
 
         # Current attr
         self.prefix = None
         self.hotspot = None
-        self.alias_p = None
 
     @classmethod
     def open(
@@ -295,7 +295,7 @@ class CursorAlias(object):
         bmp: Bitmap = Bitmap(png, key)
         return cls(bmp, hotspot)
 
-    def generate(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
+    def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
 
             if size[0] == size[1]:
@@ -320,7 +320,7 @@ class CursorAlias(object):
             else:
                 raise ValueError(f"Got different width & height in argument 'size'.")
 
-        def __write_alias(lines: List[str]) -> None:
+        def __write_alias(lines: List[str]) -> Path:
             # sort line, So all lines in order according to size (24x24, 28x28, ..)
             lines.sort()
 
@@ -330,6 +330,8 @@ class CursorAlias(object):
 
             with cfg.open("w") as f:
                 f.writelines(lines)
+
+            self.alias_p = cfg
 
         if isinstance(sizes, list):
             lines: List[str] = []
@@ -345,10 +347,9 @@ class CursorAlias(object):
                 f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
             )
 
-        return self.prefix
+        return self.alias_p
 
 
 with CursorAlias.open("a.png", (30, 30)) as b:
-    pp = b.generate((20, 20))
-
-    print(pp)
+    pp = b.alias((20, 20))
+    print(pp.read_text())
