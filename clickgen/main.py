@@ -63,17 +63,22 @@ class Bitmap(object):
             raise TypeError(err)
 
     def __str__(self) -> str:
+        common: str = f"key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height}"
         if self.animated:
-            return f"{self.__class__.__name__}(grouped_png={self.grouped_png}, key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height})"
+            return (
+                f"{self.__class__.__name__}(grouped_png={self.grouped_png}, {common})"
+            )
         else:
-            return f"{self.__class__.__name__}(png={self.png}, key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height})"
+            return (
+                f"{self.__class__.__name__}(png={self.png}, key={self.key}, {common})"
+            )
 
     def __repr__(self) -> str:
-
+        common: str = f"'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}"
         if self.animated:
-            return f"{{ 'grouped_png':{self.grouped_png}, 'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}}}"
+            return f"{{ 'grouped_png':{self.grouped_png}, {common}}}"
         else:
-            return f"{{ 'png':{self.png}, 'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}}}"
+            return f"{{ 'png':{self.png}, {common}}}"
 
     # Context manager support
     def __enter__(self) -> "Bitmap":
@@ -90,8 +95,11 @@ class Bitmap(object):
         else:
             self.png = None
 
+    #
+    # Private methods
+    #
     def __set_as_static(self, png: _P) -> None:
-        self.png = self._get_Path(png)
+        self.png = self._check_bitmap(png)
 
         self._set_key(self.png, check=False)
         self._set_size(self.png)
@@ -101,7 +109,7 @@ class Bitmap(object):
 
         self.grouped_png = []
         for p in png:
-            frame: Path = self._get_Path(p)
+            frame: Path = self._check_bitmap(p)
 
             self.grouped_png.append(frame)
             self._set_key(frame, check=True)
@@ -110,19 +118,22 @@ class Bitmap(object):
         self.grouped_png.sort()
         self.animated = True
 
-    def _get_Path(self, p: _P) -> Path:
+    #
+    # Protected methods
+    #
+    def _check_bitmap(self, p: _P) -> Path:
         path = Path(p)
         if not path.exists():
             raise FileNotFoundError(
                 f"Not a such file '{path.name}' in '{path.parent.absolute()}'"
             )
 
-        # Supported bitmap extension
+        # Supported bitmap type
         # => *.png
         for path_pattern in ("*.png",):
             if not path.match(path_pattern):
                 raise IOError(
-                    f"{self.__class__} only supports '.png' bitmaps type, not '{path.suffix}'"
+                    f"{self.__class__} supports '{path_pattern}' bitmaps type, not '{path.suffix}'"
                 )
         return path
 
@@ -171,12 +182,9 @@ class Bitmap(object):
         self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
         self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
 
-    def bitmap(self) -> Union[Path, List[Path]]:
-        if self.animated:
-            return self.grouped_png
-        else:
-            return self.png
-
+    #
+    # Public methods
+    #
     def resize(
         self,
         size: _Size,
@@ -211,52 +219,6 @@ class Bitmap(object):
                 return img
             else:
                 return None
-
-    def rename(self, key: str) -> "Bitmap":
-
-        old_key = self.key
-        if key != old_key:
-            copy_obj = deepcopy(self)
-
-            def __rename(png: Path, check: bool) -> None:
-                name: str = png.name.replace(old_key, key)
-                path: Path = png.with_name(name)
-                png.rename(path)
-                copy_obj._set_key(png, check)
-
-            if self.animated:
-                for png in copy_obj.grouped_png:
-                    __rename(png, check=True)
-            else:
-                __rename(copy_obj.png, check=False)
-
-            return copy_obj
-
-        else:
-            return self
-
-    def copy(self, path: _P) -> "Bitmap":
-        copy_obj = deepcopy(self)
-        if isinstance(path, str) or isinstance(path, PathLike):
-            path = Path(path)
-
-        if path.is_file():
-            raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
-
-        path.mkdir(parents=True, exist_ok=True)
-
-        def __copy(src: Path) -> Path:
-            dst: Path = path / src.name
-            shutil.copy2(src, dst)
-            return dst
-
-        if self.animated:
-            for index, png in enumerate(copy_obj.grouped_png):
-                copy_obj.grouped_png[index] = __copy(png)
-        else:
-            copy_obj.png = __copy(copy_obj.png)
-
-        return copy_obj
 
     def reproduce(
         self,
@@ -305,6 +267,52 @@ class Bitmap(object):
                 return image
             else:
                 return None
+
+    def rename(self, key: str) -> "Bitmap":
+
+        old_key = self.key
+        if key != old_key:
+            copy_obj = deepcopy(self)
+
+            def __rename(png: Path, check: bool) -> None:
+                name: str = png.name.replace(old_key, key)
+                path: Path = png.with_name(name)
+                png.rename(path)
+                copy_obj._set_key(png, check)
+
+            if self.animated:
+                for png in copy_obj.grouped_png:
+                    __rename(png, check=True)
+            else:
+                __rename(copy_obj.png, check=False)
+
+            return copy_obj
+
+        else:
+            return self
+
+    def copy(self, path: _P) -> "Bitmap":
+        copy_obj = deepcopy(self)
+        if isinstance(path, str) or isinstance(path, PathLike):
+            path = Path(path)
+
+        if path.is_file():
+            raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
+
+        path.mkdir(parents=True, exist_ok=True)
+
+        def __copy(src: Path) -> Path:
+            dst: Path = path / src.name
+            shutil.copy2(src, dst)
+            return dst
+
+        if self.animated:
+            for index, png in enumerate(copy_obj.grouped_png):
+                copy_obj.grouped_png[index] = __copy(png)
+        else:
+            copy_obj.png = __copy(copy_obj.png)
+
+        return copy_obj
 
 
 class CursorAlias(object):
