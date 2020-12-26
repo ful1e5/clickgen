@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import functools
 import shutil
 from copy import deepcopy
 from os import PathLike
@@ -14,23 +13,6 @@ from PIL.Image import Image
 
 _P = TypeVar("_P", str, Path, PathLike)
 _Size = Tuple[int, int]
-
-
-def to_path(param: str):
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper_decorator(*args, **kwargs) -> Any:
-            p = kwargs[param]
-            if isinstance(p, str) or isinstance(p, PathLike):
-                kwargs[param] = Path(p)
-
-            value = func(*args, **kwargs)
-
-            return value
-
-        return wrapper_decorator
-
-    return decorator
 
 
 class Bitmap(object):
@@ -253,9 +235,10 @@ class Bitmap(object):
         else:
             return self
 
-    @to_path("path")
     def copy(self, path: _P) -> "Bitmap":
         copy_obj = deepcopy(self)
+        if isinstance(path, str) or isinstance(path, PathLike):
+            path = Path(path)
 
         if path.is_file():
             raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
@@ -372,7 +355,7 @@ class CursorAlias(object):
             if size[0] == size[1]:
                 d: Path = self.prefix / f"{size[0]}x{size[1]}"
 
-                bmp: Bitmap = self.bitmap.copy(path=d)
+                bmp: Bitmap = self.bitmap.copy(d)
                 bmp.resize(size, resample=Img.BICUBIC)
 
                 l: List[str] = []
