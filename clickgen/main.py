@@ -6,7 +6,7 @@ from copy import deepcopy
 from os import PathLike
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Any, List, Literal, Optional, Tuple, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -269,7 +269,6 @@ class Bitmap(object):
                 return None
 
     def rename(self, key: str) -> "Bitmap":
-
         old_key = self.key
         if key != old_key:
             copy_obj = deepcopy(self)
