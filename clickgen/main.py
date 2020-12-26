@@ -366,7 +366,7 @@ class CursorAlias(object):
     def open(
         cls,
         png: Union[_P, List[_P]],
-        hotspot: Tuple[int, int],
+        hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
@@ -374,25 +374,22 @@ class CursorAlias(object):
 
     def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
-            if size[0] == size[1]:
-                d: Path = self.prefix / f"{size[0]}x{size[1]}"
+            d: Path = self.prefix / f"{size[0]}x{size[1]}"
 
-                bmp: Bitmap = self.bitmap.copy(d)
-                bmp.resize(size, resample=Img.BICUBIC)
+            bmp: Bitmap = self.bitmap.copy(d)
+            bmp.resize(size, resample=Img.BICUBIC)
 
-                l: List[str] = []
-                for file in d.glob("*.png"):
-                    fp: str = f"{file.relative_to(self.prefix)}"
+            l: List[str] = []
 
-                    line: str = f"{size[0]} {bmp.x_hot} {bmp.y_hot} {fp}"
-                    if self.bitmap.animated:
-                        line = f"{line} {delay}"
+            for file in d.glob("*.png"):
+                fp: str = f"{file.relative_to(self.prefix)}"
 
-                    l.append(f"{line}\n")
-                return l
+                line: str = f"{size[0]} {bmp.x_hot} {bmp.y_hot} {fp}"
+                if self.bitmap.animated:
+                    line = f"{line} {delay}"
 
-            else:
-                raise ValueError(f"Got different width & height in argument 'size'.")
+                l.append(f"{line}\n")
+            return l
 
         def __write_alias(lines: List[str]) -> Path:
             # sort line, So all lines in order according to size (24x24, 28x28, ..)
@@ -407,18 +404,42 @@ class CursorAlias(object):
 
             self.alias_p = cfg
 
+        sizes_type_err: str = (
+            f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
+        )
+
         if isinstance(sizes, list):
             lines: List[str] = []
             for size in sizes:
-                lines.append(*__generate(size))
+                if isinstance(sizes, tuple):
+                    lines.append(*__generate(size))
+                else:
+                    raise TypeError(sizes_type_err)
             __write_alias(lines)
 
         elif isinstance(sizes, tuple):
             lines = __generate(sizes)
             __write_alias(lines)
         else:
-            raise TypeError(
-                f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
-            )
+            raise TypeError(sizes_type_err)
 
         return self.alias_p
+
+    def copy(self, dst: _P) -> "CursorAlias":
+        dst: Path = to_path(dst)
+
+        if dst.is_file():
+            raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
+
+        if not any(self.prefix.iterdir()):
+            raise Exception(f"Alias directory is empty or not exists.")
+
+        replica_object = replica(self)
+
+        shutil.copytree(self.prefix, dst, copy_function=shutil.copy)
+        # for file in self.prefix.iterdir():
+        #     shutil.copy2(file, dst)
+        replica_object.prefix = dst
+        replica_object.alias_p = dst / self.alias_p.name
+
+        return replica_object
