@@ -11,8 +11,24 @@ from typing import List, Literal, Optional, Tuple, TypeVar, Union
 from PIL import Image as Img
 from PIL.Image import Image
 
+_T = TypeVar("_T")
 _P = TypeVar("_P", str, Path, PathLike)
 _Size = Tuple[int, int]
+
+
+def replica(obj: _T) -> _T:
+    return deepcopy(obj)
+
+
+def to_path(p: _P) -> Path:
+    if isinstance(p, str) or isinstance(p, PathLike):
+        return Path(p)
+    elif isinstance(p, Path):
+        return p
+    else:
+        raise TypeError(
+            f"Unable to convert parameter 'p' to 'Path' with 'TypeVar('_P', str, Path, PathLike)'"
+        )
 
 
 class Bitmap(object):
@@ -121,24 +137,24 @@ class Bitmap(object):
     #
     # Protected methods
     #
-    def _check_bitmap(self, p: _P) -> Path:
-        path = Path(p)
-        if not path.exists():
+    def _check_bitmap(self, bmp_path: _P) -> Path:
+        p: Path = to_path(bmp_path)
+        if not p.exists():
             raise FileNotFoundError(
-                f"Not a such file '{path.name}' in '{path.parent.absolute()}'"
+                f"Not a such file '{p.name}' in '{p.parent.absolute()}'"
             )
 
         # Supported bitmap type
         # => *.png
-        for path_pattern in ("*.png",):
-            if not path.match(path_pattern):
+        for bmp_pattern in ("*.png",):
+            if not p.match(bmp_pattern):
                 raise IOError(
-                    f"{self.__class__} supports '{path_pattern}' bitmaps type, not '{path.suffix}'"
+                    f"{self.__class__} supports '{bmp_pattern}' bitmaps type, not '{p.suffix}'"
                 )
-        return path
+        return p
 
-    def _set_size(self, p: Path) -> None:
-        with Img.open(p) as i:
+    def _set_size(self, bmp_path: Path) -> None:
+        with Img.open(bmp_path) as i:
             if i.width == i.height:
 
                 def __set() -> None:
@@ -155,28 +171,28 @@ class Bitmap(object):
                     __set()
 
             else:
-                raise IOError(f"frame '{p.name}' must had equal width & height.")
+                raise IOError(f"frame '{bmp_path.name}' must had equal width & height.")
 
-    def _set_key(self, p: Path, check: bool) -> None:
+    def _set_key(self, bmp_path: Path, check: bool) -> None:
         if check:
             try:
-                k, _ = p.stem.rsplit("-", 1)
+                k, _ = bmp_path.stem.rsplit("-", 1)
             except ValueError:
                 raise ValueError(
-                    f"Invalid Bitmap name '{p.name}': Grouped Bitmaps must-have frame number followed by '-'. Like 'bitmap-000.png'"
+                    f"Invalid Bitmap name '{bmp_path.name}': Grouped Bitmaps must-have frame number followed by '-'. Like 'bitmap-000.png'"
                 ) from None
 
             try:
                 if self.key != k:
                     raise IOError(
-                        f"Bitmap '{p.name}' not matched with key '{self.key}'. Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-000.png','bitmap-001.png' "
+                        f"Bitmap '{bmp_path.name}' not matched with key '{self.key}'. Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-000.png','bitmap-001.png' "
                     )
                 else:
                     self.key = k
             except AttributeError:
                 self.key = k
         else:
-            self.key = p.stem
+            self.key = bmp_path.stem
 
     def _update_hotspots(self, new_size: _Size) -> None:
         self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
@@ -271,33 +287,32 @@ class Bitmap(object):
     def rename(self, key: str) -> "Bitmap":
         old_key = self.key
         if key != old_key:
-            copy_obj = deepcopy(self)
+            replica_object = replica(self)
 
             def __rename(png: Path, check: bool) -> None:
                 name: str = png.name.replace(old_key, key)
                 path: Path = png.with_name(name)
                 png.rename(path)
-                copy_obj._set_key(png, check)
+                replica_object._set_key(png, check)
 
             if self.animated:
-                for png in copy_obj.grouped_png:
+                for png in replica_object.grouped_png:
                     __rename(png, check=True)
             else:
-                __rename(copy_obj.png, check=False)
+                __rename(replica_object.png, check=False)
 
-            return copy_obj
+            return replica_object
 
         else:
             return self
 
     def copy(self, path: _P) -> "Bitmap":
-        copy_obj = deepcopy(self)
-        if isinstance(path, str) or isinstance(path, PathLike):
-            path = Path(path)
+        path: Path = to_path(path)
 
         if path.is_file():
             raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
 
+        replica_object = replica(self)
         path.mkdir(parents=True, exist_ok=True)
 
         def __copy(src: Path) -> Path:
@@ -306,12 +321,12 @@ class Bitmap(object):
             return dst
 
         if self.animated:
-            for index, png in enumerate(copy_obj.grouped_png):
-                copy_obj.grouped_png[index] = __copy(png)
+            for index, png in enumerate(replica_object.grouped_png):
+                replica_object.grouped_png[index] = __copy(png)
         else:
-            copy_obj.png = __copy(copy_obj.png)
+            replica_object.png = __copy(replica_object.png)
 
-        return copy_obj
+        return replica_object
 
 
 class CursorAlias(object):
