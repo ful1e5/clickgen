@@ -331,7 +331,8 @@ class Bitmap(object):
 
 class CursorAlias(object):
     bitmap: Bitmap
-    prefix: Path
+    prefix: str
+    alias_dir: Path
     alias_p: Path
 
     def __init__(
@@ -342,14 +343,16 @@ class CursorAlias(object):
         super().__init__()
 
         self.bitmap = bitmap
+        self.prefix = f"{self.bitmap.key}__alias"
+
         if alias_directory:
-            self.prefix = to_path(alias_directory)
+            self.alias_dir = to_path(alias_directory)
         else:
-            self.prefix = Path(mkdtemp(prefix=f"{bitmap.key}__alias"))
+            self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
     # helper method
     def check_alias(self) -> None:
-        if not any(self.prefix.iterdir()):
+        if not any(self.alias_dir.iterdir()):
             raise Exception(f"Alias directory is empty or not exists.")
         else:
             return None
@@ -362,14 +365,15 @@ class CursorAlias(object):
         # Bitmap attr
         self.bitmap.__exit__()
         self.bitmap = None
+        self.prefix = None
 
         # Clean files
         if hasattr(self, "alias_p"):
-            shutil.rmtree(self.prefix)
+            shutil.rmtree(self.alias_dir)
             self.alias_p = None
 
         # Current attr
-        self.prefix = None
+        self.alias_dir = None
         self.hotspot = None
 
     @classmethod
@@ -385,7 +389,7 @@ class CursorAlias(object):
 
     def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
-            d: Path = self.prefix / f"{size[0]}x{size[1]}"
+            d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
             bmp.resize(size, resample=Img.BICUBIC)
@@ -393,7 +397,7 @@ class CursorAlias(object):
             l: List[str] = []
 
             for file in d.glob("*.png"):
-                fp: str = f"{file.relative_to(self.prefix)}"
+                fp: str = f"{file.relative_to(self.alias_dir)}"
 
                 line: str = f"{size[0]} {bmp.x_hot} {bmp.y_hot} {fp}"
                 if self.bitmap.animated:
@@ -408,7 +412,7 @@ class CursorAlias(object):
             # remove newline from EOF
             lines[-1] = lines[-1].rstrip("\n")
 
-            cfg: Path = self.prefix / f"{self.bitmap.key}.alias"
+            cfg: Path = self.alias_dir / f"{self.bitmap.key}.alias"
             with cfg.open("w") as f:
                 f.writelines(lines)
             self.alias_p = cfg
@@ -452,16 +456,21 @@ class CursorAlias(object):
         else:
             return self.alias_p.suffix
 
-    def copy(self, dst: _P) -> "CursorAlias":
+    def copy(self, dst: Optional[_P] = None) -> "CursorAlias":
         self.check_alias()
+
+        if not dst:
+            dst = mkdtemp(prefix=self.prefix)
         dst: Path = to_path(dst)
+
         if dst.is_file():
             raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
 
         replica_object = replica(self)
 
-        shutil.copytree(self.prefix, dst, copy_function=shutil.copy)
-        replica_object.prefix = dst
+        shutil.copytree(self.alias_dir, dst, copy_function=shutil.copy)
+        replica_object.alias_dir = dst
+        replica_object.prefix = dst.stem
         replica_object.alias_p = dst / self.alias_p.name
 
         return replica_object
@@ -470,12 +479,22 @@ class CursorAlias(object):
         self.check_alias()
         old_key: str = self.bitmap.key
 
+        # Setting new_prefix & renaming alias directory
+        new_prefix = f"{key}__alias"
+        new_alias_dir = self.alias_dir.with_name(
+            self.alias_dir.name.replace(self.prefix, new_prefix)
+        )
+        shutil.move(str(self.alias_dir), str(new_alias_dir))
+        self.prefix = new_prefix
+        self.alias_dir = new_alias_dir
+
+        # Renaming content
         def __rename(p: Path) -> Path:
-            name: str = f"{p.stem.replace(old_key, key)}{p.suffix}"
+            name: str = f"{p.stem.replace(old_key, key, 1)}{p.suffix}"
             path: Path = p.with_name(name)
             return p.rename(path)
 
-        for f in self.prefix.iterdir():
+        for f in self.alias_dir.iterdir():
             if f.is_dir():
                 for png in f.glob("*.png"):
                     png = __rename(png)
