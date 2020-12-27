@@ -290,7 +290,7 @@ class Bitmap(object):
             replica_object = replica(self)
 
             def __rename(png: Path, check: bool) -> None:
-                name: str = png.name.replace(old_key, key)
+                name: str = f"{png.stem.replace(old_key, key)}{png.suffix}"
                 path: Path = png.with_name(name)
                 png.rename(path)
                 replica_object._set_key(png, check)
@@ -427,19 +427,36 @@ class CursorAlias(object):
 
     def copy(self, dst: _P) -> "CursorAlias":
         dst: Path = to_path(dst)
-
         if dst.is_file():
             raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
-
         if not any(self.prefix.iterdir()):
             raise Exception(f"Alias directory is empty or not exists.")
 
         replica_object = replica(self)
 
         shutil.copytree(self.prefix, dst, copy_function=shutil.copy)
-        # for file in self.prefix.iterdir():
-        #     shutil.copy2(file, dst)
         replica_object.prefix = dst
         replica_object.alias_p = dst / self.alias_p.name
 
         return replica_object
+
+    def rename(self, key: str) -> Path:
+        old_key: str = self.bitmap.key
+
+        def __rename(p: Path) -> None:
+            name: str = f"{p.stem.replace(old_key, key)}{p.suffix}"
+            path: Path = p.with_name(name)
+            p.rename(path)
+
+        for f in self.prefix.iterdir():
+            if f.is_dir():
+                for png in f.glob("*.png"):
+                    __rename(png)
+            elif f.is_file or f.absolute() == self.alias_p.absolute():
+                updated_data: str = f.read_text().replace(old_key, key)
+                f.write_text(updated_data)
+                __rename(f)
+            else:
+                pass
+
+        return self.alias_p
