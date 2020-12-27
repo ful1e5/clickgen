@@ -365,7 +365,6 @@ class CursorAlias(object):
         # Bitmap attr
         self.bitmap.__exit__()
         self.bitmap = None
-        self.prefix = None
 
         # Clean files
         if hasattr(self, "alias_p"):
@@ -374,7 +373,7 @@ class CursorAlias(object):
 
         # Current attr
         self.alias_dir = None
-        self.hotspot = None
+        self.prefix = None
 
     @classmethod
     def open(
@@ -468,7 +467,9 @@ class CursorAlias(object):
 
         replica_object = replica(self)
 
-        shutil.copytree(self.alias_dir, dst, copy_function=shutil.copy)
+        shutil.copytree(
+            self.alias_dir, dst, dirs_exist_ok=True, copy_function=shutil.copy
+        )
         replica_object.alias_dir = dst
         replica_object.prefix = dst.stem
         replica_object.alias_p = dst / self.alias_p.name
