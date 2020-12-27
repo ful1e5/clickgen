@@ -6,7 +6,7 @@ from copy import deepcopy
 from os import PathLike
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -148,7 +148,7 @@ class Bitmap(object):
         # => *.png
         for bmp_pattern in ("*.png",):
             if not p.match(bmp_pattern):
-                raise IOError(
+                raise ValueError(
                     f"{self.__class__} supports '{bmp_pattern}' bitmaps type, not '{p.suffix}'"
                 )
         return p
@@ -184,7 +184,7 @@ class Bitmap(object):
 
             try:
                 if self.key != k:
-                    raise IOError(
+                    raise ValueError(
                         f"Bitmap '{bmp_path.name}' not matched with key '{self.key}'. Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-000.png','bitmap-001.png' "
                     )
                 else:
@@ -347,7 +347,7 @@ class CursorAlias(object):
         else:
             self.prefix = Path(mkdtemp(prefix=f"{bitmap.key}__alias"))
 
-    # Checking method
+    # helper method
     def check_alias(self) -> None:
         if not any(self.prefix.iterdir()):
             raise Exception(f"Alias directory is empty or not exists.")
@@ -434,12 +434,23 @@ class CursorAlias(object):
 
         return self.alias_p
 
-    def change_alias_ext(self, ext: str) -> Path:
-        self.check_alias()
-        new_path: Path = self.alias_p.with_suffix(ext)
-        self.alias_p = self.alias_p.rename(new_path)
+    @overload
+    def extension(self) -> str:
+        ...
 
-        return self.alias_p
+    @overload
+    def extension(self, ext: str) -> Path:
+        ...
+
+    def extension(self, ext: Optional[str] = None) -> Union[str, Path]:
+        self.check_alias()
+        if ext:
+            new_path: Path = self.alias_p.with_suffix(ext)
+            self.alias_p = self.alias_p.rename(new_path)
+
+            return self.alias_p
+        else:
+            return self.alias_p.suffix
 
     def copy(self, dst: _P) -> "CursorAlias":
         self.check_alias()
