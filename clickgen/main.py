@@ -337,12 +337,22 @@ class CursorAlias(object):
     def __init__(
         self,
         bitmap: Bitmap,
-        directory: _P = mkdtemp(prefix="clickgen_alias_"),
+        alias_directory: Optional[_P] = None,
     ) -> None:
         super().__init__()
 
         self.bitmap = bitmap
-        self.prefix = Path(directory)
+        if alias_directory:
+            self.prefix = to_path(alias_directory)
+        else:
+            self.prefix = Path(mkdtemp(prefix=f"{bitmap.key}__alias"))
+
+    # Checking method
+    def check_alias(self) -> None:
+        if not any(self.prefix.iterdir()):
+            raise Exception(f"Alias directory is empty or not exists.")
+        else:
+            return None
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
@@ -368,9 +378,10 @@ class CursorAlias(object):
         png: Union[_P, List[_P]],
         hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
+        alias_directory: Optional[_P] = None,
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
-        return cls(bmp)
+        return cls(bmp, alias_directory)
 
     def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
         def __generate(size: _Size) -> List[str]:
@@ -423,12 +434,18 @@ class CursorAlias(object):
 
         return self.alias_p
 
+    def change_alias_ext(self, ext: str) -> Path:
+        self.check_alias()
+        new_path: Path = self.alias_p.with_suffix(ext)
+        self.alias_p = self.alias_p.rename(new_path)
+
+        return self.alias_p
+
     def copy(self, dst: _P) -> "CursorAlias":
+        self.check_alias()
         dst: Path = to_path(dst)
         if dst.is_file():
             raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
-        if not any(self.prefix.iterdir()):
-            raise Exception(f"Alias directory is empty or not exists.")
 
         replica_object = replica(self)
 
@@ -439,6 +456,7 @@ class CursorAlias(object):
         return replica_object
 
     def rename(self, key: str) -> Path:
+        self.check_alias()
         old_key: str = self.bitmap.key
 
         def __rename(p: Path) -> Path:
