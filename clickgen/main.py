@@ -391,17 +391,15 @@ class CursorAlias(object):
                 l.append(f"{line}\n")
             return l
 
-        def __write_alias(lines: List[str]) -> Path:
-            # sort line, So all lines in order according to size (24x24, 28x28, ..)
+        def __write_alias(lines: List[str]) -> None:
+            # sorting all lines according to size (24x24, 28x28, ..)
             lines.sort()
-
             # remove newline from EOF
             lines[-1] = lines[-1].rstrip("\n")
-            cfg: Path = self.prefix / f"{self.bitmap.key}.alias"
 
+            cfg: Path = self.prefix / f"{self.bitmap.key}.alias"
             with cfg.open("w") as f:
                 f.writelines(lines)
-
             self.alias_p = cfg
 
         sizes_type_err: str = (
@@ -411,8 +409,8 @@ class CursorAlias(object):
         if isinstance(sizes, list):
             lines: List[str] = []
             for size in sizes:
-                if isinstance(sizes, tuple):
-                    lines.append(*__generate(size))
+                if isinstance(size, tuple):
+                    lines.extend(__generate(size))
                 else:
                     raise TypeError(sizes_type_err)
             __write_alias(lines)
@@ -443,19 +441,20 @@ class CursorAlias(object):
     def rename(self, key: str) -> Path:
         old_key: str = self.bitmap.key
 
-        def __rename(p: Path) -> None:
+        def __rename(p: Path) -> Path:
             name: str = f"{p.stem.replace(old_key, key)}{p.suffix}"
             path: Path = p.with_name(name)
-            p.rename(path)
+            return p.rename(path)
 
         for f in self.prefix.iterdir():
             if f.is_dir():
                 for png in f.glob("*.png"):
-                    __rename(png)
+                    png = __rename(png)
             elif f.is_file or f.absolute() == self.alias_p.absolute():
                 updated_data: str = f.read_text().replace(old_key, key)
                 f.write_text(updated_data)
-                __rename(f)
+
+                self.alias_p = __rename(f)
             else:
                 pass
 
