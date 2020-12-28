@@ -5,7 +5,7 @@ import shutil
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from tempfile import mkdtemp
+from tempfile import mkdtemp, tempdir
 from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
@@ -343,6 +343,7 @@ class CursorAlias(object):
     alias_p: Path
 
     __delay: int = 10
+    __garbage_dirs: List[Path] = []
 
     def __init__(
         self,
@@ -543,10 +544,13 @@ class CursorAlias(object):
         ] = "center",
     ) -> "CursorAlias":
         self.check_alias()
-        tmp_bitmap_dir = Path(mkdtemp(prefix=f"{self.prefix}__reproduce_bitmap__"))
-        tmp_bitmap = self.bitmap.copy(tmp_bitmap_dir)
+
+        tmp_bitmaps_dir: Path = Path(mkdtemp(prefix=f"{self.prefix}__garbage_bmps__"))
+        tmp_bitmap = self.bitmap.copy(tmp_bitmaps_dir)
         tmp_bitmap.reproduce(size, canvas_size, position)
 
+        # TODO:Remove directory created by alias
+        self.__garbage_dirs.append(tmp_bitmaps_dir)
         cls: CursorAlias = CursorAlias(tmp_bitmap)
         cls.alias(
             canvas_size,
