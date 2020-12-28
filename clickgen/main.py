@@ -335,6 +335,9 @@ class CursorAlias(object):
     alias_dir: Path
     alias_p: Path
 
+    __delay: int = 10
+    __sizes: List[_Size] = []
+
     def __init__(
         self,
         bitmap: Bitmap,
@@ -372,6 +375,8 @@ class CursorAlias(object):
             self.alias_p = None
 
         # Current attr
+        self.__delay = None
+        self.__sizes = None
         self.alias_dir = None
         self.prefix = None
 
@@ -386,7 +391,9 @@ class CursorAlias(object):
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
         return cls(bmp, alias_directory)
 
-    def alias(self, sizes: Union[_Size, List[_Size]], delay: int = 10) -> Path:
+    def alias(
+        self, sizes: Union[_Size, List[_Size]], delay: Optional[int] = None
+    ) -> Path:
         def __generate(size: _Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
@@ -403,6 +410,8 @@ class CursorAlias(object):
                     line = f"{line} {delay}"
 
                 l.append(f"{line}\n")
+
+            self.__sizes.append(size)
             return l
 
         def __write_alias(lines: List[str]) -> None:
@@ -420,7 +429,14 @@ class CursorAlias(object):
             f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
         )
 
+        if not delay:
+            delay = self.__delay
+        else:
+            self.__delay = delay
+
         if isinstance(sizes, list):
+            # Remove duplicate value
+            sizes = list(set(sizes))
             lines: List[str] = []
             for size in sizes:
                 if isinstance(size, tuple):
@@ -508,3 +524,22 @@ class CursorAlias(object):
                 pass
 
         return self.alias_p
+
+    def reproduce(
+        self,
+        size: _Size = (24, 24),
+        canvas_size: _Size = (32, 32),
+        position: Literal[
+            "top_left", "top_right", "bottom_right", "bottom_right", "center"
+        ] = "center",
+    ) -> "CursorAlias":
+        self.check_alias()
+        tmp_bitmap_dir = Path(mkdtemp(prefix=f"{self.prefix}__reproduce_bitmap__"))
+        tmp_bitmap = self.bitmap.copy(tmp_bitmap_dir)
+        tmp_bitmap.reproduce(size, canvas_size, position)
+        print(tmp_bitmap_dir)
+
+        cls: CursorAlias = CursorAlias(tmp_bitmap)
+        # cls.alias(self.sizes, self.delay)
+
+        return cls
