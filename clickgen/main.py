@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
-from clickgen.util import debug, timer
 import shutil
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from tempfile import mkdtemp, tempdir
+from tempfile import mkdtemp
 from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
@@ -536,7 +534,6 @@ class CursorAlias(object):
 
         return self.alias_p
 
-    @timer
     def reproduce(
         self,
         size: _Size = (24, 24),
