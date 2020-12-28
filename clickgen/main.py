@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+from clickgen.util import debug, timer
 import shutil
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from tempfile import mkdtemp
+from tempfile import mkdtemp, tempdir
 from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
@@ -213,10 +215,11 @@ class Bitmap(object):
             # Preventing image quality degrades
             if img.size != size:
                 img = img.resize(size, resample=resample)
-                if save:
-                    self._set_size(p)
-                    self._update_hotspots(size)
-                    img.save(p, compress=self.compress)
+            # If save => Update attribute
+            if save:
+                self._set_size(p)
+                self._update_hotspots(size)
+                img.save(p, compress=self.compress)
             return img
 
         if self.animated:
@@ -264,7 +267,9 @@ class Bitmap(object):
 
             if save:
                 self._set_size(p)
-                self._update_hotspots(canvas_size)
+                # Calc Hotspots
+                self.x_hot = int(round(size[0] / self.width * self.x_hot) + box[0])
+                self.y_hot = int(round(size[1] / self.height * self.y_hot) + box[1])
                 canvas.save(p, compress=self.compress)
             return canvas
 
@@ -306,13 +311,16 @@ class Bitmap(object):
         else:
             return self
 
-    def copy(self, path: _P) -> "Bitmap":
-        path: Path = to_path(path)
+    def copy(self, path: Optional[_P] = None) -> "Bitmap":
+
+        if not path:
+            path: Path = mkdtemp(prefix=f"{self.key}__copy_")
+        else:
+            path: Path = to_path(path)
 
         if path.is_file():
             raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
 
-        replica_object = replica(self)
         path.mkdir(parents=True, exist_ok=True)
 
         def __copy(src: Path) -> Path:
@@ -321,12 +329,13 @@ class Bitmap(object):
             return dst
 
         if self.animated:
-            for index, png in enumerate(replica_object.grouped_png):
-                replica_object.grouped_png[index] = __copy(png)
+            pngs: List[Path] = []
+            for p in self.grouped_png:
+                pngs.append(__copy(p))
+            return Bitmap(pngs, (self.x_hot, self.y_hot), self.key)
         else:
-            replica_object.png = __copy(replica_object.png)
-
-        return replica_object
+            p = __copy(self.png)
+            return Bitmap(p, (self.x_hot, self.y_hot), self.key)
 
 
 class CursorAlias(object):
@@ -336,7 +345,6 @@ class CursorAlias(object):
     alias_p: Path
 
     __delay: int = 10
-    __sizes: List[_Size] = []
 
     def __init__(
         self,
@@ -376,7 +384,6 @@ class CursorAlias(object):
 
         # Current attr
         self.__delay = None
-        self.__sizes = None
         self.alias_dir = None
         self.prefix = None
 
@@ -392,7 +399,9 @@ class CursorAlias(object):
         return cls(bmp, alias_directory)
 
     def alias(
-        self, sizes: Union[_Size, List[_Size]], delay: Optional[int] = None
+        self,
+        sizes: Union[_Size, List[_Size]],
+        delay: Optional[int] = None,
     ) -> Path:
         def __generate(size: _Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
@@ -411,7 +420,6 @@ class CursorAlias(object):
 
                 l.append(f"{line}\n")
 
-            self.__sizes.append(size)
             return l
 
         def __write_alias(lines: List[str]) -> None:
@@ -434,20 +442,23 @@ class CursorAlias(object):
         else:
             self.__delay = delay
 
+        # Multiple sizes
         if isinstance(sizes, list):
-            # Remove duplicate value
-            sizes = list(set(sizes))
             lines: List[str] = []
+
             for size in sizes:
                 if isinstance(size, tuple):
                     lines.extend(__generate(size))
                 else:
                     raise TypeError(sizes_type_err)
+
             __write_alias(lines)
 
+        # Single size
         elif isinstance(sizes, tuple):
             lines = __generate(sizes)
             __write_alias(lines)
+
         else:
             raise TypeError(sizes_type_err)
 
@@ -525,6 +536,7 @@ class CursorAlias(object):
 
         return self.alias_p
 
+    @timer
     def reproduce(
         self,
         size: _Size = (24, 24),
@@ -537,9 +549,11 @@ class CursorAlias(object):
         tmp_bitmap_dir = Path(mkdtemp(prefix=f"{self.prefix}__reproduce_bitmap__"))
         tmp_bitmap = self.bitmap.copy(tmp_bitmap_dir)
         tmp_bitmap.reproduce(size, canvas_size, position)
-        print(tmp_bitmap_dir)
 
         cls: CursorAlias = CursorAlias(tmp_bitmap)
-        # cls.alias(self.sizes, self.delay)
+        cls.alias(
+            canvas_size,
+            delay=self.__delay,
+        )
 
         return cls
