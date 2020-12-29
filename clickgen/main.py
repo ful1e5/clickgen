@@ -5,7 +5,7 @@ import shutil
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path
-from tempfile import mkdtemp, tempdir
+from tempfile import mkdtemp
 from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
@@ -106,6 +106,7 @@ class Bitmap(object):
         self.size = None
         self.height = None
         self.width = None
+
         if hasattr(self, "grouped_png"):
             self.grouped_png = None
         else:
@@ -371,7 +372,7 @@ class CursorAlias(object):
     def __enter__(self) -> "CursorAlias":
         return self
 
-    def __exit__(self, *args) -> None:
+    def __exit__(self, *args):
         # Bitmap attr
         self.bitmap.__exit__()
         self.bitmap = None
@@ -380,6 +381,11 @@ class CursorAlias(object):
         if hasattr(self, "alias_p"):
             shutil.rmtree(self.alias_dir)
             self.alias_p = None
+
+        if hasattr(self, "__garbage_dirs"):
+            for p in self.__garbage_dirs:
+                shutil.rmtree(p)
+            self.__garbage_dirs = None
 
         # Current attr
         self.__delay = None
@@ -511,7 +517,7 @@ class CursorAlias(object):
         new_alias_dir = self.alias_dir.with_name(
             self.alias_dir.name.replace(self.prefix, new_prefix)
         )
-        shutil.move(str(self.alias_dir), str(new_alias_dir))
+        shutil.move(f"{self.alias_dir!s}", new_alias_dir)
         self.prefix = new_prefix
         self.alias_dir = new_alias_dir
 
@@ -549,8 +555,9 @@ class CursorAlias(object):
         tmp_bitmap = self.bitmap.copy(tmp_bitmaps_dir)
         tmp_bitmap.reproduce(size, canvas_size, position)
 
-        # TODO:Remove directory created by alias
+        # Will Deleted, When exit being called
         self.__garbage_dirs.append(tmp_bitmaps_dir)
+
         cls: CursorAlias = CursorAlias(tmp_bitmap)
         cls.alias(
             canvas_size,
