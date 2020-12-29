@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any, List
 
 from clickgen import __path__ as clickgen_pkg_root
-from clickgen.util import remove
+from clickgen.util import remove_util
 
 
 class XCursorBuilder:
@@ -52,7 +52,7 @@ class XCursorBuilder:
         """ Generate x11 cursor from `.in` file."""
 
         # remove old cursor file
-        remove(self.out)
+        remove_util(self.out)
 
         argv: List[str] = [
             "xcursorgen",
