@@ -58,10 +58,11 @@ class Bitmap(object):
         self.x_hot = hotspot[0]
         self.y_hot = hotspot[1]
 
-        # Is png == _P        => 'static' bitmap
-        # Or png == [_P, _P]  => 'animated' bitmap
-        # Or png == [_P]      => 'static' bitmap
+        # Is png == _P             => 'static' bitmap
+        # Or png == [_P, _P, ...]  => 'animated' bitmap
+        # Or png == [_P]           => 'static' bitmap
         # else TypeError()
+
         err: str = f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
 
         if isinstance(png, str) or isinstance(png, Path):
@@ -85,9 +86,7 @@ class Bitmap(object):
                 f"{self.__class__.__name__}(grouped_png={self.grouped_png}, {common})"
             )
         else:
-            return (
-                f"{self.__class__.__name__}(png={self.png}, key={self.key}, {common})"
-            )
+            return f"{self.__class__.__name__}(png={self.png}, {common})"
 
     def __repr__(self) -> str:
         common: str = f"'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}"
@@ -361,12 +360,17 @@ class CursorAlias(object):
         else:
             self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
-    # helper method
-    def check_alias(self) -> None:
-        if not any(self.alias_dir.iterdir()):
-            raise Exception(f"Alias directory is empty or not exists.")
+    def __get_alias_p(self) -> Optional[Path]:
+        if hasattr(self, "alias_p"):
+            return self.alias_p
         else:
             return None
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_p={self.__get_alias_p()}, __delay={self.__delay}, __garbage_dirs={self.__garbage_dirs})"
+
+    def __repr__(self) -> str:
+        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_p':{self.__get_alias_p()}, '__delay':{self.__delay}, '__garbage_dirs':{self.__garbage_dirs}}}"
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
@@ -377,7 +381,7 @@ class CursorAlias(object):
         self.bitmap.__exit__()
         self.bitmap = None
 
-        # Clean files
+        # Current attr
         if hasattr(self, "alias_p"):
             shutil.rmtree(self.alias_dir)
             self.alias_p = None
@@ -387,7 +391,6 @@ class CursorAlias(object):
                 shutil.rmtree(p)
             self.__garbage_dirs = None
 
-        # Current attr
         self.__delay = None
         self.alias_dir = None
         self.prefix = None
@@ -398,10 +401,10 @@ class CursorAlias(object):
         png: Union[_P, List[_P]],
         hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
-        alias_directory: Optional[_P] = None,
+        alias_dir: Optional[_P] = None,
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
-        return cls(bmp, alias_directory)
+        return cls(bmp, alias_dir)
 
     def alias(
         self,
@@ -468,6 +471,12 @@ class CursorAlias(object):
             raise TypeError(sizes_type_err)
 
         return self.alias_p
+
+    def check_alias(self) -> None:
+        if not any(self.alias_dir.iterdir()):
+            raise Exception(f"Alias directory is empty or not exists.")
+        else:
+            return None
 
     @overload
     def extension(self) -> str:
