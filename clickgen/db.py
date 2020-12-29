@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
 from typing import Dict, List, Optional, Set
+from difflib import SequenceMatcher as SM
 
 _D = List[Set[str]]
 
@@ -207,5 +209,30 @@ class CursorDB(object):
                 symlinks.remove(i)
                 self.__data[i] = symlinks
 
-    def search_symlinks(self, key: str) -> Optional[List[str]]:
+    def search_symlinks(
+        self, key: str, find_similar: bool = False
+    ) -> Optional[List[str]]:
+        if find_similar:
+            key = self.__find_similar(key)
+
         return self.__data.get(key)
+
+    def __find_similar(self, key: str) -> str:
+        compare_ratio: float = 0.5
+        result: str = key
+        for e in self.__data.keys():
+            ratio: float = SM(None, key.lower(), e.lower()).ratio()
+            if ratio > compare_ratio:
+                compare_ratio = ratio
+                result = e
+            else:
+                continue
+
+        return result
+
+    def rename_file(self, p: Path) -> Optional[Path]:
+        key: str = self.__find_similar(p.stem)
+        if key != p.stem:
+            return p.with_name(f"{key}{p.suffix}")
+        else:
+            return None
