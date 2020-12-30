@@ -37,10 +37,7 @@ setup(
     package_dir={"clickgen": "clickgen"},
     packages=[
         "clickgen",
-        "clickgen.providers",
-        "clickgen.Type",
-        "clickgen.windows",
-        "clickgen.x11",
+        "clickgen.builders",
     ],
     classifiers=[
         "Development Status :: 3 - Alpha",

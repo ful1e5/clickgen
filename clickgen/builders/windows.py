@@ -43,7 +43,7 @@ class AnicursorgenArgs(NamedTuple):
     right_shift: float = 9.375
 
 
-class WinCursorBuilder:
+class WindowsCursor:
     """
     Build Windows cursors from `.in` configs files. Code inspiration from `anicursorgen.py`.
     https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
@@ -62,18 +62,19 @@ class WinCursorBuilder:
         self.out_dir = out_dir
         if not self.out_dir.exists():
             makedirs(self.out_dir)
-        self.out = self.out_dir / f"{stem}.cur"
 
+        # Determine cursor extension
+        self.out = self.out_dir / f"{stem}.cur"
         with self.config_file.open() as f:
             line = f.readline()
             words = shlex.split(line.rstrip("\n").rstrip("\r"))
             if len(words) > 4:
                 self.out = self.out_dir / f"{stem}.ani"
 
+    @staticmethod
     def parse_config_from(
-        self, in_buffer: BufferedReader, prefix: str
+        in_buffer: BufferedReader, prefix: str
     ) -> List[Tuple[int, int, int, str, int]]:
-        """ Parse config file buffer. """
         frames: List[Tuple[int, int, int, str, int]] = []
 
         for line in in_buffer.readlines():
@@ -98,10 +99,8 @@ class WinCursorBuilder:
 
         return frames
 
-    def frames_have_animation(
-        self, frames: List[Tuple[int, int, int, str, int]]
-    ) -> bool:
-        """ For checking @frames have animation. """
+    @staticmethod
+    def frames_have_animation(frames: List[Tuple[int, int, int, str, int]]) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -112,7 +111,8 @@ class WinCursorBuilder:
 
         return False
 
-    def make_framesets(self, frames: List[Any]) -> Optional[List[Any]]:
+    @staticmethod
+    def make_framesets(frames: List[Any]) -> Optional[List[Any]]:
         framesets: List[Any] = []
         sizes = set()
 
@@ -159,7 +159,8 @@ class WinCursorBuilder:
 
         return framesets
 
-    def copy_to(self, out: Any, buf: BytesIO) -> None:
+    @staticmethod
+    def copy_to(out: Any, buf: BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -243,7 +244,8 @@ class WinCursorBuilder:
 
         return 0
 
-    def shadowize(self, shadow: Image, orig, color) -> None:
+    @staticmethod
+    def shadowize(shadow: Image, orig, color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -289,10 +291,12 @@ class WinCursorBuilder:
 
         return (0, shadowed)
 
-    def write_png(self, out: Any, frame_png: Any) -> None:
+    @staticmethod
+    def write_png(out: Any, frame_png: Any) -> None:
         frame_png.save(out, "png", optimize=True)
 
-    def write_cur(self, out: Any, frame: Any, frame_png: Any) -> None:
+    @staticmethod
+    def write_cur(out: Any, frame: Any, frame_png: Any) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -384,7 +388,6 @@ class WinCursorBuilder:
         out_buffer: BufferedWriter,
         args: AnicursorgenArgs,
     ) -> Literal[0, 1]:
-        """ Generate Windows cursor from `.in` file. """
 
         exec_code: Literal[0, 1] = 0
         frames = self.parse_config_from(in_buffer, prefix=self.prefix.absolute())
@@ -400,7 +403,6 @@ class WinCursorBuilder:
         return exec_code
 
     def anicursorgen(self, args: AnicursorgenArgs) -> Literal[0, 1]:
-        """ `anicursorgen.py` @main function. """
 
         in_cfg_buffer = self.config_file.open(mode="rb")
 
@@ -417,10 +419,15 @@ class WinCursorBuilder:
         return exec_code
 
     def generate(self, args: AnicursorgenArgs = AnicursorgenArgs()) -> None:
-        """ Generate Windows cursors from config files(look inside @self.__config_dir). """
 
         exec_code = self.anicursorgen(args)
         if exec_code == 1:
             raise Exception(
-                f"'anicursorgen.py' can't genrate Windows cursor from {self.config_file.name}"
+                f"'{self.__class__.__name__}' can't genrate Windows cursor from {self.config_file.name}"
             )
+
+    @classmethod
+    def build_from(cls, alias_file: Path, out_dir: Path) -> Path:
+        builder: WindowsCursor = cls(alias_file, out_dir)
+        builder.generate()
+        return builder.out

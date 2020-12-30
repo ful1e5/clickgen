@@ -72,7 +72,7 @@ class XCursor:
         self._lib.main(args, kwargs)
 
     @classmethod
-    def from(cls,alias_file:Path,out_dir:Path)->Path:
-        builder:XCursor=cls(alias_file,out_dir)
+    def build_from(cls, alias_file: Path, out_dir: Path) -> Path:
+        builder: XCursor = cls(alias_file, out_dir)
         builder.generate()
         return builder.out
