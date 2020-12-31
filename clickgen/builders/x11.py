@@ -26,10 +26,9 @@ class XCursor:
         out_dir: Path,
     ) -> None:
         if not config_file.exists() or not config_file.is_file():
-            raise FileNotFoundError(f"'{config_file.name}' Config file not found")
-
-        if out_dir.is_dir():
-            raise NotADirectoryError(f"'{out_dir.absolute()}'is not directory")
+            raise FileNotFoundError(
+                f"'{config_file.name}' Config file not found or it's corrupts"
+            )
 
         self.config_file: Path = config_file
         self.prefix: Path = config_file.parent
@@ -38,7 +37,7 @@ class XCursor:
         self.cursors_dir: Path = self.out_dir / "cursors"
 
         if not self.cursors_dir.exists():
-            self.cursors_dir.mkdir()
+            self.cursors_dir.mkdir(parents=True, exist_ok=True)
 
         self.out: Path = self.cursors_dir / self.config_file.stem
 
