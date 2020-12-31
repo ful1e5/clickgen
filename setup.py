@@ -33,7 +33,7 @@ setup(
         "Funding": "https://www.paypal.me/kaizkhatri",
         "Changelog": "https://github.com/ful1e5/clickgen/blob/main/CHANGELOG.md",
     },
-    install_requires=["Pillow>=7.2.0", "tinydb>=4.3.0"],
+    install_requires=["Pillow>=7.2.0"],
     package_dir={"clickgen": "clickgen"},
     packages=[
         "clickgen",
