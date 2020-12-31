@@ -2,15 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import functools
-import json
 import os
 import re
 import shutil
 import time
 from contextlib import contextmanager
 from pathlib import Path, PosixPath
-from types import SimpleNamespace
-from typing import Any, Iterable, List, Union
+from typing import Callable, Iterable, List, Union
 
 from clickgen.core import _P, to_path
 
@@ -107,3 +105,25 @@ def provide_pngs(bitmaps_dir: _P, pattern: str) -> List[Union[Path, List[Path]]]
         result.append(group)
 
     return result
+
+
+class PNGProvider(object):
+    bitmaps_dir: Path
+    __pngs: List[str] = []
+
+    def __init__(self, bitmaps_dir: _P) -> None:
+        super().__init__()
+        self.bitmaps_dir = to_path(bitmaps_dir)
+        for f in sorted(self.bitmaps_dir.iterdir()):
+            self.__pngs.append(f.name)
+
+    def get(self, key: str) -> Union[List[Path], Path]:
+        r = re.compile(key)
+        convert_to_path: Callable[[str], Path] = lambda x: self.bitmaps_dir / x
+
+        paths = list(map(convert_to_path, filter(r.match, self.__pngs)))
+
+        if len(paths) == 1:
+            return paths[0]
+        else:
+            return paths
