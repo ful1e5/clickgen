@@ -71,7 +71,7 @@ class Bitmap(object):
 
         elif isinstance(png, list):
             if key:
-                self.key, _ = key.rsplit("-", 1)
+                self.key = key.rsplit("-", 1)[0]
 
             if len(png) == 1:
                 self.__set_as_static(png[0])
