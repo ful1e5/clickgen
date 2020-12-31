@@ -400,7 +400,7 @@ class CursorAlias(object):
         self.prefix = None
 
     @classmethod
-    def with(
+    def create_from(
         cls,
         png: Union[_P, List[_P]],
         hotspot: Tuple[int, int] = (0, 0),
