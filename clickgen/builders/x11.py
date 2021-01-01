@@ -20,11 +20,7 @@ class XCursor:
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)
     _lib.main.argtypes = (ctypes.c_int, _LP_LP_c_char)
 
-    def __init__(
-        self,
-        config_file: Path,
-        out_dir: Path,
-    ) -> None:
+    def __init__(self, config_file: Path, out_dir: Path) -> None:
         if not config_file.exists() or not config_file.is_file():
             raise FileNotFoundError(
                 f"'{config_file.name}' Config file not found or it's corrupts"
