@@ -10,9 +10,10 @@ from contextlib import contextmanager
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path, PosixPath
-from typing import Callable, Iterable, List, Union
+from typing import Callable, Iterable, List, Optional, Set, Union
 
 from clickgen.types import _P, _T
+from clickgen.db import CursorDB
 
 
 def replica(obj: _T) -> _T:
@@ -28,6 +29,13 @@ def to_path(p: _P) -> Path:
         raise TypeError(
             f"Unable to convert parameter 'p' to 'Path' with 'TypeVar('_P', str, Path, PathLike)'"
         )
+
+
+def add_missing_xcursors(dir: Path, data: Optional[List[Set[str]]] = None) -> bool:
+    if not dir.exists() or not dir.is_dir():
+        raise NotADirectoryError(dir.absolute())
+
+    db = CursorDB(data)
 
 
 def remove_util(p: Union[str, Path]) -> None:
