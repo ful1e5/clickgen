@@ -2,34 +2,15 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-from copy import deepcopy
-from os import PathLike
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import List, Literal, Optional, Tuple, Union, overload
 
 from PIL import Image as Img
 from PIL.Image import Image
 
-
-_T = TypeVar("_T")
-_P = TypeVar("_P", str, Path, PathLike)
-_Size = Tuple[int, int]
-
-
-def replica(obj: _T) -> _T:
-    return deepcopy(obj)
-
-
-def to_path(p: _P) -> Path:
-    if isinstance(p, str) or isinstance(p, PathLike):
-        return Path(p)
-    elif isinstance(p, Path):
-        return p
-    else:
-        raise TypeError(
-            f"Unable to convert parameter 'p' to 'Path' with 'TypeVar('_P', str, Path, PathLike)'"
-        )
+from clickgen.types import _P, _Size
+from clickgen.util import replica, to_path
 
 
 class Bitmap(object):

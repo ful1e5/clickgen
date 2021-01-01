@@ -7,10 +7,27 @@ import re
 import shutil
 import time
 from contextlib import contextmanager
+from copy import deepcopy
+from os import PathLike
 from pathlib import Path, PosixPath
 from typing import Callable, Iterable, List, Union
 
-from clickgen.core import _P, to_path
+from clickgen.types import _P, _T
+
+
+def replica(obj: _T) -> _T:
+    return deepcopy(obj)
+
+
+def to_path(p: _P) -> Path:
+    if isinstance(p, str) or isinstance(p, PathLike):
+        return Path(p)
+    elif isinstance(p, Path):
+        return p
+    else:
+        raise TypeError(
+            f"Unable to convert parameter 'p' to 'Path' with 'TypeVar('_P', str, Path, PathLike)'"
+        )
 
 
 def remove_util(p: Union[str, Path]) -> None:

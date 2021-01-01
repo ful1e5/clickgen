@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 from typing import Dict
-
 
 WIN_CURSORS_CFG: Dict[str, Dict[str, str]] = {
     "Alternate": {"from": "right_ptr", "placement": "top_left"},
