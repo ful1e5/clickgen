@@ -1,4 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# TODO
+
+def test_hello() -> None:
+    assert 0 == 0
