@@ -337,8 +337,13 @@ class WindowsCursor:
             if width > 255:
                 width = 0
             height = width
-            buf.write(p("<BBBB HH", width, height, 0, 0, frame[1], frame[2]))
+
+            a = 0 if frame[1] == -1 else frame[1]
+            b = 0 if frame[2] == -1 else frame[2]
+
+            buf.write(p("<BBBB HH", width, height, 0, 0, a, b))
             size_offset_pos = buf.seek(0, io.SEEK_CUR)
+
             buf.write(p("<II", 0, 0))
             frame_offsets.append([size_offset_pos])
 
