@@ -8,6 +8,7 @@ from clickgen.builders.windows import WindowsCursor
 from clickgen.builders.x11 import XCursor
 from clickgen.core import CursorAlias
 from clickgen.packagers import WinPackager, XPackager
+from clickgen.util import add_missing_xcursors
 
 from configure import get_config
 
@@ -48,6 +49,7 @@ def build() -> None:
     author: str = "Kaiz Khatri"
     url: str = "https://github.com/ful1e5/clickgen/tree/main/examples"
 
+    add_missing_xcursors(x_out_dir / "cursors", rename=True, force=True)
     XPackager(x_out_dir, theme_name, comment)
     WinPackager(win_out_dir, theme_name, comment, author, url)
 
