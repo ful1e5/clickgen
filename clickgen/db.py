@@ -7,7 +7,7 @@ from difflib import SequenceMatcher as SM
 
 _D = List[Set[str]]
 
-data: _D = [
+DATA: _D = [
     {
         "X_cursor",
         "x-cursor",
@@ -189,7 +189,7 @@ data: _D = [
 class CursorDB(object):
     __data: Dict[str, List[str]] = {}
 
-    def __init__(self, data: _D = data) -> None:
+    def __init__(self, data: _D) -> None:
         super().__init__()
         self.__seed(data)
 
