@@ -10,10 +10,10 @@ from contextlib import contextmanager
 from copy import deepcopy
 from os import PathLike
 from pathlib import Path, PosixPath
-from typing import Callable, Iterable, List, Optional, Set, Union
+from typing import Callable, Iterable, List, Set, Union
 
+from clickgen.db import DATA, CursorDB
 from clickgen.types import _P, _T
-from clickgen.db import CursorDB
 
 
 def replica(obj: _T) -> _T:
@@ -31,11 +31,20 @@ def to_path(p: _P) -> Path:
         )
 
 
-def add_missing_xcursors(dir: Path, data: Optional[List[Set[str]]] = None) -> bool:
-    if not dir.exists() or not dir.is_dir():
-        raise NotADirectoryError(dir.absolute())
+@contextmanager
+def chdir(dir: Union[str, Path]):
+    """
+    Temporary change `working` directory. Use this in `with` syntax.
 
-    db = CursorDB(data)
+    :dir: path to directory.
+    """
+
+    prev_cwd = os.getcwd()
+    os.chdir(str(dir))
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)
 
 
 def remove_util(p: Union[str, Path]) -> None:
@@ -53,20 +62,40 @@ def remove_util(p: Union[str, Path]) -> None:
         pass
 
 
-@contextmanager
-def chdir(dir: Union[str, Path]):
-    """
-    Temporary change `working` directory. Use this in `with` syntax.
+def add_missing_xcursors(
+    dir: Path, data: List[Set[str]] = DATA, rename: bool = False, force: bool = False
+) -> bool:
+    if not dir.exists() or not dir.is_dir():
+        raise NotADirectoryError(dir.absolute())
 
-    :dir: path to directory.
-    """
+    db: CursorDB = CursorDB(data)
 
-    prev_cwd = os.getcwd()
-    os.chdir(str(dir))
-    try:
-        yield
-    finally:
-        os.chdir(prev_cwd)
+    # Removing all symlinks cursors
+    if force:
+        for xcursor in dir.iterdir():
+            if xcursor.is_symlink():
+                xcursor.unlink(xcursor)
+
+    xcursors = sorted(dir.iterdir())
+
+    for xcursor in xcursors:
+        # Rename Xcursor according to Database, If necessary
+        if rename:
+            db.rename_file(xcursor)
+
+        # Creating symlinks
+        links = db.search_symlinks(xcursor.stem)
+        if links:
+            for link in links:
+                with chdir(dir):
+                    try:
+                        os.symlink(xcursor, link)
+                    except FileExistsError as f:
+                        if os.path.islink(f.filename2):
+                            os.unlink(f.filename2)
+                            os.symlink(f.filename, f.filename2)
+                        else:
+                            raise FileExistsError(f)
 
 
 def timer(func):
