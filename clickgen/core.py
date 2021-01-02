@@ -324,7 +324,6 @@ class CursorAlias(object):
     alias_dir: Path
     alias_p: Path
 
-    __delay: int = 10
     __garbage_dirs: List[Path] = []
 
     def __init__(
@@ -349,10 +348,10 @@ class CursorAlias(object):
             return None
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_p={self.__get_alias_p()}, __delay={self.__delay}, __garbage_dirs={self.__garbage_dirs})"
+        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_p={self.__get_alias_p()}, __garbage_dirs={self.__garbage_dirs})"
 
     def __repr__(self) -> str:
-        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_p':{self.__get_alias_p()}, '__delay':{self.__delay}, '__garbage_dirs':{self.__garbage_dirs}}}"
+        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_p':{self.__get_alias_p()}, '__garbage_dirs':{self.__garbage_dirs}}}"
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
@@ -376,7 +375,6 @@ class CursorAlias(object):
                 remove_util(p)
             self.__garbage_dirs = None
 
-        self.__delay = None
         self.alias_dir = None
         self.prefix = None
 
@@ -429,11 +427,6 @@ class CursorAlias(object):
         sizes_type_err: str = (
             f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
         )
-
-        if not delay:
-            delay = self.__delay
-        else:
-            self.__delay = delay
 
         # Multiple sizes
         if isinstance(sizes, list):
@@ -544,6 +537,7 @@ class CursorAlias(object):
         position: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",
+        delay: int = 3,
     ) -> "CursorAlias":
         self.check_alias()
 
@@ -551,13 +545,10 @@ class CursorAlias(object):
         tmp_bitmap = self.bitmap.copy(tmp_bitmaps_dir)
         tmp_bitmap.reproduce(size, canvas_size, position)
 
-        # Will Deleted, When exit being called
+        # Will Deleted, When __exit__ being called
         self.__garbage_dirs.append(tmp_bitmaps_dir)
 
         cls: CursorAlias = CursorAlias(tmp_bitmap)
-        cls.alias(
-            canvas_size,
-            delay=self.__delay,
-        )
+        cls.alias(canvas_size, delay)
 
         return cls
