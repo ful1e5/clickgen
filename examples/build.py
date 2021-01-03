@@ -4,13 +4,12 @@
 from pathlib import Path
 from typing import Any, List, Tuple
 
-from clickgen.builders.windows import WindowsCursor
-from clickgen.builders.x11 import XCursor
+from clickgen.builders import WindowsCursor, XCursor
 from clickgen.core import CursorAlias
 from clickgen.packagers import WinPackager, XPackager
 from clickgen.util import add_missing_xcursors
 
-from configure import get_config
+from examples.configure import get_config
 
 X_SIZES: List[Tuple[int, int]] = [(24, 24), (32, 32)]
 
@@ -37,9 +36,9 @@ def build() -> None:
         hotspot = item["hotspot"]
         delay = item["delay"]
 
-        with CursorAlias.create_from(png, hotspot) as alias:
-            x_cfg = alias.alias(X_SIZES, delay)
-            XCursor.build_from(x_cfg, x_out_dir)
+        with CursorAlias.from_bitmap(png, hotspot) as alias:
+            x_cfg = alias.create(X_SIZES, delay)
+            XCursor.create(x_cfg, x_out_dir)
 
             if item.get("win_key"):
                 win_build(item, alias)
@@ -50,6 +49,7 @@ def build() -> None:
     url: str = "https://github.com/ful1e5/clickgen/tree/main/examples"
 
     add_missing_xcursors(x_out_dir / "cursors", rename=True, force=True)
+
     XPackager(x_out_dir, theme_name, comment)
     WinPackager(win_out_dir, theme_name, comment, author, url)
 
