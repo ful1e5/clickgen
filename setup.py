@@ -35,10 +35,7 @@ setup(
     },
     install_requires=["Pillow>=7.2.0"],
     package_dir={"clickgen": "clickgen"},
-    packages=[
-        "clickgen",
-        "clickgen.builders",
-    ],
+    packages=["clickgen"],
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
