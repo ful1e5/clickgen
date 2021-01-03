@@ -322,7 +322,7 @@ class CursorAlias(object):
     bitmap: Bitmap
     prefix: str
     alias_dir: Path
-    alias_p: Path
+    alias_file: Path
 
     __garbage_dirs: List[Path] = []
 
@@ -341,17 +341,17 @@ class CursorAlias(object):
         else:
             self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
-    def __get_alias_p(self) -> Optional[Path]:
-        if hasattr(self, "alias_p"):
-            return self.alias_p
+    def __get_alias_file(self) -> Optional[Path]:
+        if hasattr(self, "alias_file"):
+            return self.alias_file
         else:
             return None
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_p={self.__get_alias_p()}, __garbage_dirs={self.__garbage_dirs})"
+        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, __garbage_dirs={self.__garbage_dirs})"
 
     def __repr__(self) -> str:
-        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_p':{self.__get_alias_p()}, '__garbage_dirs':{self.__garbage_dirs}}}"
+        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_file':{self.__get_alias_file()}, '__garbage_dirs':{self.__garbage_dirs}}}"
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
@@ -365,10 +365,10 @@ class CursorAlias(object):
         # Current attr
         from clickgen.util import remove_util
 
-        if hasattr(self, "alias_p"):
+        if hasattr(self, "alias_file"):
 
             remove_util(self.alias_dir)
-            self.alias_p = None
+            self.alias_file = None
 
         if hasattr(self, "__garbage_dirs"):
             for p in self.__garbage_dirs:
@@ -379,7 +379,7 @@ class CursorAlias(object):
         self.prefix = None
 
     @classmethod
-    def create_from(
+    def from_bitmap(
         cls,
         png: Union[_P, List[_P]],
         hotspot: Tuple[int, int] = (0, 0),
@@ -389,7 +389,7 @@ class CursorAlias(object):
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
         return cls(bmp, alias_dir)
 
-    def alias(
+    def create(
         self,
         sizes: Union[_Size, List[_Size]],
         delay: Optional[int] = None,
@@ -422,7 +422,7 @@ class CursorAlias(object):
             cfg: Path = self.alias_dir / f"{self.bitmap.key}.alias"
             with cfg.open("w") as f:
                 f.writelines(lines)
-            self.alias_p = cfg
+            self.alias_file = cfg
 
         sizes_type_err: str = (
             f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
@@ -450,7 +450,7 @@ class CursorAlias(object):
         else:
             raise TypeError(sizes_type_err)
 
-        return self.alias_p
+        return self.alias_file
 
     def check_alias(self) -> None:
         if not any(self.alias_dir.iterdir()):
@@ -469,12 +469,12 @@ class CursorAlias(object):
     def extension(self, ext: Optional[str] = None) -> Union[str, Path]:
         self.check_alias()
         if ext:
-            new_path: Path = self.alias_p.with_suffix(ext)
-            self.alias_p = self.alias_p.rename(new_path)
+            new_path: Path = self.alias_file.with_suffix(ext)
+            self.alias_file = self.alias_file.rename(new_path)
 
-            return self.alias_p
+            return self.alias_file
         else:
-            return self.alias_p.suffix
+            return self.alias_file.suffix
 
     def copy(self, dst: Optional[_P] = None) -> "CursorAlias":
         self.check_alias()
@@ -493,7 +493,7 @@ class CursorAlias(object):
         )
         replica_object.alias_dir = dst
         replica_object.prefix = dst.stem
-        replica_object.alias_p = dst / self.alias_p.name
+        replica_object.alias_file = dst / self.alias_file.name
 
         return replica_object
 
@@ -520,15 +520,15 @@ class CursorAlias(object):
             if f.is_dir():
                 for png in f.glob("*.png"):
                     png = __rename(png)
-            elif f.is_file or f.absolute() == self.alias_p.absolute():
+            elif f.is_file or f.absolute() == self.alias_file.absolute():
                 updated_data: str = f.read_text().replace(old_key, key)
                 f.write_text(updated_data)
 
-                self.alias_p = __rename(f)
+                self.alias_file = __rename(f)
             else:
                 pass
 
-        return self.alias_p
+        return self.alias_file
 
     def reproduce(
         self,
@@ -549,6 +549,6 @@ class CursorAlias(object):
         self.__garbage_dirs.append(tmp_bitmaps_dir)
 
         cls: CursorAlias = CursorAlias(tmp_bitmap)
-        cls.alias(canvas_size, delay)
+        cls.create(canvas_size, delay)
 
         return cls
