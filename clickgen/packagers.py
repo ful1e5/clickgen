@@ -87,25 +87,25 @@ link		  = "Link.cur"
 )
 
 REQUIRED_WIN_CURSORS: Iterator[str] = [
-    "Work"
-    "Busy"
-    "Default"
-    "Help"
-    "Link"
-    "Move"
-    "Diagonal_2"
-    "Vertical"
-    "Horizontal"
-    "Diagonal_1"
-    "Handwriting"
-    "Cross"
-    "IBeam"
-    "Unavailiable"
-    "Alternate"
+    "Work",
+    "Busy",
+    "Default",
+    "Help",
+    "Link",
+    "Move",
+    "Diagonal_2",
+    "Vertical",
+    "Horizontal",
+    "Diagonal_1",
+    "Handwriting",
+    "Cross",
+    "IBeam",
+    "Unavailiable",
+    "Alternate",
 ]
 
 
-def WinPackager(
+def WindowsPackager(
     dir: Path,
     theme_name: str,
     comment: str,
@@ -118,12 +118,18 @@ def WinPackager(
 
     for ext in ("*.ani", "*.cur"):
         for i in sorted(dir.glob(ext)):
-            cursors.append(i)
+            if i.stem in REQUIRED_WIN_CURSORS:
+                cursors.append(i)
 
     # Checking cursor files
     if not cursors:
         raise FileNotFoundError(f"Windows cursors not found in {dir}")
-    # TODO: Check all cursors
+    elif len(cursors) != len(REQUIRED_WIN_CURSORS):
+        # Some cursors are missing
+        c = list(map(lambda x: x.stem, cursors))
+        missing = list(set(REQUIRED_WIN_CURSORS) - set(c))
+
+        raise FileNotFoundError(f"'{missing}' is required")
 
     if website_url:
         comment: str = f"{comment}\n{website_url}"
