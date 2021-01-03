@@ -6,7 +6,7 @@ from typing import Any, List, Tuple
 
 from clickgen.builders import WindowsCursor, XCursor
 from clickgen.core import CursorAlias
-from clickgen.packagers import WinPackager, XPackager
+from clickgen.packagers import WindowsPackager, XPackager
 from clickgen.util import add_missing_xcursors
 
 from examples.configure import get_config
@@ -51,7 +51,7 @@ def build() -> None:
     add_missing_xcursors(x_out_dir / "cursors", rename=True, force=True)
 
     XPackager(x_out_dir, theme_name, comment)
-    WinPackager(win_out_dir, theme_name, comment, author, url)
+    WindowsPackager(win_out_dir, theme_name, comment, author, url)
 
 
 build()

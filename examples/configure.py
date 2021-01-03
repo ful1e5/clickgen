@@ -92,7 +92,7 @@ WIN_CURSORS_CFG: Dict[str, Dict[str, str]] = {
     "fd_double_arrow.png": {"to": "Diagonal_1"},
     "bd_double_arrow.png": {"to": "Diagonal_2"},
     "pencil.png": {"to": "Handwriting"},
-    "help": {"to": "Help", "position.png": "top_left"},
+    "question_arrow.png": {"to": "Help", "position.png": "top_left"},
     "sb_h_double_arrow.png": {"to": "Horizontal"},
     "xterm.png": {"to": "IBeam", "position": "top_left"},
     "hand2.png": {"to": "Link", "position": "top_left"},
