@@ -67,8 +67,8 @@ class XCursor:
 
         argv: List[str] = [
             "xcursorgen",
-            # "-p",  # prefix args for xcursorgen (do not remove)
-            # self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
+            "-p",  # prefix args for xcursorgen (do not remove)
+            self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
             self.config_file.absolute(),  # {cursor}.in file
             self.out.absolute(),
         ]
@@ -76,12 +76,11 @@ class XCursor:
         kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
         args: ctypes.c_int = ctypes.c_int(len(argv))
 
-        stream = StringIO()
-        with redirect_stderr(stream):
-            exec_with_error: bool = bool(self._lib.main(args, kwargs))
-
+        exec_with_error: bool = bool(self._lib.main(args, kwargs))
         if exec_with_error:
-            raise RuntimeError("'xcursorgen' raise error")
+            raise RuntimeError(
+                f"'xcursorgen' failed to generate xcursor named '{self.config_file.stem}'"
+            )
 
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path) -> Path:
@@ -186,7 +185,7 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: List[Any]) -> Optional[List[Any]]:
+    def make_framesets(frames: List[Any]) -> List[Any]:
         framesets: List[Any] = []
         sizes = set()
 
@@ -199,11 +198,9 @@ class WindowsCursor:
                 size = frame[0]
 
                 if size in sizes:
-                    print(
-                        f"Frames are not sorted: frame {i} has size {size}, but we have seen that already",
-                        file=sys.stderr,
+                    raise Exception(
+                        f"Frames are not sorted: frame {i} has size {size}, but we have seen that already"
                     )
-                    return None
 
                 sizes.add(size)
 
@@ -215,20 +212,16 @@ class WindowsCursor:
 
         for i in range(1, len(framesets)):
             if len(framesets[i - 1]) != len(framesets[i]):
-                print(
-                    f"Frameset {i} has size {len(framesets[i])}, expected {len(framesets[i - 1])}",
-                    file=sys.stderr,
+                raise Exception(
+                    f"Frameset {i} has size {len(framesets[i])}, expected {len(framesets[i - 1])}"
                 )
-                return None
 
         for frameset in framesets:
             for i in range(1, len(frameset)):
                 if frameset[i - 1][4] != frameset[i][4]:
-                    print(
+                    raise Exception(
                         f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}",
-                        file=sys.stderr,
                     )
-                    return None
         framesets = sorted(framesets, reverse=True)
 
         return framesets
@@ -247,11 +240,8 @@ class WindowsCursor:
         frames: List[Tuple[int, int, int, str, int]],
         out_buffer: BufferedWriter,
         args: AnicursorgenArgs,
-    ) -> Literal[0, 1]:
+    ) -> None:
         framesets = self.make_framesets(frames)
-
-        if framesets is None:
-            return 1
 
         buf = io.BytesIO()
 
@@ -315,8 +305,6 @@ class WindowsCursor:
         buf.write(p("<I", end_at - list_len_start))
 
         self.copy_to(out_buffer, buf)
-
-        return 0
 
     @staticmethod
     def shadowize(shadow: Image, orig, color) -> None:
@@ -461,52 +449,32 @@ class WindowsCursor:
 
         return buf
 
-    def make_cursor_from(
-        self,
-        in_buffer: BufferedReader,
-        out_buffer: BufferedWriter,
-        args: AnicursorgenArgs,
-    ) -> Literal[0, 1]:
+    def generate(self, args: AnicursorgenArgs) -> None:
 
-        exec_code: Literal[0, 1] = 0
-        frames = self.parse_config_from(in_buffer, prefix=self.prefix.absolute())
-
-        animated = self.frames_have_animation(frames)
-
-        if animated:
-            exec_code = self.make_ani(frames, out_buffer, args)
-        else:
-            buf = self.make_cur(frames, args)
-            self.copy_to(out_buffer, buf)
-
-        return exec_code
-
-    def anicursorgen(self, args: AnicursorgenArgs) -> Literal[0, 1]:
-
-        in_cfg_buffer = self.config_file.open(mode="rb")
+        in_buffer = self.config_file.open(mode="rb")
 
         # remove old cursor file
         if self.out.exists():
             remove(self.out)
 
         out_buffer = self.out.open(mode="wb")
-        exec_code = self.make_cursor_from(in_cfg_buffer, out_buffer, args)
 
-        in_cfg_buffer.close()
+        frames = self.parse_config_from(in_buffer, prefix=self.prefix.absolute())
+        animated = self.frames_have_animation(frames)
+
+        if animated:
+            self.make_ani(frames, out_buffer, args)
+        else:
+            buf = self.make_cur(frames, args)
+            self.copy_to(out_buffer, buf)
+
+        in_buffer.close()
         out_buffer.close()
 
-        return exec_code
-
-    def generate(self, args: AnicursorgenArgs = AnicursorgenArgs()) -> None:
-
-        exec_code = self.anicursorgen(args)
-        if exec_code == 1:
-            raise Exception(
-                f"'{self.__class__.__name__}' can't genrate Windows cursor from {self.config_file.name}"
-            )
-
     @classmethod
-    def build_from(cls, alias_file: Path, out_dir: Path) -> Path:
+    def build_from(
+        cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()
+    ) -> Path:
         builder: WindowsCursor = cls(alias_file, out_dir)
-        builder.generate()
+        builder.generate(args)
         return builder.out
