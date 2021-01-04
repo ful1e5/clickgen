@@ -7,8 +7,9 @@ import math
 import shlex
 import struct
 import sys
+from contextlib import redirect_stderr
 from ctypes import CDLL
-from io import BufferedReader, BufferedWriter, BytesIO
+from io import BufferedReader, BufferedWriter, BytesIO, StringIO
 from os import makedirs, path, remove
 from pathlib import Path
 from typing import Any, List, Literal, NamedTuple, Optional, Tuple
@@ -66,8 +67,8 @@ class XCursor:
 
         argv: List[str] = [
             "xcursorgen",
-            "-p",  # prefix args for xcursorgen (do not remove)
-            self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
+            # "-p",  # prefix args for xcursorgen (do not remove)
+            # self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
             self.config_file.absolute(),  # {cursor}.in file
             self.out.absolute(),
         ]
@@ -75,7 +76,12 @@ class XCursor:
         kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
         args: ctypes.c_int = ctypes.c_int(len(argv))
 
-        self._lib.main(args, kwargs)
+        stream = StringIO()
+        with redirect_stderr(stream):
+            exec_with_error: bool = bool(self._lib.main(args, kwargs))
+
+        if exec_with_error:
+            raise RuntimeError("'xcursorgen' raise error")
 
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path) -> Path:
