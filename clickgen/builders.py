@@ -5,21 +5,21 @@ import ctypes
 import io
 import math
 import shlex
-import struct
-import sys
-from contextlib import redirect_stderr
 from ctypes import CDLL
-from io import BufferedReader, BufferedWriter, BytesIO, StringIO
+from io import BufferedReader, BufferedWriter, BytesIO
 from os import makedirs, path, remove
 from pathlib import Path
-from typing import Any, List, Literal, NamedTuple, Optional, Tuple
+from struct import pack
+from typing import Any, List, Literal, NamedTuple, Tuple
 
 from PIL import Image, ImageFilter
 
 from clickgen import __path__ as clickgen_pkg_root
 from clickgen.util import remove_util
 
-p = struct.pack
+#
+# Xcursor
+#
 
 
 class XCursor:
@@ -82,11 +82,20 @@ class XCursor:
                 f"'xcursorgen' failed to generate xcursor named '{self.config_file.stem}'"
             )
 
-    @classmethod
-    def create(cls, alias_file: Path, out_dir: Path) -> Path:
-        builder: XCursor = cls(alias_file, out_dir)
-        builder.generate()
-        return builder.out
+    @staticmethod
+    def create(alias_file: Path, out_dir: Path) -> Path:
+        cursor = XCursor(alias_file, out_dir)
+        cursor.generate()
+        return cursor.out
+
+
+#
+# Windows cursor
+#
+
+_Frame = Tuple[int, int, int, str, int]
+_Frames = List[_Frame]
+_Color = Tuple[int, int, int, int]
 
 
 class AnicursorgenArgs(NamedTuple):
@@ -106,7 +115,7 @@ class AnicursorgenArgs(NamedTuple):
 
     add_shadows: bool = False
     blur: float = 3.125
-    color: Tuple[int, int, int, int] = (
+    color: _Color = (
         0,
         0,
         0,
@@ -122,12 +131,13 @@ class WindowsCursor:
     https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
     """
 
-    config_file: Path = Path()
-    out_dir: Path = Path()
-    prefix: Path = Path()
-    out: Path = Path()
+    args: AnicursorgenArgs
+    config_file: Path
+    out_dir: Path
+    prefix: Path
+    out: Path
 
-    def __init__(self, config_dir: Path, out_dir: Path) -> None:
+    def __init__(self, config_dir: Path, out_dir: Path, args: AnicursorgenArgs) -> None:
         self.config_file = config_dir
         self.prefix = config_dir.parent
         stem = self.config_file.stem
@@ -144,11 +154,11 @@ class WindowsCursor:
             if len(words) > 4:
                 self.out = self.out_dir / f"{stem}.ani"
 
+        self.args = args
+
     @staticmethod
-    def parse_config_from(
-        in_buffer: BufferedReader, prefix: str
-    ) -> List[Tuple[int, int, int, str, int]]:
-        frames: List[Tuple[int, int, int, str, int]] = []
+    def parse_config_from(in_buffer: BufferedReader, prefix: str) -> _Frames:
+        frames: _Frames = []
 
         for line in in_buffer.readlines():
             line = line.decode()
@@ -173,7 +183,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: List[Tuple[int, int, int, str, int]]) -> bool:
+    def frames_have_animation(frames: _Frames) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -185,8 +195,8 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: List[Any]) -> List[Any]:
-        framesets: List[Any] = []
+    def make_framesets(frames: _Frames) -> _Frames:
+        framesets: _Frames = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -227,7 +237,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: Any, buf: BytesIO) -> None:
+    def copy_to(out: BytesIO, buf: BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -237,9 +247,8 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: List[Tuple[int, int, int, str, int]],
+        frames: _Frames,
         out_buffer: BufferedWriter,
-        args: AnicursorgenArgs,
     ) -> None:
         framesets = self.make_framesets(frames)
 
@@ -247,13 +256,13 @@ class WindowsCursor:
 
         buf.write(b"RIFF")
         riff_len_pos = buf.seek(0, io.SEEK_CUR)
-        buf.write(p("<I", 0))
+        buf.write(pack("<I", 0))
         riff_len_start = buf.seek(0, io.SEEK_CUR)
 
         buf.write(b"ACON")
         buf.write(b"anih")
         buf.write(
-            p(
+            pack(
                 "<IIIIIIIIII",
                 36,
                 36,
@@ -274,25 +283,25 @@ class WindowsCursor:
 
         if len(rates) != 1:
             buf.write(b"rate")
-            buf.write(p("<I", len(framesets) * 4))
+            buf.write(pack("<I", len(framesets) * 4))
             for frameset in framesets:
-                buf.write(p("<I", int(frameset[0][4])))
+                buf.write(pack("<I", int(frameset[0][4])))
 
         buf.write(b"LIST")
         list_len_pos = buf.seek(0, io.SEEK_CUR)
-        buf.write(p("<I", 0))
+        buf.write(pack("<I", 0))
         list_len_start = buf.seek(0, io.SEEK_CUR)
 
         buf.write(b"fram")
 
         for frameset in framesets:
             buf.write(b"icon")
-            cur = self.make_cur(frameset, args, animated=True)
+            cur = self.make_cur(frameset, animated=True)
             cur_size = cur.seek(0, io.SEEK_END)
             # aligned_cur_size = cur_size
             # if cur_size % 4 != 0:
             #  aligned_cur_size += 4 - cur_size % 2
-            buf.write(p("<i", cur_size))
+            buf.write(pack("<i", cur_size))
             self.copy_to(buf, cur)
             pos = buf.seek(0, io.SEEK_END)
             if pos % 2 != 0:
@@ -300,14 +309,14 @@ class WindowsCursor:
 
         end_at = buf.seek(0, io.SEEK_CUR)
         buf.seek(riff_len_pos, io.SEEK_SET)
-        buf.write(p("<I", end_at - riff_len_start))
+        buf.write(pack("<I", end_at - riff_len_start))
         buf.seek(list_len_pos, io.SEEK_SET)
-        buf.write(p("<I", end_at - list_len_start))
+        buf.write(pack("<I", end_at - list_len_start))
 
         self.copy_to(out_buffer, buf)
 
     @staticmethod
-    def shadowize(shadow: Image, orig, color) -> None:
+    def shadowize(shadow: Image, orig: Image, color: _Color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -321,18 +330,16 @@ class WindowsCursor:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def create_shadow(
-        self, orig: Any, args: AnicursorgenArgs
-    ) -> Tuple[Literal[0], Any]:
-        blur_px = orig.size[0] / 100.0 * args.blur
-        right_px = int(orig.size[0] / 100.0 * args.right_shift)
-        down_px = int(orig.size[1] / 100.0 * args.down_shift)
+    def create_shadow(self, orig: Image) -> Tuple[Literal[0], Any]:
+        blur_px = orig.size[0] / 100.0 * self.args.blur
+        right_px = int(orig.size[0] / 100.0 * self.args.right_shift)
+        down_px = int(orig.size[1] / 100.0 * self.args.down_shift)
 
         shadow = Image.new("RGBA", orig.size, (0, 0, 0, 0))
-        self.shadowize(shadow, orig, args.color)
+        self.shadowize(shadow, orig, self.args.color)
         shadow.load()
 
-        if args.blur > 0:
+        if self.args.blur > 0:
             crop = (
                 int(math.floor(-blur_px)),
                 int(math.floor(-blur_px)),
@@ -349,26 +356,26 @@ class WindowsCursor:
         shadowed: Image = Image.new("RGBA", orig.size, (0, 0, 0, 0))
         shadowed.paste(shadow, (right_px, down_px))
         shadowed.crop((0, 0, orig.size[0], orig.size[1]))
-        shadowed: Image = Image.alpha_composite(shadowed, orig)
+        shadowed = Image.alpha_composite(shadowed, orig)
 
         return (0, shadowed)
 
     @staticmethod
-    def write_png(out: Any, frame_png: Any) -> None:
+    def write_png(out: BytesIO, frame_png: Image) -> None:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out: Any, frame: Any, frame_png: Any) -> None:
+    def write_cur(out: BytesIO, frame: _Frame, frame_png: Image) -> None:
         pixels = frame_png.load()
 
         out.write(
-            p("<I II HH IIIIII", 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0, 0)
+            pack("<I II HH IIIIII", 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0, 0)
         )
 
         for y in reversed(list(range(frame[0]))):
             for x in range(frame[0]):
                 pixel = pixels[x, y]
-                out.write(p("<BBBB", pixel[2], pixel[1], pixel[0], pixel[3]))
+                out.write(pack("<BBBB", pixel[2], pixel[1], pixel[0], pixel[3]))
 
         acc = 0
         acc_pos = 0
@@ -385,11 +392,9 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(
-        self, frames: List[Any], args: AnicursorgenArgs, animated: bool = False
-    ) -> BytesIO:
+    def make_cur(self, frames: _Frames, animated: bool = False) -> BytesIO:
         buf = io.BytesIO()
-        buf.write(p("<HHH", 0, 2, len(frames)))
+        buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
 
         frames = sorted(frames, reverse=True)
@@ -403,10 +408,10 @@ class WindowsCursor:
             a = 0 if frame[1] == -1 else frame[1]
             b = 0 if frame[2] == -1 else frame[2]
 
-            buf.write(p("<BBBB HH", width, height, 0, 0, a, b))
+            buf.write(pack("<BBBB HH", width, height, 0, 0, a, b))
             size_offset_pos = buf.seek(0, io.SEEK_CUR)
 
-            buf.write(p("<II", 0, 0))
+            buf.write(pack("<II", 0, 0))
             frame_offsets.append([size_offset_pos])
 
         for i, frame in enumerate(frames):
@@ -415,8 +420,8 @@ class WindowsCursor:
 
             frame_png = Image.open(frame[3])
 
-            if args.add_shadows:
-                succeeded, shadowed = self.create_shadow(frame_png, args)
+            if self.args.add_shadows:
+                succeeded, shadowed = self.create_shadow(frame_png)
                 if succeeded == 0:
                     frame_png.close()
                     frame_png = shadowed
@@ -445,12 +450,11 @@ class WindowsCursor:
 
         for frame_offset in frame_offsets:
             buf.seek(frame_offset[0])
-            buf.write(p("<II", frame_offset[2], frame_offset[1]))
+            buf.write(pack("<II", frame_offset[2], frame_offset[1]))
 
         return buf
 
-    def generate(self, args: AnicursorgenArgs) -> None:
-
+    def generate(self) -> None:
         in_buffer = self.config_file.open(mode="rb")
 
         # remove old cursor file
@@ -463,18 +467,16 @@ class WindowsCursor:
         animated = self.frames_have_animation(frames)
 
         if animated:
-            self.make_ani(frames, out_buffer, args)
+            self.make_ani(frames, out_buffer)
         else:
-            buf = self.make_cur(frames, args)
+            buf = self.make_cur(frames)
             self.copy_to(out_buffer, buf)
 
         in_buffer.close()
         out_buffer.close()
 
-    @classmethod
-    def build_from(
-        cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()
-    ) -> Path:
-        builder: WindowsCursor = cls(alias_file, out_dir)
-        builder.generate(args)
-        return builder.out
+    @staticmethod
+    def create(alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
+        cursor = WindowsCursor(alias_file, out_dir, args)
+        cursor.generate()
+        return cursor.out

@@ -24,7 +24,7 @@ def win_build(item: Any, alias: CursorAlias) -> None:
     canvas_size = item["canvas_size"]
 
     win_cfg = alias.reproduce(size, canvas_size, position, delay=3).rename(win_key)
-    WindowsCursor.build_from(win_cfg, win_out_dir)
+    WindowsCursor.create(win_cfg, win_out_dir)
 
 
 def build() -> None:
