@@ -1,36 +1,15 @@
-<!-- Branding -->
-<p align="center">
-  <img src="https://imgur.com/L2IZ2MH.png" width="120" alt="clickgen" />
-  <br />
-  <img src="https://i.imgur.com/TeItlMh.png" width="200" />
-</p>
+[![CI](https://github.com/ful1e5/clickgen/workflows/CI/badge.svg)](https://github.com/ful1e5/clickgen/actions)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/pytype)](
+https://pypi.org/project/clickgen/#files)
+[![Code Coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 
-<p align="center">
-  X11 & Windows cursor building API 👷
-</p>
 
-<!-- Badges -->
-<p align="center">
-  <a href="https://github.com/ful1e5/clickgen/actions?query=workflow%3Abuild">
-    <img alt="GitHub Action Build" src="https://github.com/ful1e5/clickgen/workflows/build/badge.svg" />
-  </a>
 
-  <a href="https://codecov.io/gh/ful1e5/clickgen">
-    <img src="https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg" />
-  </a>
-
-  <a href="https://badge.fury.io/py/clickgen">
-    <img src="https://badge.fury.io/py/clickgen.svg" alt="PyPI version" height="20">
-  </a>
-
-  <a href="https://www.codefactor.io/repository/github/ful1e5/clickgen">
-    <img src="https://www.codefactor.io/repository/github/ful1e5/clickgen/badge" alt="CodeFactor" />
-  </a>
-</p>
+# Clickgen
 
 ---
 
-# Clickgen
+X11 & Windows cursor building API 👷
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
 
