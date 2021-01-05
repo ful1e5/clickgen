@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pathlib import Path, PosixPath
+from pathlib import Path
 from string import Template
-from typing import Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional, Set
 
 
 # --- X11
@@ -86,7 +86,7 @@ link		  = "Link.cur"
 """
 )
 
-REQUIRED_WIN_CURSORS: Iterator[str] = [
+REQUIRED_WIN_CURSORS: Iterator[str] = {
     "Work",
     "Busy",
     "Default",
@@ -102,7 +102,7 @@ REQUIRED_WIN_CURSORS: Iterator[str] = [
     "IBeam",
     "Unavailiable",
     "Alternate",
-]
+}
 
 
 def WindowsPackager(
@@ -114,22 +114,25 @@ def WindowsPackager(
 ) -> None:
     """ Create a crispy `Windows` cursor theme package. """
 
-    cursors: List[PosixPath] = []
+    files: Iterator[Path] = []
 
     for ext in ("*.ani", "*.cur"):
         for i in sorted(dir.glob(ext)):
             if i.stem in REQUIRED_WIN_CURSORS:
-                cursors.append(i)
+                files.append(i)
+
+    cursors: Set[Path] = set(files)
 
     # Checking cursor files
     if not cursors:
-        raise FileNotFoundError(f"Windows cursors not found in {dir}")
+        raise FileNotFoundError(
+            f"Windows cursors '*.cur' or '*.ani' not found in '{dir}'"
+        )
     elif len(cursors) != len(REQUIRED_WIN_CURSORS):
         # Some cursors are missing
-        c = list(map(lambda x: x.stem, cursors))
-        missing = list(set(REQUIRED_WIN_CURSORS) - set(c))
-
-        raise FileNotFoundError(f"'{missing}' is required")
+        c = set(map(lambda x: x.stem, cursors))
+        missing = REQUIRED_WIN_CURSORS - set(c)
+        raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
     if website_url:
         comment: str = f"{comment}\n{website_url}"
