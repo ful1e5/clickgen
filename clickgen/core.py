@@ -2,15 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import shutil
+from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, Union, overload
+from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 
 from PIL import Image as Img
 from PIL.Image import Image
 
-from clickgen.types import _P, _Size
-from clickgen.util import replica, to_path
+
+# Typing
+Size = Tuple[int, int]
+LikePath = TypeVar("LikePath", str, Path)
 
 
 class Bitmap(object):
@@ -31,7 +34,7 @@ class Bitmap(object):
 
     def __init__(
         self,
-        png: Union[_P, List[_P]],
+        png: Union[LikePath, List[LikePath]],
         hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
     ) -> None:
@@ -45,7 +48,9 @@ class Bitmap(object):
         # Or png == [_P]           => 'static' bitmap
         # else TypeError()
 
-        err: str = f"argument should be a 'str' object , 'Path' object or an 'os.PathLike' object returning str, not {type(png)}"
+        err: str = (
+            f"argument should be a 'str' object or 'Path' object , not {type(png)}"
+        )
 
         if isinstance(png, str) or isinstance(png, Path):
             self.__set_as_static(png)
@@ -96,14 +101,14 @@ class Bitmap(object):
     #
     # Private methods
     #
-    def __set_as_static(self, png: _P) -> None:
+    def __set_as_static(self, png: LikePath) -> None:
         self.png = self._check_bitmap(png)
 
         self._set_key(self.png, check=False)
         self._set_size(self.png)
         self.animated = False
 
-    def __set_as_animated(self, png: List[_P]) -> None:
+    def __set_as_animated(self, png: List[LikePath]) -> None:
 
         self.grouped_png = []
         for p in png:
@@ -119,8 +124,8 @@ class Bitmap(object):
     #
     # Protected methods
     #
-    def _check_bitmap(self, bmp_path: _P) -> Path:
-        p: Path = to_path(bmp_path)
+    def _check_bitmap(self, bmp_path: LikePath) -> Path:
+        p: Path = Path(bmp_path)
         if not p.exists():
             raise FileNotFoundError(
                 f"Not a such file '{p.name}' in '{p.parent.absolute()}'"
@@ -176,7 +181,7 @@ class Bitmap(object):
         else:
             self.key = bmp_path.stem
 
-    def _update_hotspots(self, new_size: _Size) -> None:
+    def _update_hotspots(self, new_size: Size) -> None:
         self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
         self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
 
@@ -185,7 +190,7 @@ class Bitmap(object):
     #
     def resize(
         self,
-        size: _Size,
+        size: Size,
         resample: int = Img.NONE,
         save: bool = True,
     ) -> Optional[Union[Image, List[Image]]]:
@@ -221,8 +226,8 @@ class Bitmap(object):
 
     def reproduce(
         self,
-        size: _Size = (24, 24),
-        canvas_size: _Size = (32, 32),
+        size: Size = (24, 24),
+        canvas_size: Size = (32, 32),
         position: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",
@@ -272,7 +277,7 @@ class Bitmap(object):
     def rename(self, key: str) -> "Bitmap":
         old_key = self.key
         if key != old_key:
-            replica_object = replica(self)
+            replica_object = deepcopy(self)
 
             def __rename(png: Path, check: bool) -> None:
                 name: str = f"{png.stem.replace(old_key, key)}{png.suffix}"
@@ -291,12 +296,12 @@ class Bitmap(object):
         else:
             return self
 
-    def copy(self, path: Optional[_P] = None) -> "Bitmap":
+    def copy(self, path: Optional[LikePath] = None) -> "Bitmap":
 
         if not path:
             path: Path = mkdtemp(prefix=f"{self.key}__copy_")
         else:
-            path: Path = to_path(path)
+            path: Path = Path(path)
 
         if path.is_file():
             raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
@@ -329,7 +334,7 @@ class CursorAlias(object):
     def __init__(
         self,
         bitmap: Bitmap,
-        alias_directory: Optional[_P] = None,
+        alias_directory: Optional[LikePath] = None,
     ) -> None:
         super().__init__()
 
@@ -337,7 +342,7 @@ class CursorAlias(object):
         self.prefix = f"{self.bitmap.key}__alias"
 
         if alias_directory:
-            self.alias_dir = to_path(alias_directory)
+            self.alias_dir = Path(alias_directory)
         else:
             self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
@@ -381,20 +386,20 @@ class CursorAlias(object):
     @classmethod
     def from_bitmap(
         cls,
-        png: Union[_P, List[_P]],
+        png: Union[LikePath, List[LikePath]],
         hotspot: Tuple[int, int] = (0, 0),
         key: Optional[str] = None,
-        alias_dir: Optional[_P] = None,
+        alias_dir: Optional[LikePath] = None,
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
         return cls(bmp, alias_dir)
 
     def create(
         self,
-        sizes: Union[_Size, List[_Size]],
+        sizes: Union[Size, List[Size]],
         delay: Optional[int] = None,
     ) -> Path:
-        def __generate(size: _Size) -> List[str]:
+        def __generate(size: Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
@@ -476,17 +481,17 @@ class CursorAlias(object):
         else:
             return self.alias_file.suffix
 
-    def copy(self, dst: Optional[_P] = None) -> "CursorAlias":
+    def copy(self, dst: Optional[LikePath] = None) -> "CursorAlias":
         self.check_alias()
 
         if not dst:
             dst = mkdtemp(prefix=self.prefix)
-        dst: Path = to_path(dst)
+        dst: Path = Path(dst)
 
         if dst.is_file():
             raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
 
-        replica_object = replica(self)
+        replica_object = deepcopy(self)
 
         shutil.copytree(
             self.alias_dir, dst, dirs_exist_ok=True, copy_function=shutil.copy
@@ -532,8 +537,8 @@ class CursorAlias(object):
 
     def reproduce(
         self,
-        size: _Size = (24, 24),
-        canvas_size: _Size = (32, 32),
+        size: Size = (24, 24),
+        canvas_size: Size = (32, 32),
         position: Literal[
             "top_left", "top_right", "bottom_right", "bottom_right", "center"
         ] = "center",

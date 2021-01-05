@@ -5,9 +5,10 @@ from pathlib import Path
 from typing import Dict, List, Optional, Set
 from difflib import SequenceMatcher as SM
 
-_D = List[Set[str]]
+# Typing
+Data = List[Set[str]]
 
-DATA: _D = [
+DATA: Data = [
     {
         "X_cursor",
         "x-cursor",
@@ -189,7 +190,7 @@ DATA: _D = [
 class CursorDB(object):
     __data: Dict[str, List[str]] = {}
 
-    def __init__(self, data: _D) -> None:
+    def __init__(self, data: Data) -> None:
         super().__init__()
         self.__seed(data)
 
@@ -202,7 +203,7 @@ class CursorDB(object):
     def __repr__(self) -> str:
         return f"{self.__data!r}"
 
-    def __seed(self, data: _D) -> None:
+    def __seed(self, data: Data) -> None:
         for item in data:
             for i in item:
                 symlinks: List[str] = list(item)

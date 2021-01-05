@@ -15,9 +15,10 @@ from PIL import Image, ImageFilter
 from clickgen import __path__ as clickgen_pkg_root
 from clickgen.util import remove_util
 
-#
-# Xcursor
-#
+# Typings
+Frame = Tuple[int, int, int, str, int]
+Frames = List[Frame]
+Color = Tuple[int, int, int, int]
 
 
 class XCursor:
@@ -91,15 +92,6 @@ class XCursor:
         return cursor.out
 
 
-#
-# Windows cursor
-#
-
-_Frame = Tuple[int, int, int, str, int]
-_Frames = List[_Frame]
-_Color = Tuple[int, int, int, int]
-
-
 class AnicursorgenArgs(NamedTuple):
     """
     Structure `anicursorgen.py` CLI arguments.
@@ -117,7 +109,7 @@ class AnicursorgenArgs(NamedTuple):
 
     add_shadows: bool = False
     blur: float = 3.125
-    color: _Color = (
+    color: Color = (
         0,
         0,
         0,
@@ -148,9 +140,9 @@ class WindowsCursor:
         if not self.out_dir.exists():
             self.out_dir.mkdir(exist_ok=True, parents=True)
 
-    def get_frames(self) -> _Frames:
+    def get_frames(self) -> Frames:
         in_buffer = self.config_file.open("rb")
-        frames: _Frames = []
+        frames: Frames = []
 
         for line in in_buffer.readlines():
             line = line.decode()
@@ -176,7 +168,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: _Frames) -> bool:
+    def frames_have_animation(frames: Frames) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -188,8 +180,8 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: _Frames) -> _Frames:
-        framesets: _Frames = []
+    def make_framesets(frames: Frames) -> Frames:
+        framesets: Frames = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -240,7 +232,7 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: _Frames,
+        frames: Frames,
         out_buffer: io.BufferedWriter,
     ) -> None:
         framesets = self.make_framesets(frames)
@@ -309,7 +301,7 @@ class WindowsCursor:
         self.copy_to(out_buffer, buf)
 
     @staticmethod
-    def shadowize(shadow: Image, orig: Image, color: _Color) -> None:
+    def shadowize(shadow: Image, orig: Image, color: Color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -358,7 +350,7 @@ class WindowsCursor:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out: io.BufferedWriter, frame: _Frame, frame_png: Image) -> None:
+    def write_cur(out: io.BufferedWriter, frame: Frame, frame_png: Image) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -385,7 +377,7 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: _Frames, animated: bool = False) -> io.BytesIO:
+    def make_cur(self, frames: Frames, animated: bool = False) -> io.BytesIO:
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []

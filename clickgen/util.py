@@ -7,30 +7,11 @@ import re
 import shutil
 import time
 from contextlib import contextmanager
-from copy import deepcopy
-from os import PathLike
 from pathlib import Path
 from typing import Callable, List, Set, Union
 
+from clickgen.core import LikePath
 from clickgen.db import DATA, CursorDB
-from clickgen.types import _P, _T
-
-
-def replica(obj: _T) -> _T:
-    """ Deep copy operation on arbitrary Python objects. """
-    return deepcopy(obj)
-
-
-def to_path(p: _P) -> Path:
-    """ Convert `str` or `Pathlike` path to 'Path' instant. """
-    if isinstance(p, Path):
-        return p
-    elif isinstance(p, str) or isinstance(p, PathLike):
-        return Path(p)
-    else:
-        raise TypeError(
-            f"Unable to convert parameter 'p' to 'Path' with 'TypeVar('_P', str, Path, PathLike)'"
-        )
 
 
 @contextmanager
@@ -68,9 +49,9 @@ class PNGProvider(object):
     bitmaps_dir: Path
     __pngs: List[str] = []
 
-    def __init__(self, bitmaps_dir: _P) -> None:
+    def __init__(self, bitmaps_dir: LikePath) -> None:
         super().__init__()
-        self.bitmaps_dir = to_path(bitmaps_dir)
+        self.bitmaps_dir = Path(bitmaps_dir)
         for f in sorted(self.bitmaps_dir.iterdir()):
             self.__pngs.append(f.name)
 

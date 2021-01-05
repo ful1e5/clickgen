@@ -1,13 +1,8 @@
 [![CI](https://github.com/ful1e5/clickgen/workflows/CI/badge.svg)](https://github.com/ful1e5/clickgen/actions)
-[![PyPI - Wheel](https://img.shields.io/pypi/wheel/pytype)](
-https://pypi.org/project/clickgen/#files)
+[![PyPI - Wheel](https://img.shields.io/pypi/wheel/pytype)](https://pypi.org/project/clickgen/#files)
 [![Code Coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 
-
-
 # Clickgen
-
----
 
 X11 & Windows cursor building API 👷
 
