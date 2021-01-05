@@ -6,8 +6,6 @@ import io
 import math
 import shlex
 from ctypes import CDLL
-from io import BufferedReader, BufferedWriter, BytesIO
-from os import makedirs, path, remove
 from pathlib import Path
 from struct import pack
 from typing import Any, List, Literal, NamedTuple, Tuple
@@ -25,6 +23,11 @@ from clickgen.util import remove_util
 class XCursor:
     """ Build X11 cursor from `.in` config file. """
 
+    config_file: Path
+    prefix: Path
+    out_dir: Path
+    out: Path
+
     # main function ctypes define
     _lib_location: Path = Path(clickgen_pkg_root[0]) / "xcursorgen.so"
     _lib: CDLL = CDLL(_lib_location)
@@ -41,13 +44,12 @@ class XCursor:
         self.config_file: Path = config_file
         self.prefix: Path = config_file.parent
 
-        self.out_dir: Path = out_dir
-        self.cursors_dir: Path = self.out_dir / "cursors"
+        self.out_dir: Path = out_dir / "cursors"
 
-        if not self.cursors_dir.exists():
-            self.cursors_dir.mkdir(parents=True, exist_ok=True)
+        if not self.out_dir.exists():
+            self.out_dir.mkdir(parents=True, exist_ok=True)
 
-        self.out: Path = self.cursors_dir / self.config_file.stem
+        self.out: Path = self.out_dir / self.config_file.stem
 
     def gen_argv_ctypes(self, argv: List[str]) -> Any:
         """ Convert `string` arguments to `ctypes` pointer. """
@@ -69,8 +71,8 @@ class XCursor:
             "xcursorgen",
             "-p",  # prefix args for xcursorgen (do not remove)
             self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
-            self.config_file.absolute(),  # {cursor}.in file
-            self.out.absolute(),
+            self.config_file.absolute(),  # cursor's config/alias file
+            self.out.absolute(),  # xcursor/output path
         ]
 
         kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
@@ -133,31 +135,21 @@ class WindowsCursor:
 
     args: AnicursorgenArgs
     config_file: Path
-    out_dir: Path
     prefix: Path
+    out_dir: Path
     out: Path
 
     def __init__(self, config_dir: Path, out_dir: Path, args: AnicursorgenArgs) -> None:
         self.config_file = config_dir
         self.prefix = config_dir.parent
-        stem = self.config_file.stem
-
         self.out_dir = out_dir
-        if not self.out_dir.exists():
-            makedirs(self.out_dir)
-
-        # Determine cursor extension
-        self.out = self.out_dir / f"{stem}.cur"
-        with self.config_file.open() as f:
-            line = f.readline()
-            words = shlex.split(line.rstrip("\n").rstrip("\r"))
-            if len(words) > 4:
-                self.out = self.out_dir / f"{stem}.ani"
-
         self.args = args
 
-    @staticmethod
-    def parse_config_from(in_buffer: BufferedReader, prefix: str) -> _Frames:
+        if not self.out_dir.exists():
+            self.out_dir.mkdir(exist_ok=True, parents=True)
+
+    def get_frames(self) -> _Frames:
+        in_buffer = self.config_file.open("rb")
         frames: _Frames = []
 
         for line in in_buffer.readlines():
@@ -170,8 +162,8 @@ class WindowsCursor:
             xhot = int(words[1]) - 1
             yhot = int(words[2]) - 1
             filename = words[3]
-            if not path.isabs(filename):
-                filename = path.join(prefix, filename)
+            if not Path(filename).is_absolute():
+                filename = str(self.prefix / filename)
 
             if len(words) > 4:
                 duration = int(words[4])
@@ -180,6 +172,7 @@ class WindowsCursor:
 
             frames.append((size, xhot, yhot, filename, duration))
 
+        in_buffer.close()
         return frames
 
     @staticmethod
@@ -237,7 +230,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: BytesIO, buf: BytesIO) -> None:
+    def copy_to(out: io.BufferedWriter, buf: io.BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -248,7 +241,7 @@ class WindowsCursor:
     def make_ani(
         self,
         frames: _Frames,
-        out_buffer: BufferedWriter,
+        out_buffer: io.BufferedWriter,
     ) -> None:
         framesets = self.make_framesets(frames)
 
@@ -361,11 +354,11 @@ class WindowsCursor:
         return (0, shadowed)
 
     @staticmethod
-    def write_png(out: BytesIO, frame_png: Image) -> None:
+    def write_png(out: io.BufferedWriter, frame_png: Image) -> None:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out: BytesIO, frame: _Frame, frame_png: Image) -> None:
+    def write_cur(out: io.BufferedWriter, frame: _Frame, frame_png: Image) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -392,7 +385,7 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: _Frames, animated: bool = False) -> BytesIO:
+    def make_cur(self, frames: _Frames, animated: bool = False) -> io.BytesIO:
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
@@ -455,25 +448,29 @@ class WindowsCursor:
         return buf
 
     def generate(self) -> None:
-        in_buffer = self.config_file.open(mode="rb")
-
-        # remove old cursor file
-        if self.out.exists():
-            remove(self.out)
-
-        out_buffer = self.out.open(mode="wb")
-
-        frames = self.parse_config_from(in_buffer, prefix=self.prefix.absolute())
+        frames = self.get_frames()
         animated = self.frames_have_animation(frames)
 
-        if animated:
-            self.make_ani(frames, out_buffer)
-        else:
-            buf = self.make_cur(frames)
-            self.copy_to(out_buffer, buf)
+        name = self.config_file.stem
+        ani_name = f"{name}.ani"
+        cur_name = f"{name}.cur"
 
-        in_buffer.close()
-        out_buffer.close()
+        cursor = ani_name if animated else cur_name
+        self.out = self.out_dir / cursor
+
+        # Remove Windows cursor, Which has the same 'name' inside 'output' directory.
+        # This is useful for rebuilding the cursor to 'semi-animated'.
+        # Remove only one extension can generate issues in the `WindowsPackager` module.
+        remove_util(self.out_dir / ani_name)
+        remove_util(self.out_dir / cur_name)
+
+        if animated:
+            with self.out.open("wb") as out:
+                self.make_ani(frames, out)
+        else:
+            with self.out.open("wb") as out:
+                buf = self.make_cur(frames)
+                self.copy_to(out, buf)
 
     @staticmethod
     def create(alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
