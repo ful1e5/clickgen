@@ -14,6 +14,7 @@ from PIL.Image import Image
 # Typing
 Size = Tuple[int, int]
 LikePath = TypeVar("LikePath", str, Path)
+Positions = Literal["top_left", "top_right", "bottom_right", "bottom_right", "center"]
 
 
 class Bitmap(object):
@@ -228,9 +229,7 @@ class Bitmap(object):
         self,
         size: Size = (24, 24),
         canvas_size: Size = (32, 32),
-        position: Literal[
-            "top_left", "top_right", "bottom_right", "bottom_right", "center"
-        ] = "center",
+        position: Positions = "center",
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
@@ -371,7 +370,6 @@ class CursorAlias(object):
         from clickgen.util import remove_util
 
         if hasattr(self, "alias_file"):
-
             remove_util(self.alias_dir)
             self.alias_file = None
 
@@ -539,9 +537,7 @@ class CursorAlias(object):
         self,
         size: Size = (24, 24),
         canvas_size: Size = (32, 32),
-        position: Literal[
-            "top_left", "top_right", "bottom_right", "bottom_right", "center"
-        ] = "center",
+        position: Positions = "center",
         delay: int = 3,
     ) -> "CursorAlias":
         self.check_alias()
