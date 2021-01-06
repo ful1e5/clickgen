@@ -1,59 +1,37 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from os import PathLike
 from pathlib import Path
 from random import randint
 from tempfile import mkdtemp
-from typing import List, Union
+from typing import List
 
 import pytest
-from clickgen.core import LikePath
 from PIL import Image
 
 
-def create_test_image(count: int, return_Path: bool) -> Union[List[LikePath], LikePath]:
-
+def create_test_image(count: int, size=(20, 20)) -> List[Path]:
     tmp_dir = Path(mkdtemp())
+    images: List[Path] = []
 
-    def __create(name: str) -> LikePath:
-        file = tmp_dir / name
-        image = Image.new(
+    for c in range(count):
+        file = tmp_dir / f"test-{c}.png"
+        Image.new(
             "RGBA",
-            size=(200, 200),
+            size=size,
             color=(randint(0, 255), randint(0, 255), randint(0, 255)),
-        )
-        image.save(file, "png", compress=0)
+        ).save(file, "png", compress=0)
+        images.append(file)
 
-        if not return_Path:
-            return str(file.absolute())
-        return file
-
-    if count == 1:
-        return __create("test.png")
-    else:
-        l: List[PathLike] = []
-        while count == 0:
-            __create(f"test-{count}.png")
-            count -= count
-        return l
+    return images
 
 
 @pytest.fixture(scope="module")
-def static_png_as_Path():
-    return create_test_image(1, True)
+def static_png():
+    p = create_test_image(1)
+    return p[0]
 
 
 @pytest.fixture(scope="module")
-def animated_png_as_Path():
-    return create_test_image(randint(1, 20), True)
-
-
-@pytest.fixture(scope="module")
-def static_png_as_str():
-    return create_test_image(1, False)
-
-
-@pytest.fixture(scope="module")
-def animated_png_as_str():
-    return create_test_image(randint(1, 20), False)
+def animated_png():
+    return create_test_image(randint(2, 5))
