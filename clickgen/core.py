@@ -36,13 +36,9 @@ class Bitmap(object):
     def __init__(
         self,
         png: Union[LikePath, List[LikePath]],
-        hotspot: Tuple[int, int] = (0, 0),
-        key: Optional[str] = None,
+        hotspot: Tuple[int, int],
     ) -> None:
         super().__init__()
-
-        self.x_hot = hotspot[0]
-        self.y_hot = hotspot[1]
 
         # Is png == _P             => 'static' bitmap
         # Or png == [_P, _P, ...]  => 'animated' bitmap
@@ -54,16 +50,13 @@ class Bitmap(object):
         )
 
         if isinstance(png, str) or isinstance(png, Path):
-            self.__set_as_static(png)
+            self.__set_as_static(png, hotspot)
 
         elif isinstance(png, list):
-            if key:
-                self.key = key.rsplit("-", 1)[0]
-
             if len(png) == 1:
-                self.__set_as_static(png[0])
+                self.__set_as_static(png[0], hotspot)
             else:
-                self.__set_as_animated(png)
+                self.__set_as_animated(png, hotspot)
         else:
             raise TypeError(err)
 
@@ -102,14 +95,14 @@ class Bitmap(object):
     #
     # Private methods
     #
-    def __set_as_static(self, png: LikePath) -> None:
+    def __set_as_static(self, png: LikePath, hotspot: Tuple[int, int]) -> None:
         self.png = self._check_bitmap(png)
-
         self._set_key(self.png, check=False)
         self._set_size(self.png)
+        self._set_hotspot(self.png, hotspot)
         self.animated = False
 
-    def __set_as_animated(self, png: List[LikePath]) -> None:
+    def __set_as_animated(self, png: List[LikePath], hotspot: Tuple[int, int]) -> None:
 
         self.grouped_png = []
         for p in png:
@@ -120,6 +113,9 @@ class Bitmap(object):
             self._set_size(frame)
 
         self.grouped_png.sort()
+
+        # Don't worry, All images sizes are equal.
+        self._set_hotspot(self.grouped_png[0], hotspot)
         self.animated = True
 
     #
@@ -181,6 +177,16 @@ class Bitmap(object):
                 self.key = k
         else:
             self.key = bmp_path.stem
+
+    def _set_hotspot(self, img_path: Path, hotspot: Tuple[int, int]) -> None:
+        x = hotspot[0]
+        y = hotspot[1]
+        with Img.open(img_path) as i:
+            if x < i.width and y < i.height:
+                self.x_hot = x
+                self.y_hot = y
+            else:
+                raise ValueError("'Hotspot' value is out of bound")
 
     def _update_hotspots(self, new_size: Size) -> None:
         self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
@@ -316,10 +322,10 @@ class Bitmap(object):
             pngs: List[Path] = []
             for p in self.grouped_png:
                 pngs.append(__copy(p))
-            return Bitmap(pngs, (self.x_hot, self.y_hot), self.key)
+            return Bitmap(pngs, (self.x_hot, self.y_hot))
         else:
             p = __copy(self.png)
-            return Bitmap(p, (self.x_hot, self.y_hot), self.key)
+            return Bitmap(p, (self.x_hot, self.y_hot))
 
 
 class CursorAlias(object):
@@ -386,10 +392,9 @@ class CursorAlias(object):
         cls,
         png: Union[LikePath, List[LikePath]],
         hotspot: Tuple[int, int] = (0, 0),
-        key: Optional[str] = None,
         alias_dir: Optional[LikePath] = None,
     ) -> "CursorAlias":
-        bmp: Bitmap = Bitmap(png, hotspot=hotspot, key=key)
+        bmp: Bitmap = Bitmap(png, hotspot)
         return cls(bmp, alias_dir)
 
     def create(

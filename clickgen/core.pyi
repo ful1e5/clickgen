@@ -19,10 +19,7 @@ class Bitmap:
     height: int
     compress: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] = ...
     def __init__(
-        self,
-        png: Union[LikePath, List[LikePath]],
-        hotspot: Tuple[int, int] = ...,
-        key: Optional[str] = ...,
+        self, png: Union[LikePath, List[LikePath]], hotspot: Tuple[int, int]
     ) -> None: ...
     def __enter__(self) -> Bitmap: ...
     def __exit__(self, *args: Any) -> None: ...
@@ -54,7 +51,6 @@ class CursorAlias:
         cls: Any,
         png: Union[LikePath, List[LikePath]],
         hotspot: Tuple[int, int] = ...,
-        key: Optional[str] = ...,
         alias_dir: Optional[LikePath] = ...,
     ) -> CursorAlias: ...
     def create(
