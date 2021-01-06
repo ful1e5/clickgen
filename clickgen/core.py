@@ -182,11 +182,13 @@ class Bitmap(object):
         x = hotspot[0]
         y = hotspot[1]
         with Img.open(img_path) as i:
-            if x < i.width and y < i.height:
+            if x > i.width or y > i.height:
+                raise ValueError("'Hotspot' value is an overflow")
+            if x < 0 or y < 0:
+                raise ValueError("'Hotspot' value is an underflow")
+            else:
                 self.x_hot = x
                 self.y_hot = y
-            else:
-                raise ValueError("'Hotspot' value is out of bound")
 
     def _update_hotspots(self, new_size: Size) -> None:
         self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
