@@ -28,6 +28,13 @@ def image_dir(tmpdir_factory: pytest.TempdirFactory):
 
 
 @pytest.fixture(scope="module")
+def test_file(image_dir):
+    file: Path = image_dir / "test.test"
+    file.write_text("testing")
+    return file
+
+
+@pytest.fixture(scope="module")
 def static_png(image_dir):
     p = create_test_image(image_dir, 1)
     return p[0]

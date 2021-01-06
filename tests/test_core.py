@@ -69,6 +69,42 @@ def test_animated_Bitmap_as_Path(animated_png) -> None:
     assert bmp.y_hot == 7
 
 
+@pytest.mark.parametrize(
+    "png",
+    [
+        bytes(),
+        [bytes()],
+        [bytes(), bytes()],
+        (2),
+        [(2)],
+        [(2), (2)],
+        [2],
+        [[2]],
+        [[2], [2]],
+        2,
+        [2],
+        [2, 2],
+    ],
+)
+def test_Bitmap_png_type_error_exception(png) -> None:
+    with pytest.raises(TypeError):
+        Bitmap(png, (0, 0))
+
+
+@pytest.mark.parametrize(
+    "png",
+    ["notfound.png", ["notfound.png", "notfound.png"]],
+)
+def test_Bitmap_png_not_found_exception(png) -> None:
+    with pytest.raises(FileNotFoundError):
+        Bitmap(png, (0, 0))
+
+
+def test_Bitmap_non_png_exception(test_file) -> None:
+    with pytest.raises(ValueError):
+        Bitmap(test_file, (0, 0))
+
+
 def test_static_Bitmap_hotspot_underflow_exception(static_png) -> None:
     with pytest.raises(ValueError):
         Bitmap(static_png, (2, -3))
