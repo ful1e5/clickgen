@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from pathlib import Path
+from random import randint
 from typing import List
 
 import pytest
@@ -91,7 +92,7 @@ def test_animated_Bitmap_as_Path(animated_png) -> None:
 )
 def test_Bitmap_png_type_error_exception(png) -> None:
     with pytest.raises(TypeError):
-        Bitmap(png, (0, 0))
+        assert Bitmap(png, (0, 0))
 
 
 notfound = "notfound.png"
@@ -111,42 +112,42 @@ notfound_path = Path.cwd() / notfound
 )
 def test_Bitmap_png_not_found_exception(png) -> None:
     with pytest.raises(FileNotFoundError):
-        Bitmap(png, (0, 0))
+        assert Bitmap(png, (0, 0))
 
 
 def test_Bitmap_non_png_exception(test_file) -> None:
     with pytest.raises(ValueError):
-        Bitmap(test_file, (0, 0))
+        assert Bitmap(test_file, (0, 0))
 
 
 def test_static_Bitmap_hotspot_underflow_exception(static_png) -> None:
     with pytest.raises(ValueError):
-        Bitmap(static_png, (2, -3))
-        Bitmap(static_png, (-2, -3))
+        assert Bitmap(static_png, (2, -3))
+        assert Bitmap(static_png, (-2, -3))
 
 
 def test_static_Bitmap_hotspot_overflow_exception(static_png) -> None:
     with pytest.raises(ValueError):
-        Bitmap(static_png, (12, 60))
-        Bitmap(static_png, (55, 60))
+        assert Bitmap(static_png, (12, 60))
+        assert Bitmap(static_png, (55, 60))
 
 
 def test_animated_Bitmap_hotspot_underflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
-        Bitmap(animated_png, (2, -3))
-        Bitmap(animated_png, (-2, -3))
+        assert Bitmap(animated_png, (2, -3))
+        assert Bitmap(animated_png, (-2, -3))
 
 
 def test_animated_Bitmap_hotspot_overflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
-        Bitmap(animated_png, (12, 60))
-        Bitmap(animated_png, (55, 60))
+        assert Bitmap(animated_png, (12, 60))
+        assert Bitmap(animated_png, (55, 60))
 
 
 def test_Bitmap_png_must_had_equal_width_and_height_exception(image_dir) -> None:
     png = create_test_image(image_dir, 1, size=(2, 3))
     with pytest.raises(ValueError):
-        Bitmap(png, (0, 0))
+        assert Bitmap(png, (0, 0))
 
 
 def test_animated_Bitmap_all_png_size_must_be_equal_exception(image_dir) -> None:
@@ -155,5 +156,30 @@ def test_animated_Bitmap_all_png_size_must_be_equal_exception(image_dir) -> None
     png.append(create_test_image(image_dir, 1, size=(3, 3)))
 
     with pytest.raises(ValueError):
-        Bitmap(png, (0, 0))
+        assert Bitmap(png, (0, 0))
 
+
+def test_invalid_animated_Bitmap_name_exception(image_dir) -> None:
+    png = []
+    images = create_test_image(image_dir, 3, size=(5, 5))
+
+    for idx, p in enumerate(images):
+        target = p.with_name(f"notvalidframe{idx}.png")
+        p.rename(target)
+        png.append(target)
+
+    with pytest.raises(ValueError):
+        assert Bitmap(png, (1, 1))
+
+
+def test_animated_Bitmap_group_had_same_key_exception(image_dir) -> None:
+    png = []
+    images = create_test_image(image_dir, 3, size=(5, 5))
+
+    for idx, p in enumerate(images):
+        target = p.with_name(f"{str(randint(9999,453334))}-{idx}.png")
+        p.rename(target)
+        png.append(target)
+
+    with pytest.raises(ValueError):
+        assert Bitmap(png, (1, 1))

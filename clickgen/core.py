@@ -10,7 +10,6 @@ from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 from PIL import Image as Img
 from PIL.Image import Image
 
-
 # Typing
 Size = Tuple[int, int]
 LikePath = TypeVar("LikePath", str, Path)
@@ -148,14 +147,16 @@ class Bitmap(object):
 
                 try:
                     if self.size != i.size:
-                        raise IOError("All .png file's size must be equal")
+                        raise ValueError("All .png file's size must be equal")
                     else:
                         pass
                 except AttributeError:
                     __set()
 
             else:
-                raise IOError(f"frame '{bmp_path.name}' must had equal width & height.")
+                raise ValueError(
+                    f"frame '{bmp_path.name}' must had equal width & height."
+                )
 
     def _set_key(self, bmp_path: Path, check: bool) -> None:
         if check:
