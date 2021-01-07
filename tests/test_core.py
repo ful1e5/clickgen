@@ -4,6 +4,7 @@
 from typing import List
 
 import pytest
+from pathlib import Path
 from clickgen.core import Bitmap
 
 
@@ -91,9 +92,20 @@ def test_Bitmap_png_type_error_exception(png) -> None:
         Bitmap(png, (0, 0))
 
 
+notfound = "notfound.png"
+notfound_path = Path.cwd() / notfound
+
+
 @pytest.mark.parametrize(
     "png",
-    ["notfound.png", ["notfound.png", "notfound.png"]],
+    [
+        notfound,
+        [notfound],
+        [notfound, notfound, notfound],
+        notfound_path,
+        [notfound_path],
+        [notfound_path, notfound_path, notfound_path],
+    ],
 )
 def test_Bitmap_png_not_found_exception(png) -> None:
     with pytest.raises(FileNotFoundError):
