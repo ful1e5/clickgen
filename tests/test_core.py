@@ -16,7 +16,7 @@ def test_static_Bitmap_as_str(static_png) -> None:
     bmp = Bitmap(str_static_png, (0, 0))
 
     with pytest.raises(AttributeError):
-        bmp.grouped_png
+        assert bmp.grouped_png
     assert bmp.png == static_png
     assert bmp.animated == False
     assert bmp.height == 20
@@ -31,7 +31,7 @@ def test_static_Bitmap_as_Path(static_png) -> None:
     bmp = Bitmap(static_png, (2, 2))
 
     with pytest.raises(AttributeError):
-        bmp.grouped_png
+        assert bmp.grouped_png
     assert bmp.png == static_png
     assert bmp.animated == False
     assert bmp.height == 20
@@ -47,7 +47,7 @@ def test_animated_Bitmap_as_str(animated_png) -> None:
     bmp = Bitmap(str_animated_png, (13, 14))
 
     with pytest.raises(AttributeError):
-        bmp.png
+        assert bmp.png
     assert bmp.grouped_png == animated_png
     assert bmp.animated == True
     assert bmp.height == 20
@@ -62,7 +62,7 @@ def test_animated_Bitmap_as_Path(animated_png) -> None:
     bmp = Bitmap(animated_png, (4, 7))
 
     with pytest.raises(AttributeError):
-        bmp.png
+        assert bmp.png
     assert bmp.grouped_png == animated_png
     assert bmp.animated == True
     assert bmp.height == 20
@@ -132,6 +132,43 @@ def test_static_Bitmap_hotspot_overflow_exception(static_png) -> None:
         assert Bitmap(static_png, (55, 60))
 
 
+def test_static_Bitmap_str(static_png) -> None:
+    assert (
+        Bitmap(static_png, (0, 0)).__str__()
+        == f"Bitmap(png={static_png}, key={static_png.stem}, animated=False, size=(20, 20), width=20, height=20)"
+    )
+
+
+def test_static_Bitmap_repr(static_png) -> None:
+    assert (
+        Bitmap(static_png, (0, 0)).__repr__()
+        == f"{{ 'png':{static_png}, 'key':'test-0', 'animated':False, 'size':(20, 20), 'width':20, 'height':20 }}"
+    )
+
+
+def test_static_Bitmap_context_manager(static_png) -> None:
+    with Bitmap(static_png, (2, 2)) as bmp:
+        with pytest.raises(AttributeError):
+            assert bmp.grouped_png
+        assert bmp.png == static_png
+        assert bmp.animated == False
+        assert bmp.height == 20
+        assert bmp.width == 20
+        assert bmp.compress == 0
+        assert bmp.key == "test-0"
+        assert bmp.x_hot == 2
+        assert bmp.y_hot == 2
+
+    assert bmp.png == None
+    assert bmp.animated == None
+    assert bmp.height == None
+    assert bmp.width == None
+    assert bmp.compress == None
+    assert bmp.key == None
+    assert bmp.x_hot == None
+    assert bmp.y_hot == None
+
+
 def test_animated_Bitmap_hotspot_underflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
         assert Bitmap(animated_png, (2, -3))
@@ -142,6 +179,43 @@ def test_animated_Bitmap_hotspot_overflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
         assert Bitmap(animated_png, (12, 60))
         assert Bitmap(animated_png, (55, 60))
+
+
+def test_animated_Bitmap_str(animated_png) -> None:
+    assert (
+        Bitmap(animated_png, (0, 0)).__str__()
+        == f"Bitmap(grouped_png={animated_png}, key={animated_png[0].stem.rsplit('-',1)[0]}, animated=True, size=(20, 20), width=20, height=20)"
+    )
+
+
+def test_animated_Bitmap_repr(animated_png) -> None:
+    assert (
+        Bitmap(animated_png, (0, 0)).__repr__()
+        == f"{{ 'grouped_png':{animated_png}, 'key':'test', 'animated':True, 'size':(20, 20), 'width':20, 'height':20 }}"
+    )
+
+
+def test_animated_Bitmap_context_manager(animated_png) -> None:
+    with Bitmap(animated_png, (2, 2)) as bmp:
+        with pytest.raises(AttributeError):
+            assert bmp.png
+        assert bmp.grouped_png == animated_png
+        assert bmp.animated == True
+        assert bmp.height == 20
+        assert bmp.width == 20
+        assert bmp.compress == 0
+        assert bmp.key == "test"
+        assert bmp.x_hot == 2
+        assert bmp.y_hot == 2
+
+    assert bmp.grouped_png == None
+    assert bmp.animated == None
+    assert bmp.height == None
+    assert bmp.width == None
+    assert bmp.compress == None
+    assert bmp.key == None
+    assert bmp.x_hot == None
+    assert bmp.y_hot == None
 
 
 def test_Bitmap_png_must_had_equal_width_and_height_exception(image_dir) -> None:

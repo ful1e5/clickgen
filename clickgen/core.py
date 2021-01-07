@@ -10,6 +10,7 @@ from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 from PIL import Image as Img
 from PIL.Image import Image
 
+
 # Typing
 Size = Tuple[int, int]
 LikePath = TypeVar("LikePath", str, Path)
@@ -69,11 +70,11 @@ class Bitmap(object):
             return f"{self.__class__.__name__}(png={self.png}, {common})"
 
     def __repr__(self) -> str:
-        common: str = f"'key':{self.key}, 'animated':{self.animated} 'size':{self.size}, 'width':{self.width}, 'height':{self.height}"
+        common: str = f"'key':'{self.key}', 'animated':{self.animated}, 'size':{self.size}, 'width':{self.width}, 'height':{self.height}"
         if self.animated:
-            return f"{{ 'grouped_png':{self.grouped_png}, {common}}}"
+            return f"{{ 'grouped_png':{self.grouped_png}, {common} }}"
         else:
-            return f"{{ 'png':{self.png}, {common}}}"
+            return f"{{ 'png':{self.png}, {common} }}"
 
     # Context manager support
     def __enter__(self) -> "Bitmap":
@@ -85,6 +86,9 @@ class Bitmap(object):
         self.size = None
         self.height = None
         self.width = None
+        self.compress = None
+        self.x_hot = None
+        self.y_hot = None
 
         if hasattr(self, "grouped_png"):
             self.grouped_png = None
@@ -378,7 +382,7 @@ class CursorAlias(object):
         # Current attr
         from clickgen.util import remove_util
 
-        if hasattr(self, "alias_file"):
+        if hasattr(self, "alias_dir"):
             remove_util(self.alias_dir)
             self.alias_file = None
 
