@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pathlib import Path
 from typing import List
 
 import pytest
-from pathlib import Path
 from clickgen.core import Bitmap
+
+from .utils import create_test_image
 
 
 def test_static_Bitmap_as_str(static_png) -> None:
@@ -120,26 +122,38 @@ def test_Bitmap_non_png_exception(test_file) -> None:
 def test_static_Bitmap_hotspot_underflow_exception(static_png) -> None:
     with pytest.raises(ValueError):
         Bitmap(static_png, (2, -3))
-        Bitmap(static_png, (-2, 3))
         Bitmap(static_png, (-2, -3))
 
 
 def test_static_Bitmap_hotspot_overflow_exception(static_png) -> None:
     with pytest.raises(ValueError):
         Bitmap(static_png, (12, 60))
-        Bitmap(static_png, (55, 3))
         Bitmap(static_png, (55, 60))
 
 
 def test_animated_Bitmap_hotspot_underflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
         Bitmap(animated_png, (2, -3))
-        Bitmap(animated_png, (-2, 3))
         Bitmap(animated_png, (-2, -3))
 
 
 def test_animated_Bitmap_hotspot_overflow_exception(animated_png) -> None:
     with pytest.raises(ValueError):
         Bitmap(animated_png, (12, 60))
-        Bitmap(animated_png, (55, 3))
         Bitmap(animated_png, (55, 60))
+
+
+def test_Bitmap_png_must_had_equal_width_and_height_exception(image_dir) -> None:
+    png = create_test_image(image_dir, 1, size=(2, 3))
+    with pytest.raises(ValueError):
+        Bitmap(png, (0, 0))
+
+
+def test_animated_Bitmap_all_png_size_must_be_equal_exception(image_dir) -> None:
+    png = create_test_image(image_dir, 2, size=(2, 2))
+    png.append(create_test_image(image_dir, 1, size=(3, 6)))
+    png.append(create_test_image(image_dir, 1, size=(3, 3)))
+
+    with pytest.raises(ValueError):
+        Bitmap(png, (0, 0))
+
