@@ -10,7 +10,6 @@ from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
 from PIL import Image as Img
 from PIL.Image import Image
 
-
 # Typing
 Size = Tuple[int, int]
 LikePath = TypeVar("LikePath", str, Path)
@@ -143,20 +142,13 @@ class Bitmap(object):
     def _set_size(self, bmp_path: Path) -> None:
         with Img.open(bmp_path) as i:
             if i.width == i.height:
-
-                def __set() -> None:
-                    self.size = i.size
-                    self.width = i.width
-                    self.height = i.height
-
                 try:
                     if self.size != i.size:
                         raise ValueError("All .png file's size must be equal")
-                    else:
-                        pass
                 except AttributeError:
-                    __set()
-
+                    self.size = i.size
+                    self.width = i.width
+                    self.height = i.height
             else:
                 raise ValueError(
                     f"frame '{bmp_path.name}' must had equal width & height."
@@ -196,8 +188,11 @@ class Bitmap(object):
                 self.y_hot = y
 
     def _update_hotspots(self, new_size: Size) -> None:
-        self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
-        self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
+        if self.size != new_size:
+            self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
+            self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
+        else:
+            return
 
     #
     # Public methods
@@ -208,7 +203,7 @@ class Bitmap(object):
         resample: int = Img.NONE,
         save: bool = True,
     ) -> Optional[Union[Image, List[Image]]]:
-        def __resize(p: Path) -> Image:
+        def __resize(p: Path, count: int) -> Image:
             img: Image = Img.open(p)
 
             # Preventing image quality degrades
@@ -217,14 +212,15 @@ class Bitmap(object):
                 # If save => Update attribute
                 if save:
                     self._set_size(p)
-                    self._update_hotspots(size)
+                    if count == 0:
+                        self._update_hotspots(size)
                     img.save(p, compress=self.compress)
             return img
 
         if self.animated:
             images: List[Image] = []
-            for png in self.grouped_png:
-                img: Image = __resize(png)
+            for i, png in enumerate(self.grouped_png):
+                img: Image = __resize(png, i)
                 images.append(img)
             if not save:
                 return images
@@ -232,7 +228,7 @@ class Bitmap(object):
                 return None
 
         else:
-            img: Image = __resize(self.png)
+            img: Image = __resize(self.png, 0)
             if not save:
                 return img
             else:
