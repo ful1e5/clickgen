@@ -139,16 +139,27 @@ class Bitmap(object):
                 )
         return p
 
-    def _set_size(self, bmp_path: Path) -> None:
+    def _set_size(self, bmp_path: Path, prev_check: bool = True) -> None:
         with Img.open(bmp_path) as i:
+
+            def __set() -> None:
+                self.size = i.size
+                self.width = i.width
+                self.height = i.height
+
             if i.width == i.height:
-                try:
-                    if self.size != i.size:
-                        raise ValueError("All .png file's size must be equal")
-                except AttributeError:
-                    self.size = i.size
-                    self.width = i.width
-                    self.height = i.height
+                if prev_check:
+
+                    try:
+                        if self.size != i.size:
+                            raise ValueError("All .png file's size must be equal")
+                        else:
+                            __set()
+                    except AttributeError:
+                        __set()
+
+                else:
+                    __set()
             else:
                 raise ValueError(
                     f"frame '{bmp_path.name}' must had equal width & height."
@@ -191,8 +202,6 @@ class Bitmap(object):
         if self.size != new_size:
             self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
             self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
-        else:
-            return
 
     #
     # Public methods
@@ -203,7 +212,7 @@ class Bitmap(object):
         resample: int = Img.NONE,
         save: bool = True,
     ) -> Optional[Union[Image, List[Image]]]:
-        def __resize(p: Path, count: int) -> Image:
+        def __resize(p: Path, frame: int) -> Image:
             img: Image = Img.open(p)
 
             # Preventing image quality degrades
@@ -212,7 +221,7 @@ class Bitmap(object):
                 # If save => Update attribute
                 if save:
                     self._set_size(p)
-                    if count == 0:
+                    if frame == 0:
                         self._update_hotspots(size)
                     img.save(p, compress=self.compress)
             return img
@@ -242,7 +251,7 @@ class Bitmap(object):
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
-            i: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
+            frame: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch = {
@@ -256,20 +265,20 @@ class Bitmap(object):
             box: Tuple[int, int] = switch.get(position)
 
             canvas: Image = Img.new("RGBA", canvas_size, color=(256, 0, 0, 0))
-            canvas.paste(i, box=box)
+            canvas.paste(frame, box=box)
 
             if save:
-                self._set_size(p)
-                # Calc Hotspots
+                canvas.save(p, compress=self.compress)
                 self.x_hot = int(round(size[0] / self.width * self.x_hot) + box[0])
                 self.y_hot = int(round(size[1] / self.height * self.y_hot) + box[1])
-                canvas.save(p, compress=self.compress)
+                self._set_size(p, prev_check=False)
             return canvas
 
         if self.animated:
             images: List[Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
+
             if not save:
                 return images
             else:
