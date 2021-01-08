@@ -61,7 +61,7 @@ class Bitmap(object):
             raise TypeError(err)
 
     def __str__(self) -> str:
-        common: str = f"key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height}"
+        common: str = f"key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height}, x_hot={self.x_hot}, y_hot={self.y_hot}"
         if self.animated:
             return (
                 f"{self.__class__.__name__}(grouped_png={self.grouped_png}, {common})"
@@ -70,7 +70,7 @@ class Bitmap(object):
             return f"{self.__class__.__name__}(png={self.png}, {common})"
 
     def __repr__(self) -> str:
-        common: str = f"'key':'{self.key}', 'animated':{self.animated}, 'size':{self.size}, 'width':{self.width}, 'height':{self.height}"
+        common: str = f"'key':'{self.key}', 'animated':{self.animated}, 'size':{self.size}, 'width':{self.width}, 'height':{self.height}, 'x_hot':{self.x_hot}, 'y_hot':{self.y_hot}"
         if self.animated:
             return f"{{ 'grouped_png':{self.grouped_png}, {common} }}"
         else:

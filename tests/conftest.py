@@ -31,3 +31,8 @@ def static_png(image_dir):
 def animated_png(image_dir):
     p = create_test_image(image_dir, randint(2, 5))
     return p
+
+
+@pytest.fixture(scope="module")
+def hotspot():
+    return (0, 0)
