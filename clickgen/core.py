@@ -214,11 +214,11 @@ class Bitmap(object):
             # Preventing image quality degrades
             if img.size != size:
                 img = img.resize(size, resample=resample)
-            # If save => Update attribute
-            if save:
-                self._set_size(p)
-                self._update_hotspots(size)
-                img.save(p, compress=self.compress)
+                # If save => Update attribute
+                if save:
+                    self._set_size(p)
+                    self._update_hotspots(size)
+                    img.save(p, compress=self.compress)
             return img
 
         if self.animated:

@@ -3,11 +3,11 @@
 
 from pathlib import Path
 from random import randint
-from tests.conftest import hotspot
 from typing import List
 
 import pytest
 from clickgen.core import Bitmap
+from PIL import Image
 
 from .utils import create_test_image
 
@@ -219,8 +219,40 @@ def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
     assert bmp.y_hot == None
 
 
-def test_static_Bitmap_resize(static_png, hotspot) -> None:
-    Bitmap(static_png, hotspot)
+def test_static_Bitmap_resize_with_save_is_updating_hotspot(static_png) -> None:
+    new_size = (10, 10)
+    with Bitmap(static_png, (10, 10)) as b:
+        assert b.x_hot == 10
+        assert b.y_hot == 10
+        b.resize(size=new_size, save=True)
+        assert b.x_hot == 5
+        assert b.y_hot == 5
+
+
+def test_static_Bitmap_resize_without_save_is_not_updating_hotspot(static_png) -> None:
+    new_size = (10, 10)
+    with Bitmap(static_png, (10, 10)) as b:
+        assert b.x_hot == 10
+        assert b.y_hot == 10
+        b.resize(size=new_size, save=False)
+        assert b.x_hot == 10
+        assert b.y_hot == 10
+
+
+def test_static_Bitmap_resize_without_save(static_png, hotspot) -> None:
+    new_size = (10, 10)
+    return_image = Bitmap(static_png, hotspot).resize(size=new_size, save=False)
+    assert return_image != None
+
+    assert return_image.size == new_size
+
+
+def test_static_Bitmap_resize_with_save(static_png, hotspot) -> None:
+    new_size = (10, 10)
+    is_return = Bitmap(static_png, hotspot).resize(size=new_size, save=True)
+    assert is_return == None
+    with Image.open(static_png) as i:
+        assert i.size == new_size
 
 
 def test_Bitmap_png_must_had_equal_width_and_height_exception(
