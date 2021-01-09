@@ -378,3 +378,31 @@ def test_animated_Bitmap_reproduce_without_save(animated_png) -> None:
 
     for frame in return_value:
         assert frame.size == (10, 10)
+
+
+def test_static_Bitmap_rename(static_png: Path, hotspot) -> None:
+    bmp = Bitmap(static_png, hotspot)
+    assert bmp.key == "test-0"
+    assert bmp.png == static_png
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+
+    bmp.rename("new_test")
+    assert bmp.key == "new_test"
+    assert bmp.png == static_png.with_name("new_test.png")
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+
+
+def test_animated_Bitmap_rename(animated_png: Path, hotspot) -> None:
+    bmp = Bitmap(animated_png, hotspot)
+    assert bmp.key == "test"
+    assert bmp.grouped_png == animated_png
+    with pytest.raises(AttributeError):
+        assert bmp.png
+
+    bmp.rename("new_test")
+    assert bmp.key == "new_test"
+    for i, frame in enumerate(bmp.grouped_png):
+        stem: str = animated_png[i].stem.replace("test", "new_test", 1)
+        assert frame == frame.with_name(f"{stem}.png")
