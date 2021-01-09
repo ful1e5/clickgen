@@ -291,30 +291,27 @@ class Bitmap(object):
             else:
                 return None
 
-    def rename(self, key: str) -> "Bitmap":
+    def rename(self, key: str) -> None:
         old_key = self.key
         if key != old_key:
-            replica_object = deepcopy(self)
 
-            def __rename(png: Path, check: bool) -> None:
-                name: str = f"{png.stem.replace(old_key, key)}{png.suffix}"
-                path: Path = png.with_name(name)
-                png.rename(path)
-                replica_object._set_key(png, check)
+            def __rename(png: Path, check: bool) -> Path:
+                name: str = f"{png.stem.replace(old_key, key, 1)}{png.suffix}"
+                renamed_path: Path = png.with_name(name)
+                png.rename(renamed_path)
+                self._set_key(renamed_path, check)
+                return renamed_path
 
             if self.animated:
-                for png in replica_object.grouped_png:
-                    __rename(png, check=True)
+                new_pngs = []
+                self.key = key
+                for png in self.grouped_png:
+                    new_pngs.append(__rename(png, check=True))
+                self.grouped_png = new_pngs
             else:
-                __rename(replica_object.png, check=False)
-
-            return replica_object
-
-        else:
-            return self
+                self.png = __rename(self.png, check=False)
 
     def copy(self, path: Optional[LikePath] = None) -> "Bitmap":
-
         if not path:
             path: Path = mkdtemp(prefix=f"{self.key}__copy_")
         else:
