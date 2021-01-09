@@ -313,7 +313,7 @@ class Bitmap(object):
 
     def copy(self, path: Optional[LikePath] = None) -> "Bitmap":
         if not path:
-            path: Path = mkdtemp(prefix=f"{self.key}__copy_")
+            path: Path = Path(mkdtemp(prefix=f"{self.key}__copy__"))
         else:
             path: Path = Path(path)
 
