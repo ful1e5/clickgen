@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import shutil
+import tempfile
 from pathlib import Path
 from random import randint
 from typing import List
@@ -406,3 +408,98 @@ def test_animated_Bitmap_rename(animated_png: Path, hotspot) -> None:
     for i, frame in enumerate(bmp.grouped_png):
         stem: str = animated_png[i].stem.replace("test", "new_test", 1)
         assert frame == frame.with_name(f"{stem}.png")
+
+
+def test_Bitmap_copy_is_raising_not_a_directory_exception(
+    static_png, hotspot, test_file
+) -> None:
+    bmp = Bitmap(static_png, hotspot)
+    with pytest.raises(NotADirectoryError):
+        bmp.copy(test_file)
+
+
+def test_Bitmap_copy_is_not_creating_not_exists_directory(static_png, hotspot) -> None:
+    bmp = Bitmap(static_png, hotspot)
+    copy_dir = Path(tempfile.mkdtemp("test_copy_dir"))
+    shutil.rmtree(copy_dir)
+    bmp.copy(copy_dir)
+
+
+def test_static_Bitmap_copy_with_path_argument(static_png, hotspot) -> None:
+    bmp = Bitmap(static_png, hotspot)
+
+    assert bmp.png == static_png
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+
+    copy_dir = Path(tempfile.mkdtemp("test_copy_dir"))
+    copy_file = copy_dir / static_png.name
+
+    copy_bmp = bmp.copy(copy_dir)
+    assert copy_file.exists()
+    assert copy_bmp.png == copy_file
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+    shutil.rmtree(copy_dir)
+
+
+def test_animated_Bitmap_copy_with_path_argument(animated_png, hotspot) -> None:
+    bmp = Bitmap(animated_png, hotspot)
+
+    assert bmp.grouped_png == animated_png
+    with pytest.raises(AttributeError):
+        assert bmp.png
+
+    copy_dir = Path(tempfile.mkdtemp("test_copy_dir"))
+    copy_files = list(map(lambda x: x.name, animated_png))
+    copy_bmp = bmp.copy(copy_dir)
+
+    for i, f in enumerate(copy_files):
+        copy_file = copy_dir / f
+        assert copy_file.exists()
+        assert copy_bmp.grouped_png[i] == copy_file
+    with pytest.raises(AttributeError):
+        assert bmp.png
+    shutil.rmtree(copy_dir)
+
+
+def test_static_Bitmap_copy_without_path_argument(static_png, hotspot) -> None:
+    bmp = Bitmap(static_png, hotspot)
+
+    assert bmp.png == static_png
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+
+    copy_bmp = bmp.copy()
+
+    # Without `path` argument Bitmap.copy() is creating temporary directory or not.
+    assert str(tempfile.tempdir) in str(copy_bmp.png)
+
+    is_tmp_dir = copy_bmp.png.parent
+    assert is_tmp_dir.exists()
+    assert is_tmp_dir.name.__contains__(copy_bmp.key)
+    assert is_tmp_dir.name.__contains__("__copy__")
+
+    with pytest.raises(AttributeError):
+        assert bmp.grouped_png
+
+
+def test_animated_Bitmap_copy_without_path_argument(animated_png, hotspot) -> None:
+    bmp = Bitmap(animated_png, hotspot)
+
+    assert bmp.grouped_png == animated_png
+    with pytest.raises(AttributeError):
+        assert bmp.png
+
+    copy_bmp = bmp.copy()
+
+    # Without `path` argument Bitmap.copy() is creating temporary directory or not.
+    assert str(tempfile.tempdir) in str(copy_bmp.grouped_png[0])
+
+    is_tmp_dir = copy_bmp.grouped_png[0].parent
+    assert is_tmp_dir.exists()
+    assert is_tmp_dir.name.__contains__(copy_bmp.key)
+    assert is_tmp_dir.name.__contains__("__copy__")
+
+    with pytest.raises(AttributeError):
+        assert bmp.png
