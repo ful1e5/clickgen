@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 import shutil
 from pathlib import Path
 from random import randint
 
 import pytest
+from build.lib.clickgen.core import Bitmap
 
 from .utils import create_test_image
 
@@ -39,3 +41,13 @@ def animated_png(image_dir):
 @pytest.fixture(scope="function")
 def hotspot():
     return (0, 0)
+
+
+@pytest.fixture(scope="function")
+def static_bitmap(static_png, hotspot):
+    return Bitmap(static_png, hotspot)
+
+
+@pytest.fixture(scope="function")
+def animated_bitmap(animated_png, hotspot):
+    return Bitmap(animated_png, hotspot)

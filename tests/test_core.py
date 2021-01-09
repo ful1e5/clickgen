@@ -8,10 +8,16 @@ from random import randint
 from typing import List
 
 import pytest
-from clickgen.core import Bitmap
+from clickgen.core import Bitmap, CursorAlias
 from PIL import Image
 
 from .utils import create_test_image
+
+#
+#
+# Bitmap Test Cases
+#
+#
 
 
 def test_static_Bitmap_as_str(static_png, hotspot) -> None:
@@ -503,3 +509,50 @@ def test_animated_Bitmap_copy_without_path_argument(animated_png, hotspot) -> No
 
     with pytest.raises(AttributeError):
         assert bmp.png
+
+
+#
+#
+# CursorAlias Test Cases
+#
+#
+
+
+def test_CursorAlias_with_static_Bitmap(
+    static_bitmap: Bitmap,
+) -> None:
+    ca = CursorAlias(static_bitmap)
+
+    assert static_bitmap.key in ca.prefix
+    assert ca.prefix in str(ca.alias_dir)
+    assert str(tempfile.tempdir) in str(ca.alias_dir)
+    assert ca.alias_dir.exists() == True
+    assert ca.bitmap == static_bitmap
+
+
+def test_CursorAlias_with_animated_Bitmap(
+    animated_bitmap: Bitmap,
+) -> None:
+    ca = CursorAlias(animated_bitmap)
+
+    assert animated_bitmap.key in ca.prefix
+    assert ca.prefix in str(ca.alias_dir)
+    assert str(tempfile.tempdir) in str(ca.alias_dir)
+    assert ca.alias_dir.exists() == True
+    assert ca.bitmap == animated_bitmap
+
+
+def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
+    dir: Path
+
+    with CursorAlias.from_bitmap(static_png, hotspot) as ca:
+        assert isinstance(ca, CursorAlias)
+        assert ca.bitmap != None
+        assert ca.alias_dir != None
+        assert ca.alias_dir.exists() == True
+        dir = ca.alias_dir
+
+    assert dir.exists() == False or list(dir.iterdir()) == []
+    assert ca.bitmap == None
+    assert ca.alias_dir == None
+    assert ca.prefix == None
