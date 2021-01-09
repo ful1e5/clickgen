@@ -337,3 +337,44 @@ def test_static_Bitmap_reproduce_with_save(static_png) -> None:
     assert bmp.y_hot == 5
     with Image.open(static_png) as i:
         assert i.size == (10, 10)
+
+
+def test_static_Bitmap_reproduce_without_save(static_png) -> None:
+    bmp = Bitmap(static_png, (10, 10))
+    return_value = bmp.reproduce(
+        size=(10, 10), canvas_size=(10, 10), position="center", save=False
+    )
+    assert return_value != None
+    assert bmp.size == (20, 20)
+    assert bmp.x_hot == 10
+    assert bmp.y_hot == 10
+    assert return_value.size == (10, 10)
+
+
+def test_animated_Bitmap_reproduce_with_save(animated_png) -> None:
+    bmp = Bitmap(animated_png, (10, 10))
+    return_value = bmp.reproduce(
+        size=(10, 10), canvas_size=(10, 10), position="center", save=True
+    )
+    assert return_value == None
+    assert bmp.size == (10, 10)
+    assert bmp.x_hot == 5
+    assert bmp.y_hot == 5
+    for frame in animated_png:
+        with Image.open(frame) as i:
+            assert i.size == (10, 10)
+
+
+def test_animated_Bitmap_reproduce_without_save(animated_png) -> None:
+    bmp = Bitmap(animated_png, (10, 10))
+    return_value = bmp.reproduce(
+        size=(10, 10), canvas_size=(10, 10), position="center", save=False
+    )
+    assert return_value != None
+    assert isinstance(return_value, list)
+    assert bmp.size == (20, 20)
+    assert bmp.x_hot == 10
+    assert bmp.y_hot == 10
+
+    for frame in return_value:
+        assert frame.size == (10, 10)
