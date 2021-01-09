@@ -348,17 +348,12 @@ class CursorAlias(object):
     def __init__(
         self,
         bitmap: Bitmap,
-        alias_directory: Optional[LikePath] = None,
     ) -> None:
         super().__init__()
 
         self.bitmap = bitmap
         self.prefix = f"{self.bitmap.key}__alias"
-
-        if alias_directory:
-            self.alias_dir = Path(alias_directory)
-        else:
-            self.alias_dir = Path(mkdtemp(prefix=self.prefix))
+        self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
     def __get_alias_file(self) -> Optional[Path]:
         if hasattr(self, "alias_file"):
@@ -377,34 +372,32 @@ class CursorAlias(object):
         return self
 
     def __exit__(self, *args):
-        # Bitmap attr
         self.bitmap.__exit__()
         self.bitmap = None
 
-        # Current attr
         from clickgen.util import remove_util
 
         if hasattr(self, "alias_dir"):
             remove_util(self.alias_dir)
+            self.alias_dir = None
+            self.prefix = None
+
+        if hasattr(self, "alias_file"):
             self.alias_file = None
 
         if hasattr(self, "__garbage_dirs"):
             for p in self.__garbage_dirs:
-                remove_util(p)
+                remove_util(self.alias_dir)
             self.__garbage_dirs = None
-
-        self.alias_dir = None
-        self.prefix = None
 
     @classmethod
     def from_bitmap(
         cls,
         png: Union[LikePath, List[LikePath]],
-        hotspot: Tuple[int, int] = (0, 0),
-        alias_dir: Optional[LikePath] = None,
+        hotspot: Tuple[int, int],
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot)
-        return cls(bmp, alias_dir)
+        return cls(bmp)
 
     def create(
         self,
