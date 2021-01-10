@@ -628,3 +628,110 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
             "test-0.png",
         ]
     )
+
+
+def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> None:
+    animated_png = create_test_image(image_dir, 4)
+    animated_bitmap = Bitmap(animated_png, (13, 6))
+    alias = CursorAlias(animated_bitmap)
+
+    assert len(sorted(alias.alias_dir.iterdir())) == 0
+    alias.create((10, 10), delay=999999)
+
+    def as_list(frames: List[Path]) -> List[str]:
+        return sorted(map(lambda x: x.stem, frames))
+
+    for file in alias.alias_dir.iterdir():
+        if file.is_dir():
+            frames = file.iterdir()
+            assert as_list(frames) == as_list(animated_png)
+            for f in frames:
+                with Image.open(f) as i:
+                    assert i.size == (10, 10)
+        elif file.is_file():
+            assert file.stem == animated_bitmap.key
+
+            with file.open("r") as f:
+                assert f.readlines() == [
+                    "10 6 3 10x10/test-0.png 999999\n",
+                    "10 6 3 10x10/test-1.png 999999\n",
+                    "10 6 3 10x10/test-2.png 999999\n",
+                    "10 6 3 10x10/test-3.png 999999",
+                ]
+        else:
+            assert False
+
+    files = []
+    for f in alias.alias_dir.glob("**/*"):
+        files.append(f.name)
+
+    assert sorted(files) == sorted(
+        ["10x10", "test-0.png", "test-1.png", "test-2.png", "test-3.png", "test.alias"]
+    )
+
+
+def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) -> None:
+    animated_png = create_test_image(image_dir, 4)
+    animated_bitmap = Bitmap(animated_png, (4, 2))
+    alias = CursorAlias(animated_bitmap)
+
+    assert len(sorted(alias.alias_dir.iterdir())) == 0
+
+    mock_sizes = [(10, 10), (15, 15), (16, 16)]
+    alias.create(mock_sizes, delay=999999)
+
+    def as_list(frames: List[Path]) -> List[str]:
+        return sorted(map(lambda x: x.stem, frames))
+
+    for file in alias.alias_dir.iterdir():
+        if file.is_dir():
+            frames = file.iterdir()
+            assert as_list(frames) == as_list(animated_png)
+            for f in frames:
+                with Image.open(f) as i:
+                    assert i.size in mock_sizes
+        elif file.is_file():
+            assert file.stem == animated_bitmap.key
+
+            with file.open("r") as f:
+                assert f.readlines() == [
+                    "10 2 1 10x10/test-0.png 999999\n",
+                    "10 2 1 10x10/test-1.png 999999\n",
+                    "10 2 1 10x10/test-2.png 999999\n",
+                    "10 2 1 10x10/test-3.png 999999\n",
+                    "15 3 2 15x15/test-0.png 999999\n",
+                    "15 3 2 15x15/test-1.png 999999\n",
+                    "15 3 2 15x15/test-2.png 999999\n",
+                    "15 3 2 15x15/test-3.png 999999\n",
+                    "16 3 2 16x16/test-0.png 999999\n",
+                    "16 3 2 16x16/test-1.png 999999\n",
+                    "16 3 2 16x16/test-2.png 999999\n",
+                    "16 3 2 16x16/test-3.png 999999",
+                ]
+        else:
+            assert False
+
+    files = []
+    for f in alias.alias_dir.glob("**/*"):
+        files.append(f.name)
+
+    assert sorted(files) == sorted(
+        [
+            "10x10",
+            "15x15",
+            "16x16",
+            "test-0.png",
+            "test-0.png",
+            "test-0.png",
+            "test-1.png",
+            "test-1.png",
+            "test-1.png",
+            "test-2.png",
+            "test-2.png",
+            "test-2.png",
+            "test-3.png",
+            "test-3.png",
+            "test-3.png",
+            "test.alias",
+        ]
+    )
