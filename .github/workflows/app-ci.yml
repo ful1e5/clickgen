@@ -71,7 +71,7 @@ jobs:
       - name: Generation and Uploading 'code-cov' report to "codecov.io"
         run: |
           pip install -U pytest-cov
-          pytest --cov=./ --cov-report=xml
+          pytest --cov=./ --cov-report=xml tests/
           bash <(curl -s https://codecov.io/bash)
 
       - uses: actions/upload-artifact@master
