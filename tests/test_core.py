@@ -556,3 +556,75 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
     assert ca.bitmap == None
     assert ca.alias_dir == None
     assert ca.prefix == None
+
+
+def test_CursorAlias_create_with_static_bitmap_and_single_size(
+    static_bitmap, static_png
+) -> None:
+    alias = CursorAlias(static_bitmap)
+
+    assert len(sorted(alias.alias_dir.iterdir())) == 0
+    alias.create((10, 10), delay=999999)
+
+    for file in alias.alias_dir.iterdir():
+        if file.is_dir():
+            alias_png = list(file.iterdir())[0]
+            assert static_png.name == alias_png.name
+            with Image.open(alias_png) as i:
+                assert i.size == (10, 10)
+        elif file.is_file():
+            assert file.stem == static_bitmap.key
+
+            with file.open("r") as f:
+                assert f.readlines() == ["10 0 0 10x10/test-0.png"]
+        else:
+            assert False
+
+    files = []
+    for f in alias.alias_dir.glob("**/*"):
+        files.append(f.name)
+
+    assert sorted(files) == sorted(["10x10", "test-0.alias", "test-0.png"])
+
+
+def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> None:
+    static_bitmap = Bitmap(static_png, (9, 13))
+    mock_sizes = [(10, 10), (15, 15), (16, 16)]
+    alias = CursorAlias(static_bitmap)
+
+    assert len(sorted(alias.alias_dir.iterdir())) == 0
+    alias.create(mock_sizes, delay=99999)
+
+    for file in alias.alias_dir.iterdir():
+        if file.is_dir():
+            alias_png = list(file.iterdir())[0]
+            assert static_png.name == alias_png.name
+            with Image.open(alias_png) as i:
+                assert i.size in mock_sizes
+        elif file.is_file():
+            assert file.stem == static_bitmap.key
+
+            with file.open("r") as f:
+                assert f.readlines() == [
+                    "10 4 6 10x10/test-0.png\n",
+                    "15 7 10 15x15/test-0.png\n",
+                    "16 7 10 16x16/test-0.png",
+                ]
+        else:
+            assert False
+
+    files = []
+    for f in alias.alias_dir.glob("**/*"):
+        files.append(f.name)
+
+    assert sorted(files) == sorted(
+        [
+            "10x10",
+            "15x15",
+            "16x16",
+            "test-0.alias",
+            "test-0.png",  # Because it's generate 3 size of png in individual directory.
+            "test-0.png",
+            "test-0.png",
+        ]
+    )
