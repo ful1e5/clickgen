@@ -402,7 +402,7 @@ class CursorAlias(object):
     def create(
         self,
         sizes: Union[Size, List[Size]],
-        delay: Optional[int] = None,
+        delay: int = 10,
     ) -> Path:
         def __generate(size: Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
@@ -441,7 +441,7 @@ class CursorAlias(object):
         # Multiple sizes
         if isinstance(sizes, list):
             # Removing duplicate sizes
-            sizes = list(set(sizes))
+            sizes = sorted(set(sizes))
 
             lines: List[str] = []
             for size in sizes:
