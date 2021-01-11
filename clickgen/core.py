@@ -17,8 +17,6 @@ Positions = Literal["top_left", "top_right", "bottom_right", "bottom_right", "ce
 
 
 class Bitmap(object):
-    """"""
-
     animated: bool
     png: Path
     grouped_png: List[Path]
