@@ -24,8 +24,10 @@ def test_static_Bitmap_as_str(static_png, hotspot) -> None:
     str_static_png = str(static_png)
     bmp = Bitmap(str_static_png, hotspot)
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError) as excinfo:
         assert bmp.grouped_png
+    assert str(excinfo.value) == "'Bitmap' object has no attribute 'grouped_png'"
+
     assert bmp.png == static_png
     assert bmp.animated == False
     assert bmp.height == 20
@@ -40,8 +42,10 @@ def test_animated_Bitmap_as_str(animated_png, hotspot) -> None:
     str_animated_png: List[str] = list(map(lambda x: str(x.absolute()), animated_png))
     bmp = Bitmap(str_animated_png, hotspot)
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError) as excinfo:
         assert bmp.png
+    assert str(excinfo.value) == "'Bitmap' object has no attribute 'png'"
+
     assert bmp.grouped_png == animated_png
     assert bmp.animated == True
     assert bmp.height == 20
@@ -55,8 +59,10 @@ def test_animated_Bitmap_as_str(animated_png, hotspot) -> None:
 def test_static_Bitmap_as_Path(static_png, hotspot) -> None:
     bmp = Bitmap(static_png, hotspot)
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError) as excinfo:
         assert bmp.grouped_png
+    assert str(excinfo.value) == "'Bitmap' object has no attribute 'grouped_png'"
+
     assert bmp.png == static_png
     assert bmp.animated == False
     assert bmp.height == 20
@@ -70,8 +76,10 @@ def test_static_Bitmap_as_Path(static_png, hotspot) -> None:
 def test_animated_Bitmap_as_Path(animated_png, hotspot) -> None:
     bmp = Bitmap(animated_png, hotspot)
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(AttributeError) as excinfo:
         assert bmp.png
+    assert str(excinfo.value) == "'Bitmap' object has no attribute 'png'"
+
     assert bmp.grouped_png == animated_png
     assert bmp.animated == True
     assert bmp.height == 20
@@ -558,6 +566,51 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
     assert ca.prefix == None
 
 
+def test_static_CursorAlias_str(static_bitmap):
+    ca = CursorAlias(static_bitmap)
+    assert (
+        ca.__str__()
+        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file=None, __garbage_dirs=[])"
+    )
+    ca.create((10, 10))
+    assert (
+        ca.__str__()
+        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file={ca.alias_file}, __garbage_dirs=[])"
+    )
+
+
+def test_static_CursorAlias_repr(static_bitmap):
+    ca = CursorAlias(static_bitmap)
+    assert (
+        ca.__repr__()
+        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':None, '__garbage_dirs':[] }}"
+    )
+    ca.create((10, 10))
+    assert (
+        ca.__repr__()
+        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':{ca.alias_file}, '__garbage_dirs':[] }}"
+    )
+
+
+@pytest.mark.parametrize(
+    "mock_sizes",
+    [
+        2,
+        [2],
+        "test",
+        ["test", "test"],
+    ],
+)
+def test_CursorAlias_create_type_error_exception(mock_sizes, static_bitmap) -> None:
+    ca = CursorAlias(static_bitmap)
+    with pytest.raises(TypeError) as excinfo:
+        assert ca.create(sizes=mock_sizes)
+    assert (
+        str(excinfo.value)
+        == "argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
+    )
+
+
 def test_CursorAlias_create_with_static_bitmap_and_single_size(
     static_bitmap, static_png
 ) -> None:
@@ -725,25 +778,35 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
     )
 
 
+alias_not_exits_err = "Alias directory is empty or not exists."
+
+
 def test_Cursor_Alias_check_alias(static_bitmap, animated_bitmap) -> None:
     s_ca = CursorAlias(static_bitmap)
-    with pytest.raises(FileNotFoundError):
+
+    with pytest.raises(FileNotFoundError) as excinfo:
         s_ca.check_alias()
+    assert str(excinfo.value) == alias_not_exits_err
+
     s_ca.create((10, 10))
     s_ca.check_alias()
 
     a_ca = CursorAlias(animated_bitmap)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError) as excinfo:
         a_ca.check_alias()
+    assert str(excinfo.value) == alias_not_exits_err
+
     a_ca.create((10, 10))
     a_ca.check_alias()
 
 
 def test_Cursor_Alias_extension_excpetion(static_bitmap) -> None:
     a = CursorAlias(static_bitmap)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError) as excinfo:
         a.extension()
         a.extension(".test")
+
+    assert str(excinfo.value) == alias_not_exits_err
 
 
 def test_Cursor_Alias_extension(static_bitmap) -> None:

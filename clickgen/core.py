@@ -62,11 +62,9 @@ class Bitmap(object):
     def __str__(self) -> str:
         common: str = f"key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height}, x_hot={self.x_hot}, y_hot={self.y_hot}"
         if self.animated:
-            return (
-                f"{self.__class__.__name__}(grouped_png={self.grouped_png}, {common})"
-            )
+            return f"Bitmap(grouped_png={self.grouped_png}, {common})"
         else:
-            return f"{self.__class__.__name__}(png={self.png}, {common})"
+            return f"Bitmap(png={self.png}, {common})"
 
     def __repr__(self) -> str:
         common: str = f"'key':'{self.key}', 'animated':{self.animated}, 'size':{self.size}, 'width':{self.width}, 'height':{self.height}, 'x_hot':{self.x_hot}, 'y_hot':{self.y_hot}"
@@ -362,10 +360,10 @@ class CursorAlias(object):
             return None
 
     def __str__(self) -> str:
-        return f"{self.__class__.__name__}(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, __garbage_dirs={self.__garbage_dirs})"
+        return f"CursorAlias(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, __garbage_dirs={self.__garbage_dirs})"
 
     def __repr__(self) -> str:
-        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_file':{self.__get_alias_file()}, '__garbage_dirs':{self.__garbage_dirs}}}"
+        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_file':{self.__get_alias_file()}, '__garbage_dirs':{self.__garbage_dirs} }}"
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
