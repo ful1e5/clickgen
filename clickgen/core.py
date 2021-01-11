@@ -464,7 +464,7 @@ class CursorAlias(object):
 
     def check_alias(self) -> None:
         if not any(self.alias_dir.iterdir()):
-            raise Exception(f"Alias directory is empty or not exists.")
+            raise FileNotFoundError(f"Alias directory is empty or not exists.")
         else:
             return None
 

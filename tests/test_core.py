@@ -723,3 +723,34 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
             "test.alias",
         ]
     )
+
+
+def test_Cursor_Alias_check_alias(static_bitmap, animated_bitmap) -> None:
+    s_ca = CursorAlias(static_bitmap)
+    with pytest.raises(FileNotFoundError):
+        s_ca.check_alias()
+    s_ca.create((10, 10))
+    s_ca.check_alias()
+
+    a_ca = CursorAlias(animated_bitmap)
+    with pytest.raises(FileNotFoundError):
+        a_ca.check_alias()
+    a_ca.create((10, 10))
+    a_ca.check_alias()
+
+
+def test_Cursor_Alias_extension_excpetion(static_bitmap) -> None:
+    a = CursorAlias(static_bitmap)
+    with pytest.raises(FileNotFoundError):
+        a.extension()
+        a.extension(".test")
+
+
+def test_Cursor_Alias_extension(static_bitmap) -> None:
+    a = CursorAlias(static_bitmap)
+    a.create((10, 10))
+    assert a.alias_file.suffix == ".alias"
+    assert a.extension() == ".alias"
+    a.extension(".test")
+    assert a.alias_file.suffix == ".test"
+    assert a.extension() == ".test"

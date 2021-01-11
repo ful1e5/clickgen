@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os
 import shutil
 from pathlib import Path
 from random import randint
 
 import pytest
-from build.lib.clickgen.core import Bitmap
+from clickgen.core import Bitmap
 
 from .utils import create_test_image
 

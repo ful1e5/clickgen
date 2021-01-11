@@ -3,4 +3,4 @@ ignore:
   - examples
 
 fixes:
-  - "::/clickgen/clickgen"
+  - "/clickgen::/clickgen"
