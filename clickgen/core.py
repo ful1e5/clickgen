@@ -533,7 +533,6 @@ class CursorAlias(object):
             elif f.is_file or f.absolute() == self.alias_file.absolute():
                 updated_data: str = f.read_text().replace(old_key, key)
                 f.write_text(updated_data)
-
                 self.alias_file = __rename(f)
             else:
                 pass
