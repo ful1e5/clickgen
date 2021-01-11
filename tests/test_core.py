@@ -570,15 +570,14 @@ def test_CursorAlias_create_with_static_bitmap_and_single_size(
         if file.is_dir():
             alias_png = list(file.iterdir())[0]
             assert static_png.name == alias_png.name
-            with Image.open(alias_png) as i:
-                assert i.size == (10, 10)
-        elif file.is_file():
+            i = Image.open(alias_png)
+            assert i.size == (10, 10)
+            i.close()
+        else:
             assert file.stem == static_bitmap.key
 
             with file.open("r") as f:
                 assert f.readlines() == ["10 0 0 10x10/test-0.png"]
-        else:
-            assert False
 
     files = []
     for f in alias.alias_dir.glob("**/*"):
@@ -599,9 +598,10 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
         if file.is_dir():
             alias_png = list(file.iterdir())[0]
             assert static_png.name == alias_png.name
-            with Image.open(alias_png) as i:
-                assert i.size in mock_sizes
-        elif file.is_file():
+            i = Image.open(alias_png)
+            assert i.size in mock_sizes
+            i.close()
+        else:
             assert file.stem == static_bitmap.key
 
             with file.open("r") as f:
@@ -610,8 +610,6 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
                     "15 7 10 15x15/test-0.png\n",
                     "16 7 10 16x16/test-0.png",
                 ]
-        else:
-            assert False
 
     files = []
     for f in alias.alias_dir.glob("**/*"):
@@ -646,9 +644,10 @@ def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> N
             frames = file.iterdir()
             assert as_list(frames) == as_list(animated_png)
             for f in frames:
-                with Image.open(f) as i:
-                    assert i.size == (10, 10)
-        elif file.is_file():
+                i = Image.open(f)
+                assert i.size == (10, 10)
+                i.close()
+        else:
             assert file.stem == animated_bitmap.key
 
             with file.open("r") as f:
@@ -658,8 +657,6 @@ def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> N
                     "10 6 3 10x10/test-2.png 999999\n",
                     "10 6 3 10x10/test-3.png 999999",
                 ]
-        else:
-            assert False
 
     files = []
     for f in alias.alias_dir.glob("**/*"):
@@ -688,9 +685,10 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
             frames = file.iterdir()
             assert as_list(frames) == as_list(animated_png)
             for f in frames:
-                with Image.open(f) as i:
-                    assert i.size in mock_sizes
-        elif file.is_file():
+                i = Image.open(f)
+                assert i.size in mock_sizes
+                i.close()
+        else:
             assert file.stem == animated_bitmap.key
 
             with file.open("r") as f:
@@ -708,8 +706,6 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
                     "16 3 2 16x16/test-2.png 999999\n",
                     "16 3 2 16x16/test-3.png 999999",
                 ]
-        else:
-            assert False
 
     files = []
     for f in alias.alias_dir.glob("**/*"):

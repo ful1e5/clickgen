@@ -66,13 +66,14 @@ jobs:
         run: |
           pip install -U pytest
           python -m pytest -vv
+          pytest --cov=./ --cov-report=xml
         continue-on-error: false
 
-      - name: Generation and Uploading 'code-cov' report to "codecov.io"
-        run: |
-          pip install -U pytest-cov
-          pytest --cov=./ --cov-report=xml tests/
-          bash <(curl -s https://codecov.io/bash)
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
+          verbose: true
 
       - uses: actions/upload-artifact@master
         if: success()

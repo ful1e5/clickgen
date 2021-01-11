@@ -12,10 +12,12 @@ def create_test_image(dir: Path, count: int, size=(20, 20)) -> List[Path]:
     images: List[Path] = []
     for c in range(count):
         file = dir / f"test-{c}.png"
-        Image.new(
+        i = Image.new(
             "RGBA",
             size=size,
             color=(randint(0, 255), randint(0, 255), randint(0, 255)),
-        ).save(file, "png", compress=0)
+        )
+        i.save(file, "png", compress=0)
+        i.close()
         images.append(file)
     return images
