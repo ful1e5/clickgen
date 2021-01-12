@@ -561,24 +561,37 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
         assert ca.bitmap != None
         assert ca.alias_dir != None
         assert ca.alias_dir.exists() == True
+        assert ca.garbage_dirs == []
         dir = ca.alias_dir
 
     assert dir.exists() == False or list(dir.iterdir()) == []
     assert ca.bitmap == None
     assert ca.alias_dir == None
     assert ca.prefix == None
+    assert ca.garbage_dirs == None
+
+    with CursorAlias.from_bitmap(static_png, hotspot) as ca1:
+        with pytest.raises(AttributeError) as excinfo:
+            assert ca1.alias_file != None
+        assert (
+            str(excinfo.value) == "'CursorAlias' object has no attribute 'alias_file'"
+        )
+        ca1.create((10, 10))
+        assert ca1.alias_file != None
+
+    assert ca1.alias_file == None
 
 
 def test_static_CursorAlias_str(static_bitmap):
     ca = CursorAlias(static_bitmap)
     assert (
         ca.__str__()
-        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file=None, __garbage_dirs=[])"
+        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file=None, garbage_dirs=[])"
     )
     ca.create((10, 10))
     assert (
         ca.__str__()
-        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file={ca.alias_file}, __garbage_dirs=[])"
+        == f"CursorAlias(bitmap={static_bitmap!s}, prefix={ca.prefix}, alias_dir={ca.alias_dir}, alias_file={ca.alias_file}, garbage_dirs=[])"
     )
 
 
@@ -586,12 +599,12 @@ def test_static_CursorAlias_repr(static_bitmap):
     ca = CursorAlias(static_bitmap)
     assert (
         ca.__repr__()
-        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':None, '__garbage_dirs':[] }}"
+        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':None, 'garbage_dirs':[] }}"
     )
     ca.create((10, 10))
     assert (
         ca.__repr__()
-        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':{ca.alias_file}, '__garbage_dirs':[] }}"
+        == f"{{ 'bitmap':{static_bitmap!r}, 'prefix':{ca.prefix}, 'alias_dir':{ca.alias_dir}, 'alias_file':{ca.alias_file}, 'garbage_dirs':[] }}"
     )
 
 
