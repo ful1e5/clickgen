@@ -852,6 +852,11 @@ def test_CursorAlias_copy_path_not_directory_exception(
     assert str(excinfo.value) == f"path '{test_file.absolute()}' is not a directory"
 
 
+# helper
+def file_tree(alias: CursorAlias) -> List[str]:
+    return sorted(map(lambda x: x.name, alias.alias_dir.glob("**/*")))
+
+
 def check_alias_copy(
     original_alias: CursorAlias,
     copy_of_alias: CursorAlias,
@@ -865,13 +870,11 @@ def check_alias_copy(
     assert copy_of_alias.alias_dir.exists() == True
     assert copy_of_alias.alias_file.exists() == True
 
-    def file_tree(p: Path) -> List[str]:
-        return sorted(map(lambda x: x.name, p.alias_dir.glob("**/*")))
-
     assert copy_of_alias.alias_file.read_text() == original_alias.alias_file.read_text()
     assert file_tree(copy_of_alias) == file_tree(original_alias)
 
 
+# tests continue...
 def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None:
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
@@ -904,3 +907,54 @@ def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> Non
     copy_of_alias = alias.copy(param_dst)
 
     check_alias_copy(alias, copy_of_alias, param_dst=str(param_dst.absolute()))
+
+
+def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
+    alias.create((10, 10))
+
+    old_alias = alias
+    alias.rename("test_key")
+
+    assert alias.prefix == "test_key__alias"
+    assert (
+        sorted(filter(lambda x: x.is_file == True, old_alias.alias_dir.glob("*/**")))
+        == []
+    )
+
+    assert file_tree(alias) == ["10x10", "test_key.alias", "test_key.png"]
+
+    with alias.alias_file.open("r") as f:
+        assert f.readlines() == ["10 0 0 10x10/test_key.png"]
+
+
+def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
+    animated_bitmap = Bitmap(create_test_image(image_dir, 4), (0, 0))
+    alias = CursorAlias(animated_bitmap)
+    alias.create((10, 10))
+
+    old_alias = alias
+    alias.rename("test_key")
+
+    assert alias.prefix == "test_key__alias"
+    assert (
+        sorted(filter(lambda x: x.is_file == True, old_alias.alias_dir.glob("*/**")))
+        == []
+    )
+
+    assert file_tree(alias) == [
+        "10x10",
+        "test_key-0.png",
+        "test_key-1.png",
+        "test_key-2.png",
+        "test_key-3.png",
+        "test_key.alias",
+    ]
+
+    with alias.alias_file.open("r") as f:
+        assert f.readlines() == [
+            "10 0 0 10x10/test_key-0.png 10\n",
+            "10 0 0 10x10/test_key-1.png 10\n",
+            "10 0 0 10x10/test_key-2.png 10\n",
+            "10 0 0 10x10/test_key-3.png 10",
+        ]

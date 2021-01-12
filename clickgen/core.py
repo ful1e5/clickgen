@@ -508,31 +508,30 @@ class CursorAlias(object):
         self.check_alias()
         old_key: str = self.bitmap.key
 
-        # Setting new_prefix & renaming alias directory
-        new_prefix = f"{key}__alias"
-        new_alias_dir = self.alias_dir.with_name(
-            self.alias_dir.name.replace(self.prefix, new_prefix)
-        )
-        shutil.move(f"{self.alias_dir!s}", new_alias_dir)
-        self.prefix = new_prefix
-        self.alias_dir = new_alias_dir
+        if old_key != key:
+            # Setting new_prefix & renaming alias directory
+            new_prefix = f"{key}__alias"
+            new_alias_dir = self.alias_dir.with_name(
+                self.alias_dir.name.replace(self.prefix, new_prefix)
+            )
+            shutil.move(f"{self.alias_dir.absolute()}", new_alias_dir)
+            self.prefix = new_prefix
+            self.alias_dir = new_alias_dir
 
-        # Renaming content
-        def __rename(p: Path) -> Path:
-            name: str = f"{p.stem.replace(old_key, key, 1)}{p.suffix}"
-            path: Path = p.with_name(name)
-            return p.rename(path)
+            # Renaming content
+            def __rename(p: Path) -> Path:
+                name: str = f"{p.stem.replace(old_key, key, 1)}{p.suffix}"
+                path: Path = p.with_name(name)
+                return p.rename(path)
 
-        for f in self.alias_dir.iterdir():
-            if f.is_dir():
-                for png in f.glob("*.png"):
-                    png = __rename(png)
-            elif f.is_file or f.absolute() == self.alias_file.absolute():
-                updated_data: str = f.read_text().replace(old_key, key)
-                f.write_text(updated_data)
-                self.alias_file = __rename(f)
-            else:
-                pass
+            for f in self.alias_dir.iterdir():
+                if f.is_dir():
+                    for png in f.glob("*.png"):
+                        png = __rename(png)
+                elif f.is_file or f.absolute() == self.alias_file.absolute():
+                    updated_data: str = f.read_text().replace(old_key, key)
+                    f.write_text(updated_data)
+                    self.alias_file = __rename(f)
 
         return self.alias_file
 
