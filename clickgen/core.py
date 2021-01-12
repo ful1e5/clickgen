@@ -340,8 +340,7 @@ class CursorAlias(object):
     prefix: str
     alias_dir: Path
     alias_file: Path
-
-    __garbage_dirs: List[Path] = []
+    garbage_dirs: List[Path] = []
 
     def __init__(
         self,
@@ -360,10 +359,10 @@ class CursorAlias(object):
             return None
 
     def __str__(self) -> str:
-        return f"CursorAlias(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, __garbage_dirs={self.__garbage_dirs})"
+        return f"CursorAlias(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, garbage_dirs={self.garbage_dirs})"
 
     def __repr__(self) -> str:
-        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_file':{self.__get_alias_file()}, '__garbage_dirs':{self.__garbage_dirs} }}"
+        return f"{{ 'bitmap':{self.bitmap!r}, 'prefix':{self.prefix}, 'alias_dir':{self.alias_dir}, 'alias_file':{self.__get_alias_file()}, 'garbage_dirs':{self.garbage_dirs} }}"
 
     # Context manager support
     def __enter__(self) -> "CursorAlias":
@@ -383,10 +382,10 @@ class CursorAlias(object):
         if hasattr(self, "alias_file"):
             self.alias_file = None
 
-        if hasattr(self, "__garbage_dirs"):
-            for p in self.__garbage_dirs:
-                remove_util(self.alias_dir)
-            self.__garbage_dirs = None
+        if hasattr(self, "garbage_dirs"):
+            for p in self.garbage_dirs:
+                remove_util(p)
+            self.garbage_dirs = None
 
     @classmethod
     def from_bitmap(
@@ -551,7 +550,7 @@ class CursorAlias(object):
         tmp_bitmap.reproduce(size, canvas_size, position)
 
         # Will Deleted, When __exit__ being called
-        self.__garbage_dirs.append(tmp_bitmaps_dir)
+        self.garbage_dirs.append(tmp_bitmaps_dir)
 
         cls: CursorAlias = CursorAlias(tmp_bitmap)
         cls.create(canvas_size, delay)
