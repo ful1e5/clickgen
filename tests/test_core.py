@@ -5,7 +5,10 @@ import shutil
 import tempfile
 from pathlib import Path
 from random import randint
-from typing import List
+
+from _pytest.mark import param
+from tests.conftest import test_file
+from typing import List, Optional
 
 import pytest
 from clickgen.core import Bitmap, CursorAlias
@@ -778,42 +781,113 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
     )
 
 
-alias_not_exits_err = "Alias directory is empty or not exists."
+alias_not_exists_err = "Alias directory is empty or not exists."
 
 
-def test_Cursor_Alias_check_alias(static_bitmap, animated_bitmap) -> None:
-    s_ca = CursorAlias(static_bitmap)
+def test_CursorAlias_check_alias(static_bitmap, animated_bitmap) -> None:
+    static_alias = CursorAlias(static_bitmap)
 
     with pytest.raises(FileNotFoundError) as excinfo:
-        s_ca.check_alias()
-    assert str(excinfo.value) == alias_not_exits_err
+        static_alias.check_alias()
+    assert str(excinfo.value) == alias_not_exists_err
 
-    s_ca.create((10, 10))
-    s_ca.check_alias()
+    static_alias.create((10, 10))
+    static_alias.check_alias()
 
-    a_ca = CursorAlias(animated_bitmap)
+    animated_alias = CursorAlias(animated_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
-        a_ca.check_alias()
-    assert str(excinfo.value) == alias_not_exits_err
+        animated_alias.check_alias()
+    assert str(excinfo.value) == alias_not_exists_err
 
-    a_ca.create((10, 10))
-    a_ca.check_alias()
+    animated_alias.create((10, 10))
+    animated_alias.check_alias()
 
 
-def test_Cursor_Alias_extension_excpetion(static_bitmap) -> None:
-    a = CursorAlias(static_bitmap)
+def test_CursorAlias_extension_excpetion(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
-        a.extension()
-        a.extension(".test")
+        alias.extension()
+        alias.extension(".test")
 
-    assert str(excinfo.value) == alias_not_exits_err
+    assert str(excinfo.value) == alias_not_exists_err
 
 
-def test_Cursor_Alias_extension(static_bitmap) -> None:
-    a = CursorAlias(static_bitmap)
-    a.create((10, 10))
-    assert a.alias_file.suffix == ".alias"
-    assert a.extension() == ".alias"
-    a.extension(".test")
-    assert a.alias_file.suffix == ".test"
-    assert a.extension() == ".test"
+def test_CursorAlias_extension(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
+    alias.create((10, 10))
+    assert alias.alias_file.suffix == ".alias"
+    assert alias.extension() == ".alias"
+    alias.extension(".test")
+    assert alias.alias_file.suffix == ".test"
+    assert alias.extension() == ".test"
+
+
+def test_CursorAlias_copy_alias_not_found_exception(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
+    with pytest.raises(FileNotFoundError) as excinfo:
+        alias.copy()
+    assert str(excinfo.value) == alias_not_exists_err
+
+
+def test_CursorAlias_copy_path_not_directory_exception(
+    static_bitmap, test_file
+) -> None:
+    alias = CursorAlias(static_bitmap)
+    alias.create((10, 10))
+    with pytest.raises(NotADirectoryError) as excinfo:
+        alias.copy(test_file)
+    assert str(excinfo.value) == f"path '{test_file.absolute()}' is not a directory"
+
+
+def check_alias_copy(
+    original_alias: CursorAlias,
+    copy_of_alias: CursorAlias,
+    param_dst: Optional[str] = None,
+) -> None:
+    if param_dst:
+        assert param_dst in str(copy_of_alias.alias_dir.absolute())
+    else:
+        assert str(tempfile.tempdir) in str(copy_of_alias.alias_dir.absolute())
+
+    assert copy_of_alias.alias_dir.exists() == True
+    assert copy_of_alias.alias_file.exists() == True
+
+    def file_tree(p: Path) -> List[str]:
+        return sorted(map(lambda x: x.name, p.alias_dir.glob("**/*")))
+
+    assert copy_of_alias.alias_file.read_text() == original_alias.alias_file.read_text()
+    assert file_tree(copy_of_alias) == file_tree(original_alias)
+
+
+def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
+    alias.create((10, 10))
+    copy_of_alias = alias.copy()
+
+    check_alias_copy(alias, copy_of_alias)
+
+
+def test_CursorAlias_copy_with_animated_bitmap_without_args(animated_bitmap) -> None:
+    alias = CursorAlias(animated_bitmap)
+    alias.create((10, 10))
+    copy_of_alias = alias.copy()
+
+    check_alias_copy(alias, copy_of_alias)
+
+
+def test_CursorAlias_copy_with_static_bitmap_with_args(animated_bitmap) -> None:
+    alias = CursorAlias(animated_bitmap)
+    alias.create((10, 10))
+    param_dst = Path(tempfile.mkdtemp())
+    copy_of_alias = alias.copy(param_dst)
+
+    check_alias_copy(alias, copy_of_alias, param_dst=str(param_dst.absolute()))
+
+
+def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> None:
+    alias = CursorAlias(animated_bitmap)
+    alias.create((10, 10))
+    param_dst = Path(tempfile.mkdtemp())
+    copy_of_alias = alias.copy(param_dst)
+
+    check_alias_copy(alias, copy_of_alias, param_dst=str(param_dst.absolute()))
