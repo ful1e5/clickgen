@@ -5,7 +5,7 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, TypeVar, Union, overload
+from typing import List, Literal, Optional, Tuple, TypeVar, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
@@ -230,11 +230,10 @@ class Bitmap(object):
                 return images
             return None
 
-        else:
-            img: Image = __resize(self.png, 0)
-            if not save:
-                return img
-            return None
+        img: Image = __resize(self.png, 0)
+        if not save:
+            return img
+        return None
 
     def reproduce(
         self,
@@ -271,16 +270,14 @@ class Bitmap(object):
             images: List[Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
-
             if not save:
                 return images
             return None
 
-        else:
-            image: Image = __reproduce(self.png)
-            if not save:
-                return image
-            return None
+        image: Image = __reproduce(self.png)
+        if not save:
+            return image
+        return None
 
     def rename(self, key: str) -> None:
         old_key = self.key
@@ -454,15 +451,6 @@ class CursorAlias(object):
     def check_alias(self) -> None:
         if not any(self.alias_dir.iterdir()):
             raise FileNotFoundError(f"Alias directory is empty or not exists.")
-        return None
-
-    @overload
-    def extension(self) -> str:
-        ...
-
-    @overload
-    def extension(self, ext: str) -> Path:
-        ...
 
     def extension(self, ext: Optional[str] = None) -> Union[str, Path]:
         self.check_alias()

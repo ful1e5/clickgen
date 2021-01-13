@@ -13,9 +13,9 @@ from .utils import create_test_image
 
 @pytest.fixture(scope="module")
 def image_dir(tmpdir_factory: pytest.TempdirFactory):
-    dir = Path(tmpdir_factory.mktemp("test_image"))
-    yield dir
-    shutil.rmtree(dir)
+    directory = Path(tmpdir_factory.mktemp("test_image"))
+    yield directory
+    shutil.rmtree(directory)
 
 
 @pytest.fixture(scope="function")

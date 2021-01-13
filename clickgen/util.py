@@ -59,13 +59,10 @@ class PNGProvider(object):
     def get(self, key: str) -> Union[List[Path], Path]:
         r = re.compile(key)
         convert_to_path: Callable[[str], Path] = lambda x: self.bitmaps_dir / x
-
         paths = list(map(convert_to_path, filter(r.match, self.__pngs)))
-
         if len(paths) == 1:
             return paths[0]
-        else:
-            return paths
+        return paths
 
 
 def add_missing_xcursors(
