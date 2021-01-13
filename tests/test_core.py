@@ -958,3 +958,30 @@ def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
             "10 0 0 10x10/test_key-2.png 10\n",
             "10 0 0 10x10/test_key-3.png 10",
         ]
+
+
+def test_CursorAlias_reproduce_exception(static_bitmap) -> None:
+    alias = CursorAlias(static_bitmap)
+
+    with pytest.raises(FileNotFoundError) as excinfo:
+        alias.reproduce()
+    assert str(excinfo.value) == alias_not_exists_err
+
+
+def test_CursorAlias_reproduce(static_png, hotspot) -> None:
+    testing_dirs: List[Path]
+    with CursorAlias.from_bitmap(static_png, hotspot) as alias:
+        alias.create((10, 10))
+
+        assert alias.garbage_dirs == []
+        reproduced_alias = alias.reproduce(
+            size=(24, 24), canvas_size=(32, 32), delay=44
+        )
+        testing_dirs = alias.garbage_dirs
+        assert f"{alias.prefix}__garbage_bmps__" in alias.garbage_dirs[0].name
+        assert file_tree(reproduced_alias) == ["32x32", "test-0.alias", "test-0.png"]
+
+    assert alias.garbage_dirs == None
+    assert (
+        sorted(filter(lambda x: x.is_file == True, testing_dirs[0].glob("*/**"))) == []
+    )
