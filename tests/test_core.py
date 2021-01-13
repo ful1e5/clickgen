@@ -32,7 +32,7 @@ def test_static_Bitmap_as_str(static_png, hotspot) -> None:
     assert str(excinfo.value) == "'Bitmap' object has no attribute 'grouped_png'"
 
     assert bmp.png == static_png
-    assert bmp.animated == False
+    assert bmp.animated is False
     assert bmp.height == 20
     assert bmp.width == 20
     assert bmp.compress == 0
@@ -50,7 +50,7 @@ def test_animated_Bitmap_as_str(animated_png, hotspot) -> None:
     assert str(excinfo.value) == "'Bitmap' object has no attribute 'png'"
 
     assert bmp.grouped_png == animated_png
-    assert bmp.animated == True
+    assert bmp.animated is True
     assert bmp.height == 20
     assert bmp.width == 20
     assert bmp.compress == 0
@@ -67,7 +67,7 @@ def test_static_Bitmap_as_Path(static_png, hotspot) -> None:
     assert str(excinfo.value) == "'Bitmap' object has no attribute 'grouped_png'"
 
     assert bmp.png == static_png
-    assert bmp.animated == False
+    assert bmp.animated is False
     assert bmp.height == 20
     assert bmp.width == 20
     assert bmp.compress == 0
@@ -84,7 +84,7 @@ def test_animated_Bitmap_as_Path(animated_png, hotspot) -> None:
     assert str(excinfo.value) == "'Bitmap' object has no attribute 'png'"
 
     assert bmp.grouped_png == animated_png
-    assert bmp.animated == True
+    assert bmp.animated is True
     assert bmp.height == 20
     assert bmp.width == 20
     assert bmp.compress == 0
@@ -201,7 +201,7 @@ def test_static_Bitmap_context_manager(static_png, hotspot) -> None:
         with pytest.raises(AttributeError):
             assert bmp.grouped_png
         assert bmp.png == static_png
-        assert bmp.animated == False
+        assert bmp.animated is False
         assert bmp.height == 20
         assert bmp.width == 20
         assert bmp.compress == 0
@@ -224,7 +224,7 @@ def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
         with pytest.raises(AttributeError):
             assert bmp.png
         assert bmp.grouped_png == animated_png
-        assert bmp.animated == True
+        assert bmp.animated is True
         assert bmp.height == 20
         assert bmp.width == 20
         assert bmp.compress == 0
@@ -298,7 +298,7 @@ def test_static_Bitmap_resize_without_save(static_png) -> None:
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
     return_image = bmp.resize(size=new_size, save=False)
-    assert return_image != None
+    assert return_image is not None
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
     assert return_image.size == new_size
@@ -310,7 +310,7 @@ def test_animated_Bitmap_resize_without_save(animated_png) -> None:
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
     return_images = bmp.resize(size=new_size, save=False)
-    assert return_images != None
+    assert return_images is not None
     assert isinstance(return_images, list)
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
@@ -363,7 +363,7 @@ def test_static_Bitmap_reproduce_without_save(static_png) -> None:
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=False
     )
-    assert return_value != None
+    assert return_value is not None
     assert bmp.size == (20, 20)
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
@@ -389,7 +389,7 @@ def test_animated_Bitmap_reproduce_without_save(animated_png) -> None:
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=False
     )
-    assert return_value != None
+    assert return_value is not None
     assert isinstance(return_value, list)
     assert bmp.size == (20, 20)
     assert bmp.x_hot == 10
@@ -537,7 +537,7 @@ def test_CursorAlias_with_static_Bitmap(
     assert static_bitmap.key in ca.prefix
     assert ca.prefix in str(ca.alias_dir)
     assert str(tempfile.tempdir) in str(ca.alias_dir)
-    assert ca.alias_dir.exists() == True
+    assert ca.alias_dir.exists() is True
     assert ca.bitmap == static_bitmap
 
 
@@ -549,7 +549,7 @@ def test_CursorAlias_with_animated_Bitmap(
     assert animated_bitmap.key in ca.prefix
     assert ca.prefix in str(ca.alias_dir)
     assert str(tempfile.tempdir) in str(ca.alias_dir)
-    assert ca.alias_dir.exists() == True
+    assert ca.alias_dir.exists() is True
     assert ca.bitmap == animated_bitmap
 
 
@@ -558,13 +558,13 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
 
     with CursorAlias.from_bitmap(static_png, hotspot) as ca:
         assert isinstance(ca, CursorAlias)
-        assert ca.bitmap != None
-        assert ca.alias_dir != None
-        assert ca.alias_dir.exists() == True
+        assert ca.bitmap is not None
+        assert ca.alias_dir is not None
+        assert ca.alias_dir.exists() is True
         assert ca.garbage_dirs == []
         directory = ca.alias_dir
 
-    assert directory.exists() == False or list(directory.iterdir()) == []
+    assert directory.exists() is False or list(directory.iterdir()) == []
     assert ca.bitmap is None
     assert ca.alias_dir is None
     assert ca.prefix is None
@@ -572,12 +572,12 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
 
     with CursorAlias.from_bitmap(static_png, hotspot) as ca1:
         with pytest.raises(AttributeError) as excinfo:
-            assert ca1.alias_file != None
+            assert ca1.alias_file is not None
         assert (
             str(excinfo.value) == "'CursorAlias' object has no attribute 'alias_file'"
         )
         ca1.create((10, 10))
-        assert ca1.alias_file != None
+        assert ca1.alias_file is not None
 
     assert ca1.alias_file is None
 
@@ -867,8 +867,8 @@ def check_alias_copy(
     else:
         assert str(tempfile.tempdir) in str(copy_of_alias.alias_dir.absolute())
 
-    assert copy_of_alias.alias_dir.exists() == True
-    assert copy_of_alias.alias_file.exists() == True
+    assert copy_of_alias.alias_dir.exists() is True
+    assert copy_of_alias.alias_file.exists() is True
 
     assert copy_of_alias.alias_file.read_text() == original_alias.alias_file.read_text()
     assert file_tree(copy_of_alias) == file_tree(original_alias)
@@ -918,7 +918,7 @@ def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
 
     assert alias.prefix == "test_key__alias"
     assert (
-        sorted(filter(lambda x: x.is_file == True, old_alias.alias_dir.glob("*/**")))
+        sorted(filter(lambda x: x.is_file is True, old_alias.alias_dir.glob("*/**")))
         == []
     )
 
@@ -938,7 +938,7 @@ def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
 
     assert alias.prefix == "test_key__alias"
     assert (
-        sorted(filter(lambda x: x.is_file == True, old_alias.alias_dir.glob("*/**")))
+        sorted(filter(lambda x: x.is_file is True, old_alias.alias_dir.glob("*/**")))
         == []
     )
 
@@ -983,5 +983,5 @@ def test_CursorAlias_reproduce(static_png, hotspot) -> None:
 
     assert alias.garbage_dirs is None
     assert (
-        sorted(filter(lambda x: x.is_file == True, testing_dirs[0].glob("*/**"))) == []
+        sorted(filter(lambda x: x.is_file is True, testing_dirs[0].glob("*/**"))) == []
     )
