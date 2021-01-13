@@ -1,7 +1,7 @@
 FROM python:3-alpine
 
 # Installing necessary runtime libraries
-RUN apk add build-base jpeg-dev zlib-dev libx11-dev libpng-dev libxcursor-dev 
+RUN apk --no-cache add build-base jpeg-dev zlib-dev libx11-dev libpng-dev libxcursor-dev 
 
 # For caching
 ADD requirements.txt /app/

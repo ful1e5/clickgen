@@ -5,9 +5,6 @@ import shutil
 import tempfile
 from pathlib import Path
 from random import randint
-
-from _pytest.mark import param
-from tests.conftest import test_file
 from typing import List, Optional
 
 import pytest

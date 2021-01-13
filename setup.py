@@ -2,14 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
-from setuptools import setup
 from distutils.command.install import install as _install
+from shutil import which
+
+from setuptools import setup
 
 
 class install(_install):
     def run(self):
-        subprocess.call(["make", "clean", "-C", "xcursorgen"])
-        subprocess.call(["make", "-C", "xcursorgen"])
+        subprocess.call([which("make"), "clean", "-C", "xcursorgen"])
+        subprocess.call([which("make"), "-C", "xcursorgen"])
         _install.run(self)
 
 
