@@ -235,5 +235,4 @@ class CursorDB(object):
         key: str = self.__find_similar(p.stem)
         if key != p.stem:
             return p.with_name(f"{key}{p.suffix}")
-        else:
-            return None
+        return None

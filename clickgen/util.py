@@ -8,22 +8,23 @@ import shutil
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, List, Set, Union
+from typing import Callable, List, Set, TypeVar, Union
 
-from clickgen.core import LikePath
 from clickgen.db import DATA, CursorDB
+
+LikePath = TypeVar("LikePath", str, Path)
 
 
 @contextmanager
-def chdir(dir: Union[str, Path]):
+def chdir(directory: Union[str, Path]):
     """
     Temporary change `working` directory. Use this in `with` syntax.
 
-    :dir: path to directory.
+    :directory: path to directory.
     """
 
     prev_cwd = os.getcwd()
-    os.chdir(dir)
+    os.chdir(directory)
     try:
         yield
     finally:
@@ -68,20 +69,23 @@ class PNGProvider(object):
 
 
 def add_missing_xcursors(
-    dir: Path, data: List[Set[str]] = DATA, rename: bool = False, force: bool = False
+    directory: Path,
+    data: List[Set[str]] = DATA,
+    rename: bool = False,
+    force: bool = False,
 ) -> bool:
-    if not dir.exists() or not dir.is_dir():
-        raise NotADirectoryError(dir.absolute())
+    if not directory.exists() or not directory.is_dir():
+        raise NotADirectoryError(directory.absolute())
 
     db: CursorDB = CursorDB(data)
 
     # Removing all symlinks cursors
     if force:
-        for xcursor in dir.iterdir():
+        for xcursor in directory.iterdir():
             if xcursor.is_symlink():
                 xcursor.unlink(xcursor)
 
-    xcursors = sorted(dir.iterdir())
+    xcursors = sorted(directory.iterdir())
 
     for xcursor in xcursors:
         # Rename Xcursor according to Database, If necessary
@@ -92,7 +96,7 @@ def add_missing_xcursors(
         links = db.search_symlinks(xcursor.stem)
         if links:
             for link in links:
-                with chdir(dir):
+                with chdir(directory):
                     try:
                         os.symlink(xcursor, link)
                     except FileExistsError as f:

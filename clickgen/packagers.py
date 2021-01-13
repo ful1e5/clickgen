@@ -16,7 +16,7 @@ THEME_FILES_TEMPLATES: Dict[str, Template] = {
 }
 
 
-def XPackager(dir: Path, theme_name: str, comment: str) -> None:
+def XPackager(directory: Path, theme_name: str, comment: str) -> None:
     """ Create a crispy `XCursors` theme package. """
 
     # Writing all .theme files
@@ -25,7 +25,7 @@ def XPackager(dir: Path, theme_name: str, comment: str) -> None:
         files[file] = template.safe_substitute(theme_name=theme_name, comment=comment)
 
     for f, data in files.items():
-        fp: Path = dir / f
+        fp: Path = directory / f
         fp.write_text(data)
 
 
@@ -106,7 +106,7 @@ REQUIRED_WIN_CURSORS: Iterator[str] = {
 
 
 def WindowsPackager(
-    dir: Path,
+    directory: Path,
     theme_name: str,
     comment: str,
     author: str,
@@ -117,7 +117,7 @@ def WindowsPackager(
     files: Iterator[Path] = []
 
     for ext in ("*.ani", "*.cur"):
-        for i in sorted(dir.glob(ext)):
+        for i in sorted(directory.glob(ext)):
             if i.stem in REQUIRED_WIN_CURSORS:
                 files.append(i)
 
@@ -126,9 +126,10 @@ def WindowsPackager(
     # Checking cursor files
     if not cursors:
         raise FileNotFoundError(
-            f"Windows cursors '*.cur' or '*.ani' not found in '{dir}'"
+            f"Windows cursors '*.cur' or '*.ani' not found in '{directory}'"
         )
-    elif len(cursors) != len(REQUIRED_WIN_CURSORS):
+
+    if len(cursors) != len(REQUIRED_WIN_CURSORS):
         # Some cursors are missing
         c = set(map(lambda x: x.stem, cursors))
         missing = REQUIRED_WIN_CURSORS - set(c)
@@ -151,5 +152,5 @@ def WindowsPackager(
             data = data.replace(f"{p.stem}{old_ext[0]}", p.name)
 
     # Store install.inf file
-    install_inf: Path = dir / "install.inf"
+    install_inf: Path = directory / "install.inf"
     install_inf.write_text(data)

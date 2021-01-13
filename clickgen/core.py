@@ -48,7 +48,7 @@ class Bitmap(object):
             f"argument should be a 'str' object or 'Path' object , not {type(png)}"
         )
 
-        if isinstance(png, str) or isinstance(png, Path):
+        if isinstance(png, (str, Path)):
             self.__set_as_static(png, hotspot)
 
         elif isinstance(png, list):
@@ -63,15 +63,13 @@ class Bitmap(object):
         common: str = f"key={self.key}, animated={self.animated}, size={self.size}, width={self.width}, height={self.height}, x_hot={self.x_hot}, y_hot={self.y_hot}"
         if self.animated:
             return f"Bitmap(grouped_png={self.grouped_png}, {common})"
-        else:
-            return f"Bitmap(png={self.png}, {common})"
+        return f"Bitmap(png={self.png}, {common})"
 
     def __repr__(self) -> str:
         common: str = f"'key':'{self.key}', 'animated':{self.animated}, 'size':{self.size}, 'width':{self.width}, 'height':{self.height}, 'x_hot':{self.x_hot}, 'y_hot':{self.y_hot}"
         if self.animated:
             return f"{{ 'grouped_png':{self.grouped_png}, {common} }}"
-        else:
-            return f"{{ 'png':{self.png}, {common} }}"
+        return f"{{ 'png':{self.png}, {common} }}"
 
     # Context manager support
     def __enter__(self) -> "Bitmap":
@@ -151,8 +149,7 @@ class Bitmap(object):
                     try:
                         if self.size != i.size:
                             raise ValueError("All .png file's size must be equal")
-                        else:
-                            __set()
+                        __set()
                     except AttributeError:
                         __set()
 
@@ -177,8 +174,7 @@ class Bitmap(object):
                     raise ValueError(
                         f"Bitmap '{bmp_path.name}' not matched with key '{self.key}'. Provide a Grouped Bitmaps with frame number followed by '-'.  Like 'bitmap-000.png','bitmap-001.png' "
                     )
-                else:
-                    self.key = k
+                self.key = k
             except AttributeError:
                 self.key = k
         else:
@@ -190,11 +186,12 @@ class Bitmap(object):
         with Img.open(img_path) as i:
             if x > i.width or y > i.height:
                 raise ValueError("'Hotspot' value is an overflow")
+
             if x < 0 or y < 0:
                 raise ValueError("'Hotspot' value is an underflow")
-            else:
-                self.x_hot = x
-                self.y_hot = y
+
+            self.x_hot = x
+            self.y_hot = y
 
     def _update_hotspots(self, new_size: Size) -> None:
         if self.size != new_size:
@@ -231,15 +228,13 @@ class Bitmap(object):
                 images.append(img)
             if not save:
                 return images
-            else:
-                return None
+            return None
 
         else:
             img: Image = __resize(self.png, 0)
             if not save:
                 return img
-            else:
-                return None
+            return None
 
     def reproduce(
         self,
@@ -279,15 +274,13 @@ class Bitmap(object):
 
             if not save:
                 return images
-            else:
-                return None
+            return None
 
         else:
             image: Image = __reproduce(self.png)
             if not save:
                 return image
-            else:
-                return None
+            return None
 
     def rename(self, key: str) -> None:
         old_key = self.key
@@ -330,9 +323,9 @@ class Bitmap(object):
             for p in self.grouped_png:
                 pngs.append(__copy(p))
             return Bitmap(pngs, (self.x_hot, self.y_hot))
-        else:
-            p = __copy(self.png)
-            return Bitmap(p, (self.x_hot, self.y_hot))
+
+        p = __copy(self.png)
+        return Bitmap(p, (self.x_hot, self.y_hot))
 
 
 class CursorAlias(object):
@@ -355,8 +348,7 @@ class CursorAlias(object):
     def __get_alias_file(self) -> Optional[Path]:
         if hasattr(self, "alias_file"):
             return self.alias_file
-        else:
-            return None
+        return None
 
     def __str__(self) -> str:
         return f"CursorAlias(bitmap={self.bitmap!s}, prefix={self.prefix}, alias_dir={self.alias_dir}, alias_file={self.__get_alias_file()}, garbage_dirs={self.garbage_dirs})"
@@ -462,8 +454,7 @@ class CursorAlias(object):
     def check_alias(self) -> None:
         if not any(self.alias_dir.iterdir()):
             raise FileNotFoundError(f"Alias directory is empty or not exists.")
-        else:
-            return None
+        return None
 
     @overload
     def extension(self) -> str:
@@ -478,10 +469,9 @@ class CursorAlias(object):
         if ext:
             new_path: Path = self.alias_file.with_suffix(ext)
             self.alias_file = self.alias_file.rename(new_path)
-
             return self.alias_file
-        else:
-            return self.alias_file.suffix
+
+        return self.alias_file.suffix
 
     def copy(self, dst: Optional[LikePath] = None) -> "CursorAlias":
         self.check_alias()
