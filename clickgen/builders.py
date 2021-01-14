@@ -39,7 +39,7 @@ class XCursor:
     def __init__(self, config_file: Path, out_dir: Path) -> None:
         if not config_file.exists() or not config_file.is_file():
             raise FileNotFoundError(
-                f"'{config_file.name}' Config file not found or it's corrupts"
+                f"'{config_file.name}' is not found or not a config file"
             )
 
         self.config_file: Path = config_file
@@ -81,7 +81,7 @@ class XCursor:
         exec_with_error: bool = bool(self._lib.main(args, kwargs))
         if exec_with_error:
             raise RuntimeError(
-                f"'xcursorgen' failed to generate xcursor named '{self.config_file.stem}'"
+                f"'xcursorgen' failed to generate XCursor from '{self.config_file.name}'"
             )
 
     @classmethod
@@ -99,7 +99,7 @@ class AnicursorgenArgs(NamedTuple):
 
     @blur: Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).
 
-    @color: Shadow color in (RR,GG,BB,AA) form (default is (0, 0, 0, 64)).
+    @color: Shadow color in (RR,GG,BB,AA) (default is (0, 0, 0, 64)).
 
     @down_shift: Shift shadow down by this percentage of the canvas size (default is 3.125).
 
@@ -108,12 +108,7 @@ class AnicursorgenArgs(NamedTuple):
 
     add_shadows: bool = False
     blur: float = 3.125
-    color: Color = (
-        0,
-        0,
-        0,
-        64,
-    )
+    color: Color = (0, 0, 0, 64)
     down_shift: float = 3.125
     right_shift: float = 9.375
 
