@@ -197,8 +197,8 @@ class CursorDB(object):
     def __str__(self) -> str:
         string: List[str] = []
         for k, v in self.data.items():
-            string.append(f"{k} => {v}")
-        return "\n".join(string)
+            string.append(f"{k}={v}")
+        return f"CursorDB({', '.join(string)})"
 
     def __repr__(self) -> str:
         return f"{self.data!r}"

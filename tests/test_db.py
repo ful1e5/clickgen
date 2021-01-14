@@ -26,3 +26,19 @@ def test_CursorDB(data) -> None:
         "ddddd": ["ffffff"],
         "ffffff": ["ddddd"],
     }
+
+
+def test_CursorDB_str(data) -> None:
+    db = CursorDB(data)
+    assert (
+        db.__str__()
+        == "CursorDB(aa=[], cc=['bb'], bb=['cc'], ffffff=['ddddd'], ddddd=['ffffff'])"
+    )
+
+
+def test_CursorDB_repr(data) -> None:
+    db = CursorDB(data)
+    assert (
+        db.__repr__()
+        == "{'aa': [], 'cc': ['bb'], 'bb': ['cc'], 'ffffff': ['ddddd'], 'ddddd': ['ffffff']}"
+    )
