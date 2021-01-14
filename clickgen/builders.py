@@ -47,8 +47,7 @@ class XCursor:
 
         self.out_dir: Path = out_dir / "cursors"
 
-        if not self.out_dir.exists():
-            self.out_dir.mkdir(parents=True, exist_ok=True)
+        self.out_dir.mkdir(parents=True, exist_ok=True)
 
         self.out: Path = self.out_dir / self.config_file.stem
 
@@ -85,8 +84,8 @@ class XCursor:
                 f"'xcursorgen' failed to generate xcursor named '{self.config_file.stem}'"
             )
 
-    @staticmethod
-    def create(alias_file: Path, out_dir: Path) -> Path:
+    @classmethod
+    def create(cls, alias_file: Path, out_dir: Path) -> Path:
         cursor = XCursor(alias_file, out_dir)
         cursor.generate()
         return cursor.out
@@ -137,8 +136,7 @@ class WindowsCursor:
         self.out_dir = out_dir
         self.args = args
 
-        if not self.out_dir.exists():
-            self.out_dir.mkdir(exist_ok=True, parents=True)
+        self.out_dir.mkdir(exist_ok=True, parents=True)
 
     def get_frames(self) -> Frames:
         in_buffer = self.config_file.open("rb")
@@ -464,8 +462,8 @@ class WindowsCursor:
                 buf = self.make_cur(frames)
                 self.copy_to(out, buf)
 
-    @staticmethod
-    def create(alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
+    @classmethod
+    def create(cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
         cursor = WindowsCursor(alias_file, out_dir, args)
         cursor.generate()
         return cursor.out
