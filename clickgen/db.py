@@ -230,8 +230,6 @@ class CursorDB(object):
             if ratio > compare_ratio:
                 compare_ratio = ratio
                 result = e
-            else:
-                continue
 
         return result
 

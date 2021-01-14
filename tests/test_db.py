@@ -80,11 +80,11 @@ def test_CursorDB_rename_file_is_not_file_exception(data) -> None:
     assert str(excinfo.value) == f"'{test_p}' is not file"
     test_p.unlink(missing_ok=True)
 
-    test_p_1 = Path(tempfile.mkdtemp())
+    test_p1 = Path(tempfile.mkdtemp())
     with pytest.raises(FileNotFoundError) as excinfo:
-        db.rename_file(test_p_1)
-    assert str(excinfo.value) == f"'{test_p_1}' is not file"
-    os.rmdir(test_p_1)
+        db.rename_file(test_p1)
+    assert str(excinfo.value) == f"'{test_p1}' is not file"
+    os.rmdir(test_p1)
 
 
 def test_CursorDB_rename_file(data) -> None:
@@ -98,10 +98,10 @@ def test_CursorDB_rename_file(data) -> None:
 
     test_p.unlink(missing_ok=True)
 
-    test_p_1 = Path(tempfile.tempdir) / "aa"
-    test_p_1.write_text("test")
+    test_p1 = Path(tempfile.tempdir) / "aa"
+    test_p1.write_text("test")
 
-    return_p = db.rename_file(test_p_1)
+    return_p = db.rename_file(test_p1)
     assert return_p is None
 
-    test_p_1.unlink(missing_ok=True)
+    test_p1.unlink(missing_ok=True)
