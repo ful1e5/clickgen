@@ -50,3 +50,8 @@ def static_bitmap(static_png, hotspot):
 @pytest.fixture(scope="function")
 def animated_bitmap(animated_png, hotspot):
     return Bitmap(animated_png, hotspot)
+
+
+@pytest.fixture(scope="function")
+def data():
+    return [{"aa"}, {"bb", "cc"}, {"ddddd", "ffffff"}]

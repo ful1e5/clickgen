@@ -188,7 +188,7 @@ DATA: Data = [
 
 
 class CursorDB(object):
-    __data: Dict[str, List[str]] = {}
+    data: Dict[str, List[str]] = {}
 
     def __init__(self, data: Data) -> None:
         super().__init__()
@@ -196,19 +196,23 @@ class CursorDB(object):
 
     def __str__(self) -> str:
         string: List[str] = []
-        for k, v in self.__data.items():
+        for k, v in self.data.items():
             string.append(f"{k} => {v}")
         return "\n".join(string)
 
     def __repr__(self) -> str:
-        return f"{self.__data!r}"
+        return f"{self.data!r}"
 
     def __seed(self, data: Data) -> None:
+        if not isinstance(data, list):
+            raise TypeError(f"'data' is not type of 'List'")
         for item in data:
+            if not isinstance(item, set):
+                raise TypeError(f"Item '{item}' is not type of 'Set'")
             for i in item:
                 symlinks: List[str] = list(item)
                 symlinks.remove(i)
-                self.__data[i] = symlinks
+                self.data[i] = symlinks
 
     def search_symlinks(
         self, key: str, find_similar: bool = False
@@ -216,12 +220,12 @@ class CursorDB(object):
         if find_similar:
             key = self.__find_similar(key)
 
-        return self.__data.get(key)
+        return self.data.get(key)
 
     def __find_similar(self, key: str) -> str:
         compare_ratio: float = 0.5
         result: str = key
-        for e in self.__data.keys():
+        for e in self.data.keys():
             ratio: float = SM(None, key.lower(), e.lower()).ratio()
             if ratio > compare_ratio:
                 compare_ratio = ratio
