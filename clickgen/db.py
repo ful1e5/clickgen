@@ -206,10 +206,10 @@ class CursorDB(object):
     def __seed(self, data: Data) -> None:
         if not isinstance(data, list):
             raise TypeError(f"'data' is not type of 'List'")
-        for item in data:
+        for item in sorted(data):
             if not isinstance(item, set):
                 raise TypeError(f"Item '{item}' is not type of 'Set'")
-            for i in item:
+            for i in sorted(item):
                 symlinks: List[str] = list(item)
                 symlinks.remove(i)
                 self.data[i] = symlinks
@@ -236,6 +236,8 @@ class CursorDB(object):
         return result
 
     def rename_file(self, p: Path) -> Optional[Path]:
+        if not p.is_file():
+            raise FileNotFoundError(f"'{p.absolute()}' is not file")
         key: str = self.__find_similar(p.stem)
         if key != p.stem:
             return p.with_name(f"{key}{p.suffix}")
