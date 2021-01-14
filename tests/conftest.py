@@ -6,7 +6,7 @@ from pathlib import Path
 from random import randint
 
 import pytest
-from clickgen.core import Bitmap
+from clickgen.core import Bitmap, CursorAlias
 
 from .utils import create_test_image
 
@@ -50,6 +50,18 @@ def static_bitmap(static_png, hotspot):
 @pytest.fixture(scope="function")
 def animated_bitmap(animated_png, hotspot):
     return Bitmap(animated_png, hotspot)
+
+
+@pytest.fixture(scope="function")
+def static_config(static_bitmap):
+    alias = CursorAlias(static_bitmap)
+    return alias.create((10, 10))
+
+
+@pytest.fixture(scope="function")
+def animated_config(animated_bitmap):
+    alias = CursorAlias(animated_bitmap)
+    return alias.create((10, 10))
 
 
 @pytest.fixture(scope="function")
