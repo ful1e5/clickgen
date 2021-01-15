@@ -86,7 +86,7 @@ class XCursor:
 
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path) -> Path:
-        cursor = XCursor(alias_file, out_dir)
+        cursor = cls(alias_file, out_dir)
         cursor.generate()
         return cursor.out
 
