@@ -186,7 +186,7 @@ class WindowsCursor:
                 size = frame[0]
 
                 if size in sizes:
-                    raise Exception(
+                    raise ValueError(
                         f"Frames are not sorted: frame {i} has size {size}, but we have seen that already"
                     )
 
@@ -200,14 +200,14 @@ class WindowsCursor:
 
         for i in range(1, len(framesets)):
             if len(framesets[i - 1]) != len(framesets[i]):
-                raise Exception(
+                raise ValueError(
                     f"Frameset {i} has size {len(framesets[i])}, expected {len(framesets[i - 1])}"
                 )
 
         for frameset in framesets:
             for i in range(1, len(frameset)):
                 if frameset[i - 1][4] != frameset[i][4]:
-                    raise Exception(
+                    raise ValueError(
                         f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}",
                     )
         framesets = sorted(framesets, reverse=True)

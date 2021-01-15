@@ -6,7 +6,9 @@
 # XCursor
 #
 
+from build.lib.clickgen.core import CursorAlias
 from pathlib import Path
+from tests.conftest import animated_bitmap, animated_png
 import pytest
 from clickgen.builders import AnicursorgenArgs, WindowsCursor, XCursor
 
@@ -67,6 +69,63 @@ def test_XCursor_create_with_animated_config(animated_config, image_dir) -> None
     assert x.__sizeof__() > 0
 
 
+def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
+    win = WindowsCursor(static_config, image_dir, args=AnicursorgenArgs())
+
+    f1 = [
+        (10, -1, -1, "test-0.png", 10),
+        (9, -1, -1, "test-0.png", 10),
+        (10, -1, -1, "test-1.png", 10),
+        (9, -1, -1, "test-1.png", 10),
+        (10, -1, -1, "test-2.png", 10),
+        (9, -1, -1, "test-2.png", 10),
+        (10, -1, -1, "test-3.png", 10),
+        (9, -1, -1, "test-3.png", 10),
+    ]
+
+    with pytest.raises(ValueError) as excinfo:
+        win.make_framesets(f1)
+
+    assert (
+        str(excinfo.value)
+        == "Frames are not sorted: frame 2 has size 10, but we have seen that already"
+    )
+
+    f2 = [
+        (10, -1, -1, "test-0.png", 10),
+        (10, -1, -1, "test-1.png", 10),
+        (10, -1, -1, "test-2.png", 10),
+        (10, -1, -1, "test-3.png", 10),
+        (9, -1, -1, "test-0.png", 10),
+        (9, -1, -1, "test-1.png", 10),
+        (9, -1, -1, "test-2.png", 10),
+    ]
+
+    with pytest.raises(ValueError) as excinfo:
+        win.make_framesets(f2)
+
+    assert str(excinfo.value) == "Frameset 3 has size 1, expected 2"
+
+    f3 = [
+        (10, -1, -1, "test-0.png", 10),
+        (10, -1, -1, "test-1.png", 10),
+        (10, -1, -1, "test-2.png", 10),
+        (10, -1, -1, "test-3.png", 10),
+        (9, -1, -1, "test-0.png", 10),
+        (9, -1, -1, "test-1.png", 10),
+        (9, -1, -1, "test-2.png", 10),
+        (9, -1, -1, "test-3.png", 1),
+    ]
+
+    with pytest.raises(ValueError) as excinfo:
+        win.make_framesets(f3)
+
+    assert (
+        str(excinfo.value)
+        == "Frameset 1 has duration 1 for framesize 9, but 10 for framesize 10"
+    )
+
+
 def test_WindowsCursor(static_config, image_dir) -> None:
     win = WindowsCursor(static_config, image_dir, args=AnicursorgenArgs())
     assert win.config_file == static_config
@@ -93,3 +152,41 @@ def test_WindowsCursor_generate_with_animated_config(
     assert win.out.exists() is True
     assert win.out.suffix == ".ani"
     assert win.out.__sizeof__() > 0
+
+
+def test_WindowsCursor_generate_with_static_config_and_shadow(
+    static_config, image_dir
+) -> None:
+    args = AnicursorgenArgs(add_shadows=True)
+    win = WindowsCursor(static_config, image_dir, args)
+    win.generate()
+
+    assert win.out.exists() is True
+    assert win.out.suffix == ".cur"
+    assert win.out.__sizeof__() > 0
+
+
+def test_WindowsCursor_generate_with_animated_config_and_shadow(
+    animated_config, image_dir
+) -> None:
+    args = AnicursorgenArgs(add_shadows=True)
+    win = WindowsCursor(animated_config, image_dir, args)
+    win.generate()
+
+    assert win.out.exists() is True
+    assert win.out.suffix == ".ani"
+    assert win.out.__sizeof__() > 0
+
+
+def test_WindowsCursor_create_with_static_config(static_config, image_dir) -> None:
+    with WindowsCursor.create(static_config, image_dir) as win:
+        assert win.exists() is True
+        assert win.suffix == ".cur"
+        assert win.__sizeof__() > 0
+
+
+def test_WindowsCursor_create_with_animated_config(animated_config, image_dir) -> None:
+    with WindowsCursor.create(animated_config, image_dir) as win:
+        assert win.exists() is True
+        assert win.suffix == ".ani"
+        assert win.__sizeof__() > 0
