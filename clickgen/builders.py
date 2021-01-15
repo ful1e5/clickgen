@@ -459,6 +459,6 @@ class WindowsCursor:
 
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
-        cursor = WindowsCursor(alias_file, out_dir, args)
+        cursor = cls(alias_file, out_dir, args)
         cursor.generate()
         return cursor.out
