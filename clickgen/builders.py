@@ -140,8 +140,6 @@ class WindowsCursor:
         for line in in_buffer.readlines():
             line = line.decode()
             words = shlex.split(line.rstrip("\n").rstrip("\r"))
-            if len(words) < 4:
-                continue
 
             size = int(words[0])
             xhot = int(words[1]) - 1

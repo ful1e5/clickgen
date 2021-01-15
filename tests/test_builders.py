@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from random import randint
+from tests.utils import create_test_image
+from build.lib.clickgen.core import CursorAlias
+from pathlib import Path
+
+import pytest
+from clickgen.builders import AnicursorgenArgs, WindowsCursor, XCursor
 
 #
 # XCursor
 #
-
-from build.lib.clickgen.core import CursorAlias
-from pathlib import Path
-from tests.conftest import animated_bitmap, animated_png
-import pytest
-from clickgen.builders import AnicursorgenArgs, WindowsCursor, XCursor
 
 
 def test_XCursor_config_file_not_found_exception(image_dir) -> None:
@@ -185,8 +186,21 @@ def test_WindowsCursor_create_with_static_config(static_config, image_dir) -> No
         assert win.__sizeof__() > 0
 
 
-def test_WindowsCursor_create_with_animated_config(animated_config, image_dir) -> None:
-    with WindowsCursor.create(animated_config, image_dir) as win:
-        assert win.exists() is True
-        assert win.suffix == ".ani"
-        assert win.__sizeof__() > 0
+def test_WindowsCursor_create_with_animated_config(hotspot, image_dir) -> None:
+    animated_png = create_test_image(image_dir, 4)
+    with CursorAlias.from_bitmap(animated_png, hotspot) as alias:
+        cfg = alias.create((10, 10), delay=999999999)
+
+        # Cover more than one delay sets
+        new_lines = []
+        with cfg.open("r") as f:
+            lines = f.readlines()
+            for l in lines:
+                new_lines.append(l.replace("999999999", str(randint(20, 30))))
+        with cfg.open("w") as f:
+            f.writelines(new_lines)
+
+        with WindowsCursor.create(cfg, image_dir) as win:
+            assert win.exists() is True
+            assert win.suffix == ".ani"
+            assert win.__sizeof__() > 0
