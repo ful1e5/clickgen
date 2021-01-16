@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import io
+import os
 import shutil
 import tempfile
 from os import getcwd, symlink
 from pathlib import Path
+from contextlib import redirect_stdout
 
 import pytest
-from clickgen import util
-from clickgen.util import PNGProvider, chdir
+from clickgen.util import PNGProvider, chdir, debug, timer, remove_util
 
 from tests.utils import create_test_image
 
@@ -22,17 +24,17 @@ def test_chdir() -> None:
 
 def test_remove_util() -> None:
     tmp_dir = Path(tempfile.mkdtemp())
-    tmp_file = Path(tempfile.mkstemp()[1])
+    tmp_file = tempfile.mkstemp()[1]
     tmp_link = tmp_dir / "link"
     symlink(tmp_file, tmp_link)
 
-    util.remove_util(tmp_dir)
+    remove_util(tmp_dir)
     assert tmp_dir.exists() is False
 
-    util.remove_util(tmp_file)
-    assert tmp_file.exists() is False
+    remove_util(tmp_file)
+    assert os.path.exists(tmp_file) is False
 
-    util.remove_util(tmp_link)
+    remove_util(tmp_link)
     assert tmp_link.exists() is False
 
 
@@ -66,3 +68,29 @@ def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
     assert sorted(p1.get("animated")) == sorted(images1)
 
     shutil.rmtree(d)
+
+
+# Only for Developer testing
+def test_timer_wrapper_func() -> None:
+    @timer
+    def pp() -> None:
+        print("time ?")
+
+    f = io.StringIO()
+    with redirect_stdout(f):
+        pp()
+
+    assert "time ?" in f.getvalue()
+    assert "Finished 'pp' in" in f.getvalue()
+
+
+def test_debug_wrapper_func() -> None:
+    @debug
+    def pp(a: int) -> int:
+        return a - 1
+
+    f = io.StringIO()
+    with redirect_stdout(f):
+        pp(2)
+
+    assert f.getvalue() == "Calling pp(2)\n'pp' returned 1\n"
