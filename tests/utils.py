@@ -8,10 +8,12 @@ from typing import List
 from PIL import Image
 
 
-def create_test_image(directory: Path, count: int, size=(20, 20)) -> List[Path]:
+def create_test_image(
+    directory: Path, count: int, size=(20, 20), key: str = "test"
+) -> List[Path]:
     images: List[Path] = []
     for c in range(count):
-        file = directory / f"test-{c}.png"
+        file = directory / f"{key}-{c}.png"
         i = Image.new(
             "RGBA",
             size=size,
