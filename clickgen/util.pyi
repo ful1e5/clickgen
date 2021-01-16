@@ -1,9 +1,6 @@
 from pathlib import Path
 from typing import Any, List, Set, TypeVar, Union
 
-from clickgen.db import DATA as DATA
-from clickgen.db import CursorDB as CursorDB
-
 LikePath = TypeVar("LikePath", str, Path)
 
 def chdir(directory: Union[str, Path]) -> Any: ...

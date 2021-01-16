@@ -56,10 +56,16 @@ class PNGProvider(object):
         for f in sorted(self.bitmaps_dir.iterdir()):
             self.__pngs.append(f.name)
 
+        if len(self.__pngs) == 0:
+            raise FileNotFoundError(
+                f"'*.png' files not found in '{self.bitmaps_dir.absolute()}'"
+            )
+
     def get(self, key: str) -> Union[List[Path], Path]:
         r = re.compile(key)
-        convert_to_path: Callable[[str], Path] = lambda x: self.bitmaps_dir / x
-        paths = list(map(convert_to_path, filter(r.match, self.__pngs)))
+        matched_pngs = filter(r.match, self.__pngs)
+
+        paths = list(set(map(lambda x: self.bitmaps_dir / x, matched_pngs)))
         if len(paths) == 1:
             return paths[0]
         return paths
