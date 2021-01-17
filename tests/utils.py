@@ -23,3 +23,15 @@ def create_test_image(
         i.close()
         images.append(file)
     return images
+
+
+def create_test_cursor(directory: Path, name: str = "test.png") -> Path:
+    file = directory / name
+    i = Image.new(
+        "RGBA",
+        size=(2, 2),
+        color=(randint(0, 255), randint(0, 255), randint(0, 255)),
+    )
+    i.save(file, "png", compress=0)
+    i.close()
+    return file
