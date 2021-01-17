@@ -55,13 +55,17 @@ def animated_bitmap(animated_png, hotspot):
 @pytest.fixture(scope="function")
 def static_config(static_bitmap):
     alias = CursorAlias(static_bitmap)
-    return alias.create((10, 10))
+    yield alias.create((10, 10))
+
+    shutil.rmtree(alias.alias_dir)
 
 
 @pytest.fixture(scope="function")
 def animated_config(animated_bitmap):
     alias = CursorAlias(animated_bitmap)
-    return alias.create((10, 10))
+    yield alias.create((10, 10))
+
+    shutil.rmtree(alias.alias_dir)
 
 
 @pytest.fixture(scope="function")
