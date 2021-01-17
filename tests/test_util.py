@@ -5,12 +5,21 @@ import io
 import os
 import shutil
 import tempfile
+from contextlib import redirect_stdout
 from os import getcwd, symlink
 from pathlib import Path
-from contextlib import redirect_stdout
 
 import pytest
-from clickgen.util import PNGProvider, chdir, debug, timer, remove_util
+from clickgen.builders import XCursor
+from clickgen.core import CursorAlias
+from clickgen.util import (
+    PNGProvider,
+    add_missing_xcursors,
+    chdir,
+    debug,
+    remove_util,
+    timer,
+)
 
 from tests.utils import create_test_image
 
@@ -70,7 +79,81 @@ def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
     shutil.rmtree(d)
 
 
-# Only for Developer testing
+def test_add_missing_xcursors_exception(
+    data, tmpdir_factory: pytest.TempdirFactory
+) -> None:
+    d = tmpdir_factory.mktemp("ffff")
+    tmp_dir = Path(d)
+    shutil.rmtree(tmp_dir)
+
+    with pytest.raises(NotADirectoryError) as excinfo:
+        add_missing_xcursors(tmp_dir, data)
+
+    assert str(excinfo.value) == str(tmp_dir.absolute())
+
+
+def test_add_missing_xcursors_without_rename_and_force(
+    data, tmpdir_factory: pytest.TempdirFactory
+) -> None:
+    d = tmpdir_factory.mktemp("ffff")
+    tmp_dir = Path(d)
+
+    images = create_test_image(tmp_dir, 2, key="fffff0")
+    with CursorAlias.from_bitmap(images, (0, 0)) as alias:
+        config_file = alias.create((10, 10), delay=2)
+        XCursor.create(config_file, tmp_dir)
+
+    x_dir = tmp_dir / "cursors"
+    add_missing_xcursors(x_dir, data)
+
+    assert list(map(lambda x: x.name, x_dir.iterdir())) == ["fffff0"]
+    shutil.rmtree(tmp_dir)
+
+
+def test_add_missing_xcursors_with_rename_without_force(
+    data, tmpdir_factory: pytest.TempdirFactory
+) -> None:
+    d = tmpdir_factory.mktemp("ffff")
+    tmp_dir = Path(d)
+
+    images = create_test_image(tmp_dir, 2, key="ddddf")
+    with CursorAlias.from_bitmap(images, (0, 0)) as alias:
+        config_file = alias.create((10, 10), delay=2)
+        XCursor.create(config_file, tmp_dir)
+
+    x_dir = tmp_dir / "cursors"
+    add_missing_xcursors(x_dir, data, rename=True)
+
+    assert sorted(list(map(lambda x: x.name, x_dir.iterdir()))) == sorted(
+        ["ddddd", "ffffff"]
+    )
+    shutil.rmtree(tmp_dir)
+
+
+def test_add_missing_xcursors_with_rename_and_force(
+    data, tmpdir_factory: pytest.TempdirFactory
+) -> None:
+    d = tmpdir_factory.mktemp("ffff")
+    tmp_dir = Path(d)
+
+    images = create_test_image(tmp_dir, 2, key="ffffd")
+    with CursorAlias.from_bitmap(images, (0, 0)) as alias:
+        config_file = alias.create((10, 10), delay=2)
+        XCursor.create(config_file, tmp_dir)
+
+    x_dir = tmp_dir / "cursors"
+    add_missing_xcursors(x_dir, data, rename=True)
+    with pytest.raises(FileExistsError):
+        add_missing_xcursors(x_dir, data, rename=True)
+    add_missing_xcursors(x_dir, data, rename=True, force=True)
+
+    assert sorted(list(map(lambda x: x.name, x_dir.iterdir()))) == sorted(
+        ["ddddd", "ffffff"]
+    )
+    shutil.rmtree(tmp_dir)
+
+
+# Development helpers testing
 def test_timer_wrapper_func() -> None:
     @timer
     def pp() -> None:

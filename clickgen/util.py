@@ -8,7 +8,7 @@ import shutil
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Callable, List, Set, TypeVar, Union
+from typing import List, Set, TypeVar, Union
 
 from clickgen.db import DATA, CursorDB
 
@@ -93,7 +93,9 @@ def add_missing_xcursors(
     for xcursor in xcursors:
         # Rename Xcursor according to Database, If necessary
         if rename:
-            db.rename_file(xcursor)
+            new_path = db.rename_file(xcursor)
+            if new_path:
+                xcursor = xcursor.rename(new_path)
 
         # Creating symlinks
         links = db.search_symlinks(xcursor.stem)
