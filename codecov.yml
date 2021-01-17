@@ -3,5 +3,5 @@ ignore:
   - examples
   - setup.py
 
-fixes:
-  - "/clickgen::/clickgen"
+# fixes:
+#   - "/clickgen::/clickgen"
