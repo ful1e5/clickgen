@@ -49,40 +49,40 @@ HKCU,"Control Panel\Cursors\Schemes","%SCHEME_NAME%",,"%10%\%CUR_DIR%\%pointer%,
 ; -- Installed files
 
 [Scheme.Cur]
-"Work.ani"
-"Busy.ani"
-"Default.cur"
-"Help.cur"
-"Link.cur"
-"Move.cur"
-"Diagonal_2.cur"
-"Vertical.cur"
-"Horizontal.cur"
-"Diagonal_1.cur"
-"Handwriting.cur"
-"Cross.cur"       
-"IBeam.cur"
-"Unavailiable.cur"
-"Alternate.cur"
+"$Work"
+"$Busy"
+"$Default"
+"$Help"
+"$Link"
+"$Move"
+"$Diagonal_2"
+"$Vertical"   
+"$Horizontal"
+"$Diagonal_1"
+"$Handwriting"
+"$Cross"
+"$IBeam"
+"$Unavailiable"
+"$Alternate"
 
 [Strings]
 CUR_DIR       = "Cursors\\$theme_name Cursors"
 SCHEME_NAME   = "$theme_name Cursors"
-pointer       = "Default.cur"
-help		  = "Help.cur"
-work		  = "Work.ani"
-busy		  = "Busy.ani"
-cross		  = "Cross.cur"
-text		  = "IBeam.cur"
-hand		  = "Handwriting.cur"
-unavailiable  = "Unavailiable.cur"
-vert		  = "Vertical.cur"   
-horz		  = "Horizontal.cur"
-dgn1		  = "Diagonal_1.cur"
-dgn2		  = "Diagonal_2.cur"
-move		  = "Move.cur"
-alternate	  = "Alternate.cur"
-link		  = "Link.cur"
+pointer       = "$Default"
+help		  = "$Help"
+work		  = "$Work"
+busy		  = "$Busy"
+cross		  = "$Cross"
+text		  = "$IBeam"
+hand		  = "$Handwriting"
+unavailiable  = "$Unavailiable"
+vert		  = "$Vertical"   
+horz		  = "$Horizontal"
+dgn1		  = "$Diagonal_1"
+dgn2		  = "$Diagonal_2"
+move		  = "$Move"
+alternate	  = "$Alternate"
+link		  = "$Link"
 """
 )
 
@@ -116,8 +116,8 @@ def WindowsPackager(
 
     files: Iterator[Path] = []
 
-    for ext in ("*.ani", "*.cur"):
-        for i in sorted(directory.glob(ext)):
+    for extensions in ("*.ani", "*.cur"):
+        for i in sorted(directory.glob(extensions)):
             if i.stem in REQUIRED_WIN_CURSORS:
                 files.append(i)
 
@@ -129,27 +129,24 @@ def WindowsPackager(
             f"Windows cursors '*.cur' or '*.ani' not found in '{directory}'"
         )
 
-    if len(cursors) != len(REQUIRED_WIN_CURSORS):
+    if len(cursors) < len(REQUIRED_WIN_CURSORS):
         # Some cursors are missing
         c = set(map(lambda x: x.stem, cursors))
-        missing = REQUIRED_WIN_CURSORS - set(c)
+        missing = sorted(REQUIRED_WIN_CURSORS - set(c))
         raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
     if website_url:
         comment: str = f"{comment}\n{website_url}"
 
-    data: str = INSTALL_INF.safe_substitute(
-        theme_name=theme_name, comment=comment, author=author
-    )
+    # Real magic of python
+    # replace $Default => Default.ani | Default.cur (which one file is provided)
+    cursor_data: Dict[str, str] = {}
+    for cur in cursors:
+        cursor_data[cur.stem] = cur.name
 
-    # Change cursors extension (.cur||.ani) in install.inf, According to cursor files provided.
-    for p in cursors:
-        if p.name in data:
-            continue
-        else:
-            old_ext: List[str] = [".ani", ".cur"]
-            old_ext.remove(p.suffix)
-            data = data.replace(f"{p.stem}{old_ext[0]}", p.name)
+    data: str = INSTALL_INF.safe_substitute(
+        theme_name=theme_name, comment=comment, author=author, **cursor_data
+    )
 
     # Store install.inf file
     install_inf: Path = directory / "install.inf"
