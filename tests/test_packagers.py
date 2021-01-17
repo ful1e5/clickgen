@@ -108,7 +108,7 @@ def test_WindowsPackager_with_semi_animated_cursors(
     shutil.rmtree(d)
 
 
-def test_WindowsPackager(
+def test_WindowsPackager_without_website_url(
     tmpdir_factory: pytest.TempdirFactory,
 ) -> None:
     d = Path(tmpdir_factory.mktemp("test_image"))
@@ -150,5 +150,53 @@ def test_WindowsPackager(
     assert "IBeam.cur" in data
     assert "Unavailiable.cur" in data
     assert "Alternate.cur" in data
+
+    shutil.rmtree(d)
+
+def test_WindowsPackager_with_website_url(
+
+    tmpdir_factory: pytest.TempdirFactory,
+) -> None:
+    d = Path(tmpdir_factory.mktemp("test_image"))
+    create_test_cursor(d, "Work.ani")
+    create_test_cursor(d, "Busy.ani")
+    create_test_cursor(d, "Default.cur")
+    create_test_cursor(d, "Help.cur")
+    create_test_cursor(d, "Link.cur")
+    create_test_cursor(d, "Move.cur")
+    create_test_cursor(d, "Diagonal_2.cur")
+    create_test_cursor(d, "Vertical.cur")
+    create_test_cursor(d, "Horizontal.cur")
+    create_test_cursor(d, "Diagonal_1.cur")
+    create_test_cursor(d, "Handwriting.cur")
+    create_test_cursor(d, "Cross.cur")
+    create_test_cursor(d, "IBeam.cur")
+    create_test_cursor(d, "Unavailiable.cur")
+    create_test_cursor(d, "Alternate.cur")
+
+    WindowsPackager(d, theme_name="test", comment="testing", author="😎",website_url="testing.test")
+
+    install_file = d / "install.inf"
+
+    assert install_file.exists() is True
+    data = install_file.read_text()
+
+    assert "Work.ani" in data
+    assert "Busy.ani" in data
+    assert "Default.cur" in data
+    assert "Help.cur" in data
+    assert "Link.cur" in data
+    assert "Move.cur" in data
+    assert "Diagonal_2.cur" in data
+    assert "Vertical.cur" in data
+    assert "Horizontal.cur" in data
+    assert "Diagonal_1.cur" in data
+    assert "Handwriting.cur" in data
+    assert "Cross.cur" in data
+    assert "IBeam.cur" in data
+    assert "Unavailiable.cur" in data
+    assert "Alternate.cur" in data
+
+    assert "testing.test" in data
 
     shutil.rmtree(d)
