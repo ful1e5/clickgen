@@ -102,14 +102,7 @@ def add_missing_xcursors(
         if links:
             for link in links:
                 with chdir(directory):
-                    try:
-                        os.symlink(xcursor, link)
-                    except FileExistsError as f:
-                        if os.path.islink(f.filename2):
-                            os.unlink(f.filename2)
-                            os.symlink(f.filename, f.filename2)
-                        else:
-                            raise FileExistsError(f)
+                    os.symlink(xcursor, link)
 
 
 #
