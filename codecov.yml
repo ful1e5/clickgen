@@ -1,7 +1,2 @@
-ignore:
-  - tests
-  - examples
-  - setup.py
-
 fixes:
-  - "/clickgen::/clickgen"
+  - "/clickgen/clickgen::/clickgen/clickgen"
