@@ -51,7 +51,7 @@ jobs:
           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
-  linux-ci:
+  Linux-Testing:
     needs: Linting
     runs-on: ubuntu-18.04
     strategy:
@@ -93,8 +93,8 @@ jobs:
           python -m pytest -vv
         continue-on-error: false
 
-  macos-ci:
-    needs: [Linting, linux-ci]
+  macos-Testing:
+    needs: [Linting, Linux-Testing]
     runs-on: macos-10.15
     strategy:
       matrix:
@@ -110,7 +110,7 @@ jobs:
       - name: Install build dependencies using 'brew'
         run: |
           brew install --cask xquartz
-          brew install  libpng
+          brew install libpng make gcc
         continue-on-error: false
 
       - name: Cache pip dependencies
@@ -137,8 +137,8 @@ jobs:
         continue-on-error: false
 
   
-  coverage:
-    needs: [Linting, linux-ci, macos-ci]
+  build:
+    needs: [Linting, Linux-Testing, macos-Testing]
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -160,14 +160,17 @@ jobs:
 
       - name: Install pip dependencies
         run: |
-          python -m pip install --upgrade pip pytest pytest-cov
+          python -m pip install --upgrade pip pytest pytest-cov setuptools wheel
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        continue-on-error: false
+
+      - name: Package build
+        run: |
+          python setup.py install sdist bdist_wheel
         continue-on-error: false
 
       - name: Generating 'coverage.xml'
         run: |
-          python setup.py install
-          rm -rf coverage.xml .coverage
           python -m py.test --cov-report=xml --cov=clickgen tests/
         continue-on-error: false
 
@@ -182,3 +185,15 @@ jobs:
         with:
           name: coverage
           path: coverage.xml
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: xcursorgen
+          path: ./clickgen/xcursorgen.so
