@@ -4,4 +4,4 @@ ignore:
   - setup.py
 
 fixes:
-  - "/clickgen::/clickgen"
+  - "/clickgen/*.py::/clickgen"
