@@ -67,7 +67,7 @@ jobs:
           pip install -U pytest pytest-cov
           python -m pytest -vv
           rm -rf coverage.xml .coverage
-          python -m pytest --cov=./ --cov-report=xml
+          python -m py.test --cov-report=xml --cov=clickgen tests/
         continue-on-error: false
 
       - name: Upload coverage to Codecov
