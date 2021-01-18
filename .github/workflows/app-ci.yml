@@ -66,7 +66,8 @@ jobs:
         run: |
           pip install -U pytest pytest-cov
           python -m pytest -vv
-          pytest --cov=./ --cov-report=xml
+          rm -rf coverage.xml .coverage
+          python -m pytest --cov=./ --cov-report=xml
         continue-on-error: false
 
       - name: Upload coverage to Codecov
