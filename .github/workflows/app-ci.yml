@@ -109,6 +109,10 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Install build dependencies using 'apt'
+        run: sudo apt install libx11-dev libxcursor-dev libpng-dev
+        continue-on-error: false
+
       - name: Cache pip dependencies
         uses: actions/cache@v2
         with:
