@@ -108,7 +108,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install build dependencies using 'brew'
-        run: brew cask install xquartz libpng
+        run: brew install --cask xquartz libpng
         continue-on-error: false
 
       - name: Cache pip dependencies
