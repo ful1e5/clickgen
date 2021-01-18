@@ -36,8 +36,9 @@ setup(
         "Changelog": "https://github.com/ful1e5/clickgen/blob/main/CHANGELOG.md",
     },
     install_requires=["Pillow>=7.2.0"],
-    package_dir={"clickgen": "clickgen"},
     packages=["clickgen"],
+    package_dir={"clickgen": "clickgen"},
+    package_data={"clickgen": ["*.pyi"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
