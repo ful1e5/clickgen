@@ -17,16 +17,53 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  Linting:
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Set up Python
+      - name: Set up Python "3.x"
         uses: actions/setup-python@v2
         with:
-          python-version: "3.x"
+          python-version: '3.x'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v2
+        with:
+          # This path is specific to Ubuntu
+          path: ~/.cache/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install 'flake8'
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+        continue-on-error: false
+
+      - name: Linting
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  linux-ci:
+    needs: Linting
+    runs-on: ubuntu-18.04
+    strategy:
+          matrix:
+            python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Install build dependencies
         run: |
@@ -47,25 +84,61 @@ jobs:
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install setuptools wheel twine flake8
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         continue-on-error: false
 
-      - name: Lint with flake8
+      - name: Testing
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          pip install -U pytest
+          python setup.py install
+          python -m pytest -vv
+        continue-on-error: false
+
+  macos-ci:
+    needs: [Linting, linux-ci]
+    runs-on: macos-10.15
+    strategy:
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: echo ${{matrix.python-version}}
+  
+  coverage:
+    needs: [Linting, linux-ci, macos-ci]
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python "3.x"
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v2
+        with:
+          # This path is specific to Ubuntu
+          path: ~/.cache/pip
+          # Look to see if there is a cache hit for the corresponding requirements file
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
+      - name: Install pip dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U pytest pytest-cov
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        continue-on-error: false
 
       - name: Make
         run: python setup.py install
         continue-on-error: false
 
-      - name: Testing
+      - name: Creating 'coverage.xml'
         run: |
-          pip install -U pytest pytest-cov
-          python -m pytest -vv
           rm -rf coverage.xml .coverage
           python -m py.test --cov-report=xml --cov=clickgen tests/
         continue-on-error: false
@@ -81,19 +154,3 @@ jobs:
         with:
           name: coverage
           path: coverage.xml
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: xcursorgen
-          path: clickgen/xcursorgen.so
-
-      - name: Building Package
-        run: python setup.py sdist bdist_wheel
-        continue-on-error: false
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: dist
-          path: dist
