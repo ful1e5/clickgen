@@ -38,7 +38,7 @@ setup(
     install_requires=["Pillow>=7.2.0"],
     packages=["clickgen"],
     package_dir={"clickgen": "clickgen"},
-    package_data={"clickgen": ["*.pyi"]},
+    package_data={"clickgen": ["py.typed"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",
