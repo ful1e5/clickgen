@@ -1,2 +1,12 @@
 site_name: clickgen 
 theme: readthedocs
+repo_url: https://github.com/ful1e5/clickgen
+site_author: Kaiz Khatri
+copyright: copyright © 2021
+site_description: X11 & Windows cursor building toolbox 🧰
+
+nav:
+  - Installation: installation.md 
+  - About: about.md
+  - 'Bug Tracker': 'https://github.com/ful1e5/clickgen/issues'
+
