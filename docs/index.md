@@ -1,5 +1,5 @@
 # clickgen
 
-clickgen is the handy cursor building toolbox by Kaiz Khatri, Built upon anicursorgen.py and xcursorgen.
+clickgen is hustle free cursor building toolbox by Kaiz Khatri, Built upon powerful tools `anicursorgen.py` and `xcursorgen`.
 
-clickgen also provide standard API for building XCursor and Windows Cursors (.cur/.ani) from .png files.
+clickgen also provide standard modules for building **XCursor** and **Windows Cursors** (.cur/.ani) directly from `.png` files with zero *config*.
