@@ -21,7 +21,7 @@ xcursorgen and anicursorgen.py both are non-standardized CLI tools for building 
 
 - Require _config file_ to built `XCursor`/`CUR`/`ANI`. (that takes ages for creating manually)
 - You've to resize all cursor images individually, As we specified inside the config file.
-- `xcursorgen` compiled binaries are hard to find on Cloud Images like **Amazon Linux 2**, Because it's dependents on smaller **runtime libraries**, Like *libpng* and *libxcursor*. So, We can't generate `XCursor` using web technologies.
+- `xcursorgen` compiled binaries are hard to find on Cloud Images like **Amazon Linux 2**, Because it's dependents on smaller **runtime libraries**, Like _libpng_ and _libxcursor_. So, We can't generate `XCursor` using web technologies.
 - Missing _packaging_ compatibility.
 - You've to interact through CLI / Write a script to automate the cursor building process.
 - Finding and Calculating `hotspots` for each cursor's size is the next level of pain. (that's why there are a small number of cursor developers on [pling.com](https://www.pling.com/browse/cat/107/order/latest/) 🤫)
