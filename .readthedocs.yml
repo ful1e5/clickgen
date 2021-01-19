@@ -2,4 +2,4 @@ version: 2
 
 # Build documentation with MkDocs
 mkdocs:
- configuration: docs/mkdocs.yml
+ configuration: mkdocs.yml
