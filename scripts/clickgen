@@ -8,10 +8,8 @@ parser = argparse.ArgumentParser(
     description="The hustle free cursor building toolbox.",
 )
 parser.add_argument(
-    "-p",
-    "--png",
+    "png",
     metavar="PNG",
-    dest="png",
     type=str,
     help="Path to .png file. If animated, Try to mask frame-number using asterisk( * ). For Example 'wait-*.png'",
 )
