@@ -21,10 +21,10 @@ with open("README.md", "r") as fh:
 
 setup(
     name="clickgen",
-    version="1.1.7",
+    version="1.1.7",  # TODO:bump up
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
-    description="X11 & Windows cursor building API 👷",
+    description="The hustle free cursor building toolbox 🧰",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",
@@ -38,7 +38,6 @@ setup(
     install_requires=["Pillow>=7.2.0"],
     packages=["clickgen"],
     package_dir={"clickgen": "clickgen"},
-    package_data={"clickgen": ["py.typed"]},
     classifiers=[
         "Development Status :: 3 - Alpha",
         "License :: OSI Approved :: MIT License",

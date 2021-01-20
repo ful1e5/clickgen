@@ -1,1 +1,4 @@
 include clickgen/xcursorgen.so
+include clickgen/py.typed
+include clickgen/*.pyi
+include LICENSE
