@@ -14,41 +14,48 @@ parser.add_argument(
     metavar="PNG",
     dest="png",
     action="store",
-    required=True,
-    nargs="+",
     type=str,
-    help="The path to .png/s file. If animated, Try with masking frame-number using symbol '*', For Example 'wait-*.png'",
+    help="The path to .png file. If animated, Try with masking frame-number using symbol '*'. For Example 'wait-*.png'",
 )
 
 parser.add_argument(
-    "-hot",
-    "--hotspot",
-    metavar="(x,y)",
-    dest="png",
+    "-xhot",
+    metavar="X_CORD",
+    dest="xhot",
     action="store",
-    required=True,
-    default=(0, 0),
-    type=Tuple[int, int],
-    help="Hotspot for cursor. (default: %(default)s)",
+    default=0,
+    type=int,
+    help="'x' coordinate of cursor hotspot. (default: %(default)s)",
 )
 
+parser.add_argument(
+    "-yhot",
+    metavar="Y_CORD",
+    dest="yhot",
+    action="store",
+    default=0,
+    type=int,
+    help="'y' coordinate of cursor hotspot. (default: %(default)s)",
+)
 
 parser.add_argument(
     "-t",
-    "--out-type",
+    "-type",
     choices=("w", "x", "wx"),
     dest="type",
     default="wx",
-    help="Cursor type you want to build. 'w':Windows, 'x':XCursor, 'wx': both. (default: %(default)s)",
+    help="Cursor type you want to build. 'w':Windows, 'x':XCursor, 'wx': Both. (default: %(default)s)",
 )
+
 parser.add_argument(
     "-xs",
     "--xcursor-sizes",
     dest="sizes",
     default=[22, 24, 28, 32],
-    type=int,
+    type=List[int],
     help="List of pixel-size. XCursor also supports multiple sizes. (default: %(default)s)",
 )
+
 parser.add_argument(
     "-ws",
     "--windows-size",
