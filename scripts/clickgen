@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 import argparse
+from clickgen.core import CursorAlias
 
 parser = argparse.ArgumentParser(
     prog="clickgen",
     description="The hustle free cursor building toolbox.",
 )
+# Positional Args.
 parser.add_argument(
     "png",
     metavar="PNG",
@@ -14,6 +16,7 @@ parser.add_argument(
     help="Path to .png file. If animated, Try to mask frame-number using asterisk( * ). For Example 'wait-*.png'",
 )
 
+# Optional Args.
 parser.add_argument(
     "-hot",
     "--hotspot",
@@ -34,26 +37,39 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-xsize",
-    "--xcursor-size",
-    dest="x_size",
+    "-s",
+    "--sizes",
+    dest="sizes",
     metavar="size",
     nargs="+",
-    default=[22, 24, 28, 32],
+    default=[22],
     type=int,
-    help="List of pixel-size. XCursor also supports multiple sizes. (default: %(default)s)",
+    help="Set pixel-size for cursor. (default: %(default)s)",
 )
 
 parser.add_argument(
-    "-wsize",
-    "--windows-size",
-    dest="win_size",
-    metavar="size",
-    default=24,
+    "-d",
+    "--delay",
+    dest="delay",
+    metavar="ms",
+    default=50,
     type=int,
-    help="Single pixel-size for Windows Cursor. (default: %(default)s)",
+    help="Set animated cursor's frames delay in 'micro-second'. (default: %(default)s)",
 )
 
 args = parser.parse_args()
 
+hotspot = (args.hotspot[0], args.hotspot[1])
+
+# Create tuple of each size
+sizes = []
+for s in args.sizes:
+    sizes.append((s, s))
+
+with CursorAlias.from_bitmap(args.png, hotspot) as alias:
+    cfg = alias.create(sizes)
+
+
 print(args)
+print(sizes)
+print(hotspot)
