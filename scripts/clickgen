@@ -1,4 +1,63 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-print("Clickgen Script")
+import argparse
+from typing import List, Tuple
+
+parser = argparse.ArgumentParser(
+    prog="clickgen",
+    description="The hustle free cursor building toolbox.",
+)
+parser.add_argument(
+    "-p",
+    "--png",
+    metavar="PNG",
+    dest="png",
+    action="store",
+    required=True,
+    nargs="+",
+    type=str,
+    help="The path to .png/s file. If animated, Try with masking frame-number using symbol '*', For Example 'wait-*.png'",
+)
+
+parser.add_argument(
+    "-hot",
+    "--hotspot",
+    metavar="(x,y)",
+    dest="png",
+    action="store",
+    required=True,
+    default=(0, 0),
+    type=Tuple[int, int],
+    help="Hotspot for cursor. (default: %(default)s)",
+)
+
+
+parser.add_argument(
+    "-t",
+    "--out-type",
+    choices=("w", "x", "wx"),
+    dest="type",
+    default="wx",
+    help="Cursor type you want to build. 'w':Windows, 'x':XCursor, 'wx': both. (default: %(default)s)",
+)
+parser.add_argument(
+    "-xs",
+    "--xcursor-sizes",
+    dest="sizes",
+    default=[22, 24, 28, 32],
+    type=int,
+    help="List of pixel-size. XCursor also supports multiple sizes. (default: %(default)s)",
+)
+parser.add_argument(
+    "-ws",
+    "--windows-size",
+    dest="windows_size",
+    default=26,
+    type=int,
+    help="Single pixel-size for Windows Cursor. (default: %(default)s)",
+)
+
+args = parser.parse_args()
+
+print(args)
