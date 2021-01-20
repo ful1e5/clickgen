@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-from typing import List, Tuple
 
 parser = argparse.ArgumentParser(
     prog="clickgen",
@@ -13,54 +12,46 @@ parser.add_argument(
     "--png",
     metavar="PNG",
     dest="png",
-    action="store",
     type=str,
-    help="The path to .png file. If animated, Try with masking frame-number using symbol '*'. For Example 'wait-*.png'",
+    help="Path to .png file. If animated, Try to mask frame-number using asterisk( * ). For Example 'wait-*.png'",
 )
 
 parser.add_argument(
-    "-xhot",
-    metavar="X_CORD",
-    dest="xhot",
-    action="store",
-    default=0,
+    "-hot",
+    "--hotspot",
+    dest="hotspot",
+    metavar="cord",
+    nargs=2,
+    default=(0, 0),
     type=int,
-    help="'x' coordinate of cursor hotspot. (default: %(default)s)",
+    help="To set 'x' & 'y' coordinates of cursor's hotspot. (default: %(default)s)",
 )
-
-parser.add_argument(
-    "-yhot",
-    metavar="Y_CORD",
-    dest="yhot",
-    action="store",
-    default=0,
-    type=int,
-    help="'y' coordinate of cursor hotspot. (default: %(default)s)",
-)
-
 parser.add_argument(
     "-t",
-    "-type",
-    choices=("w", "x", "wx"),
+    "--type",
     dest="type",
-    default="wx",
-    help="Cursor type you want to build. 'w':Windows, 'x':XCursor, 'wx': Both. (default: %(default)s)",
+    choices=("windows", "xcursor", "all"),
+    default="all",
+    help="Set cursor type, Which you want to build. (default: '%(default)s')",
 )
 
 parser.add_argument(
-    "-xs",
-    "--xcursor-sizes",
-    dest="sizes",
+    "-xsize",
+    "--xcursor-size",
+    dest="x_size",
+    metavar="size",
+    nargs="+",
     default=[22, 24, 28, 32],
-    type=List[int],
+    type=int,
     help="List of pixel-size. XCursor also supports multiple sizes. (default: %(default)s)",
 )
 
 parser.add_argument(
-    "-ws",
+    "-wsize",
     "--windows-size",
-    dest="windows_size",
-    default=26,
+    dest="win_size",
+    metavar="size",
+    default=24,
     type=int,
     help="Single pixel-size for Windows Cursor. (default: %(default)s)",
 )
