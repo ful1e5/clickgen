@@ -3,7 +3,6 @@
 ## Warnings
 
 !!! warning
-    
     clickgen CI & Building is tested on Linux platform only. Check [GitHub Action](https://github.com/ful1e5/clickgen/actions) for more detail.
 
 ## Python Support
@@ -24,7 +23,6 @@ clickgen supports these Python versions.
 ## Basic Installation
 
 !!! warning
-
     The following instructions will install clickgen library only. See [External Libraries](#external-libraries) for a full list of external libraries required by clickgen.
 
 Install clickgen with **pip**:
@@ -41,7 +39,6 @@ Download and extract the [compressed archive from PyPI](https://pypi.org/project
 ### External Libraries
 
 !!! note
-
     clickgen is using xcursorgen CLI internally for making xcursors.
 
 xcursorgen require external libraries:
@@ -93,7 +90,6 @@ In Fedora, the command is:
 sudo dnf install python3-devel redhat-rpm-config
 ```
 !!! note
-
     `redhat-rpm-config` is required on Fedora 23, but not earlier versions.
 
 Prerequisites for **Ubuntu 16.04 LTS - 20.04 LTS** are installed with:
