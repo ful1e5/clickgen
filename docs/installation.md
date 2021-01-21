@@ -32,7 +32,6 @@ python3 -m pip install --upgrade pip
 python3 -m pip install --upgrade clickgen
 ```
 
-
 ## Building From Source
 
 Download and extract the [compressed archive from PyPI](https://pypi.org/project/clickgen/).
@@ -45,13 +44,13 @@ Download and extract the [compressed archive from PyPI](https://pypi.org/project
 xcursorgen require external libraries:
 
 - **libpng** provides PNG functionality.
-    - Starting with clickgen 1.1.0, libpng is required by default.
+  - Starting with clickgen 1.1.0, libpng is required by default.
 - **zlib** provides access to compressed PNGs.
-    - Starting with clickgen 1.1.0, zlib is required by default.
+  - Starting with clickgen 1.1.0, zlib is required by default.
 - **libXcursor** X Window System Cursor management library.
-    - Starting with clickgen 1.1.0, libXcursor is required by default.
+  - Starting with clickgen 1.1.0, libXcursor is required by default.
 - **libX11** Core X11 protocol client library.
-    - Starting with clickgen 1.1.0, libX11 is required by default.
+  - Starting with clickgen 1.1.0, libX11 is required by default.
 
 ### Building on macOS
 
@@ -61,7 +60,8 @@ The easiest way to install external libraries is via [Homebrew](https://brew.sh/
 brew install gcc libpng
 brew install --cask xquartz
 ```
-Now install Pillow with:
+
+Now install clickgen with:
 
 ```bash
 python3 -m pip install --upgrade pip
@@ -69,6 +69,62 @@ python3 -m pip install --upgrade clickgen
 ```
 
 or from within the uncompressed source directory:
+
 ```bash
 python3 setup.py install
 ```
+
+### Building on Linux
+
+If you didn’t build Python from source, make sure you have Python’s development libraries installed.
+
+In Debian or Ubuntu:
+
+```bash
+sudo apt-get install python3-dev python3-setuptools
+```
+
+In Fedora, the command is:
+
+```bash
+sudo dnf install python3-devel redhat-rpm-config
+```
+
+!!! note
+    `redhat-rpm-config` is required on Fedora 23, but not earlier versions.
+
+Prerequisites for **Ubuntu 16.04 LTS - 20.04 LTS** are installed with:
+
+```bash
+sudo apt install libx11-dev libxcursor-dev libpng-dev
+```
+
+Prerequisites are installed on **Arch Linux, Manjaro** with:
+
+```bash
+sudo pacman -S libx11 libxcursor libpng
+```
+
+Prerequisites are installed on recent **Red Hat, CentOS** or **Fedora** with:
+
+```bash
+sudo dnf install libx11-devel libxcursor-devel libpng-devel
+```
+
+Note that the package manager may be yum or DNF, depending on the exact distribution.
+
+## Platform Support
+
+Current platform support for clickgen. Binary distributions are contributed for each release on a volunteer basis, but the source should compile and run everywhere platform support is listed. In general, we aim to support all current versions of Linux and macOS.
+
+### Continuous Integration Targets
+
+These platforms are built and tested for every change.
+
+| Operating system                | Tested Python versions | Tested architecture |
+| ------------------------------- | ---------------------- | ------------------- |
+| Ubuntu Linux 18.04 LTS (Bionic) | 3.8, 3.9               | x86-64              |
+
+## Old Versions
+
+You can download old distributions from the [release history at PyPI](https://pypi.org/project/clickgen/#history) and by direct URL access eg. [https://pypi.org/project/clickgen/1.1.0/](https://pypi.org/project/clickgen/1.1.0/).
