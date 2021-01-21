@@ -1,5 +1,10 @@
 # Installation
 
+## Warnings
+
+!!! warning
+    clickgen CI & Building is tested on Linux platform only. Check [GitHub Action](https://github.com/ful1e5/clickgen/actions) for more detail.
+
 ## Python Support
 
 clickgen supports these Python versions.
@@ -17,9 +22,53 @@ clickgen supports these Python versions.
 
 ## Basic Installation
 
+!!! warning
+    The following instructions will install clickgen library only. See [External Libraries](#external-libraries) for a full list of external libraries required by clickgen.
+
 Install clickgen with **pip**:
 
-```command
-    python3 -m pip install --upgrade pip
-    python3 -m pip install --upgrade clickgen
+```bash
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade clickgen
+```
+
+
+## Building From Source
+
+Download and extract the [compressed archive from PyPI](https://pypi.org/project/clickgen/).
+
+### External Libraries
+
+!!! note
+    clickgen is using xcursorgen CLI internally for making xcursors.
+
+xcursorgen require external libraries:
+
+- **libpng** provides PNG functionality.
+    - Starting with clickgen 1.1.0, libpng is required by default.
+- **zlib** provides access to compressed PNGs.
+    - Starting with clickgen 1.1.0, zlib is required by default.
+- **libXcursor** X Window System Cursor management library.
+    - Starting with clickgen 1.1.0, libXcursor is required by default.
+- **libX11** Core X11 protocol client library.
+    - Starting with clickgen 1.1.0, libX11 is required by default.
+
+### Building on macOS
+
+The easiest way to install external libraries is via [Homebrew](https://brew.sh/). After you install Homebrew, run:
+
+```bash
+brew install gcc libpng
+brew install --cask xquartz
+```
+Now install Pillow with:
+
+```bash
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade clickgen
+```
+
+or from within the uncompressed source directory:
+```bash
+python3 setup.py install
 ```
