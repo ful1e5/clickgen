@@ -8,7 +8,6 @@ from pathlib import Path
 
 from clickgen.builders import WindowsCursor, XCursor
 from clickgen.core import CursorAlias
-from clickgen.util import PNGProvider
 
 parser = argparse.ArgumentParser(
     prog="clickgen",
@@ -19,6 +18,7 @@ parser.add_argument(
     "png",
     metavar="PNG",
     type=str,
+    nargs="+",
     help="Path to .png file. If animated, Try to mask frame-number using asterisk( * ). For Example 'wait-*.png'",
 )
 parser.add_argument(
@@ -83,13 +83,6 @@ for s in args.sizes:
 out_dir = Path(args.out_dir)
 if not out_dir.exists():
     out_dir.mkdir(parents=True, exist_ok=True)
-
-png = Path(args.png)
-png_provider = PNGProvider(png.parent)
-
-if "*" in png.stem:
-    key = png.stem.split("*")[0]
-    png = png_provider.get(key)
 
 
 with CursorAlias.from_bitmap(args.png, hotspot) as alias:
