@@ -14,9 +14,9 @@ theme:
 nav:
   - Installation: installation.md
   - About: about.md
-  - Reference: 
-    - reference/core.md
-    - reference/util.md
+  - Reference:
+      - reference/core.md
+      - reference/util.md
   - "Bug Tracker": https://github.com/ful1e5/clickgen/issues
 
 markdown_extensions:

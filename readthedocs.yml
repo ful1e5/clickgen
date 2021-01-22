@@ -2,9 +2,9 @@ version: 2
 
 # Build documentation with MkDocs
 mkdocs:
- configuration: mkdocs.yml
+  configuration: mkdocs.yml
 
 python:
-   version: 3.7
-   install:
-      - requirements: docs/requirements.txt
+  version: 3.7
+  install:
+    - requirements: docs/requirements.txt
