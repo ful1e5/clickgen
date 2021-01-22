@@ -12,15 +12,30 @@ from typing import List, Set, TypeVar, Union
 
 from clickgen.db import DATA, CursorDB
 
+
 LikePath = TypeVar("LikePath", str, Path)
+""" TypeVar("LikePath"): Use for path typing.
+
+`LikePath` is string path or `Path` module object.
+"""
 
 
 @contextmanager
-def chdir(directory: Union[str, Path]):
-    """
-    Temporary change `working` directory. Use this in `with` syntax.
+def chdir(directory: LikePath):
+    """Temporary change `working` directory.
+    Note:
+        Use `with` syntax.
 
-    :directory: path to directory.
+    Args:
+        directory (LikePath): path to directory.
+
+    Examples:
+        >>> with util.chdir("new"):
+        >>>     print(os.cwd())
+        >>> print(os.cwd())
+        /tmp/new/
+        /tmp/
+
     """
 
     prev_cwd = os.getcwd()
@@ -31,8 +46,18 @@ def chdir(directory: Union[str, Path]):
         os.chdir(prev_cwd)
 
 
-def remove_util(p: Union[str, Path]) -> None:
-    """ Remove this file, directory or symlink. If Path exits on filesystem."""
+def remove_util(p: LikePath) -> None:
+    """Remove this file, directory or symlink. If Path exits on filesystem.
+    Warning:
+        Some times `remove_util` leaves directory finerprints. (means empty directory)
+
+    Args:
+        p (LikePath): path to directory.
+
+    Examples:
+        >>> remove_util("/tmp/new")
+        >>> remove_util(Path("/tmp/new"))
+    """
 
     if isinstance(p, str):
         p: Path = Path(p)
