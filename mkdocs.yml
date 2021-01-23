@@ -29,4 +29,3 @@ copyright: '&copy; copyright  2021, <a href="https://twitter.com/ful1e5">Kaiz Kh
 
 plugins:
   - search
-  - mkdocstrings
