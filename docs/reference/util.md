@@ -1,27 +1,104 @@
-# `util` Module
+# `clickgen.util` Module
 
 This module provides utility functions and classes, Which makes developer life easier.
 
-**Typing Constant**
+<!-- Typing Constant -->
 
-`clickgen.util.LikePath`
+## `LikePath`
 
-::: clickgen.util.LikePath
+Provide location `typing`.
 
-**Context Managers**
+<!-- Context Managers  -->
 
-`clickgen.util.chdir`
+## `chdir`
 
-::: clickgen.util.chdir
+Temporary change `working` directory.
 
-**Functions**
+!!! Note
+    Use inside `with` syntax.
 
-`clickgen.util.remove_util`
+### Args
 
-::: clickgen.util.remove_util
+directory ([`LikePath`](#likepath)): path to directory.
 
-**Classes**
+### Returns
 
-`clickgen.util.PNGProvider`
+`None`.
 
-::: clickgen.util.PNGProvider
+### Example
+
+```python
+>>> with clickgen.util.chdir("new"):
+>>>   print(os.cwd())
+>>> print(os.cwd())
+
+/tmp/new/
+/tmp/
+```
+
+<!-- Functions -->
+
+## `remove_util`
+
+Remove this file, directory or symlink. If Path exits on filesystem.
+
+!!! Warning
+    Some times `remove_util` leaves directory fingerprints (An empty directory).
+
+### Args
+
+p ([`LikePath`](#likepath)): path to directory.
+
+### Returns
+
+`None`.
+
+### Examples
+
+```python
+>>> remove_util("/tmp/new")
+>>> remove_util(Path("/tmp/new"))
+```
+
+<!-- Classes -->
+
+## `PNGProvider`
+
+Provide organized `.png` files.
+
+### Attributes
+
+bitmaps_dir (`pathlib.Path`): Hold `.png` files directory passed in `__init__`.
+
+### `PNGProvider.__init__()`
+
+#### Args
+
+bitmaps_dir ([`LikePath`](#likepath)): path to directory where `.png` files are stored.
+
+#### Returns
+
+`None`.
+
+#### Raises
+
+- `FileNotFoundError`: If zero `.png` file found provided directory.
+
+### `PNGProvider.get()`
+
+Get `.png` file/s from key.
+This method return file location in `pathlib.Path` instance.
+
+Also, this method is not supported directory sync, Which means creating a new file or deleting a file not affect this method.
+
+The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
+
+#### Args
+
+key (str): `.png` filename without extension.
+
+#### Returns
+
+- `pathlib.Path`: Only one .png file found in provided directory.
+
+- `List[pathlib.Path]`: Multiple `.png` files are found in provided directory.
