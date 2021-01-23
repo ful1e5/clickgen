@@ -4,13 +4,13 @@ This module provides utility functions and classes, Which makes developer life e
 
 <!-- Typing Constant -->
 
-## `LikePath`
+## `clickgen.util.LikePath`
 
 Provide location `typing`.
 
 <!-- Context Managers  -->
 
-## `chdir`
+## `clickgen.util.chdir`
 
 Temporary change `working` directory.
 
@@ -38,7 +38,7 @@ directory ([`LikePath`](#likepath)): path to directory.
 
 <!-- Functions -->
 
-## `remove_util`
+## `clickgen.util.remove_util`
 
 Remove this file, directory or symlink. If Path exits on filesystem.
 
@@ -62,7 +62,7 @@ p ([`LikePath`](#likepath)): path to directory.
 
 <!-- Classes -->
 
-## `PNGProvider`
+## `clickgen.util.PNGProvider`
 
 Provide organized `.png` files.
 
