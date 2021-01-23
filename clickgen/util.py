@@ -13,30 +13,15 @@ from typing import List, Set, TypeVar, Union
 from clickgen.db import DATA, CursorDB
 
 LikePath = TypeVar("LikePath", str, Path)
-""" TypeVar("LikePath"): Use for path typing.
-
-`LikePath` is string path or `Path` module object.
+"""
 """
 
 
 @contextmanager
 def chdir(directory: LikePath):
     """Temporary change `working` directory.
-    Note:
-        Use `with` syntax.
 
-    Args:
-        directory (LikePath): path to directory.
-
-    Returns:
-        None
-
-    Examples:
-        >>> with util.chdir("new"):
-        >>>     print(os.cwd())
-        >>> print(os.cwd())
-        /tmp/new/
-        /tmp/
+    :directory: path to directory.
     """
 
     prev_cwd = os.getcwd()
@@ -49,18 +34,8 @@ def chdir(directory: LikePath):
 
 def remove_util(p: LikePath) -> None:
     """Remove this file, directory or symlink. If Path exits on filesystem.
-    Warning:
-        Some times `remove_util` leaves directory finerprints. (means empty directory)
 
-    Args:
-        p (LikePath): path to directory.
-
-    Returns:
-        None
-
-    Examples:
-        >>> remove_util("/tmp/new")
-        >>> remove_util(Path("/tmp/new"))
+    :p: path to directory.
     """
 
     if isinstance(p, str):
@@ -76,11 +51,7 @@ def remove_util(p: LikePath) -> None:
 
 
 class PNGProvider(object):
-    """Provide organized `.png` files.
-
-    Attributes:
-        bitmaps_dir (Path): Hold `.png` files directory passed in `__init__`.
-    """
+    """Provide organized `.png` files."""
 
     bitmaps_dir: Path
     __pngs: List[str] = []
@@ -88,14 +59,7 @@ class PNGProvider(object):
     def __init__(self, bitmaps_dir: LikePath) -> None:
         """Init `PNGProvider`.
 
-        Args:
-            bitmaps_dir (LikePath): path to directory where `.png` files are stored.
-
-        Returns:
-            None
-
-        Raises:
-            FileNotFoundError: If zero `.png` file found provided directory.
+        :bitmaps_dir: path to directory where `.png` files are stored.
         """
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
@@ -109,21 +73,13 @@ class PNGProvider(object):
 
     def get(self, key: str) -> Union[List[Path], Path]:
         """Get `.png` file/s from key.
-        This method return file location in `Path` instance.
+        This method return file location in `pathlib.Path` instance.
 
         Also, this method is not supported directory sync, Which means creating a new file or deleting a file not affect this method.
 
         The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
 
-        Args:
-
-            key (str): `.png` filename without extension.
-
-        Returns:
-
-            Path: Only one .png file found in provided directory.
-
-            List[Path]: Multiple `.png` files are found in provided directory.
+        :key: `.png` filename without extension.
         """
         r = re.compile(key)
         matched_pngs = filter(r.match, self.__pngs)
