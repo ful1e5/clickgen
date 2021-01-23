@@ -12,7 +12,6 @@ from typing import List, Set, TypeVar, Union
 
 from clickgen.db import DATA, CursorDB
 
-
 LikePath = TypeVar("LikePath", str, Path)
 """ TypeVar("LikePath"): Use for path typing.
 
@@ -29,13 +28,15 @@ def chdir(directory: LikePath):
     Args:
         directory (LikePath): path to directory.
 
+    Returns:
+        None
+
     Examples:
         >>> with util.chdir("new"):
         >>>     print(os.cwd())
         >>> print(os.cwd())
         /tmp/new/
         /tmp/
-
     """
 
     prev_cwd = os.getcwd()
@@ -53,6 +54,9 @@ def remove_util(p: LikePath) -> None:
 
     Args:
         p (LikePath): path to directory.
+
+    Returns:
+        None
 
     Examples:
         >>> remove_util("/tmp/new")
@@ -72,10 +76,27 @@ def remove_util(p: LikePath) -> None:
 
 
 class PNGProvider(object):
+    """Provide organized `.png` files.
+
+    Attributes:
+        bitmaps_dir (Path): Hold `.png` files directory passed in `__init__`.
+    """
+
     bitmaps_dir: Path
     __pngs: List[str] = []
 
     def __init__(self, bitmaps_dir: LikePath) -> None:
+        """Init `PNGProvider`.
+
+        Args:
+            bitmaps_dir (LikePath): path to directory where `.png` files are stored.
+
+        Returns:
+            None
+
+        Raises:
+            FileNotFoundError: If zero `.png` file found provided directory.
+        """
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
         for f in sorted(self.bitmaps_dir.iterdir()):
@@ -87,6 +108,23 @@ class PNGProvider(object):
             )
 
     def get(self, key: str) -> Union[List[Path], Path]:
+        """Get `.png` file/s from key.
+        This method return file location in `Path` instance.
+
+        Also, this method is not supported directory sync, Which means creating a new file or deleting a file not affect this method.
+
+        The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
+
+        Args:
+
+            key (str): `.png` filename without extension.
+
+        Returns:
+
+            Path: Only one .png file found in provided directory.
+
+            List[Path]: Multiple `.png` files are found in provided directory.
+        """
         r = re.compile(key)
         matched_pngs = filter(r.match, self.__pngs)
 
