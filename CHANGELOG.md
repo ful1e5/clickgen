@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-## [1.1.7] (Blossa) - 5 Oct 2020 (Stable)
+### Added
+
+- Code Coverage ~100%
+- The new CLI
+- New `XCursor` & `Windows Cursor` building approach
+- python `.pyi` static type file (stub file) init
+- X11 & Windows themes _packaging_ compatibility
+- **Semi-animated** theme supports for Windows & X11
+- `timer` & `debug` development utility init.
+
+### Changed
+
+- Handle **Cursor config file** in `tmp` directory
+- Cursor's database in python `Dict` format
+- Vast changes in `clickgen` importing.
+- GitHub workflow with `matrix`
+- fixed #12
+
+## [1.1.7] - 5 Oct 2020 (Stable)
 
 ### Added
 
@@ -19,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - skip `Pillow` is already installed
 
-## [1.1.6] (Aeneous) - 24 Sept 2020 (Stable)
+## [1.1.6] - 24 Sept 2020 (Stable)
 
 ### Changed
 

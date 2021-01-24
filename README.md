@@ -5,7 +5,7 @@
 
 # Clickgen
 
-X11 & Windows cursor building API 👷
+The hustle free cursor building toolbox 🧰
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
 
@@ -73,61 +73,4 @@ sudo dnf install libx11-devel libxcursor-devel libpng-devel
 
 ## Examples
 
-🔥 Check **examples** [here](./examples/)
-
-> **Recommended**: Design Cursor `bitmaps` images(.png) in 200x200 pixel for **HiDPI** size support.
-> **Note**: Provide cursor's hotspot respect to `bitmaps`, Clickgen's `Linker` automatically generate hotspots for each `cursor_sizes`.
-> Check [hotspots.json](./examples/hotspots.json) file for more info.
-
-### Generate Cursor's config files (.in)
-
-```python
-import json
-from clickgen import configsgen
-
-with open('./hotspots.json', 'r') as hotspot_file:
-    hotspots = json.loads(hotspot_file.read())
-
-configsgen.generate_configs(
-    imgs_dir="./bitmaps", cursor_sizes=[24, 28], out_dir="./configs", delay=50)
-```
-
-### Build Cursor Theme
-
-```python
-import json
-from clickgen import build_cursor_theme
-
-with open('./hotspots.json', 'r') as hotspot_file:
-    hotspots = json.loads(hotspot_file.read())
-
-build_cursor_theme(
-    name="My Cursor", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
-
-```
-
-### Build only `x11` cursor theme
-
-```python
-import json
-from clickgen import build_x11_cursor_theme
-
-with open('./hotspots.json', 'r') as hotspot_file:
-    hotspots = json.loads(hotspot_file.read())
-
-build_x11_cursor_theme(
-    name="My Cursor", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
-```
-
-### Build only `Windows` cursor theme
-
-```python
-import json
-from clickgen import build_win_cursor_theme
-
-with open('./hotspots.json', 'r') as hotspot_file:
-    hotspots = json.loads(hotspot_file.read())
-
-build_win_cursor_theme(
-    name="My Cursor", image_dir="./bitmaps", cursor_sizes=[24, 28], hotspots=hotspots, out_path="./themes", delay=50)
-```
+Check [**examples**](./examples/) directory.

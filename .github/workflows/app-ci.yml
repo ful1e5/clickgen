@@ -97,7 +97,7 @@ jobs:
           python setup.py install
           python -m pytest -vv
         continue-on-error: false
-  
+ 
   build:
     needs: [Linting, Linux-Testing]
     runs-on: ubuntu-18.04
