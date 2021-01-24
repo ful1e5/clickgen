@@ -83,6 +83,7 @@ Check [**examples**](https://github.com/ful1e5/clickgen/tree/main/examples) dire
 ### create a static `XCursor`
 
 ```python
+from pathlib import Path
 from clickgen.builders import XCursor
 from clickgen.core import CursorAlias
 
@@ -95,6 +96,7 @@ with CursorAlias.from_bitmap(png="all-scroll.png", hotspot=(5, 2)) as alias:
 ### create an animated `XCursor`
 
 ```python
+from pathlib import Path
 from clickgen.builders import XCursor
 from clickgen.core import CursorAlias
 
@@ -108,6 +110,7 @@ with CursorAlias.from_bitmap(png=["all-scroll-01.png", "all-scroll-02.png"], hot
 ### create a static `Windows Cursor` (.cur)
 
 ```python
+from pathlib import Path
 from clickgen.builders import WindowsCursor
 from clickgen.core import CursorAlias
 
@@ -120,6 +123,7 @@ with CursorAlias.from_bitmap(png="all-scroll.png", hotspot=(5, 2)) as alias:
 ### create an animated `Windows Cursor` (.ani)
 
 ```python
+from pathlib import Path
 from clickgen.builders import WindowsCursor
 from clickgen.core import CursorAlias
 
