@@ -13,8 +13,6 @@ from typing import List, Set, TypeVar, Union
 from clickgen.db import DATA, CursorDB
 
 LikePath = TypeVar("LikePath", str, Path)
-"""
-"""
 
 
 @contextmanager
