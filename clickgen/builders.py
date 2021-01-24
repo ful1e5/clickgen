@@ -22,7 +22,9 @@ Color = Tuple[int, int, int, int]
 
 
 class XCursor:
-    """ Build X11 cursor from `.in` config file. """
+    """
+    Build `XCursor` from the `.in` config file. This class is using `xcursorgen` internally.
+    """
 
     config_file: Path
     prefix: Path
@@ -116,7 +118,25 @@ class AnicursorgenArgs(NamedTuple):
 class WindowsCursor:
     """
     Build Windows cursors from `.in` configs files. Code inspiration from `anicursorgen.py`.
+
+    anicursorgen
+
     https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
+
+    Copyright (C) 2015 Руслан Ижбулатов <lrn1986@gmail.com>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
     """
 
     args: AnicursorgenArgs
