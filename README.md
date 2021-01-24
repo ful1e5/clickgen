@@ -50,7 +50,8 @@ clickgen -h
 ##### macOS
 
 ```bash
-brew cask install xquartz libpng
+brew install --cask xquartz 
+brew install libpng
 ```
 
 ##### Debain/ubuntu
