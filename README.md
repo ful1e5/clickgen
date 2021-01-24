@@ -39,19 +39,23 @@ clickgen -h
 
 - Pillow/python-pillow
 
-## Runtime Dependencies
+## Build Dependencies
+
+- gcc
+
+## External Libraries
 
 - libxcursor-dev
 - libx11-dev
 - libpng-dev (<=1.6)
 
-#### Install Runtime Dependencies
+#### Install Dependencies
 
 ##### macOS
 
 ```bash
-brew install --cask xquartz 
-brew install libpng
+brew install --cask xquartz
+brew install libpng gcc
 ```
 
 ##### Debain/ubuntu
@@ -74,4 +78,53 @@ sudo dnf install libx11-devel libxcursor-devel libpng-devel
 
 ## Examples
 
-Check [**examples**](./examples/) directory.
+Check [**examples**](https://github.com/ful1e5/clickgen/tree/main/examples) directory for building entire theme from `.png` files.
+
+### create a static `XCursor`
+
+```python
+from clickgen.builders import XCursor
+from clickgen.core import CursorAlias
+
+with CursorAlias.from_bitmap(png="all-scroll.png", hotspot=(5, 2)) as alias:
+    x_cfg = alias.create(sizes=[(22, 22),(24, 24)])
+    XCursor.create(alias_file=x_cfg, out_dir=Path("."))
+
+```
+
+### create an animated `XCursor`
+
+```python
+from clickgen.builders import XCursor
+from clickgen.core import CursorAlias
+
+with CursorAlias.from_bitmap(png=["all-scroll-01.png", "all-scroll-02.png"], hotspot=(5, 2)) as alias:
+    x_cfg = alias.create(sizes=[(22, 22),(24, 24)])
+    XCursor.create(alias_file=x_cfg, out_dir=Path("."))
+
+```
+
+
+### create a static `Windows Cursor` (.cur)
+
+```python
+from clickgen.builders import WindowsCursor
+from clickgen.core import CursorAlias
+
+with CursorAlias.from_bitmap(png="all-scroll.png", hotspot=(5, 2)) as alias:
+    win_cfg = alias.create(sizes=(24, 24))
+    WindowsCursor.create(alias_file=win_cfg, out_dir=Path("."))
+
+```
+
+### create an animated `Windows Cursor` (.ani)
+
+```python
+from clickgen.builders import WindowsCursor
+from clickgen.core import CursorAlias
+
+with CursorAlias.from_bitmap(png=["all-scroll-01.png", "all-scroll-02.png"], hotspot=(5, 2)) as alias:
+    win_cfg = alias.create(sizes=(24, 24))
+    WindowsCursor.create(alias_file=win_cfg, out_dir=Path("."))
+
+```
