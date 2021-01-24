@@ -21,7 +21,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="clickgen",
-    version="1.1.8",  # TODO:bump up
+    version="1.1.8",
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
     description="The hustle free cursor building toolbox 🧰",
