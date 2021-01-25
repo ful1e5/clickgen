@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [1.1.8] - 24 Jan 2021
+
 ### Added
 
 - Code Coverage ~100%
@@ -25,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow with `matrix`
 - fixed #12
 
-## [1.1.7] - 5 Oct 2020 (Stable)
+## [1.1.7] - 5 Oct 2020
 
 ### Added
 
@@ -37,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - skip `Pillow` is already installed
 
-## [1.1.6] - 24 Sept 2020 (Stable)
+## [1.1.6] - 24 Sept 2020
 
 ### Changed
 
@@ -111,7 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.7...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.8...main
+[1.1.8]: https://github.com/ful1e5/clickgen/compare/v1.1.7...v1.1.8
 [1.1.7]: https://github.com/ful1e5/clickgen/compare/1.1.6...v1.1.7
 [1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
 [1.1.5-beta]: https://github.com/ful1e5/clickgen/compare/1.1.4-alpha...1.1.5-beta
