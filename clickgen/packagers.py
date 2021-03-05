@@ -3,13 +3,13 @@
 
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterator, List, Optional, Set
+from typing import Dict, Iterator, Optional, Set
 
 
 # --- X11
 
 THEME_FILES_TEMPLATES: Dict[str, Template] = {
-    "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="hicolor"'),
+    "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="$theme_name"'),
     "index.theme": Template(
         '[Icon Theme]\nName=$theme_name\nComment=$comment\nInherits="hicolor"'
     ),
