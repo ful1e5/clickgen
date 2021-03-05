@@ -30,20 +30,18 @@ def chdir(directory: LikePath):
         os.chdir(prev_cwd)
 
 
-def remove_util(p: LikePath) -> None:
+def remove_util(p: Union[str, Path]) -> None:
     """Remove this file, directory or symlink. If Path exits on filesystem.
 
     :p: path to directory.
     """
+    p_obj: Path = Path(p)
 
-    if isinstance(p, str):
-        p: Path = Path(p)
-
-    if p.exists():
-        if p.is_dir():
-            shutil.rmtree(p)
+    if p_obj.exists():
+        if p_obj.is_dir():
+            shutil.rmtree(p_obj)
         else:
-            p.unlink()
+            p_obj.unlink()
     else:
         pass
 
@@ -77,9 +75,14 @@ class PNGProvider(object):
 
         The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
 
-        :key: `.png` filename without extension.
+        :key: Without extension it search for multiple files, Else search the key with `.png` extension.
         """
-        r = re.compile(key)
+        k = key.split(".")
+        if len(k) == 1:
+            r = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
+        else:
+            r = re.compile(fr"^{k[0]}(?:-\d+)?.{k[1]}$")
+
         matched_pngs = filter(r.match, self.__pngs)
 
         paths = list(set(map(lambda x: self.bitmaps_dir / x, matched_pngs)))
@@ -93,7 +96,7 @@ def add_missing_xcursors(
     data: List[Set[str]] = DATA,
     rename: bool = False,
     force: bool = False,
-) -> bool:
+) -> None:
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())
 
@@ -103,7 +106,7 @@ def add_missing_xcursors(
     if force:
         for xcursor in directory.iterdir():
             if xcursor.is_symlink():
-                xcursor.unlink(xcursor)
+                xcursor.unlink(missing_ok=True)
 
     xcursors = sorted(directory.iterdir())
 

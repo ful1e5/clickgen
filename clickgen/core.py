@@ -5,14 +5,15 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, TypeVar, Union
+from typing import List, Literal, Optional, Tuple, Union, Dict
 
 from PIL import Image as Img
 from PIL.Image import Image
 
 # Typing
 Size = Tuple[int, int]
-LikePath = TypeVar("LikePath", str, Path)
+LikePath = Union[str, Path]
+LikePathList = Union[List[str], List[Path]]
 Positions = Literal["top_left", "top_right", "bottom_right", "bottom_right", "center"]
 
 
@@ -34,7 +35,7 @@ class Bitmap(object):
 
     def __init__(
         self,
-        png: Union[LikePath, List[LikePath]],
+        png: Union[LikePath, LikePathList],
         hotspot: Tuple[int, int],
     ) -> None:
         super().__init__()
@@ -75,7 +76,7 @@ class Bitmap(object):
     def __enter__(self) -> "Bitmap":
         return self
 
-    def __exit__(self, *args) -> None:
+    def __exit__(self) -> None:
         self.animated = None
         self.key = None
         self.size = None
@@ -100,7 +101,7 @@ class Bitmap(object):
         self._set_hotspot(self.png, hotspot)
         self.animated = False
 
-    def __set_as_animated(self, png: List[LikePath], hotspot: Tuple[int, int]) -> None:
+    def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
 
         self.grouped_png = []
         for p in png:
@@ -246,7 +247,7 @@ class Bitmap(object):
             frame: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
-            switch = {
+            switch: Dict[str, Tuple[int, int]] = {
                 "top_left": (0, 0),
                 "top_right": (x, 0),
                 "bottom_left": (0, y),
@@ -254,7 +255,7 @@ class Bitmap(object):
                 "center": (round(x / 2), round(y / 2)),
             }
 
-            box: Tuple[int, int] = switch.get(position)
+            box: Tuple[int, int] = switch[position]
 
             canvas: Image = Img.new("RGBA", canvas_size, color=(256, 0, 0, 0))
             canvas.paste(frame, box=box)
@@ -301,17 +302,17 @@ class Bitmap(object):
 
     def copy(self, path: Optional[LikePath] = None) -> "Bitmap":
         if not path:
-            path: Path = Path(mkdtemp(prefix=f"{self.key}__copy__"))
+            p_obj: Path = Path(mkdtemp(prefix=f"{self.key}__copy__"))
         else:
-            path: Path = Path(path)
+            p_obj: Path = Path(path)
 
-        if path.is_file():
-            raise NotADirectoryError(f"path '{path.absolute()}' is not a directory")
+        if p_obj.is_file():
+            raise NotADirectoryError(f"path '{p_obj.absolute()}' is not a directory")
 
-        path.mkdir(parents=True, exist_ok=True)
+        p_obj.mkdir(parents=True, exist_ok=True)
 
         def __copy(src: Path) -> Path:
-            dst: Path = path / src.name
+            dst: Path = p_obj / src.name
             shutil.copy2(src, dst)
             return dst
 
@@ -357,7 +358,7 @@ class CursorAlias(object):
     def __enter__(self) -> "CursorAlias":
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self):
         self.bitmap.__exit__()
         self.bitmap = None
 
@@ -379,7 +380,7 @@ class CursorAlias(object):
     @classmethod
     def from_bitmap(
         cls,
-        png: Union[LikePath, List[LikePath]],
+        png: Union[LikePath, LikePathList],
         hotspot: Tuple[int, int],
     ) -> "CursorAlias":
         bmp: Bitmap = Bitmap(png, hotspot)
@@ -421,7 +422,7 @@ class CursorAlias(object):
             self.alias_file = cfg
 
         sizes_type_err: str = (
-            f"argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
+            "argument 'sizes' should be Tuple[int, int] type or List[Tuple[int, int]]."
         )
 
         # Multiple sizes
@@ -450,9 +451,9 @@ class CursorAlias(object):
 
     def check_alias(self) -> None:
         if not any(self.alias_dir.iterdir()):
-            raise FileNotFoundError(f"Alias directory is empty or not exists.")
+            raise FileNotFoundError("Alias directory is empty or not exists.")
 
-    def extension(self, ext: Optional[str] = None) -> Union[str, Path]:
+    def extension(self, ext: Optional[str] = None) -> LikePath:
         self.check_alias()
         if ext:
             new_path: Path = self.alias_file.with_suffix(ext)
@@ -466,7 +467,7 @@ class CursorAlias(object):
 
         if not dst:
             dst = mkdtemp(prefix=self.prefix)
-        dst: Path = Path(dst)
+        dst = Path(dst)
 
         if dst.is_file():
             raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
