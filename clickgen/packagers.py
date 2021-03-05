@@ -3,7 +3,7 @@
 
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterator, Optional, Set
+from typing import Dict, List, Optional, Set
 
 
 # --- X11
@@ -57,7 +57,7 @@ HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%point
 "$Link"
 "$Move"
 "$Diagonal_2"
-"$Vertical"   
+"$Vertical"
 "$Horizontal"
 "$Diagonal_1"
 "$Handwriting"
@@ -67,27 +67,27 @@ HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%point
 "$Alternate"
 
 [Strings]
-CUR_DIR       = "Cursors\\$theme_name Cursors"
-SCHEME_NAME   = "$theme_name Cursors"
-pointer       = "$Default"
-help		  = "$Help"
-work		  = "$Work"
-busy		  = "$Busy"
-cross		  = "$Cross"
-text		  = "$IBeam"
-hand		  = "$Handwriting"
-unavailiable  = "$Unavailiable"
-vert		  = "$Vertical"   
-horz		  = "$Horizontal"
-dgn1		  = "$Diagonal_1"
-dgn2		  = "$Diagonal_2"
-move		  = "$Move"
-alternate	  = "$Alternate"
-link		  = "$Link"
+CUR_DIR           = "Cursors\\$theme_name Cursors"
+SCHEME_NAME       = "$theme_name Cursors"
+pointer           = "$Default"
+help              = "$Help"
+work              = "$Work"
+busy              = "$Busy"
+cross             = "$Cross"
+text              = "$IBeam"
+hand              = "$Handwriting"
+unavailiable      = "$Unavailiable"
+vert              = "$Vertical"
+horz              = "$Horizontal"
+dgn1              = "$Diagonal_1"
+dgn2              = "$Diagonal_2"
+move              = "$Move"
+alternate         = "$Alternate"
+link              = "$Link"
 """
 )
 
-REQUIRED_WIN_CURSORS: Iterator[str] = {
+REQUIRED_WIN_CURSORS: Set[str] = {
     "Work",
     "Busy",
     "Default",
@@ -115,7 +115,7 @@ def WindowsPackager(
 ) -> None:
     """ Create a crispy `Windows` cursor theme package. """
 
-    files: Iterator[Path] = []
+    files: List[Path] = []
 
     for extensions in ("*.ani", "*.cur"):
         for i in sorted(directory.glob(extensions)):
@@ -137,7 +137,7 @@ def WindowsPackager(
         raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
     if website_url:
-        comment: str = f"{comment}\n{website_url}"
+        comment = f"{comment}\n{website_url}"
 
     # Real magic of python
     # replace $Default => Default.ani | Default.cur (as file was provided)

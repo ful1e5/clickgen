@@ -33,7 +33,7 @@ class XCursor:
 
     # main function ctypes define
     _lib_location: Path = Path(clickgen_pkg_root[0]) / "xcursorgen.so"
-    _lib: CDLL = CDLL(_lib_location)
+    _lib: CDLL = CDLL(str(_lib_location.absolute()))
     _LP_c_char = ctypes.POINTER(ctypes.c_char)
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)
     _lib.main.argtypes = (ctypes.c_int, _LP_LP_c_char)
@@ -72,9 +72,9 @@ class XCursor:
         argv: List[str] = [
             "xcursorgen",
             "-p",  # prefix args for xcursorgen (do not remove)
-            self.prefix.absolute(),  # prefix args for xcursorgen (do not remove)
-            self.config_file.absolute(),  # cursor's config/alias file
-            self.out.absolute(),  # xcursor/output path
+            str(self.prefix.absolute()),  # prefix args for xcursorgen (do not remove)
+            str(self.config_file.absolute()),  # cursor's config/alias file
+            str(self.out.absolute()),  # xcursor/output path
         ]
 
         kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
@@ -196,7 +196,8 @@ class WindowsCursor:
         sizes = set()
 
         # This assumes that frames are sorted
-        size = counter = 0
+        size: int = 0
+        counter: int = 0
         for i, frame in enumerate(frames):
 
             if size == 0 or frame[0] != size:

@@ -76,7 +76,7 @@ class Bitmap(object):
     def __enter__(self) -> "Bitmap":
         return self
 
-    def __exit__(self) -> None:
+    def __exit__(self, *args) -> None:
         self.animated = None
         self.key = None
         self.size = None
@@ -358,7 +358,7 @@ class CursorAlias(object):
     def __enter__(self) -> "CursorAlias":
         return self
 
-    def __exit__(self):
+    def __exit__(self, *args):
         self.bitmap.__exit__()
         self.bitmap = None
 
