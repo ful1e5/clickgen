@@ -8,15 +8,13 @@ import shutil
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Set, TypeVar, Union
+from typing import List, Set, Union
 
 from clickgen.db import DATA, CursorDB
 
-LikePath = TypeVar("LikePath", str, Path)
-
 
 @contextmanager
-def chdir(directory: LikePath):
+def chdir(directory: Union[str, Path]):
     """Temporary change `working` directory.
 
     :directory: path to directory.
@@ -52,7 +50,7 @@ class PNGProvider(object):
     bitmaps_dir: Path
     __pngs: List[str] = []
 
-    def __init__(self, bitmaps_dir: LikePath) -> None:
+    def __init__(self, bitmaps_dir: Union[str, Path]) -> None:
         """Init `PNGProvider`.
 
         :bitmaps_dir: path to directory where `.png` files are stored.
