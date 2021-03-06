@@ -8,7 +8,7 @@ import shlex
 from ctypes import CDLL
 from pathlib import Path
 from struct import pack
-from typing import Any, List, Literal, NamedTuple, Tuple
+from typing import Any, List, NamedTuple, Tuple
 
 from PIL import Image, ImageFilter
 
@@ -327,7 +327,7 @@ class WindowsCursor:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def create_shadow(self, orig: Image) -> Tuple[Literal[0], Any]:
+    def create_shadow(self, orig: Image) -> Tuple[int, Any]:
         blur_px = orig.size[0] / 100.0 * self.args.blur
         right_px = int(orig.size[0] / 100.0 * self.args.right_shift)
         down_px = int(orig.size[1] / 100.0 * self.args.down_shift)

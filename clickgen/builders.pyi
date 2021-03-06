@@ -1,7 +1,7 @@
 import io
 from PIL import Image
 from pathlib import Path
-from typing import Any, List, Literal, NamedTuple, Tuple
+from typing import Any, List, NamedTuple, Tuple
 
 Frame = Tuple[int, int, int, str, int]
 Frames = List[Frame]
@@ -42,7 +42,7 @@ class WindowsCursor:
     def make_ani(self, frames: Frames, out_buffer: io.BufferedWriter) -> None: ...
     @staticmethod
     def shadowize(shadow: Image, orig: Image, color: Color) -> None: ...
-    def create_shadow(self, orig: Image) -> Tuple[Literal[0], Any]: ...
+    def create_shadow(self, orig: Image) -> Tuple[int, Any]: ...
     @staticmethod
     def write_png(out: io.BufferedWriter, frame_png: Image) -> None: ...
     @staticmethod
