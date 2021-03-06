@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Couple of **linting** problem fixes
+- Bitmap and CursorsAlias memember access outside the context manager
+- `make` command error raise in `setup.py`
+- Better typing experience
+
+### Changed
+
+- `Literal` typing removed from `clickgen.util` & `clickgen.core`
+- Fixed #23 packaging issue of `XPackager`
+- Fixed #22 Inside `util.PNGProvider`
+
+## [1.1.8] - 24 jan 2021 (Stable)
+
+### Added
+
 - Code Coverage ~100%
 - The new CLI
 - New `XCursor` & `Windows Cursor` building approach
@@ -111,7 +126,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.7...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.8...main
+[1.1.8]: https://github.com/ful1e5/clickgen/compare/v1.1.7...v1.1.8
 [1.1.7]: https://github.com/ful1e5/clickgen/compare/1.1.6...v1.1.7
 [1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
 [1.1.5-beta]: https://github.com/ful1e5/clickgen/compare/1.1.4-alpha...1.1.5-beta
