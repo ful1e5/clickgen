@@ -5,16 +5,17 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import List, Literal, Optional, Tuple, Union, Dict
+from typing import Dict, List, Optional, Tuple, Union
 
 from PIL import Image as Img
 from PIL.Image import Image
+
+from clickgen.util import remove_util
 
 # Typing
 Size = Tuple[int, int]
 LikePath = Union[str, Path]
 LikePathList = Union[List[str], List[Path]]
-Positions = Literal["top_left", "top_right", "bottom_right", "bottom_right", "center"]
 
 
 class Bitmap(object):
@@ -31,7 +32,7 @@ class Bitmap(object):
     width: int
     height: int
 
-    compress: Literal[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] = 0
+    compress: int = 0
 
     def __init__(
         self,
@@ -76,20 +77,8 @@ class Bitmap(object):
     def __enter__(self) -> "Bitmap":
         return self
 
-    def __exit__(self, *args) -> None:
-        self.animated = None
-        self.key = None
-        self.size = None
-        self.height = None
-        self.width = None
-        self.compress = None
-        self.x_hot = None
-        self.y_hot = None
-
-        if hasattr(self, "grouped_png"):
-            self.grouped_png = None
-        else:
-            self.png = None
+    def __exit__(self, exception_type, exception_value, traceback):  # type: ignore
+        return
 
     #
     # Private methods
@@ -240,7 +229,7 @@ class Bitmap(object):
         self,
         size: Size = (24, 24),
         canvas_size: Size = (32, 32),
-        position: Positions = "center",
+        position: str = "center",
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
         def __reproduce(p: Path) -> Image:
@@ -358,24 +347,14 @@ class CursorAlias(object):
     def __enter__(self) -> "CursorAlias":
         return self
 
-    def __exit__(self, *args):
-        self.bitmap.__exit__()
-        self.bitmap = None
-
-        from clickgen.util import remove_util
+    def __exit__(self, exception_type, exception_value, traceback):  # type: ignore
 
         if hasattr(self, "alias_dir"):
             remove_util(self.alias_dir)
-            self.alias_dir = None
-            self.prefix = None
-
-        if hasattr(self, "alias_file"):
-            self.alias_file = None
 
         if hasattr(self, "garbage_dirs"):
             for p in self.garbage_dirs:
                 remove_util(p)
-            self.garbage_dirs = None
 
     @classmethod
     def from_bitmap(
@@ -518,7 +497,7 @@ class CursorAlias(object):
         self,
         size: Size = (24, 24),
         canvas_size: Size = (32, 32),
-        position: Positions = "center",
+        position: str = "center",
         delay: int = 3,
     ) -> "CursorAlias":
         self.check_alias()
