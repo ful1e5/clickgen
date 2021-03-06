@@ -25,7 +25,7 @@ jobs:
       - name: Set up Python "3.x"
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Cache pip dependencies
         uses: actions/cache@v2
@@ -55,8 +55,8 @@ jobs:
     needs: Linting
     runs-on: ubuntu-18.04
     strategy:
-          matrix:
-            python-version: [3.8, 3.9]
+      matrix:
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
       - uses: actions/checkout@v2
@@ -97,7 +97,7 @@ jobs:
           python setup.py install
           python -m pytest -vv
         continue-on-error: false
- 
+
   build:
     needs: [Linting, Linux-Testing]
     runs-on: ubuntu-18.04
@@ -106,7 +106,7 @@ jobs:
       - name: Set up Python "3.x"
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x'
+          python-version: "3.x"
 
       - name: Install build dependencies using 'apt'
         run: sudo apt install libx11-dev libxcursor-dev libpng-dev
