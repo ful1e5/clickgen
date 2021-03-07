@@ -11,7 +11,7 @@ from clickgen.core import CursorAlias
 
 parser = argparse.ArgumentParser(
     prog="clickgen",
-    description="The hustle free cursor building toolbox.",
+    description="The hassle-free cursor building toolbox",
 )
 # Positional Args.
 parser.add_argument(

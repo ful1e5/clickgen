@@ -31,7 +31,7 @@ setup(
     version="1.1.8",
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
-    description="The hustle free cursor building toolbox 🧰",
+    description="The hassle-free cursor building toolbox 🧰",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",

@@ -5,7 +5,7 @@
 
 # Clickgen
 
-The hustle free cursor building toolbox 🧰
+The hassle-free cursor building toolbox 🧰
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
 
@@ -105,7 +105,6 @@ with CursorAlias.from_bitmap(png=["all-scroll-01.png", "all-scroll-02.png"], hot
     XCursor.create(alias_file=x_cfg, out_dir=Path("."))
 
 ```
-
 
 ### create a static `Windows Cursor` (.cur)
 
