@@ -1,0 +1,3 @@
+Pillow
+sphinx-rtd-theme
+
