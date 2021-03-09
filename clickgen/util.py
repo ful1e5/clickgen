@@ -15,9 +15,11 @@ from clickgen.db import DATA, CursorDB
 
 @contextmanager
 def chdir(directory: Union[str, Path]):
-    """Temporary change `working` directory.
+    """Temporary change working directory using `with` syntax.
 
-    :directory: path to directory.
+    :param directory: path to directory.
+    :type directory: Union[str, pathlib.Path]
+
     """
 
     prev_cwd = os.getcwd()
@@ -29,9 +31,13 @@ def chdir(directory: Union[str, Path]):
 
 
 def remove_util(p: Union[str, Path]) -> None:
-    """Remove this file, directory or symlink. If Path exits on filesystem.
+    """Remove this file, directory or symlink.
 
-    :p: path to directory.
+    :param p: path to directory.
+    :type p: Union[str, pathlib.Path]
+    :return: None
+    :rtype: None
+
     """
     p_obj: Path = Path(p)
 
@@ -53,7 +59,9 @@ class PNGProvider(object):
     def __init__(self, bitmaps_dir: Union[str, Path]) -> None:
         """Init `PNGProvider`.
 
-        :bitmaps_dir: path to directory where `.png` files are stored.
+        :param bitmaps_dir: Path to directory where `.png` files are stored.
+        :type bitmaps_dir: Union[str, Path]
+
         """
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
@@ -66,15 +74,20 @@ class PNGProvider(object):
             )
 
     def get(self, key: str) -> Union[List[Path], Path]:
-        """Get `.png` file/s from key.
-        This method return file location in `pathlib.Path` instance.
+        """Retrieve `pathlib.Path` of filtered `.png` file/s.
 
-        Also, this method is not supported directory sync, Which means creating a new file or deleting a file not affect this method.
+        This method return file location in `pathlib.Path` object.
 
-        The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
+        Runtime directory `sync` is **not supported**, Which means creating
+        or deleting a file on programs execution is not update class `__pngs`
+        state.
 
-        :key: Without extension it search for multiple files, Else search the key with `.png` extension.
+        :param key: `key` is filename
+        :type key: str
+        :return: Returns `pathlib.Path` object or `list` of `pathlib.Path`
+                 object/s.
         """
+
         k = key.split(".")
         if len(k) == 1:
             r = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
