@@ -132,8 +132,9 @@ Prerequisites are installed on recent **Red Hat, CentOS** or **Fedora** with::
 
 Note that the package manager may be yum or DNF, depending on the exact distribution.
 
+
 Platform Support
-^^^^^^^^^^^^^^^^
+----------------
 Current platform support for clickgen. Binary distributions are contributed for each 
 release on a volunteer basis, but the source should compile and run everywhere platform 
 support is listed. In general, we aim to support all current versions of Linux and macOS.
@@ -148,9 +149,10 @@ These platforms are built and tested for every change.
 | Ubuntu Linux 18.04 LTS (Bionic) | 3.8, 3.9                   | x86-64                  |
 +---------------------------------+----------------------------+-------------------------+
 
+
 .. _release history at PyPI: https://pypi.org/project/clickgen/#history
 
 Old Versions
-^^^^^^^^^^^^
+------------
 You can download old distributions from the `release history at PyPI`_ and by direct URL access
 eg. https://pypi.org/project/clickgen/1.1.0/.

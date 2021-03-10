@@ -10,6 +10,25 @@ clickgen is hussle free cursor building toolbox by `Kaiz Khatri`, Built upon pow
 `anicursorgen.py <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>`_ 
 and `xcursorgen <https://linux.die.net/man/1/xcursorgen>`_.
 
+.. image:: https://readthedocs.org/projects/clickgen/badge/?version=latest
+  :target: https://clickgen.readthedocs.io/en/latest/?badge=latest
+  :alt: Documentation Status
+
+.. image:: https://github.com/ful1e5/clickgen/actions/workflows/app-ci.yml/badge.svg
+   :target: https://github.com/ful1e5/clickgen/actions
+   :alt: GitHub Actions build status
+
+.. image:: https://img.shields.io/pypi/wheel/pytype
+   :target: https://pypi.org/project/clickgen/#files
+   :alt: PyPI - Wheel
+
+.. image:: https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/ful1e5/clickgen
+   :alt: Code Coverage
+
+.. image:: https://www.codefactor.io/repository/github/ful1e5/clickgen/badge/main
+   :target: https://www.codefactor.io/repository/github/ful1e5/clickgen/overview/main
+   :alt: CodeFactor
 
 Overview
 ========
@@ -23,6 +42,7 @@ a time. They should provide a solid foundation for the general cursor building t
    :maxdepth: 4
 
    installation.rst
+   modules.rst
 
 
 Indices and tables
