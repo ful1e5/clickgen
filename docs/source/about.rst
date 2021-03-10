@@ -25,7 +25,7 @@ cursor theme. Both tools lacking some key functionality, When you've limited amo
 knowledge about cursor/s and it's types.
 
 Missing functionality in ``xcursorgen`` & ``anicursorgen.py`` :
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
   * Require *config file* to built ``XCursor``/``CUR``/``ANI``. (that takes ages for creating manually)
   * You've to resize all cursor images individually, As we specified inside the config file.
   * ``xcursorgen`` compiled binaries are hard to find on Cloud Images like **Amazon Linux 2**, 
