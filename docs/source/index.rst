@@ -42,7 +42,7 @@ a time. They should provide a solid foundation for the general cursor building t
    :maxdepth: 2
 
    installation.rst
-   modules.rst
+   reference/index.rst
    about.rst
 
 
