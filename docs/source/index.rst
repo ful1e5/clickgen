@@ -39,10 +39,11 @@ This library adds cursor building capabilities to your Python interpreter.
 a time. They should provide a solid foundation for the general cursor building tool.
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
    installation.rst
    modules.rst
+   about.rst
 
 
 Indices and tables
