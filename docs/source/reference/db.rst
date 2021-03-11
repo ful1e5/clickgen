@@ -3,7 +3,7 @@
 .. py:currentmodule:: clickgen.db
 
 :py:mod:`~clickgen.db` Module
-===============================
+=============================
 
 This module provides **Cursor** database along symlinks supports.
 
