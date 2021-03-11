@@ -17,7 +17,22 @@ THEME_FILES_TEMPLATES: Dict[str, Template] = {
 
 
 def XPackager(directory: Path, theme_name: str, comment: str) -> None:
-    """ Create a crispy `XCursors` theme package. """
+    """Create a crispy `XCursors` theme package.
+
+    This packager generates ``cursor.theme`` & ``index.theme`` files at ``directory``.
+
+    :param directory: Path where ``.theme`` files save.
+    :param directory: Path
+
+    :param theme_name: Cursor theme name.
+    :param theme_name: str
+
+    :param comment: Extra information about this cursor theme.
+    :param comment: str
+
+    :returns: Nothing
+    :rtype: None
+    """
 
     # Writing all .theme files
     files: Dict[str, str] = {}
@@ -113,7 +128,28 @@ def WindowsPackager(
     author: str,
     website_url: Optional[str] = None,
 ) -> None:
-    """ Create a crispy `Windows` cursor theme package. """
+    """Create a crispy `Windows` cursor theme package.
+
+    This packager generates ``install.inf`` files at ``directory``. Also, Cursor extensions is identified by its type (.cur/.ani).
+
+    :param directory: Path where ``.theme`` files save.
+    :param directory: Path
+
+    :param theme_name: Cursor theme name.
+    :param theme_name: str
+
+    :param comment: Extra information about this cursor theme.
+    :param comment: str
+
+    :param author: Author name.
+    :param author: str
+
+    :param website_url: Website web address.(Useful for **bug reports**)
+    :param author: str (, optional)
+
+    :returns: Nothing
+    :rtype: None
+    """
 
     files: List[Path] = []
 
