@@ -50,7 +50,7 @@ def remove_util(p: Union[str, Path]) -> None:
         pass
 
 
-class PNGProvider(object):
+class PNGProvider:
     """Provide organized `.png` files."""
 
     bitmaps_dir: Path
@@ -108,6 +108,7 @@ def add_missing_xcursors(
     rename: bool = False,
     force: bool = False,
 ) -> None:
+    """Create symlinks of missing ``Xcursor``"""
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())
 

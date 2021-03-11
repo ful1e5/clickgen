@@ -188,16 +188,32 @@ DATA: Data = [
 
 
 class CursorDB(object):
+    """The CursorDB class provides ``Xcursor`` data available on X11/Wayland
+    /XWayland.
+    """
+
     data: Dict[str, List[str]] = {}
 
     def __init__(self, data: Data) -> None:
+        """Initiate CursorDB instance.
+
+        This call ``self.__seed`` for setting dataset into ``Dict`` structure.
+
+        :param data: Provide custom dataset of cursors. default to ``clickgen.db.DATA``
+        :type data: List[Set[str]]
+
+        :returns: Instance of ``CursorDB``
+
+        :raises TypeError: If provided ``data`` is not type of ``List``
+        :raises TypeError: If provided ``data``'s list member is not type of ``Set``
+        """
         super().__init__()
         self.__seed(data)
 
     def __str__(self) -> str:
         string: List[str] = []
-        for k, v in self.data.items():
-            string.append(f"{k}={v}")
+        for index, data in self.data.items():
+            string.append(f"{index}={data}")
         return f"CursorDB({', '.join(string)})"
 
     def __repr__(self) -> str:
@@ -205,7 +221,7 @@ class CursorDB(object):
 
     def __seed(self, data: Data) -> None:
         if not isinstance(data, list):
-            raise TypeError(f"'data' is not type of 'List'")
+            raise TypeError("'data' is not type of 'List'")
         for item in sorted(data):
             if not isinstance(item, set):
                 raise TypeError(f"Item '{item}' is not type of 'Set'")
@@ -217,6 +233,18 @@ class CursorDB(object):
     def search_symlinks(
         self, key: str, find_similar: bool = False
     ) -> Optional[List[str]]:
+        """Retrieve similar implementation Xcursor from database.
+
+        :param key: Name of XCursor
+        :type key: str
+
+        :param find_similar: If this flag set to ``True``, It return similar named ``XCursor`` from database.
+        :type find_similar: bool
+
+        :return: List of missing ``XCursor`` in string list or None.
+        :rtype: Optional[List[str]]
+
+        """
         if find_similar:
             key = self.__find_similar(key)
 
@@ -234,6 +262,17 @@ class CursorDB(object):
         return result
 
     def rename_file(self, p: Path) -> Optional[Path]:
+        """Search similar named Xcursor in database. If name of XCursor is not
+        correct this return ``pathlib.Path`` Object.
+
+        :param p: Path to XCursor
+        :type key: Path
+
+        :return: Return renamed ``Path`` If XCursor name not correct.
+        :rtype: Optional[Path]
+
+        :raise FileNotFoundError: If file is not found in file system or it's a directory.
+        """
         if not p.is_file():
             raise FileNotFoundError(f"'{p.absolute()}' is not file")
         key: str = self.__find_similar(p.stem)
