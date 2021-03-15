@@ -4,3 +4,7 @@
 
 :py:mod:`~clickgen.core` Module
 ===============================
+
+Classes
+-------
+.. autoclass:: clickgen.core.Bitmap

@@ -19,6 +19,12 @@ LikePathList = Union[List[str], List[Path]]
 
 
 class Bitmap(object):
+    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of
+    ``.png`` image. The class also provides a number of factory functions,
+    including functions to **rename** ``.png`` images from files, and
+    **reproduce** size of same image/s.
+    """
+
     animated: bool
     png: Path
     grouped_png: List[Path]
