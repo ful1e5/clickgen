@@ -102,7 +102,7 @@ class Bitmap(object):
     def __set_as_static(self, png: LikePath, hotspot: Tuple[int, int]) -> None:
         """Set this Bitmap as **static**, It means this bitmap hold single ``png``.
 
-        .. note:: This method called by ``self.__init__``.
+                .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location.
         :type png: Union[str,Path]
@@ -120,7 +120,7 @@ class Bitmap(object):
     def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
         """Set this Bitmap as **animated**, It means this bitmap holds multiple ``png``.
 
-        .. note:: This method called by ``self.__init__``.
+                .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location ***List***.
         :type png: List[Union[str,Path]]
