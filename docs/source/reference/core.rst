@@ -8,3 +8,4 @@
 Classes
 -------
 .. autoclass:: clickgen.core.Bitmap
+.. automethod:: clickgen.core.Bitmap.__init__

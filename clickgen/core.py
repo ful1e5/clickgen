@@ -19,9 +19,9 @@ LikePathList = Union[List[str], List[Path]]
 
 
 class Bitmap(object):
-    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of
-    ``.png`` image. The class also provides a number of factory functions,
-    including functions to **rename** ``.png`` images from files, and
+    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of \
+    ``.png`` image. The class also provides a number of factory functions, \
+    including functions to **rename** ``.png`` images from files, and \
     **reproduce** size of same image/s.
     """
 
@@ -45,6 +45,17 @@ class Bitmap(object):
         png: Union[LikePath, LikePathList],
         hotspot: Tuple[int, int],
     ) -> None:
+        """
+        :param png: File location. Use ``List`` for animated Cursor.
+        :type png: Union[LikePath, LikePathList]
+
+        :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
+                        state is calculated from this value.
+        :type hotspot: Tuple[int, int]
+
+        :raise TypeError: If provided ``.png`` file/s location is not type **str** \
+                          or **pathlib.Path**
+        """
         super().__init__()
 
         # Is png == _P             => 'static' bitmap
