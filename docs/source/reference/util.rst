@@ -6,26 +6,31 @@
 
 This module provides utility functions and classes, Which makes developer life easier.
 
-
-Classes
--------
+:py:class:`~clickgen.util.pngprovider` class
+--------------------------------------------
 .. autoclass:: clickgen.util.PNGProvider
 .. automethod:: clickgen.util.PNGProvider.get
 
-Functions
----------
-
-Add missing ``Xcursor``
-^^^^^^^^^^^^^^^^^^^^^^^
+:py:mod:`~clickgen.util.add_missing_xcursors` function
+------------------------------------------------------
 .. autofunction:: add_missing_xcursors
 
 Utility
-^^^^^^^
+-------
+
+:py:mod:`~clickgen.util.chdir`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: chdir
+
+:py:mod:`~clickgen.util.remove_util`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: remove_util
 
-For developer only
-^^^^^^^^^^^^^^^^^^
+:py:mod:`~clickgen.util.timer`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: timer
+
+:py:mod:`~clickgen.util.debug`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: debug
 

@@ -7,9 +7,8 @@
 
 This module provides **Cursor** database along symlinks supports.
 
-
-Classes
--------
+:py:class:`~clickgen.db.CursorDB` Class
+---------------------------------------
 .. autoclass:: clickgen.db.CursorDB
 .. automethod:: clickgen.db.CursorDB.__init__
 .. automethod:: clickgen.db.CursorDB.search_symlinks
@@ -18,7 +17,6 @@ Classes
 
 Constants
 ---------
-
 .. data:: DATA
 
     Default dataset of XCursor in ``clickgen``.
