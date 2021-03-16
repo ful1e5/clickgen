@@ -53,8 +53,8 @@ class Bitmap(object):
                         state is calculated from this value.
         :type hotspot: Tuple[int, int]
 
-        :raise TypeError: If provided ``.png`` file/s location is not type **str** \
-                          or **pathlib.Path**
+        :raise TypeError: If provided ``.png`` file/s location is not type \
+                          **str** or **pathlib.Path**
         """
         super().__init__()
 
@@ -63,9 +63,8 @@ class Bitmap(object):
         # Or png == [_P]           => 'static' bitmap
         # else TypeError()
 
-        err: str = (
-            f"argument should be a 'str' object or 'Path' object , not {type(png)}"
-        )
+        err: str = f"argument should be a 'str' object or 'Path' object , not \
+              {type(png)}"
 
         if isinstance(png, (str, Path)):
             self.__set_as_static(png, hotspot)
@@ -101,6 +100,17 @@ class Bitmap(object):
     # Private methods
     #
     def __set_as_static(self, png: LikePath, hotspot: Tuple[int, int]) -> None:
+        """Set this Bitmap as **static**, It means this bitmap hold single ``png``.
+
+        .. note:: This method called by ``self.__init__``.
+
+        :param png: ``.png`` file location.
+        :type png: Union[str,Path]
+
+        :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
+                        state is calculated from this value.
+        :type hotspot: Tuple[int, int]
+        """
         self.png = self._check_bitmap(png)
         self._set_key(self.png, check=False)
         self._set_size(self.png)
@@ -108,7 +118,17 @@ class Bitmap(object):
         self.animated = False
 
     def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
+        """Set this Bitmap as **animated**, It means this bitmap holds multiple ``png``.
 
+        .. note:: This method called by ``self.__init__``.
+
+        :param png: ``.png`` file location ***List***.
+        :type png: List[Union[str,Path]]
+
+        :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
+                        state is calculated from this value.
+        :type hotspot: Tuple[int, int]
+        """
         self.grouped_png = []
         for p in png:
             frame: Path = self._check_bitmap(p)
