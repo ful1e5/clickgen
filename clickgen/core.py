@@ -19,7 +19,7 @@ LikePathList = Union[List[str], List[Path]]
 
 
 class Bitmap(object):
-    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of \
+    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of 
     ``.png`` image. The class also provides a number of factory functions, \
     including functions to **rename** ``.png`` images from files, and \
     **reproduce** size of same image/s.
@@ -55,7 +55,6 @@ class Bitmap(object):
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
-
         """
         super().__init__()
 
@@ -117,7 +116,6 @@ class Bitmap(object):
         :raise ValueError: If image width & height are not same
         :raise ValueError: If grouped ``.png`` files naming is invalid
         :raise ValueError: If hotspot is set higher or lower then image pixels
-
         """
         self.png = self._check_bitmap(png)
         self._set_key(self.png, check=False)
@@ -142,7 +140,6 @@ class Bitmap(object):
         :raise ValueError: If image width & height are not same
         :raise ValueError: If grouped ``.png`` files naming is invalid
         :raise ValueError: If hotspot is set higher or lower then image pixels
-
         """
         self.grouped_png = []
         for p in png:
@@ -172,7 +169,6 @@ class Bitmap(object):
 
         :returns: Return the ``pathlib.Path`` instant, If provided **bitmap path** checks passed.
         :rtype: Path
-
         """
         p: Path = Path(bmp_path)
         if not p.exists():
@@ -199,7 +195,6 @@ class Bitmap(object):
         :type prev_check: bool
 
         :raise ValueError: If image width & height are not same
-
         """
         with Img.open(bmp_path) as i:
 
@@ -234,6 +229,8 @@ class Bitmap(object):
         :param check: If you want sure multiple ``png`` files identity is same
         :type check: bool
 
+        :raise ValueError: If grouped png indexing invalid.
+        :raise ValueError: If new identity not matched with old.
         """
         if check:
             try:
@@ -262,7 +259,6 @@ class Bitmap(object):
 
         :param hotspot: ``xy`` coordinates for this bitmap.
         :type hotspot: Tuple[int, int]
-
         """
         x = hotspot[0]
         y = hotspot[1]
@@ -281,7 +277,6 @@ class Bitmap(object):
 
         :param new_size: Bitmap width & height tuple (in pixel)
         :type new_size: Tuple[int, int]
-
         """
         if self.size != new_size:
             self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
@@ -296,6 +291,24 @@ class Bitmap(object):
         resample: int = Img.NONE,
         save: bool = True,
     ) -> Optional[Union[Image, List[Image]]]:
+        """Resize this bitmap.
+
+        :param size: New width & height in pixel.
+        :type size: Tuple[int, int]
+
+        :param resample: Pillow resample algorithm.
+        :type resample: int
+
+        :param save: If you want to overwrite resized bitmap to actual png file. \
+                     Neither it return pillow ``Image`` buffer.
+        :type save: bool
+
+        :returns: Returns image buffers, If *save* flag is set to ``False``
+        :rtype: Optional[Union[Image, List[Image]]]
+
+        :raise ValueError: If image width & height are not same.
+        """
+
         def __resize(p: Path, frame: int) -> Image:
             img: Image = Img.open(p)
 
@@ -331,6 +344,27 @@ class Bitmap(object):
         position: str = "center",
         save=True,
     ) -> Optional[Union[Image, List[Image]]]:
+        """Resize bitmap with more options.
+
+        :param size: Bitmap width & height in pixel.
+        :type size: Tuple[int, int]
+
+        :param canvas_size: Bitmap's canvas width & height in pixel.
+        :type canvas_size: Tuple[int, int]
+
+        :param position: Bitmap's canvas width & height in pixel. (@default "center")
+        :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
+
+        :param save: If you want to overwrite resized bitmap to actual png \
+                       file. Neither it return pillow ``Image`` buffer.
+        :type save: bool
+
+        :returns: Returns image buffers, If *save* flag is set to ``False``
+        :rtype: Optional[Union[Image, List[Image]]]
+
+        :raise ValueError: If image width & height are not same.
+        """
+
         def __reproduce(p: Path) -> Image:
             frame: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
@@ -369,6 +403,14 @@ class Bitmap(object):
         return None
 
     def rename(self, key: str) -> None:
+        """Rename unique identity of bitmap.
+
+        :param key: Bitmap unique identity.
+        :type key: str
+
+        :raise ValueError: If grouped png indexing invalid.
+        :raise ValueError: If new identity not matched with old.
+        """
         old_key = self.key
         if key != old_key:
 
@@ -389,6 +431,18 @@ class Bitmap(object):
                 self.png = __rename(self.png, check=False)
 
     def copy(self, path: Optional[LikePath] = None) -> "Bitmap":
+        """Generate deepcopy of this bitmap.
+
+        :param path: Provide custom path to store deepcopy bitmaps. \
+                     Set ``None`` to store in temporary directory. \
+                     (@default None)
+        :type path: str
+
+        :returns: deepcopy of this bitmap state.
+        :rtype: Bitmap
+
+        :raise NotADirectoryError: If provided path is not directory.
+        """
         if not path:
             p_obj: Path = Path(mkdtemp(prefix=f"{self.key}__copy__"))
         else:
