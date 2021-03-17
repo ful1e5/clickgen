@@ -15,3 +15,8 @@
 .. automethod:: clickgen.core.Bitmap.copy
 .. automethod:: clickgen.core.Bitmap.__str__
 .. automethod:: clickgen.core.Bitmap.__repr__
+
+:py:mod:`~clickgen.core.CursorAlias` Class
+------------------------------------------
+.. autoclass:: clickgen.core.CursorAlias
+.. automethod:: clickgen.core.CursorAlias.__init__
