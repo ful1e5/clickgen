@@ -55,6 +55,7 @@ class Bitmap(object):
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
+
         """
         super().__init__()
 
@@ -110,6 +111,13 @@ class Bitmap(object):
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
         :type hotspot: Tuple[int, int]
+
+        :raise FileNotFoundError: If ``.png`` file not found
+        :raise ValueError: If provided bitmap is not ``.png``
+        :raise ValueError: If image width & height are not same
+        :raise ValueError: If grouped ``.png`` files naming is invalid
+        :raise ValueError: If hotspot is set higher or lower then image pixels
+
         """
         self.png = self._check_bitmap(png)
         self._set_key(self.png, check=False)
@@ -128,6 +136,13 @@ class Bitmap(object):
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
         :type hotspot: Tuple[int, int]
+
+        :raise FileNotFoundError: If ``.png`` file not found
+        :raise ValueError: If provided bitmap is not ``.png``
+        :raise ValueError: If image width & height are not same
+        :raise ValueError: If grouped ``.png`` files naming is invalid
+        :raise ValueError: If hotspot is set higher or lower then image pixels
+
         """
         self.grouped_png = []
         for p in png:
@@ -147,6 +162,18 @@ class Bitmap(object):
     # Protected methods
     #
     def _check_bitmap(self, bmp_path: LikePath) -> Path:
+        """Checks bitmap is supported by clickgen.
+
+        :param bmp_path: Bitmap file location.
+        :type bmp_path: Union[str, Path]
+
+        :raise FileNotFoundError: If ``.png`` file not found
+        :raise ValueError: If provided bitmap is not ``.png``
+
+        :returns: Return the ``pathlib.Path`` instant, If provided **bitmap path** checks passed.
+        :rtype: Path
+
+        """
         p: Path = Path(bmp_path)
         if not p.exists():
             raise FileNotFoundError(
@@ -163,6 +190,17 @@ class Bitmap(object):
         return p
 
     def _set_size(self, bmp_path: Path, prev_check: bool = True) -> None:
+        """Set or overwrite size of this bitmap.
+
+        :param bmp_path: Bitmap file location.
+        :type bmp_path: Path
+
+        :param prev_check: If you want to match size with previous size. This flag is useful for grouped ``png``.(@default True )
+        :type prev_check: bool
+
+        :raise ValueError: If image width & height are not same
+
+        """
         with Img.open(bmp_path) as i:
 
             def __set() -> None:
@@ -188,6 +226,15 @@ class Bitmap(object):
                 )
 
     def _set_key(self, bmp_path: Path, check: bool) -> None:
+        """Set unique identity for this bitmap.
+
+        :param bmp_path: Bitmap file location.
+        :type bmp_path: Path
+
+        :param check: If you want sure multiple ``png`` files identity is same
+        :type check: bool
+
+        """
         if check:
             try:
                 k, _ = bmp_path.stem.rsplit("-", 1)
@@ -208,6 +255,15 @@ class Bitmap(object):
             self.key = bmp_path.stem
 
     def _set_hotspot(self, img_path: Path, hotspot: Tuple[int, int]) -> None:
+        """Set this bitmap reaction state.
+
+        :param img_path: Bitmap file location.
+        :type img_path: Path
+
+        :param hotspot: ``xy`` coordinates for this bitmap.
+        :type hotspot: Tuple[int, int]
+
+        """
         x = hotspot[0]
         y = hotspot[1]
         with Img.open(img_path) as i:
@@ -221,6 +277,12 @@ class Bitmap(object):
             self.y_hot = y
 
     def _update_hotspots(self, new_size: Size) -> None:
+        """Update this bitmap reaction state.
+
+        :param new_size: Bitmap width & height tuple (in pixel)
+        :type new_size: Tuple[int, int]
+
+        """
         if self.size != new_size:
             self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
             self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
