@@ -482,7 +482,7 @@ class CursorAlias(object):
         bitmap: Bitmap,
     ) -> None:
         """
-        :param bitmap: Cursor ``clickgen.core.Bitmap`` instant.
+        :param bitmap: Cursor :py:class:`~clickgen.core.Bitmap` instant.
         :type bitmap: Bitmap
         """
         super().__init__()
@@ -525,6 +525,18 @@ class CursorAlias(object):
         png: Union[LikePath, LikePathList],
         hotspot: Tuple[int, int],
     ) -> "CursorAlias":
+        """Create cursor alias config file from ``.png`` files instant.
+
+        :param png: File location. Use ``List`` for animated Cursor.
+        :type png: Union[LikePath, LikePathList]
+
+        :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
+                        state is calculated from this value.
+        :type hotspot: Tuple[int, int]
+
+        :raise TypeError: If provided ``.png`` file/s location is not type \
+                          **str** or **pathlib.Path**
+        """
         bmp: Bitmap = Bitmap(png, hotspot)
         return cls(bmp)
 
