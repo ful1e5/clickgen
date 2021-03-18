@@ -475,10 +475,16 @@ class CursorAlias(object):
     alias_file: Path
     garbage_dirs: List[Path] = []
 
+    """Cursor Config ``.in`` or ``.alias`` file provider."""
+
     def __init__(
         self,
         bitmap: Bitmap,
     ) -> None:
+        """
+        :param bitmap: Cursor ``clickgen.core.Bitmap`` instant.
+        :type bitmap: Bitmap
+        """
         super().__init__()
 
         self.bitmap = bitmap
@@ -486,6 +492,10 @@ class CursorAlias(object):
         self.alias_dir = Path(mkdtemp(prefix=self.prefix))
 
     def __get_alias_file(self) -> Optional[Path]:
+        """
+        :returns: Return cursor alias file path, If it's exists.
+        :rtype: Optional[Path]
+        """
         if hasattr(self, "alias_file"):
             return self.alias_file
         return None
