@@ -545,6 +545,22 @@ class CursorAlias(object):
         sizes: Union[Size, List[Size]],
         delay: int = 10,
     ) -> Path:
+        """Generate and store cursor's config file at ``temporary`` storage.
+
+        :param sizes: Cursor pixel size tuple.
+        :type sizes: Union[Tuple[int, int], List[Tuple[int, int]]]
+
+        :param delay: Delay between every cursor frame.(Affect on only \
+                animated :py:class:`~clickgen.core.Bitmap`)
+        :type delay: int
+
+        :returns: Cursor alias file path.
+        :rtype: Path
+
+        :raise TypeError: If provided ``size`` is not type of Tuple[int, int] \
+                or List of Tuple[int, int]
+        """
+
         def __generate(size: Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
@@ -604,10 +620,27 @@ class CursorAlias(object):
         return self.alias_file
 
     def check_alias(self) -> None:
+        """Checks cursor  config file exists on filesystem.
+
+        :raise FileNotFoundError:  If cursor config file not generate. \
+                Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
+                recreate it.
+        """
         if not any(self.alias_dir.iterdir()):
             raise FileNotFoundError("Alias directory is empty or not exists.")
 
-    def extension(self, ext: Optional[str] = None) -> LikePath:
+    def extension(self, ext: Optional[str] = None) -> Union[str, Path]:
+        """``get`` or ``change`` cursor config file extension. This method helps \
+        to change default config extension ``.alias`` to ``.in``.
+
+        :param ext: Provide custom cursor's config file extension. Like \
+                    ``o.extension(ext = ".in")``. (@default None)
+        :type ext: Optional[str]
+
+        :returns: Provide ``None`` value to retrieve current extension. \
+                Either returns the updated cursor's config file path.
+        :rtype: Union[str, Path]
+        """
         self.check_alias()
         if ext:
             new_path: Path = self.alias_file.with_suffix(ext)
@@ -617,6 +650,24 @@ class CursorAlias(object):
         return self.alias_file.suffix
 
     def copy(self, dst: Optional[LikePath] = None) -> "CursorAlias":
+        """Copy current bitmap config to directory.
+
+             .. note::
+                 This method **creates** the ``dst`` directory if not exists.
+
+        :param dst: Custom directory path for store deepcopy of cursor config \
+                file and it's bitmaps. Provide ``None`` value to store at \
+                temporary storage.
+        :type dst: Optional[Union[str, Path]]
+
+        :returns: deepcopy object of current ``CursorAlias`` state.
+        :rtype: CursorAlias
+
+        :raise FileNotFoundError:  If cursor config file not generate. \
+                Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
+                recreate it.
+        :raise NotADirectoryError: If provided ``dst`` is not a directory.
+        """
         self.check_alias()
 
         if not dst:
@@ -638,6 +689,24 @@ class CursorAlias(object):
         return replica_object
 
     def rename(self, key: str) -> Path:
+        """Rename current cursor's config file.
+
+        Renaming cursor config is affects naming of bitmaps. \
+        This method is calls :py:meth:`~clickgen.core.Bitmap.rename` \
+        internaly for renaming bitmaps name.
+
+        :param key: Unique identity.
+        :type key: str
+
+        :returns: Renamed config file path.
+        :rtype: Path
+
+        :raise FileNotFoundError:  If cursor config file not generate. \
+                Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
+                recreate it.
+        :raise ValueError: If grouped png indexing invalid.
+        :raise ValueError: If new identity not matched with old.
+        """
         self.check_alias()
         old_key: str = self.bitmap.key
 
@@ -675,6 +744,29 @@ class CursorAlias(object):
         position: str = "center",
         delay: int = 3,
     ) -> "CursorAlias":
+        """Resize cursor config and bitmap.
+
+        :param size: Bitmap width & height in pixel.
+        :type size: Tuple[int, int]
+
+        :param canvas_size: Bitmap's canvas width & height in pixel.
+        :type canvas_size: Tuple[int, int]
+
+        :param position: Bitmap's canvas width & height in pixel. (@default "center")
+        :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
+
+        :param save: If you want to overwrite resized bitmap to actual png \
+                       file. Neither it return pillow ``Image`` buffer.
+        :type save: bool
+
+        :returns: Returns reproduced ``CursorAlias`` object.
+        :rtype: CursorAlias
+
+        :raise FileNotFoundError:  If cursor config file not generate. \
+                Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
+                recreate it.
+        :raise ValueError: If image width & height are not same.
+        """
         self.check_alias()
 
         tmp_bitmaps_dir: Path = Path(mkdtemp(prefix=f"{self.prefix}__garbage_bmps__"))
