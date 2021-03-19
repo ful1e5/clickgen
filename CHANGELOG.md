@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Bitmap and CursorsAlias memember access outside the context manager
 - `make` command error raise in `setup.py`
 - Better typing experience
+- Configure readthedocs with `sphinx`
+- Added **docs** badge
 
 ### Changed
 

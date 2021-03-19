@@ -1,5 +1,6 @@
 [![CI](https://github.com/ful1e5/clickgen/workflows/CI/badge.svg)](https://github.com/ful1e5/clickgen/actions)
 [![PyPI - Wheel](https://img.shields.io/pypi/wheel/pytype)](https://pypi.org/project/clickgen/#files)
+[![Docs](https://readthedocs.org/projects/clickgen/badge/?version=latest)](https://clickgen.readthedocs.io/en/latest/)
 [![Code Coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 [![CodeFactor](https://www.codefactor.io/repository/github/ful1e5/clickgen/badge/main)](https://www.codefactor.io/repository/github/ful1e5/clickgen/overview/main)
 
