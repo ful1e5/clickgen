@@ -1,1 +1,2 @@
-Pillow>=7.2.0
+# Only used in docker image
+Pillow>=8.1.1
