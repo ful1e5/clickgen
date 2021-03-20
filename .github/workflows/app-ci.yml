@@ -1,13 +1,13 @@
 name: CI
 
 on:
-  paths-ignore:
-    - README.md
-    - LICENSE
   push:
-  branches:
-    - main
-    - dev
+    paths-ignore:
+      - README.md
+      - LICENSE
+    branches:
+      - main
+      - dev
 
   pull_request:
     paths-ignore:
