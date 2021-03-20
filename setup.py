@@ -42,7 +42,7 @@ setup(
         "Funding": "https://www.paypal.me/kaizkhatri",
         "Changelog": "https://github.com/ful1e5/clickgen/blob/main/CHANGELOG.md",
     },
-    install_requires=["Pillow>=7.2.0"],
+    install_requires=["Pillow>=8.1.1"],
     packages=["clickgen"],
     package_dir={"clickgen": "clickgen"},
     classifiers=[
