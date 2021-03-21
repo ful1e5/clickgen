@@ -10,14 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Couple of **linting** problem fixes
-- Bitmap and CursorsAlias memember access outside the context manager
-- `make` command error raise in `setup.py`
+- **Bitmap** and **CursorsAlias** memember access outside the context manager
+- Check `make` command in `setup.py`
 - Better typing experience
 - Configure readthedocs with `sphinx`
-- Added **docs** badge
+- Added **docs** badge in `README.md`
 
 ### Changed
 
+- Fixed Pillow vulnerabilities by bumped it to `8.1.1`
+- python caching updated in `app-ci.yml`
 - `Literal` typing removed from `clickgen.util` & `clickgen.core`
 - Fixed #23 packaging issue of `XPackager`
 - Fixed #22 Inside `util.PNGProvider`
