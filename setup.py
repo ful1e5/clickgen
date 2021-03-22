@@ -28,7 +28,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="clickgen",
-    version="1.1.8",
+    version="1.1.9",
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
     description="The hassle-free cursor building toolbox 🧰",
