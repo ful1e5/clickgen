@@ -3,13 +3,13 @@
 
 from pathlib import Path
 from string import Template
-from typing import Dict, Iterator, List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 
 # --- X11
 
 THEME_FILES_TEMPLATES: Dict[str, Template] = {
-    "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="hicolor"'),
+    "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="$theme_name"'),
     "index.theme": Template(
         '[Icon Theme]\nName=$theme_name\nComment=$comment\nInherits="hicolor"'
     ),
@@ -17,7 +17,20 @@ THEME_FILES_TEMPLATES: Dict[str, Template] = {
 
 
 def XPackager(directory: Path, theme_name: str, comment: str) -> None:
-    """ Create a crispy `XCursors` theme package. """
+    """This packager generates ``cursor.theme`` & ``index.theme`` files at ``directory``.
+
+    :param directory: Path where ``.theme`` files save.
+    :param directory: Path
+
+    :param theme_name: Cursor theme name.
+    :param theme_name: str
+
+    :param comment: Extra information about this cursor theme.
+    :param comment: str
+
+    :returns: Nothing
+    :rtype: None
+    """
 
     # Writing all .theme files
     files: Dict[str, str] = {}
@@ -57,7 +70,7 @@ HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%point
 "$Link"
 "$Move"
 "$Diagonal_2"
-"$Vertical"   
+"$Vertical"
 "$Horizontal"
 "$Diagonal_1"
 "$Handwriting"
@@ -67,27 +80,27 @@ HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%point
 "$Alternate"
 
 [Strings]
-CUR_DIR       = "Cursors\\$theme_name Cursors"
-SCHEME_NAME   = "$theme_name Cursors"
-pointer       = "$Default"
-help		  = "$Help"
-work		  = "$Work"
-busy		  = "$Busy"
-cross		  = "$Cross"
-text		  = "$IBeam"
-hand		  = "$Handwriting"
-unavailiable  = "$Unavailiable"
-vert		  = "$Vertical"   
-horz		  = "$Horizontal"
-dgn1		  = "$Diagonal_1"
-dgn2		  = "$Diagonal_2"
-move		  = "$Move"
-alternate	  = "$Alternate"
-link		  = "$Link"
+CUR_DIR           = "Cursors\\$theme_name Cursors"
+SCHEME_NAME       = "$theme_name Cursors"
+pointer           = "$Default"
+help              = "$Help"
+work              = "$Work"
+busy              = "$Busy"
+cross             = "$Cross"
+text              = "$IBeam"
+hand              = "$Handwriting"
+unavailiable      = "$Unavailiable"
+vert              = "$Vertical"
+horz              = "$Horizontal"
+dgn1              = "$Diagonal_1"
+dgn2              = "$Diagonal_2"
+move              = "$Move"
+alternate         = "$Alternate"
+link              = "$Link"
 """
 )
 
-REQUIRED_WIN_CURSORS: Iterator[str] = {
+REQUIRED_WIN_CURSORS: Set[str] = {
     "Work",
     "Busy",
     "Default",
@@ -113,9 +126,28 @@ def WindowsPackager(
     author: str,
     website_url: Optional[str] = None,
 ) -> None:
-    """ Create a crispy `Windows` cursor theme package. """
+    """This packager generates ``install.inf`` files at ``directory``. Also, Cursor extensions is identified by its type (.cur/.ani).
 
-    files: Iterator[Path] = []
+    :param directory: Path where ``.theme`` files save.
+    :param directory: Path
+
+    :param theme_name: Cursor theme name.
+    :param theme_name: str
+
+    :param comment: Extra information about this cursor theme.
+    :param comment: str
+
+    :param author: Author name.
+    :param author: str
+
+    :param website_url: Website web address.(Useful for **bug reports**)
+    :param author: str (, optional)
+
+    :returns: Nothing
+    :rtype: None
+    """
+
+    files: List[Path] = []
 
     for extensions in ("*.ani", "*.cur"):
         for i in sorted(directory.glob(extensions)):
@@ -137,7 +169,7 @@ def WindowsPackager(
         raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
     if website_url:
-        comment: str = f"{comment}\n{website_url}"
+        comment = f"{comment}\n{website_url}"
 
     # Real magic of python
     # replace $Default => Default.ani | Default.cur (as file was provided)

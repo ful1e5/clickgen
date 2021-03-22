@@ -1,11 +1,12 @@
 [![CI](https://github.com/ful1e5/clickgen/workflows/CI/badge.svg)](https://github.com/ful1e5/clickgen/actions)
 [![PyPI - Wheel](https://img.shields.io/pypi/wheel/pytype)](https://pypi.org/project/clickgen/#files)
+[![Docs](https://readthedocs.org/projects/clickgen/badge/?version=latest)](https://clickgen.readthedocs.io/en/latest/)
 [![Code Coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 [![CodeFactor](https://www.codefactor.io/repository/github/ful1e5/clickgen/badge/main)](https://www.codefactor.io/repository/github/ful1e5/clickgen/overview/main)
 
 # Clickgen
 
-The hustle free cursor building toolbox 🧰
+The hassle-free cursor building toolbox 🧰
 
 **clickgen** is _API_ for building **X11** and **Windows** Cursors from `.png` files. clickgen is using `anicursorgen` and `xcursorgen` _under the hood_.
 
@@ -105,7 +106,6 @@ with CursorAlias.from_bitmap(png=["all-scroll-01.png", "all-scroll-02.png"], hot
     XCursor.create(alias_file=x_cfg, out_dir=Path("."))
 
 ```
-
 
 ### create a static `Windows Cursor` (.cur)
 

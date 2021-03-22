@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from random import randint
-from tests.utils import create_test_image
-from build.lib.clickgen.core import CursorAlias
 from pathlib import Path
+from random import randint
 
 import pytest
+
 from clickgen.builders import AnicursorgenArgs, WindowsCursor, XCursor
+from clickgen.core import CursorAlias
+from tests.utils import create_test_image
 
 #
 # XCursor

@@ -8,8 +8,9 @@ from random import randint
 from typing import List, Optional
 
 import pytest
-from clickgen.core import Bitmap, CursorAlias
 from PIL import Image
+
+from clickgen.core import Bitmap, CursorAlias
 
 from .utils import create_test_image
 
@@ -206,15 +207,6 @@ def test_static_Bitmap_context_manager(static_png, hotspot) -> None:
         assert bmp.x_hot == hotspot[0]
         assert bmp.y_hot == hotspot[1]
 
-    assert bmp.png is None
-    assert bmp.animated is None
-    assert bmp.height is None
-    assert bmp.width is None
-    assert bmp.compress is None
-    assert bmp.key is None
-    assert bmp.x_hot is None
-    assert bmp.y_hot is None
-
 
 def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
     with Bitmap(animated_png, hotspot) as bmp:
@@ -229,15 +221,6 @@ def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
         assert bmp.x_hot == hotspot[0]
         assert bmp.y_hot == hotspot[1]
 
-    assert bmp.grouped_png is None
-    assert bmp.animated is None
-    assert bmp.height is None
-    assert bmp.width is None
-    assert bmp.compress is None
-    assert bmp.key is None
-    assert bmp.x_hot is None
-    assert bmp.y_hot is None
-
 
 def test_Bitmap_png_must_had_equal_width_and_height_exception(
     image_dir, hotspot
@@ -251,8 +234,8 @@ def test_animated_Bitmap_all_png_size_must_be_equal_exception(
     image_dir, hotspot
 ) -> None:
     png = create_test_image(image_dir, 2, size=(2, 2))
-    png.append(create_test_image(image_dir, 1, size=(3, 6)))
-    png.append(create_test_image(image_dir, 1, size=(3, 3)))
+    png.extend(create_test_image(image_dir, 1, size=(3, 6)))
+    png.extend(create_test_image(image_dir, 1, size=(3, 3)))
 
     with pytest.raises(ValueError):
         assert Bitmap(png, hotspot)
@@ -298,6 +281,8 @@ def test_static_Bitmap_resize_without_save(static_png) -> None:
     assert return_image is not None
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
+
+    assert isinstance(return_image, Image.Image)
     assert return_image.size == new_size
 
 
@@ -361,10 +346,13 @@ def test_static_Bitmap_reproduce_without_save(static_png) -> None:
         size=(10, 10), canvas_size=(10, 10), position="center", save=False
     )
     assert return_value is not None
+    assert isinstance(return_value, list) is False
+    assert isinstance(return_value, Image.Image)
+    assert return_value.size == (10, 10)
+
     assert bmp.size == (20, 20)
     assert bmp.x_hot == 10
     assert bmp.y_hot == 10
-    assert return_value.size == (10, 10)
 
 
 def test_animated_Bitmap_reproduce_with_save(animated_png) -> None:
@@ -410,7 +398,7 @@ def test_static_Bitmap_rename(static_png: Path, hotspot) -> None:
         assert bmp.grouped_png
 
 
-def test_animated_Bitmap_rename(animated_png: Path, hotspot) -> None:
+def test_animated_Bitmap_rename(animated_png: List[Path], hotspot) -> None:
     bmp = Bitmap(animated_png, hotspot)
     assert bmp.key == "test"
     assert bmp.grouped_png == animated_png
@@ -566,10 +554,6 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
         directory = ca.alias_dir
 
     assert directory.exists() is False or list(directory.iterdir()) == []
-    assert ca.bitmap is None
-    assert ca.alias_dir is None
-    assert ca.prefix is None
-    assert ca.garbage_dirs is None
 
     with CursorAlias.from_bitmap(static_png, hotspot) as ca1:
         with pytest.raises(AttributeError) as excinfo:
@@ -579,8 +563,6 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
         )
         ca1.create((10, 10))
         assert ca1.alias_file is not None
-
-    assert ca1.alias_file is None
 
 
 def test_static_CursorAlias_str(static_bitmap):
@@ -1017,7 +999,6 @@ def test_CursorAlias_reproduce(static_png, hotspot) -> None:
         assert f"{alias.prefix}__garbage_bmps__" in alias.garbage_dirs[0].name
         assert file_tree(reproduced_alias) == ["32x32", "test-0.alias", "test-0.png"]
 
-    assert alias.garbage_dirs is None
     assert (
         sorted(filter(lambda x: x.is_file is True, testing_dirs[0].glob("*/**"))) == []
     )

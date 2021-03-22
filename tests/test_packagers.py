@@ -18,7 +18,7 @@ def test_XPackger(image_dir: Path) -> None:
     assert idx_theme.exists() is True
 
     with cur_theme.open() as f:
-        assert f.readlines() == ["[Icon Theme]\n", "Name=test\n", 'Inherits="hicolor"']
+        assert f.readlines() == ["[Icon Theme]\n", "Name=test\n", 'Inherits="test"']
 
     with idx_theme.open() as f:
         assert f.readlines() == [
@@ -153,8 +153,8 @@ def test_WindowsPackager_without_website_url(
 
     shutil.rmtree(d)
 
-def test_WindowsPackager_with_website_url(
 
+def test_WindowsPackager_with_website_url(
     tmpdir_factory: pytest.TempdirFactory,
 ) -> None:
     d = Path(tmpdir_factory.mktemp("test_image"))
@@ -174,7 +174,9 @@ def test_WindowsPackager_with_website_url(
     create_test_cursor(d, "Unavailiable.cur")
     create_test_cursor(d, "Alternate.cur")
 
-    WindowsPackager(d, theme_name="test", comment="testing", author="😎",website_url="testing.test")
+    WindowsPackager(
+        d, theme_name="test", comment="testing", author="😎", website_url="testing.test"
+    )
 
     install_file = d / "install.inf"
 

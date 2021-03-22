@@ -8,10 +8,17 @@ from shutil import which
 from setuptools import setup
 
 
+def make_path() -> str:
+    path = which("make")
+    if not path:
+        raise Exception("'make' command not found")
+    return path
+
+
 class install(_install):
     def run(self):
-        subprocess.call([which("make"), "clean", "-C", "xcursorgen"])
-        subprocess.call([which("make"), "-C", "xcursorgen"])
+        subprocess.call([make_path(), "clean", "-C", "xcursorgen"])
+        subprocess.call([make_path(), "-C", "xcursorgen"])
         _install.run(self)
 
 
@@ -21,10 +28,10 @@ with open("README.md", "r") as fh:
 
 setup(
     name="clickgen",
-    version="1.1.8",
+    version="1.1.9",
     author="Kaiz Khatri",
     author_email="kaizmandhu@gmail.com",
-    description="The hustle free cursor building toolbox 🧰",
+    description="The hassle-free cursor building toolbox 🧰",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ful1e5/clickgen",
@@ -35,7 +42,7 @@ setup(
         "Funding": "https://www.paypal.me/kaizkhatri",
         "Changelog": "https://github.com/ful1e5/clickgen/blob/main/CHANGELOG.md",
     },
-    install_requires=["Pillow>=7.2.0"],
+    install_requires=["Pillow>=8.1.1"],
     packages=["clickgen"],
     package_dir={"clickgen": "clickgen"},
     classifiers=[

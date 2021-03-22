@@ -8,18 +8,18 @@ import shutil
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Set, TypeVar, Union
+from typing import List, Set, Union
 
 from clickgen.db import DATA, CursorDB
 
-LikePath = TypeVar("LikePath", str, Path)
-
 
 @contextmanager
-def chdir(directory: LikePath):
-    """Temporary change `working` directory.
+def chdir(directory: Union[str, Path]):
+    """Temporary change working directory using `with` syntax.
 
-    :directory: path to directory.
+    :param directory: path to directory.
+    :type directory: Union[str, pathlib.Path]
+
     """
 
     prev_cwd = os.getcwd()
@@ -30,34 +30,38 @@ def chdir(directory: LikePath):
         os.chdir(prev_cwd)
 
 
-def remove_util(p: LikePath) -> None:
-    """Remove this file, directory or symlink. If Path exits on filesystem.
+def remove_util(p: Union[str, Path]) -> None:
+    """Remove this file, directory or symlink.
 
-    :p: path to directory.
+    :param p: path to directory.
+    :type p: Union[str, pathlib.Path]
+    :return: None
+    :rtype: None
+
     """
+    p_obj: Path = Path(p)
 
-    if isinstance(p, str):
-        p: Path = Path(p)
-
-    if p.exists():
-        if p.is_dir():
-            shutil.rmtree(p)
+    if p_obj.exists():
+        if p_obj.is_dir():
+            shutil.rmtree(p_obj)
         else:
-            p.unlink()
+            p_obj.unlink()
     else:
         pass
 
 
-class PNGProvider(object):
+class PNGProvider:
     """Provide organized `.png` files."""
 
     bitmaps_dir: Path
     __pngs: List[str] = []
 
-    def __init__(self, bitmaps_dir: LikePath) -> None:
+    def __init__(self, bitmaps_dir: Union[str, Path]) -> None:
         """Init `PNGProvider`.
 
-        :bitmaps_dir: path to directory where `.png` files are stored.
+        :param bitmaps_dir: Path to directory where `.png` files are stored.
+        :type bitmaps_dir: Union[str, Path]
+
         """
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
@@ -70,16 +74,26 @@ class PNGProvider(object):
             )
 
     def get(self, key: str) -> Union[List[Path], Path]:
-        """Get `.png` file/s from key.
-        This method return file location in `pathlib.Path` instance.
+        """Retrieve `pathlib.Path` of filtered `.png` file/s.
 
-        Also, this method is not supported directory sync, Which means creating a new file or deleting a file not affect this method.
+        This method return file location in `pathlib.Path` object.
 
-        The only way to sync the directory is, By creating a new instance of the `PNGProvider` class.
+        Runtime directory `sync` is **not supported**, Which means creating
+        or deleting a file on programs execution is not update class `__pngs`
+        state.
 
-        :key: `.png` filename without extension.
+        :param key: `key` is filename
+        :type key: str
+        :return: Returns `pathlib.Path` object or `list` of `pathlib.Path`
+                 object/s.
         """
-        r = re.compile(key)
+
+        k = key.split(".")
+        if len(k) == 1:
+            r = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
+        else:
+            r = re.compile(fr"^{k[0]}(?:-\d+)?.{k[1]}$")
+
         matched_pngs = filter(r.match, self.__pngs)
 
         paths = list(set(map(lambda x: self.bitmaps_dir / x, matched_pngs)))
@@ -93,7 +107,8 @@ def add_missing_xcursors(
     data: List[Set[str]] = DATA,
     rename: bool = False,
     force: bool = False,
-) -> bool:
+) -> None:
+    """Create symlinks of missing ``Xcursor``"""
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())
 
@@ -103,7 +118,7 @@ def add_missing_xcursors(
     if force:
         for xcursor in directory.iterdir():
             if xcursor.is_symlink():
-                xcursor.unlink(xcursor)
+                xcursor.unlink(missing_ok=True)
 
     xcursors = sorted(directory.iterdir())
 
