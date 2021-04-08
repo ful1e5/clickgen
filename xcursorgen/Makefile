@@ -10,4 +10,4 @@ xcursorgen.so: xcursorgen.c
 	$(CP) xcursorgen.so $(OUT_DIR)/xcursorgen.so
 
 clean:
-	rm -rf *.o *.so $(OUT_DIR)/xcursorgen.so
+	@rm -rf *.o *.so $(OUT_DIR)/xcursorgen.so
