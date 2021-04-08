@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+
+- Proper typing inheritation inside `clickgen/core.pyi`
+- Linting & Typing fixed in `XCursor` Class `clickgen/builder.py`
+
 ## [1.1.9] - 22 Mar 2021
 
 ### Added
