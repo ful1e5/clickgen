@@ -84,8 +84,7 @@ class XCursor:
         exec_with_error: bool = bool(self._lib.main(args, kwargs))
         if exec_with_error:
             raise RuntimeError(
-                f"'xcursorgen' failed to generate XCursor from \
-                        '{self.config_file.name}'"
+                f"'xcursorgen' failed to generate XCursor from '{self.config_file.name}'"
             )
 
     @classmethod
