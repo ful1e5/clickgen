@@ -23,7 +23,8 @@ Color = Tuple[int, int, int, int]
 
 class XCursor:
     """
-    Build `XCursor` from the `.in` config file. This class is using `xcursorgen` internally.
+    Build `XCursor` from the `.in` config file. \
+    This class is using `xcursorgen` internally.
     """
 
     config_file: Path
@@ -45,13 +46,10 @@ class XCursor:
             )
 
         self.config_file: Path = config_file
-        self.prefix: Path = config_file.parent
-
-        self.out_dir: Path = out_dir / "cursors"
-
+        self.prefix = config_file.parent
+        self.out_dir = out_dir / "cursors"
         self.out_dir.mkdir(parents=True, exist_ok=True)
-
-        self.out: Path = self.out_dir / self.config_file.stem
+        self.out = self.out_dir / self.config_file.stem
 
     def gen_argv_ctypes(self, argv: List[str]) -> Any:
         """ Convert `string` arguments to `ctypes` pointer. """
@@ -71,10 +69,13 @@ class XCursor:
 
         argv: List[str] = [
             "xcursorgen",
-            "-p",  # prefix args for xcursorgen (do not remove)
-            str(self.prefix.absolute()),  # prefix args for xcursorgen (do not remove)
-            str(self.config_file.absolute()),  # cursor's config/alias file
-            str(self.out.absolute()),  # xcursor/output path
+            # prefix args for xcursorgen (do not remove)
+            "-p",
+            str(self.prefix.absolute()),
+            # cursor's config/alias file
+            str(self.config_file.absolute()),
+            # xcursor/output path
+            str(self.out.absolute()),
         ]
 
         kwargs: ctypes.pointer[ctypes.c_char] = self.gen_argv_ctypes(argv)
@@ -83,7 +84,8 @@ class XCursor:
         exec_with_error: bool = bool(self._lib.main(args, kwargs))
         if exec_with_error:
             raise RuntimeError(
-                f"'xcursorgen' failed to generate XCursor from '{self.config_file.name}'"
+                f"'xcursorgen' failed to generate XCursor from \
+                        '{self.config_file.name}'"
             )
 
     @classmethod
