@@ -12,8 +12,10 @@ from typing import Any, List, NamedTuple, Tuple
 
 from PIL import Image, ImageFilter
 
-from clickgen import __path__ as clickgen_pkg_root
+from clickgen import __path__
 from clickgen.util import remove_util
+
+clickgen_pypi_path = "".join(map(str, __path__))
 
 # Typings
 Frame = Tuple[int, int, int, str, int]
@@ -33,7 +35,7 @@ class XCursor:
     out: Path
 
     # main function ctypes define
-    _lib_location: Path = Path(clickgen_pkg_root[0]) / "xcursorgen.so"
+    _lib_location: Path = Path(clickgen_pypi_path) / "xcursorgen.so"
     _lib: CDLL = CDLL(str(_lib_location.absolute()))
     _LP_c_char = ctypes.POINTER(ctypes.c_char)
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)
@@ -98,15 +100,20 @@ class AnicursorgenArgs(NamedTuple):
     """
     Structure `anicursorgen.py` CLI arguments.
 
-    @add_shadow : Do not generate shadows for cursors (assign False to cancel its effect).
+    @add_shadow : Do not generate shadows for cursors \
+            (assign False to cancel its effect).
 
-    @blur: Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).
+    @blur: Blur radius, in percentage of the canvas size \
+            (default is 3.125, set to 0 to disable blurring).
 
-    @color: Shadow color in (RR,GG,BB,AA) (default is (0, 0, 0, 64)).
+    @color: Shadow color in (RR,GG,BB,AA) \
+            (default is (0, 0, 0, 64)).
 
-    @down_shift: Shift shadow down by this percentage of the canvas size (default is 3.125).
+    @down_shift: Shift shadow down by this percentage of the canvas size \
+            (default is 3.125).
 
-    @right_shift: Shift shadow right by this percentage of the canvas size (default is 9.375).
+    @right_shift: Shift shadow right by this percentage of the canvas size \
+            (default is 9.375).
     """
 
     add_shadows: bool = False
@@ -118,7 +125,8 @@ class AnicursorgenArgs(NamedTuple):
 
 class WindowsCursor:
     """
-    Build Windows cursors from `.in` configs files. Code inspiration from `anicursorgen.py`.
+    Build Windows cursors from `.in` configs files. Code inspiration from \
+            `anicursorgen.py`.
 
     anicursorgen
 
