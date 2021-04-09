@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `Makefile` at the project root added for development operations command
 - Generate `stubfiles` from `make stubgen` command
 - `make clean` command for cleaning clickgen cache
+- Build `xcursorgen` with extra flags
+- `xcursorgen.c` formated with tool **[indent](https://www.gnu.org/software/indent/)**
 
 ### Changed
 
@@ -19,7 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Proper typing inheritation inside `clickgen/core.pyi`
 - Linting & Typing fixed in `XCursor` Class `clickgen/builder.py`
 - `xcursorgen/makefile` renamed to `xcursorgen/Makefile`
-- Supress **remove** commands inside `xcursorgen/Makefile`
 
 ## [1.1.9] - 22 Mar 2021
 
