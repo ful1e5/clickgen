@@ -17,11 +17,6 @@ from clickgen.util import remove_util
 
 clickgen_pypi_path = "".join(map(str, __path__))
 
-# Typings
-Frame = Tuple[int, int, int, str, int]
-Frames = List[Frame]
-Color = Tuple[int, int, int, int]
-
 
 class XCursor:
     """
@@ -96,24 +91,32 @@ class XCursor:
         return cursor.out
 
 
-class AnicursorgenArgs(NamedTuple):
+Color = Tuple[int, int, int, int]
+
+
+class Options(NamedTuple):
     """
     Structure `anicursorgen.py` CLI arguments.
 
-    @add_shadow : Do not generate shadows for cursors \
+    :param add_shadow : Do not generate shadows for cursors \
             (assign False to cancel its effect).
+    :type add_shadow : bool
 
-    @blur: Blur radius, in percentage of the canvas size \
+    :param blur: Blur radius, in percentage of the canvas size \
             (default is 3.125, set to 0 to disable blurring).
+    :type blur: float
 
-    @color: Shadow color in (RR,GG,BB,AA) \
+    :param color: Shadow color in (RR,GG,BB,AA) \
             (default is (0, 0, 0, 64)).
+    :type color: Tuple[int, int, int, int]
 
-    @down_shift: Shift shadow down by this percentage of the canvas size \
-            (default is 3.125).
+    :param down_shift: Shift shadow down by this percentage of the \
+            canvas size (default is 3.125)
+    :type down_shift: float
 
-    @right_shift: Shift shadow right by this percentage of the canvas size \
-            (default is 9.375).
+    :param right_shift: Shift shadow right by this percentage of the\
+            canvas size (default is 9.375).
+    :type right_shift: float
     """
 
     add_shadows: bool = False
@@ -121,6 +124,11 @@ class AnicursorgenArgs(NamedTuple):
     color: Color = (0, 0, 0, 64)
     down_shift: float = 3.125
     right_shift: float = 9.375
+
+
+# Typings
+Frame = Tuple[int, int, int, str, int]
+Frames = List[Frame]
 
 
 class WindowsCursor:
@@ -148,17 +156,17 @@ class WindowsCursor:
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     """
 
-    args: AnicursorgenArgs
+    options: Options
     config_file: Path
     prefix: Path
     out_dir: Path
     out: Path
 
-    def __init__(self, config_dir: Path, out_dir: Path, args: AnicursorgenArgs) -> None:
+    def __init__(self, config_dir: Path, out_dir: Path, options: Options) -> None:
         self.config_file = config_dir
         self.prefix = config_dir.parent
         self.out_dir = out_dir
-        self.args = args
+        self.options = options
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
@@ -337,15 +345,15 @@ class WindowsCursor:
                     )
 
     def create_shadow(self, orig: Image) -> Tuple[int, Any]:
-        blur_px = orig.size[0] / 100.0 * self.args.blur
-        right_px = int(orig.size[0] / 100.0 * self.args.right_shift)
-        down_px = int(orig.size[1] / 100.0 * self.args.down_shift)
+        blur_px = orig.size[0] / 100.0 * self.options.blur
+        right_px = int(orig.size[0] / 100.0 * self.options.right_shift)
+        down_px = int(orig.size[1] / 100.0 * self.options.down_shift)
 
         shadow = Image.new("RGBA", orig.size, (0, 0, 0, 0))
-        self.shadowize(shadow, orig, self.args.color)
+        self.shadowize(shadow, orig, self.options.color)
         shadow.load()
 
-        if self.args.blur > 0:
+        if self.options.blur > 0:
             crop = (
                 int(math.floor(-blur_px)),
                 int(math.floor(-blur_px)),
@@ -426,7 +434,7 @@ class WindowsCursor:
 
             frame_png = Image.open(frame[3])
 
-            if self.args.add_shadows:
+            if self.options.add_shadows:
                 succeeded, shadowed = self.create_shadow(frame_png)
                 if succeeded == 0:
                     frame_png.close()
@@ -486,7 +494,7 @@ class WindowsCursor:
                 self.copy_to(out, buf)
 
     @classmethod
-    def create(cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
+    def create(cls, alias_file: Path, out_dir: Path, args=Options()) -> Path:
         cursor = cls(alias_file, out_dir, args)
         cursor.generate()
         return cursor.out

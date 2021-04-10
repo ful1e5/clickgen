@@ -1,12 +1,11 @@
 import io
 from PIL import Image
+from clickgen import __path__ as __path__
 from clickgen.util import remove_util as remove_util
 from pathlib import Path
 from typing import Any, List, NamedTuple, Tuple
 
-Frame = Tuple[int, int, int, str, int]
-Frames = List[Frame]
-Color = Tuple[int, int, int, int]
+clickgen_pypi_path: Any
 
 class XCursor:
     config_file: Path
@@ -18,21 +17,24 @@ class XCursor:
     def generate(self) -> None: ...
     @classmethod
     def create(cls: Any, alias_file: Path, out_dir: Path) -> Path: ...
+Color = Tuple[int, int, int, int]
 
-class AnicursorgenArgs(NamedTuple):
+class Options(NamedTuple):
     add_shadows: bool = ...
     blur: float = ...
     color: Color = ...
     down_shift: float = ...
     right_shift: float = ...
+Frame = Tuple[int, int, int, str, int]
+Frames = List[Frame]
 
 class WindowsCursor:
-    args: AnicursorgenArgs
+    options: Options
     config_file: Path
     prefix: Path
     out_dir: Path
     out: Path
-    def __init__(self, config_dir: Path, out_dir: Path, args: AnicursorgenArgs) -> None: ...
+    def __init__(self, config_dir: Path, out_dir: Path, options: Options) -> None: ...
     def get_frames(self) -> Frames: ...
     @staticmethod
     def frames_have_animation(frames: Frames) -> bool: ...

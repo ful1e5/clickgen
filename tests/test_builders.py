@@ -6,7 +6,7 @@ from random import randint
 
 import pytest
 
-from clickgen.builders import AnicursorgenArgs, WindowsCursor, XCursor
+from clickgen.builders import Options, WindowsCursor, XCursor
 from clickgen.core import CursorAlias
 from tests.utils import create_test_image
 
@@ -72,7 +72,7 @@ def test_XCursor_create_with_animated_config(animated_config, image_dir) -> None
 
 
 def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
-    win = WindowsCursor(static_config, image_dir, args=AnicursorgenArgs())
+    win = WindowsCursor(static_config, image_dir, options=Options())
 
     f1 = [
         (10, -1, -1, "test-0.png", 10),
@@ -129,7 +129,7 @@ def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
 
 
 def test_WindowsCursor(static_config, image_dir) -> None:
-    win = WindowsCursor(static_config, image_dir, args=AnicursorgenArgs())
+    win = WindowsCursor(static_config, image_dir, options=Options())
     assert win.config_file == static_config
 
     # We know 'out_dir' is not exists
@@ -137,7 +137,7 @@ def test_WindowsCursor(static_config, image_dir) -> None:
 
 
 def test_WindowsCursor_generate_with_static_config(static_config, image_dir) -> None:
-    win = WindowsCursor(static_config, image_dir, args=AnicursorgenArgs())
+    win = WindowsCursor(static_config, image_dir, options=Options())
     win.generate()
 
     assert win.out.exists() is True
@@ -148,7 +148,7 @@ def test_WindowsCursor_generate_with_static_config(static_config, image_dir) -> 
 def test_WindowsCursor_generate_with_animated_config(
     animated_config, image_dir
 ) -> None:
-    win = WindowsCursor(animated_config, image_dir, args=AnicursorgenArgs())
+    win = WindowsCursor(animated_config, image_dir, options=Options())
     win.generate()
 
     assert win.out.exists() is True
@@ -159,8 +159,8 @@ def test_WindowsCursor_generate_with_animated_config(
 def test_WindowsCursor_generate_with_static_config_and_shadow(
     static_config, image_dir
 ) -> None:
-    args = AnicursorgenArgs(add_shadows=True)
-    win = WindowsCursor(static_config, image_dir, args)
+    options = Options(add_shadows=True)
+    win = WindowsCursor(static_config, image_dir, options)
     win.generate()
 
     assert win.out.exists() is True
@@ -171,8 +171,8 @@ def test_WindowsCursor_generate_with_static_config_and_shadow(
 def test_WindowsCursor_generate_with_animated_config_and_shadow(
     animated_config, image_dir
 ) -> None:
-    args = AnicursorgenArgs(add_shadows=True)
-    win = WindowsCursor(animated_config, image_dir, args)
+    options = Options(add_shadows=True)
+    win = WindowsCursor(animated_config, image_dir, options)
     win.generate()
 
     assert win.out.exists() is True
