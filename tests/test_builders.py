@@ -127,6 +127,20 @@ def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
         == "Frameset 1 has duration 1 for framesize 9, but 10 for framesize 10"
     )
 
+    f4 = [
+        (10, -1, -1, "test-0.png", 10),
+        (10, -1, -1, "test-1.png", 10),
+        (10, -1, -1, "test-2.png", 10),
+        (10, -1, -1, "test-3.png", 10),
+        (9, -1, -1, "test-0.png", 10),
+        (9, -1, -1, "test-1.png", 10),
+        (9, -1, -1, "test-2.png", 10),
+        (9, -1, -1, "test-3.png", 10),
+    ]
+    framesets = win.make_framesets(f4)
+    ff = framesets[0][0]
+    print(ff[0])
+
 
 def test_WindowsCursor(static_config, image_dir) -> None:
     win = WindowsCursor(static_config, image_dir, options=Options())

@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build `xcursorgen` with extra flags
 - `xcursorgen.c` formated with tool **[indent](https://www.gnu.org/software/indent/)**
 - `make dev` command for development purpose
+- Linting & typing fixes inside `clickgen.builders`
 
 ### Changed
 

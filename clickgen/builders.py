@@ -126,11 +126,6 @@ class Options(NamedTuple):
     right_shift: float = 9.375
 
 
-# Typings
-Frame = Tuple[int, int, int, str, int]
-Frames = List[Frame]
-
-
 class WindowsCursor:
     """
     Build Windows cursors from `.in` configs files. Code inspiration from \
@@ -170,9 +165,9 @@ class WindowsCursor:
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
-    def get_frames(self) -> Frames:
+    def get_frames(self) -> List:
         in_buffer = self.config_file.open("rb")
-        frames: Frames = []
+        frames = []
 
         for line in in_buffer.readlines():
             line = line.decode()
@@ -196,7 +191,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: Frames) -> bool:
+    def frames_have_animation(frames: List) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -208,8 +203,8 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: Frames) -> Frames:
-        framesets: Frames = []
+    def make_framesets(frames: List) -> List:
+        framesets = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -251,7 +246,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: io.BufferedWriter, buf: io.BytesIO) -> None:
+    def copy_to(out: io.BytesIO, buf: io.BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -261,8 +256,8 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: Frames,
-        out_buffer: io.BufferedWriter,
+        frames: List,
+        out_buffer: io.BytesIO,
     ) -> None:
         framesets = self.make_framesets(frames)
 
@@ -293,13 +288,13 @@ class WindowsCursor:
 
         rates = set()
         for frameset in framesets:
-            rates.add(int(frameset[0][4]))
+            rates.add(frameset[0][4])
 
         if len(rates) != 1:
             buf.write(b"rate")
             buf.write(pack("<I", len(framesets) * 4))
             for frameset in framesets:
-                buf.write(pack("<I", int(frameset[0][4])))
+                buf.write(pack("<I", frameset[0][4]))
 
         buf.write(b"LIST")
         list_len_pos = buf.seek(0, io.SEEK_CUR)
@@ -330,7 +325,7 @@ class WindowsCursor:
         self.copy_to(out_buffer, buf)
 
     @staticmethod
-    def shadowize(shadow: Image, orig: Image, color: Color) -> None:
+    def shadowize(shadow, orig, color: Color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -344,7 +339,7 @@ class WindowsCursor:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def create_shadow(self, orig: Image) -> Tuple[int, Any]:
+    def create_shadow(self, orig: Image.Image) -> Tuple[int, Image.Image]:
         blur_px = orig.size[0] / 100.0 * self.options.blur
         right_px = int(orig.size[0] / 100.0 * self.options.right_shift)
         down_px = int(orig.size[1] / 100.0 * self.options.down_shift)
@@ -367,7 +362,7 @@ class WindowsCursor:
             shadow = shadow.filter(flt)
         shadow.load()
 
-        shadowed: Image = Image.new("RGBA", orig.size, (0, 0, 0, 0))
+        shadowed = Image.new("RGBA", orig.size, (0, 0, 0, 0))
         shadowed.paste(shadow, (right_px, down_px))
         shadowed.crop((0, 0, orig.size[0], orig.size[1]))
         shadowed = Image.alpha_composite(shadowed, orig)
@@ -375,11 +370,11 @@ class WindowsCursor:
         return (0, shadowed)
 
     @staticmethod
-    def write_png(out: io.BufferedWriter, frame_png: Image) -> None:
+    def write_png(out, frame_png: Image.Image) -> None:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out: io.BufferedWriter, frame: Frame, frame_png: Image) -> None:
+    def write_cur(out, frame: List, frame_png: Image.Image) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -406,7 +401,7 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: Frames, animated: bool = False) -> io.BytesIO:
+    def make_cur(self, frames: List, animated: bool = False) -> io.BytesIO:
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
