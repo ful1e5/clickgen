@@ -22,4 +22,4 @@ pip_install:
 build: clean
 	python3 setup.py install --user sdist bdist_wheel 
 
-dev: clean setup_install pip_install test
+dev: clean stubgen setup_install pip_install test
