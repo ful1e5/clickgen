@@ -8,7 +8,7 @@ import shlex
 from ctypes import CDLL
 from pathlib import Path
 from struct import pack
-from typing import Any, List, NamedTuple, Tuple
+from typing import Any, List, NamedTuple, Tuple, Union
 
 from PIL import Image, ImageFilter
 
@@ -246,7 +246,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: io.BytesIO, buf: io.BytesIO) -> None:
+    def copy_to(out: Union[io.BytesIO, io.BufferedWriter], buf: io.BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -257,7 +257,7 @@ class WindowsCursor:
     def make_ani(
         self,
         frames: List,
-        out_buffer: io.BytesIO,
+        out_buffer: Union[io.BytesIO, io.BufferedWriter],
     ) -> None:
         framesets = self.make_framesets(frames)
 
