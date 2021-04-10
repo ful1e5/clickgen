@@ -12,13 +12,10 @@ from typing import Any, List, NamedTuple, Tuple
 
 from PIL import Image, ImageFilter
 
-from clickgen import __path__ as clickgen_pkg_root
+from clickgen import __path__
 from clickgen.util import remove_util
 
-# Typings
-Frame = Tuple[int, int, int, str, int]
-Frames = List[Frame]
-Color = Tuple[int, int, int, int]
+clickgen_pypi_path = "".join(map(str, __path__))
 
 
 class XCursor:
@@ -33,7 +30,7 @@ class XCursor:
     out: Path
 
     # main function ctypes define
-    _lib_location: Path = Path(clickgen_pkg_root[0]) / "xcursorgen.so"
+    _lib_location: Path = Path(clickgen_pypi_path) / "xcursorgen.so"
     _lib: CDLL = CDLL(str(_lib_location.absolute()))
     _LP_c_char = ctypes.POINTER(ctypes.c_char)
     _LP_LP_c_char = ctypes.POINTER(_LP_c_char)
@@ -94,19 +91,32 @@ class XCursor:
         return cursor.out
 
 
-class AnicursorgenArgs(NamedTuple):
+Color = Tuple[int, int, int, int]
+
+
+class Options(NamedTuple):
     """
     Structure `anicursorgen.py` CLI arguments.
 
-    @add_shadow : Do not generate shadows for cursors (assign False to cancel its effect).
+    :param add_shadow : Do not generate shadows for cursors \
+            (assign False to cancel its effect).
+    :type add_shadow : bool
 
-    @blur: Blur radius, in percentage of the canvas size (default is 3.125, set to 0 to disable blurring).
+    :param blur: Blur radius, in percentage of the canvas size \
+            (default is 3.125, set to 0 to disable blurring).
+    :type blur: float
 
-    @color: Shadow color in (RR,GG,BB,AA) (default is (0, 0, 0, 64)).
+    :param color: Shadow color in (RR,GG,BB,AA) \
+            (default is (0, 0, 0, 64)).
+    :type color: Tuple[int, int, int, int]
 
-    @down_shift: Shift shadow down by this percentage of the canvas size (default is 3.125).
+    :param down_shift: Shift shadow down by this percentage of the \
+            canvas size (default is 3.125)
+    :type down_shift: float
 
-    @right_shift: Shift shadow right by this percentage of the canvas size (default is 9.375).
+    :param right_shift: Shift shadow right by this percentage of the\
+            canvas size (default is 9.375).
+    :type right_shift: float
     """
 
     add_shadows: bool = False
@@ -118,7 +128,8 @@ class AnicursorgenArgs(NamedTuple):
 
 class WindowsCursor:
     """
-    Build Windows cursors from `.in` configs files. Code inspiration from `anicursorgen.py`.
+    Build Windows cursors from `.in` configs files. Code inspiration from \
+            `anicursorgen.py`.
 
     anicursorgen
 
@@ -140,23 +151,23 @@ class WindowsCursor:
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     """
 
-    args: AnicursorgenArgs
+    options: Options
     config_file: Path
     prefix: Path
     out_dir: Path
     out: Path
 
-    def __init__(self, config_dir: Path, out_dir: Path, args: AnicursorgenArgs) -> None:
+    def __init__(self, config_dir: Path, out_dir: Path, options: Options) -> None:
         self.config_file = config_dir
         self.prefix = config_dir.parent
         self.out_dir = out_dir
-        self.args = args
+        self.options = options
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
-    def get_frames(self) -> Frames:
+    def get_frames(self) -> List:
         in_buffer = self.config_file.open("rb")
-        frames: Frames = []
+        frames = []
 
         for line in in_buffer.readlines():
             line = line.decode()
@@ -180,7 +191,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: Frames) -> bool:
+    def frames_have_animation(frames: List) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -192,8 +203,8 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: Frames) -> Frames:
-        framesets: Frames = []
+    def make_framesets(frames: List) -> List:
+        framesets = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -235,7 +246,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: io.BufferedWriter, buf: io.BytesIO) -> None:
+    def copy_to(out: io.BytesIO, buf: io.BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -245,8 +256,8 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: Frames,
-        out_buffer: io.BufferedWriter,
+        frames: List,
+        out_buffer: io.BytesIO,
     ) -> None:
         framesets = self.make_framesets(frames)
 
@@ -277,13 +288,13 @@ class WindowsCursor:
 
         rates = set()
         for frameset in framesets:
-            rates.add(int(frameset[0][4]))
+            rates.add(frameset[0][4])
 
         if len(rates) != 1:
             buf.write(b"rate")
             buf.write(pack("<I", len(framesets) * 4))
             for frameset in framesets:
-                buf.write(pack("<I", int(frameset[0][4])))
+                buf.write(pack("<I", frameset[0][4]))
 
         buf.write(b"LIST")
         list_len_pos = buf.seek(0, io.SEEK_CUR)
@@ -314,7 +325,7 @@ class WindowsCursor:
         self.copy_to(out_buffer, buf)
 
     @staticmethod
-    def shadowize(shadow: Image, orig: Image, color: Color) -> None:
+    def shadowize(shadow, orig, color: Color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -328,16 +339,16 @@ class WindowsCursor:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def create_shadow(self, orig: Image) -> Tuple[int, Any]:
-        blur_px = orig.size[0] / 100.0 * self.args.blur
-        right_px = int(orig.size[0] / 100.0 * self.args.right_shift)
-        down_px = int(orig.size[1] / 100.0 * self.args.down_shift)
+    def create_shadow(self, orig: Image.Image) -> Tuple[int, Image.Image]:
+        blur_px = orig.size[0] / 100.0 * self.options.blur
+        right_px = int(orig.size[0] / 100.0 * self.options.right_shift)
+        down_px = int(orig.size[1] / 100.0 * self.options.down_shift)
 
         shadow = Image.new("RGBA", orig.size, (0, 0, 0, 0))
-        self.shadowize(shadow, orig, self.args.color)
+        self.shadowize(shadow, orig, self.options.color)
         shadow.load()
 
-        if self.args.blur > 0:
+        if self.options.blur > 0:
             crop = (
                 int(math.floor(-blur_px)),
                 int(math.floor(-blur_px)),
@@ -351,7 +362,7 @@ class WindowsCursor:
             shadow = shadow.filter(flt)
         shadow.load()
 
-        shadowed: Image = Image.new("RGBA", orig.size, (0, 0, 0, 0))
+        shadowed = Image.new("RGBA", orig.size, (0, 0, 0, 0))
         shadowed.paste(shadow, (right_px, down_px))
         shadowed.crop((0, 0, orig.size[0], orig.size[1]))
         shadowed = Image.alpha_composite(shadowed, orig)
@@ -359,11 +370,11 @@ class WindowsCursor:
         return (0, shadowed)
 
     @staticmethod
-    def write_png(out: io.BufferedWriter, frame_png: Image) -> None:
+    def write_png(out, frame_png: Image.Image) -> None:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out: io.BufferedWriter, frame: Frame, frame_png: Image) -> None:
+    def write_cur(out, frame: List, frame_png: Image.Image) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -390,7 +401,7 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: Frames, animated: bool = False) -> io.BytesIO:
+    def make_cur(self, frames: List, animated: bool = False) -> io.BytesIO:
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
@@ -418,7 +429,7 @@ class WindowsCursor:
 
             frame_png = Image.open(frame[3])
 
-            if self.args.add_shadows:
+            if self.options.add_shadows:
                 succeeded, shadowed = self.create_shadow(frame_png)
                 if succeeded == 0:
                     frame_png.close()
@@ -478,7 +489,7 @@ class WindowsCursor:
                 self.copy_to(out, buf)
 
     @classmethod
-    def create(cls, alias_file: Path, out_dir: Path, args=AnicursorgenArgs()) -> Path:
+    def create(cls, alias_file: Path, out_dir: Path, args=Options()) -> Path:
         cursor = cls(alias_file, out_dir, args)
         cursor.generate()
         return cursor.out

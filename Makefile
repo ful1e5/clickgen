@@ -14,7 +14,7 @@ test:
 	python3 -m pytest -s -vv --cache-clear
 
 setup_install:
-	python3 setup.py install
+	python3 setup.py install --user
 
 pip_install:
 	python3 -m pip install -e .
@@ -22,3 +22,4 @@ pip_install:
 build: clean
 	python3 setup.py install --user sdist bdist_wheel 
 
+dev: clean setup_install pip_install test
