@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `make dev` command for development purpose
 - Linting & typing fixes inside `clickgen.builders`
 - `Linting`, `pip package caching`, and `stubgen` commands inside [workflows/app-publish.yml](./.github/workflows/app-publish.yml)
+- `ConfigFrame` typing added inside `WindowsCursor` class
 
 ### Changed
 
