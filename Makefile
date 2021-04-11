@@ -1,5 +1,7 @@
 clean:
-	rm -rf .vscode .vim venv .pytest_cache build dist clickgen.egg-info .mypy_cache
+	rm -rf .vscode .vim venv 	
+	# remove build & test cache files
+	rm -rf build dist clickgen.egg-info .mypy_cache .pytest_cache
 	rm -rf clickgen/__pycache__ tests/__pycache__
 	cd xcursorgen && make clean
 	python3 -m pip uninstall -y clickgen
