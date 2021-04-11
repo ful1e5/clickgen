@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from difflib import SequenceMatcher as SM
 from pathlib import Path
 from typing import Dict, List, Optional, Set
-from difflib import SequenceMatcher as SM
 
 # Typing
 Data = List[Set[str]]
@@ -188,7 +188,7 @@ DATA: Data = [
 
 
 class CursorDB(object):
-    """The CursorDB class provides ``Xcursor`` data available on X11/Wayland
+    """The CursorDB class provides ``Xcursor`` data available on X11/Wayland\
     /XWayland.
     """
 
@@ -199,13 +199,15 @@ class CursorDB(object):
 
         This call ``self.__seed`` for setting dataset into ``Dict`` structure.
 
-        :param data: Provide custom dataset of cursors. default to ``clickgen.db.DATA``
+        :param data: Provide custom dataset of cursors. default to \
+        ``clickgen.db.DATA``
         :type data: List[Set[str]]
 
         :returns: Instance of ``CursorDB``
 
         :raises TypeError: If provided ``data`` is not type of ``List``
-        :raises TypeError: If provided ``data``'s list member is not type of ``Set``
+        :raises TypeError: If provided ``data``'s list member is not type \
+        of ``Set``
         """
         super().__init__()
         self.__seed(data)
@@ -238,7 +240,8 @@ class CursorDB(object):
         :param key: Name of XCursor
         :type key: str
 
-        :param find_similar: If this flag set to ``True``, It return similar named ``XCursor`` from database.
+        :param find_similar: If this flag set to ``True``, It return similar \
+        named ``XCursor`` from database.
         :type find_similar: bool
 
         :return: List of missing ``XCursor`` in string list or None.
@@ -253,29 +256,30 @@ class CursorDB(object):
     def __find_similar(self, key: str) -> str:
         compare_ratio: float = 0.5
         result: str = key
-        for e in self.data.keys():
-            ratio: float = SM(None, key.lower(), e.lower()).ratio()
+        for word in self.data:
+            ratio: float = SM(None, key.lower(), word.lower()).ratio()
             if ratio > compare_ratio:
                 compare_ratio = ratio
-                result = e
+                result = word
 
         return result
 
-    def rename_file(self, p: Path) -> Optional[Path]:
+    def rename_file(self, fp: Path) -> Optional[Path]:
         """Search similar named Xcursor in database. If name of XCursor is not
         correct this return ``pathlib.Path`` Object.
 
-        :param p: Path to XCursor
-        :type key: Path
+        :param fp: Path to XCursor
+        :type fp: Path
 
         :return: Return renamed ``Path`` If XCursor name not correct.
         :rtype: Optional[Path]
 
-        :raise FileNotFoundError: If file is not found in file system or it's a directory.
+        :raise FileNotFoundError: If file is not found in file system or it's \
+        a directory.
         """
-        if not p.is_file():
-            raise FileNotFoundError(f"'{p.absolute()}' is not file")
-        key: str = self.__find_similar(p.stem)
-        if key != p.stem:
-            return p.with_name(f"{key}{p.suffix}")
+        if not fp.is_file():
+            raise FileNotFoundError(f"'{fp.absolute()}' is not file")
+        key: str = self.__find_similar(fp.stem)
+        if key != fp.stem:
+            return fp.with_name(f"{key}{fp.suffix}")
         return None
