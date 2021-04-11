@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `xcursorgen.c` formated with tool **[indent](https://www.gnu.org/software/indent/)**
 - `make dev` command for development purpose
 - Linting & typing fixes inside `clickgen.builders`
+- `Linting`, `pip package caching`, and `stubgen` commands inside [workflows/app-publish.yml](./.github/workflows/app-publish.yml)
+- `ConfigFrame` typing added inside `WindowsCursor` class
 
 ### Changed
 
@@ -24,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Linting & Typing fixed in `XCursor` Class `clickgen/builder.py`
 - `xcursorgen/makefile` renamed to `xcursorgen/Makefile`
 - WindowsCursor support `options` instead of `args`
+- clickgen pip dependencies _installation_ method changed inside [workflows/app-ci.yml](./.github/workflows/app-ci.yml)
 
 ## [1.1.9] - 22 Mar 2021
 

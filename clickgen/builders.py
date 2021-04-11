@@ -8,7 +8,7 @@ import shlex
 from ctypes import CDLL
 from pathlib import Path
 from struct import pack
-from typing import Any, List, NamedTuple, Tuple
+from typing import Any, List, NamedTuple, Tuple, Union
 
 from PIL import Image, ImageFilter
 
@@ -126,6 +126,9 @@ class Options(NamedTuple):
     right_shift: float = 9.375
 
 
+ConfigFrame = Tuple[int, int, int, str, int]
+
+
 class WindowsCursor:
     """
     Build Windows cursors from `.in` configs files. Code inspiration from \
@@ -165,7 +168,7 @@ class WindowsCursor:
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
-    def get_frames(self) -> List:
+    def get_frames(self) -> List[ConfigFrame]:
         in_buffer = self.config_file.open("rb")
         frames = []
 
@@ -191,7 +194,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: List) -> bool:
+    def frames_have_animation(frames: List[ConfigFrame]) -> bool:
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -203,7 +206,7 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: List) -> List:
+    def make_framesets(frames: List[ConfigFrame]) -> List[List[ConfigFrame]]:
         framesets = []
         sizes = set()
 
@@ -246,7 +249,7 @@ class WindowsCursor:
         return framesets
 
     @staticmethod
-    def copy_to(out: io.BytesIO, buf: io.BytesIO) -> None:
+    def copy_to(out: Union[io.BytesIO, io.BufferedWriter], buf: io.BytesIO) -> None:
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -256,8 +259,8 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: List,
-        out_buffer: io.BytesIO,
+        frames: List[ConfigFrame],
+        out_buffer: Union[io.BytesIO, io.BufferedWriter],
     ) -> None:
         framesets = self.make_framesets(frames)
 
@@ -325,7 +328,7 @@ class WindowsCursor:
         self.copy_to(out_buffer, buf)
 
     @staticmethod
-    def shadowize(shadow, orig, color: Color) -> None:
+    def shadowize(shadow: Image.Image, orig: Image.Image, color: Color) -> None:
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -370,11 +373,17 @@ class WindowsCursor:
         return (0, shadowed)
 
     @staticmethod
-    def write_png(out, frame_png: Image.Image) -> None:
+    def write_png(
+        out: Union[io.BytesIO, io.BufferedWriter], frame_png: Image.Image
+    ) -> None:
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
-    def write_cur(out, frame: List, frame_png: Image.Image) -> None:
+    def write_cur(
+        out: Union[io.BytesIO, io.BufferedWriter],
+        frame: ConfigFrame,
+        frame_png: Image.Image,
+    ) -> None:
         pixels = frame_png.load()
 
         out.write(
@@ -401,7 +410,7 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: List, animated: bool = False) -> io.BytesIO:
+    def make_cur(self, frames: List[ConfigFrame], animated: bool = False) -> io.BytesIO:
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
@@ -414,10 +423,10 @@ class WindowsCursor:
                 width = 0
             height = width
 
-            a = 0 if frame[1] == -1 else frame[1]
-            b = 0 if frame[2] == -1 else frame[2]
+            xhot = 0 if frame[1] == -1 else frame[1]
+            yhot = 0 if frame[2] == -1 else frame[2]
 
-            buf.write(pack("<BBBB HH", width, height, 0, 0, a, b))
+            buf.write(pack("<BBBB HH", width, height, 0, 0, xhot, yhot))
             size_offset_pos = buf.seek(0, io.SEEK_CUR)
 
             buf.write(pack("<II", 0, 0))
@@ -465,13 +474,13 @@ class WindowsCursor:
 
     def generate(self) -> None:
         frames = self.get_frames()
-        animated = self.frames_have_animation(frames)
+        is_animated = self.frames_have_animation(frames)
 
         name = self.config_file.stem
         ani_name = f"{name}.ani"
         cur_name = f"{name}.cur"
 
-        cursor = ani_name if animated else cur_name
+        cursor = ani_name if is_animated else cur_name
         self.out = self.out_dir / cursor
 
         # Remove Windows cursor, Which has the same 'name' inside 'output' directory.
@@ -480,16 +489,15 @@ class WindowsCursor:
         remove_util(self.out_dir / ani_name)
         remove_util(self.out_dir / cur_name)
 
-        if animated:
-            with self.out.open("wb") as out:
+        with self.out.open("wb") as out:
+            if is_animated:
                 self.make_ani(frames, out)
-        else:
-            with self.out.open("wb") as out:
+            else:
                 buf = self.make_cur(frames)
                 self.copy_to(out, buf)
 
     @classmethod
-    def create(cls, alias_file: Path, out_dir: Path, args=Options()) -> Path:
-        cursor = cls(alias_file, out_dir, args)
+    def create(cls, alias_file: Path, out_dir: Path, options=Options()) -> Path:
+        cursor = cls(alias_file, out_dir, options)
         cursor.generate()
         return cursor.out
