@@ -18,7 +18,7 @@ LikePath = Union[str, Path]
 LikePathList = Union[List[str], List[Path]]
 
 
-class Bitmap(object):
+class Bitmap:
     """The ``Bitmap`` class is used to represent a ``.png`` or sequences of 
     ``.png`` image. The class also provides a number of factory functions, \
     including functions to **rename** ``.png`` images from files, and \
@@ -468,7 +468,7 @@ class Bitmap(object):
         return Bitmap(p, (self.x_hot, self.y_hot))
 
 
-class CursorAlias(object):
+class CursorAlias:
     bitmap: Bitmap
     prefix: str
     alias_dir: Path

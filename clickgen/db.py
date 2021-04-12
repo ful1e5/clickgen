@@ -187,7 +187,7 @@ DATA: Data = [
 ]
 
 
-class CursorDB(object):
+class CursorDB:
     """The CursorDB class provides ``Xcursor`` data available on X11/Wayland\
     /XWayland.
     """
