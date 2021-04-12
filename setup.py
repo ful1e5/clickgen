@@ -17,7 +17,6 @@ def make_path() -> str:
 
 class install(_install):
     def run(self):
-        subprocess.call([make_path(), "clean", "-C", "xcursorgen"])
         subprocess.call([make_path(), "-C", "xcursorgen"])
         _install.run(self)
 

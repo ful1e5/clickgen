@@ -1,4 +1,4 @@
-all: xcursorgen.so
+all: clean xcursorgen.so
 .PHONY: all
 
 CC = gcc

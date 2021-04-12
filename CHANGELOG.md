@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- clean `xcursorgen` build cache automatically on `make` command
 - `CI` pip caching system key changed to `setup.py`
 - Proper typing inheritation inside `clickgen/core.pyi`
 - Linting & Typing fixed in `XCursor` Class `clickgen/builder.py`
