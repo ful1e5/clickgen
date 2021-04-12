@@ -1,7 +1,8 @@
 # Custom
 env
-mock
+themes
 .vscode
+.vim
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -10,6 +11,8 @@ __pycache__/
 
 # C extensions
 *.so
+*.o
+*.out
 
 # Distribution / packaging
 .Python
