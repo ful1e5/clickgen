@@ -4,6 +4,7 @@ clean:
 	rm -rf build dist clickgen.egg-info .mypy_cache .pytest_cache
 	rm -rf clickgen/__pycache__ tests/__pycache__
 	cd xcursorgen && make clean
+	cd docs && make clean
 	python3 -m pip uninstall -y clickgen
 
 
@@ -24,4 +25,7 @@ pip_install:
 build: clean
 	python3 setup.py install --user sdist bdist_wheel 
 
-dev: clean stubgen setup_install pip_install test
+docs_gen:
+	cd docs && make html
+
+dev: clean stubgen setup_install pip_install test docs_gen
