@@ -304,7 +304,7 @@ class Bitmap:
         :type save: bool
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Optional[Union[Image, List[Image]]]
+        :rtype: Image or List[Image] or None
 
         :raise ValueError: If image width & height are not same.
         """
@@ -360,7 +360,7 @@ class Bitmap:
         :type save: bool
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Optional[Union[Image, List[Image]]]
+        :rtype: Image or List[Image] or None
 
         :raise ValueError: If image width & height are not same.
         """
@@ -494,7 +494,7 @@ class CursorAlias:
     def __get_alias_file(self) -> Optional[Path]:
         """
         :returns: Return cursor alias file path, If it's exists.
-        :rtype: Optional[Path]
+        :rtype: Path or None
         """
         if hasattr(self, "alias_file"):
             return self.alias_file
@@ -639,7 +639,7 @@ class CursorAlias:
 
         :returns: Provide ``None`` value to retrieve current extension. \
                 Either returns the updated cursor's config file path.
-        :rtype: Union[str, Path]
+        :rtype: str or Path
         """
         self.check_alias()
         if ext:

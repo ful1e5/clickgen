@@ -245,7 +245,7 @@ class CursorDB:
         :type find_similar: bool
 
         :return: List of missing ``XCursor`` in string list or None.
-        :rtype: Optional[List[str]]
+        :rtype: List[str] or None
 
         """
         if find_similar:
@@ -272,7 +272,7 @@ class CursorDB:
         :type fp: Path
 
         :return: Return renamed ``Path`` If XCursor name not correct.
-        :rtype: Optional[Path]
+        :rtype: Path or None
 
         :raise FileNotFoundError: If file is not found in file system or it's \
         a directory.
