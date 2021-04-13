@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Generate Cursors without hassle.
+
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import ctypes
 import io
 import math
