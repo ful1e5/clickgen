@@ -18,7 +18,7 @@ LikePath = Union[str, Path]
 LikePathList = Union[List[str], List[Path]]
 
 
-class Bitmap(object):
+class Bitmap:
     """The ``Bitmap`` class is used to represent a ``.png`` or sequences of 
     ``.png`` image. The class also provides a number of factory functions, \
     including functions to **rename** ``.png`` images from files, and \
@@ -304,7 +304,7 @@ class Bitmap(object):
         :type save: bool
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Optional[Union[Image, List[Image]]]
+        :rtype: Image or List[Image] or None
 
         :raise ValueError: If image width & height are not same.
         """
@@ -360,7 +360,7 @@ class Bitmap(object):
         :type save: bool
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Optional[Union[Image, List[Image]]]
+        :rtype: Image or List[Image] or None
 
         :raise ValueError: If image width & height are not same.
         """
@@ -468,7 +468,7 @@ class Bitmap(object):
         return Bitmap(p, (self.x_hot, self.y_hot))
 
 
-class CursorAlias(object):
+class CursorAlias:
     bitmap: Bitmap
     prefix: str
     alias_dir: Path
@@ -494,7 +494,7 @@ class CursorAlias(object):
     def __get_alias_file(self) -> Optional[Path]:
         """
         :returns: Return cursor alias file path, If it's exists.
-        :rtype: Optional[Path]
+        :rtype: Path or None
         """
         if hasattr(self, "alias_file"):
             return self.alias_file
@@ -639,7 +639,7 @@ class CursorAlias(object):
 
         :returns: Provide ``None`` value to retrieve current extension. \
                 Either returns the updated cursor's config file path.
-        :rtype: Union[str, Path]
+        :rtype: str or Path
         """
         self.check_alias()
         if ext:

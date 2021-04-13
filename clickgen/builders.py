@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Generate Cursors without hassle.
+
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import ctypes
 import io
 import math
@@ -20,8 +25,9 @@ clickgen_pypi_path = "".join(map(str, __path__))
 
 class XCursor:
     """
-    Build `XCursor` from the `.in` config file. \
-    This class is using `xcursorgen` internally.
+    Build `XCursor` from the ``.in`` config file. \
+    This class call ``xcursorgen`` for generating static \
+    and animated ``xcursor``.
     """
 
     config_file: Path
@@ -37,6 +43,16 @@ class XCursor:
     _lib.main.argtypes = (ctypes.c_int, _LP_LP_c_char)
 
     def __init__(self, config_file: Path, out_dir: Path) -> None:
+        """
+        :param config_file: Cursor config file location.
+        :type config_file: Path
+
+        :param out_dir: directory path where ``xcursor`` generated.
+        :type out_dir: Path
+
+        :raise FileNotFoundError: If ``config_file`` not existed on \
+                filesystem.
+        """
         if not config_file.exists() or not config_file.is_file():
             raise FileNotFoundError(
                 f"'{config_file.name}' is not found or not a config file"
@@ -49,7 +65,15 @@ class XCursor:
         self.out = self.out_dir / self.config_file.stem
 
     def gen_argv_ctypes(self, argv: List[str]) -> Any:
-        """ Convert `string` arguments to `ctypes` pointer. """
+        """Convert `string` arguments to `ctypes` pointer.
+        :param argv: ``xcursorgen`` command-line arguments. First argument \
+                must be named of program, Here it's ``xcursorgen``.
+        :type argv: List[str]
+
+        returns: **Casted** command line arguments for *xcursorgen* with \
+                ``ctype``
+        :rtype: ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
+        """
         p = (self._LP_c_char * len(argv))()
 
         for i, arg in enumerate(argv):
@@ -59,7 +83,10 @@ class XCursor:
         return ctypes.cast(p, self._LP_LP_c_char)
 
     def generate(self) -> None:
-        """ Generate x11 cursor from `.in` file."""
+        """ Generate the ``xcursor`` at ~``out_dir``.
+        :raise RuntimeError: unable to generate ``xcursor`` from \
+                ``config_file``.
+        """
 
         # remove old cursor file
         remove_util(self.out)
