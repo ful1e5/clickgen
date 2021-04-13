@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Generate Cursors without hassle.
+
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 from pathlib import Path
 from string import Template
 from typing import Dict, List, Optional, Set
-
 
 # --- X11
 
@@ -145,6 +149,9 @@ def WindowsPackager(
 
     :returns: Nothing
     :rtype: None
+
+    :raise FileNotFoundError: If Windows cursors are not exists on \
+            provided directory.
     """
 
     files: List[Path] = []

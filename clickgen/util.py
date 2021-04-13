@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Generate Cursors without hassle.
+
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import functools
 import os
 import re
@@ -90,11 +95,11 @@ class PNGProvider:
 
         k = key.split(".")
         if len(k) == 1:
-            r = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
+            reg = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
         else:
-            r = re.compile(fr"^{k[0]}(?:-\d+)?.{k[1]}$")
+            reg = re.compile(fr"^{k[0]}(?:-\d+)?.{k[1]}$")
 
-        matched_pngs = filter(r.match, self.__pngs)
+        matched_pngs = filter(reg.match, self.__pngs)
 
         paths = list(set(map(lambda x: self.bitmaps_dir / x, matched_pngs)))
         if len(paths) == 1:

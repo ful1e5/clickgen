@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
 from typing import Dict, List, Optional, Tuple, Union
 
-from PIL import Image as Img
-from PIL.Image import Image
+from PIL import Image
 
 from clickgen.util import remove_util
 
@@ -19,7 +22,7 @@ LikePathList = Union[List[str], List[Path]]
 
 
 class Bitmap:
-    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of 
+    """The ``Bitmap`` class is used to represent a ``.png`` or sequences of \
     ``.png`` image. The class also provides a number of factory functions, \
     including functions to **rename** ``.png`` images from files, and \
     **reproduce** size of same image/s.
@@ -124,7 +127,8 @@ class Bitmap:
         self.animated = False
 
     def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
-        """Set this Bitmap as **animated**, It means this bitmap holds multiple ``png``.
+        """Set this Bitmap as **animated**, It means this bitmap holds multiple \
+                ``png``.
 
                 .. note:: This method called by ``self.__init__``.
 
@@ -167,7 +171,8 @@ class Bitmap:
         :raise FileNotFoundError: If ``.png`` file not found
         :raise ValueError: If provided bitmap is not ``.png``
 
-        :returns: Return the ``pathlib.Path`` instant, If provided **bitmap path** checks passed.
+        :returns: Return the ``pathlib.Path`` instant, If provided \
+                **bitmap path** checks passed.
         :rtype: Path
         """
         p: Path = Path(bmp_path)
@@ -191,12 +196,13 @@ class Bitmap:
         :param bmp_path: Bitmap file location.
         :type bmp_path: Path
 
-        :param prev_check: If you want to match size with previous size. This flag is useful for grouped ``png``.(@default True )
+        :param prev_check: If you want to match size with previous size. This \
+                flag is useful for grouped ``png``.(@default True )
         :type prev_check: bool
 
         :raise ValueError: If image width & height are not same
         """
-        with Img.open(bmp_path) as i:
+        with Image.open(bmp_path) as i:
 
             def __set() -> None:
                 self.size = i.size
@@ -262,7 +268,7 @@ class Bitmap:
         """
         x = hotspot[0]
         y = hotspot[1]
-        with Img.open(img_path) as i:
+        with Image.open(img_path) as i:
             if x > i.width or y > i.height:
                 raise ValueError("'Hotspot' value is an overflow")
 
@@ -288,9 +294,9 @@ class Bitmap:
     def resize(
         self,
         size: Size,
-        resample: int = Img.NONE,
+        resample: int = Image.NONE,
         save: bool = True,
-    ) -> Optional[Union[Image, List[Image]]]:
+    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize this bitmap.
 
         :param size: New width & height in pixel.
@@ -299,8 +305,8 @@ class Bitmap:
         :param resample: Pillow resample algorithm.
         :type resample: int
 
-        :param save: If you want to overwrite resized bitmap to actual png file. \
-                     Neither it return pillow ``Image`` buffer.
+        :param save: If you want to overwrite resized bitmap to actual png \
+                file. Neither it return pillow ``Image`` buffer.
         :type save: bool
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
@@ -309,8 +315,8 @@ class Bitmap:
         :raise ValueError: If image width & height are not same.
         """
 
-        def __resize(p: Path, frame: int) -> Image:
-            img: Image = Img.open(p)
+        def __resize(p: Path, frame: int) -> Image.Image:
+            img: Image.Image = Image.open(p)
 
             # Preventing image quality degrades
             if img.size != size:
@@ -324,15 +330,15 @@ class Bitmap:
             return img
 
         if self.animated:
-            images: List[Image] = []
+            images: List[Image.Image] = []
             for i, png in enumerate(self.grouped_png):
-                img: Image = __resize(png, i)
+                img: Image.Image = __resize(png, i)
                 images.append(img)
             if not save:
                 return images
             return None
 
-        img: Image = __resize(self.png, 0)
+        img: Image.Image = __resize(self.png, 0)
         if not save:
             return img
         return None
@@ -343,7 +349,7 @@ class Bitmap:
         canvas_size: Size = (32, 32),
         position: str = "center",
         save=True,
-    ) -> Optional[Union[Image, List[Image]]]:
+    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize bitmap with more options.
 
         :param size: Bitmap width & height in pixel.
@@ -365,8 +371,8 @@ class Bitmap:
         :raise ValueError: If image width & height are not same.
         """
 
-        def __reproduce(p: Path) -> Image:
-            frame: Image = Img.open(p).resize(size, resample=Img.BICUBIC)
+        def __reproduce(p: Path) -> Image.Image:
+            frame: Image = Image.open(p).resize(size, resample=Image.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch: Dict[str, Tuple[int, int]] = {
@@ -379,7 +385,7 @@ class Bitmap:
 
             box: Tuple[int, int] = switch[position]
 
-            canvas: Image = Img.new("RGBA", canvas_size, color=(256, 0, 0, 0))
+            canvas: Image.Image = Image.new("RGBA", canvas_size, color=(256, 0, 0, 0))
             canvas.paste(frame, box=box)
 
             if save:
@@ -390,14 +396,14 @@ class Bitmap:
             return canvas
 
         if self.animated:
-            images: List[Image] = []
+            images: List[Image.Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
             if not save:
                 return images
             return None
 
-        image: Image = __reproduce(self.png)
+        image: Image.Image = __reproduce(self.png)
         if not save:
             return image
         return None
@@ -565,7 +571,7 @@ class CursorAlias:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
-            bmp.resize(size, resample=Img.BICUBIC)
+            bmp.resize(size, resample=Image.BICUBIC)
 
             l: List[str] = []
 
