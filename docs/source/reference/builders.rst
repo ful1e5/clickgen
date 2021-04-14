@@ -20,3 +20,5 @@ Typing
 ------------------------------------------------
 .. autoclass:: clickgen.builders.WindowsCursor
 .. automethod:: clickgen.builders.WindowsCursor.__init__
+.. automethod:: clickgen.builders.WindowsCursor.get_frames
+.. automethod:: clickgen.builders.WindowsCursor.make_framesets

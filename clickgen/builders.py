@@ -157,15 +157,13 @@ ConfigFrame = Tuple[int, int, int, str, int]
 
 
 class WindowsCursor:
-    """
-    Build Windows cursors from `.in` configs files. Code inspiration from \
-            `anicursorgen.py`.
+    """Build **Windows cursors** from ``.in`` configs files. This class \
+            code is inspired on `anicursorgen.py`.
 
-    anicursorgen
-
-    https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py
+    Yaru Icons <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
 
     Copyright (C) 2015 Руслан Ижбулатов <lrn1986@gmail.com>
+    Copyright (C) 2021 Kaiz Khatri <kaizmandhu@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -187,15 +185,33 @@ class WindowsCursor:
     out_dir: Path
     out: Path
 
-    def __init__(self, config_dir: Path, out_dir: Path, options: Options) -> None:
-        self.config_file = config_dir
-        self.prefix = config_dir.parent
+    def __init__(self, config_file: Path, out_dir: Path, options: Options) -> None:
+        """Initiate WindowsCursor instance.
+
+        :param config_file: Cursor config file location.
+        :type config_file: Path
+
+        :param out_dir: directory path where ``xcursor`` generated.
+        :type out_dir: Path
+
+        :param out_dir: ``anicursorgen`` commandline arguments.
+        :type out_dir: Options
+        """
+        self.config_file = config_file
+        self.prefix = config_file.parent
         self.out_dir = out_dir
         self.options = options
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
     def get_frames(self) -> List[ConfigFrame]:
+        """Internal method for passing cursor's config file to ``List``.
+
+        :returns: This method is return frames of ``config_file``. **Frames** \
+                are basically line of config file structure with python \
+                typing ``Tuple``.
+        :rtype: List[ConfigFrame]
+        """
         in_buffer = self.config_file.open("rb")
         frames = []
 
@@ -222,6 +238,12 @@ class WindowsCursor:
 
     @staticmethod
     def frames_have_animation(frames: List[ConfigFrame]) -> bool:
+        """Internal **static method** for checking passed ``config_file`` is \
+                animated or not.
+
+        :returns: ``True`` for animated and ``False`` for static.
+        :rtype: bool
+        """
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -234,6 +256,24 @@ class WindowsCursor:
 
     @staticmethod
     def make_framesets(frames: List[ConfigFrame]) -> List[List[ConfigFrame]]:
+        """Internal **static method** for convert ``frames`` to ``framessets``.
+
+        **framessets** are group of similar pixel sizes. Each **frameset** is \
+                structured with python structure ``List``.
+
+        :param frames: ``config_file`` lines with List & Tuple typing.
+        :type frames: List[ConfigFrame]
+
+        :returns: Grouped frames in ``List`` structure.
+        :rtype: List[List[ConfigFrame]]
+
+        :raise ValueError: If config_file lines are not sorted with pixel \
+                size & frame number.
+        :raise ValueError: If some frames are missing from pixel size inside \
+                config_file.
+        :raise ValueError: If frame's **animation durations** are not same \
+                as other frame.
+        """
         framesets = []
         sizes = set()
 
