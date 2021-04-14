@@ -19,8 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Linting & typing fixes inside `clickgen.builders`
 - `Linting`, `pip package caching`, and `stubgen` commands inside [workflows/app-publish.yml](./.github/workflows/app-publish.yml)
 - `ConfigFrame` typing added inside `WindowsCursor` class
-- `clickgen.builder` module docs init
+- `clickgen.builders` module docs init
 - docstring `param type` and `rtype` typing with **"or"** inside `Optional` and `Union`
+- `WindowsCursor` docstring init
 
 ### Changed
 
