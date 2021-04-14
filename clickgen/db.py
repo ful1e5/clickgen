@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 from difflib import SequenceMatcher as SM
 from pathlib import Path
 from typing import Dict, List, Optional, Set
