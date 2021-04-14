@@ -66,12 +66,13 @@ class XCursor:
 
     def gen_argv_ctypes(self, argv: List[str]) -> Any:
         """Convert `string` arguments to `ctypes` pointer.
+
         :param argv: ``xcursorgen`` command-line arguments. First argument \
                 must be named of program, Here it's ``xcursorgen``.
         :type argv: List[str]
 
-        returns: **Casted** command line arguments for *xcursorgen* with \
-                ``ctype``
+        :returns: **Casted** command line arguments for *xcursorgen* with \
+                ``ctype``.
         :rtype: ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
         """
         p = (self._LP_c_char * len(argv))()
@@ -113,6 +114,16 @@ class XCursor:
 
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path) -> Path:
+        """ Class method for generate ``xcursor`` from cursor's \
+                config files.
+
+        This method gives ability to generate ``xcursor`` with initiate the \
+        XCursor object.
+
+        :returns: Generated ``XCursor`` pathlib.Path object.
+        :rtype: pathlib.Path
+        """
+
         cursor = cls(alias_file, out_dir)
         cursor.generate()
         return cursor.out
@@ -197,6 +208,7 @@ class WindowsCursor:
         :param out_dir: ``anicursorgen`` commandline arguments.
         :type out_dir: Options
         """
+
         self.config_file = config_file
         self.prefix = config_file.parent
         self.out_dir = out_dir
@@ -212,6 +224,7 @@ class WindowsCursor:
                 typing ``Tuple``.
         :rtype: List[ConfigFrame]
         """
+
         in_buffer = self.config_file.open("rb")
         frames = []
 
@@ -244,6 +257,7 @@ class WindowsCursor:
         :returns: ``True`` for animated and ``False`` for static.
         :rtype: bool
         """
+
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -274,6 +288,7 @@ class WindowsCursor:
         :raise ValueError: If frame's **animation durations** are not same \
                 as other frame.
         """
+
         framesets = []
         sizes = set()
 
@@ -317,6 +332,15 @@ class WindowsCursor:
 
     @staticmethod
     def copy_to(out: Union[io.BytesIO, io.BufferedWriter], buf: io.BytesIO) -> None:
+        """Internal **static method** for copy buffer value to another.
+
+        :param out: Buffer where value copied.
+        :type out: io.BytesIO or io.BufferedWriter
+
+        :param buf: input Buffer.
+        :type buf: io.BytesIO
+        """
+
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -329,6 +353,18 @@ class WindowsCursor:
         frames: List[ConfigFrame],
         out_buffer: Union[io.BytesIO, io.BufferedWriter],
     ) -> None:
+        """Generate `.ani` from config file's ``frames``.
+
+        :param frames: List of ``config_file`` lines.
+        :type frames: List[ConfigFrame]
+
+        :param out_buffer: Where `.ani` cursor data stored.
+        :type out_buffer: io.BytesIO
+
+        :returns: None
+        :rtype: None
+        """
+
         framesets = self.make_framesets(frames)
 
         buf = io.BytesIO()
@@ -396,6 +432,23 @@ class WindowsCursor:
 
     @staticmethod
     def shadowize(shadow: Image.Image, orig: Image.Image, color: Color) -> None:
+        """Create shadow effect to the cursor.
+
+        This effect is enable by providing ``options`` parameter \
+        inside constructor
+
+        :param shadow: PIL.Image.Image instance where shadowed image will stored.
+        :type frames: PIL.Image.Image
+
+        :param orig: Cursor PIL.Image.Image instance frame.
+        :type orig: PIL.Image.Image
+
+        :param color: Shadow color in ``Tuple`` structure.(RGBA format)
+        :type color: Tuple[int, int, int, int]
+
+        :returns: None
+        :rtype: None
+        """
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
