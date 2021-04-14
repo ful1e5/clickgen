@@ -26,3 +26,9 @@ Typing
 .. automethod:: clickgen.builders.WindowsCursor.copy_to
 .. automethod:: clickgen.builders.WindowsCursor.make_ani
 .. automethod:: clickgen.builders.WindowsCursor.shadowize
+.. automethod:: clickgen.builders.WindowsCursor.create_shadow
+.. automethod:: clickgen.builders.WindowsCursor.write_png
+.. automethod:: clickgen.builders.WindowsCursor.write_cur
+.. automethod:: clickgen.builders.WindowsCursor.make_cur
+.. automethod:: clickgen.builders.WindowsCursor.generate
+.. automethod:: clickgen.builders.WindowsCursor.create
