@@ -10,6 +10,7 @@ from os import getcwd, symlink
 from pathlib import Path
 
 import pytest
+
 from clickgen.builders import XCursor
 from clickgen.core import CursorAlias
 from clickgen.util import (
@@ -20,7 +21,6 @@ from clickgen.util import (
     remove_util,
     timer,
 )
-
 from tests.utils import create_test_image
 
 
@@ -87,7 +87,10 @@ def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
     # animated
     images1 = create_test_image(directory, 4, key="animated")
     p1 = PNGProvider(directory)
-    assert sorted(p1.get("animated")) == sorted(images1)
+    p1_output = p1.get("animated")
+
+    assert isinstance(p1_output, list)
+    assert sorted(p1_output) == sorted(images1)
 
     shutil.rmtree(d)
 
