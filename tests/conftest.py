@@ -10,6 +10,7 @@ from pathlib import Path
 from random import randint
 
 import pytest
+
 from clickgen.core import Bitmap, CursorAlias
 
 from .utils import create_test_image

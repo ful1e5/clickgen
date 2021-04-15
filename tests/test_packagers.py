@@ -9,6 +9,7 @@ from clickgen.packagers import WindowsPackager, XPackager
 
 
 def test_XPackger(image_dir: Path) -> None:
+    """Test the ``clickgen.packagers.XPackager`` functionality."""
     XPackager(image_dir, theme_name="test", comment="testing")
 
     cur_theme = image_dir / "cursor.theme"
@@ -30,6 +31,9 @@ def test_XPackger(image_dir: Path) -> None:
 
 
 def test_WindowsPackager_empty_dir_exception(image_dir: Path) -> None:
+    """Testing ``clickgen.packagers.WindowsPackager`` raise the empty directory \
+    exception with exception type **FileNotFoundError**.
+    """
     with pytest.raises(FileNotFoundError) as excinfo:
         WindowsPackager(image_dir, theme_name="test", comment="testing", author="😎")
 
@@ -40,6 +44,9 @@ def test_WindowsPackager_empty_dir_exception(image_dir: Path) -> None:
 
 
 def test_WindowsPackager_missing_cur_exception(image_dir: Path) -> None:
+    """Testing ``clickgen.packagers.WindowsPackager`` raise the missing cursors \
+    exception with exception type **FileNotFoundError**.
+    """
     create_test_cursor(image_dir, "Work.ani")
     create_test_cursor(image_dir, "Busy.ani")
     create_test_cursor(image_dir, "Default.cur")
@@ -65,6 +72,14 @@ def test_WindowsPackager_missing_cur_exception(image_dir: Path) -> None:
 def test_WindowsPackager_with_semi_animated_cursors(
     tmpdir_factory: pytest.TempdirFactory,
 ) -> None:
+    """Testing ``clickgen.packagers.WindowsPackager`` supports 'semi-animated' \
+    cursors.
+
+    This test generates all .ani (animated) cursors and passed them to \
+    **WindowsPackager**. And checks, It generates valid ``install.inf`` file \
+    with appropriate cursor-type or not.
+    """
+
     d = Path(tmpdir_factory.mktemp("test_image"))
     create_test_cursor(d, "Work.ani")
     create_test_cursor(d, "Busy.ani")
@@ -111,6 +126,7 @@ def test_WindowsPackager_with_semi_animated_cursors(
 def test_WindowsPackager_without_website_url(
     tmpdir_factory: pytest.TempdirFactory,
 ) -> None:
+    """Testing ``clickgen.packagers.WindowsPackager`` parameters default value."""
     d = Path(tmpdir_factory.mktemp("test_image"))
     create_test_cursor(d, "Work.ani")
     create_test_cursor(d, "Busy.ani")
@@ -157,6 +173,8 @@ def test_WindowsPackager_without_website_url(
 def test_WindowsPackager_with_website_url(
     tmpdir_factory: pytest.TempdirFactory,
 ) -> None:
+    """Testing ``clickgen.packagers.WindowsPackager`` default parameters \
+            with custom value."""
     d = Path(tmpdir_factory.mktemp("test_image"))
     create_test_cursor(d, "Work.ani")
     create_test_cursor(d, "Busy.ani")
