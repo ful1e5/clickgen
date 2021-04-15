@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import io
 import os
 import shutil
@@ -10,6 +14,7 @@ from os import getcwd, symlink
 from pathlib import Path
 
 import pytest
+
 from clickgen.builders import XCursor
 from clickgen.core import CursorAlias
 from clickgen.util import (
@@ -20,18 +25,25 @@ from clickgen.util import (
     remove_util,
     timer,
 )
-
 from tests.utils import create_test_image
 
 
 def test_chdir() -> None:
+    """Testing ``clickgen.util.chdir`` utility function \
+       using contextmanager & ``with`` keyword.
+    """
     current = getcwd()
-    with chdir(tempfile.tempdir):
+    with chdir(str(tempfile.tempdir)):
         assert tempfile.tempdir == getcwd()
     assert getcwd() == current
 
 
 def test_remove_util() -> None:
+    """ Testing ``clickgen.util.remove_util`` utility function.
+
+    This test create the temporary directory, file, and symlink. And try \
+    to remove with ``remove_util`` function.
+    """
     tmp_dir = Path(tempfile.mkdtemp())
     tmp_file = tempfile.mkstemp()[1]
     tmp_link = tmp_dir / "link"
@@ -48,6 +60,9 @@ def test_remove_util() -> None:
 
 
 def test_PNGProvider_exception(tmpdir_factory: pytest.TempdirFactory) -> None:
+    """Testing ``clickgen.util.PNGProvider`` throwing **FileNotFoundError** \
+    exception on non exists file.
+    """
     directory = Path(tmpdir_factory.mktemp("tt"))
     with pytest.raises(FileNotFoundError) as excinfo:
         PNGProvider(directory)
@@ -56,6 +71,7 @@ def test_PNGProvider_exception(tmpdir_factory: pytest.TempdirFactory) -> None:
 
 
 def test_PNGProvider(image_dir) -> None:
+    """Testing ``clickgen.util.PNGProvider`` member values."""
     create_test_image(image_dir, 3)
     p = PNGProvider(image_dir)
     p_str = PNGProvider(str(image_dir))
@@ -63,6 +79,7 @@ def test_PNGProvider(image_dir) -> None:
 
 
 def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
+    """Testing ``clickgen.util.PNGProvider.get`` method."""
     d = tmpdir_factory.mktemp("ffff")
     directory = Path(d)
 
@@ -74,7 +91,10 @@ def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
     # animated
     images1 = create_test_image(directory, 4, key="animated")
     p1 = PNGProvider(directory)
-    assert sorted(p1.get("animated")) == sorted(images1)
+    p1_output = p1.get("animated")
+
+    assert isinstance(p1_output, list)
+    assert sorted(p1_output) == sorted(images1)
 
     shutil.rmtree(d)
 
@@ -82,6 +102,9 @@ def test_PNGProvider_get(tmpdir_factory: pytest.TempdirFactory) -> None:
 def test_add_missing_xcursors_exception(
     data, tmpdir_factory: pytest.TempdirFactory
 ) -> None:
+    """Testing ``clickgen.util.add_missing_xcursors`` **NotADirectoryError** \
+    exception on *non exists directory* or *passing a file* inside parameter.
+    """
     d = tmpdir_factory.mktemp("ffff")
     tmp_dir = Path(d)
     shutil.rmtree(tmp_dir)
