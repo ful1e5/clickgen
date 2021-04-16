@@ -575,15 +575,14 @@ def test_animated_Bitmap_copy_without_path_argument(animated_png, hotspot) -> No
 
 
 #
-#
 # CursorAlias Test Cases
-#
 #
 
 
 def test_CursorAlias_with_static_Bitmap(
     static_bitmap: Bitmap,
 ) -> None:
+    """Testing CursorAlias class members value with static bitmap."""
     alias = CursorAlias(static_bitmap)
 
     assert static_bitmap.key in alias.prefix
@@ -598,6 +597,7 @@ def test_CursorAlias_with_static_Bitmap(
 def test_CursorAlias_with_animated_Bitmap(
     animated_bitmap: Bitmap,
 ) -> None:
+    """Testing CursorAlias class members value with animated bitmap."""
     alias = CursorAlias(animated_bitmap)
 
     assert animated_bitmap.key in alias.prefix
@@ -610,6 +610,7 @@ def test_CursorAlias_with_animated_Bitmap(
 
 
 def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
+    """Testing CursorAlias ``from_bitmap`` method."""
     directory: Path
 
     with CursorAlias.from_bitmap(static_png, hotspot) as ca:
@@ -633,6 +634,7 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
 
 
 def test_static_CursorAlias_str(static_bitmap):
+    """Testing CursorAlias ``__str__`` datamethod."""
     alias = CursorAlias(static_bitmap)
     assert (
         alias.__str__()
@@ -648,6 +650,7 @@ def test_static_CursorAlias_str(static_bitmap):
 
 
 def test_static_CursorAlias_repr(static_bitmap):
+    """Testing CursorAlias ``__repr__`` datamethod."""
     alias = CursorAlias(static_bitmap)
     assert (
         alias.__repr__()
@@ -671,6 +674,7 @@ def test_static_CursorAlias_repr(static_bitmap):
     ],
 )
 def test_CursorAlias_create_type_error_exception(mock_sizes, static_bitmap) -> None:
+    """Testing CursorAlias create method ``TypeError`` exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(TypeError) as excinfo:
         assert alias.create(sizes=mock_sizes)
@@ -684,6 +688,7 @@ def test_CursorAlias_create_type_error_exception(mock_sizes, static_bitmap) -> N
 def test_CursorAlias_create_with_static_bitmap_and_single_size(
     static_bitmap, static_png
 ) -> None:
+    """Testing CursorAlias create method with single pixel size and static bitmap."""
     alias = CursorAlias(static_bitmap)
 
     assert len(sorted(alias.alias_dir.iterdir())) == 0
@@ -712,6 +717,7 @@ def test_CursorAlias_create_with_static_bitmap_and_single_size(
 
 
 def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> None:
+    """Testing CursorAlias create method with multiple pixel size and static bitmap."""
     static_bitmap = Bitmap(static_png, (9, 13))
     mock_sizes = [(10, 10), (15, 15), (16, 16)]
     alias = CursorAlias(static_bitmap)
@@ -755,6 +761,7 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
 
 
 def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> None:
+    """Testing CursorAlias create method with single pixel size and animated bitmap."""
     animated_png = create_test_image(image_dir, 4)
     animated_bitmap = Bitmap(animated_png, (13, 6))
     alias = CursorAlias(animated_bitmap)
@@ -792,6 +799,7 @@ def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> N
 
 
 def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) -> None:
+    """Testing CursorAlias create method with multiple pixel size and animated bitmap."""
     animated_png = create_test_image(image_dir, 4)
     animated_bitmap = Bitmap(animated_png, (4, 2))
     alias = CursorAlias(animated_bitmap)
@@ -859,6 +867,7 @@ alias_not_exists_err = "Alias directory is empty or not exists."
 
 
 def test_CursorAlias_check_alias(static_bitmap, animated_bitmap) -> None:
+    """Testing CursorAlias ``check_alias`` method."""
     alias = CursorAlias(static_bitmap)
 
     with pytest.raises(FileNotFoundError) as excinfo:
@@ -880,6 +889,7 @@ def test_CursorAlias_check_alias(static_bitmap, animated_bitmap) -> None:
 
 
 def test_CursorAlias_extension_excpetion(static_bitmap) -> None:
+    """Testing CursorAlias extension ``FileNotFoundError``(If alias file not created) exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
         alias.extension()
@@ -891,6 +901,7 @@ def test_CursorAlias_extension_excpetion(static_bitmap) -> None:
 
 
 def test_CursorAlias_extension(static_bitmap) -> None:
+    """Testing CursorAlias ``extension`` method."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     assert alias.alias_file.suffix == ".alias"
@@ -903,6 +914,7 @@ def test_CursorAlias_extension(static_bitmap) -> None:
 
 
 def test_CursorAlias_copy_alias_not_found_exception(static_bitmap) -> None:
+    """Testing CursorAlias copy method ``FileNotFoundError`` (alias file not created) exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
         alias.copy()
@@ -914,6 +926,7 @@ def test_CursorAlias_copy_alias_not_found_exception(static_bitmap) -> None:
 def test_CursorAlias_copy_path_not_directory_exception(
     static_bitmap, test_file
 ) -> None:
+    """Testing CursorAlias copy method ``NotADirectoryError`` (provided path is not a directory) exception."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     with pytest.raises(NotADirectoryError) as excinfo:
@@ -947,6 +960,7 @@ def check_alias_copy(
 
 # tests continue...
 def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None:
+    """Testing CursorAlias copy method with static bitmap without any arguments."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     copy_of_alias = alias.copy()
@@ -957,6 +971,7 @@ def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None
 
 
 def test_CursorAlias_copy_with_animated_bitmap_without_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with animated bitmap without any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     copy_of_alias = alias.copy()
@@ -967,6 +982,7 @@ def test_CursorAlias_copy_with_animated_bitmap_without_args(animated_bitmap) -> 
 
 
 def test_CursorAlias_copy_with_static_bitmap_with_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with static bitmap with any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     param_dst = Path(tempfile.mkdtemp())
@@ -978,6 +994,7 @@ def test_CursorAlias_copy_with_static_bitmap_with_args(animated_bitmap) -> None:
 
 
 def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with animated bitmap with any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     param_dst = Path(tempfile.mkdtemp())
@@ -989,6 +1006,7 @@ def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> Non
 
 
 def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
+    """Testing CursorAlias rename method with static bitmap."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
 
@@ -1010,6 +1028,7 @@ def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
 
 
 def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
+    """Testing CursorAlias rename method with animated bitmap."""
     animated_bitmap = Bitmap(create_test_image(image_dir, 4), (0, 0))
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
@@ -1044,6 +1063,7 @@ def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
 
 
 def test_CursorAlias_reproduce_exception(static_bitmap) -> None:
+    """Testing CursorAlias reproduce method ``FileNotFoundError`` (If cursor alias not created) exception."""
     alias = CursorAlias(static_bitmap)
 
     with pytest.raises(FileNotFoundError) as excinfo:
@@ -1054,6 +1074,7 @@ def test_CursorAlias_reproduce_exception(static_bitmap) -> None:
 
 
 def test_CursorAlias_reproduce(static_png, hotspot) -> None:
+    """Testing CursorAlias reproduce method with static bitmap."""
     testing_dirs: List[Path]
     with CursorAlias.from_bitmap(static_png, hotspot) as alias:
         alias.create((10, 10))
