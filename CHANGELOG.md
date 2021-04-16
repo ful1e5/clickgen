@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `clickgen.builders` module docs init
 - docstring `param type` and `rtype` typing with **"or"** inside `Optional` and `Union`
 - `WindowsCursor` docstring init
+- `tests` module docstring init
 
 ### Changed
 

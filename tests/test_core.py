@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
+"""
+
 import shutil
 import tempfile
 from pathlib import Path
@@ -15,13 +19,12 @@ from clickgen.core import Bitmap, CursorAlias
 from .utils import create_test_image
 
 #
-#
 # Bitmap Test Cases
-#
 #
 
 
 def test_static_Bitmap_as_str(static_png, hotspot) -> None:
+    """Testing Bitmap class members value for **static png**."""
     str_static_png = str(static_png)
     bmp = Bitmap(str_static_png, hotspot)
 
@@ -40,6 +43,7 @@ def test_static_Bitmap_as_str(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_as_str(animated_png, hotspot) -> None:
+    """Testing Bitmap class members value for **animated png**."""
     str_animated_png: List[str] = list(map(lambda x: str(x.absolute()), animated_png))
     bmp = Bitmap(str_animated_png, hotspot)
 
@@ -58,6 +62,9 @@ def test_animated_Bitmap_as_str(animated_png, hotspot) -> None:
 
 
 def test_static_Bitmap_as_Path(static_png, hotspot) -> None:
+    """Testing Bitmap class with passing args as `Path` type for \
+    **static png**.
+    """
     bmp = Bitmap(static_png, hotspot)
 
     with pytest.raises(AttributeError) as excinfo:
@@ -75,6 +82,9 @@ def test_static_Bitmap_as_Path(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_as_Path(animated_png, hotspot) -> None:
+    """Testing Bitmap class with passing args as `Path` type for \
+    **animated png**.
+    """
     bmp = Bitmap(animated_png, hotspot)
 
     with pytest.raises(AttributeError) as excinfo:
@@ -109,6 +119,7 @@ def test_animated_Bitmap_as_Path(animated_png, hotspot) -> None:
     ],
 )
 def test_Bitmap_png_type_error_exception(png, hotspot) -> None:
+    """Testing Bitmap class ``TypeError`` exception."""
     with pytest.raises(TypeError):
         assert Bitmap(png, hotspot)
 
@@ -129,40 +140,55 @@ notfound_path = Path.cwd() / notfound
     ],
 )
 def test_Bitmap_png_not_found_exception(png, hotspot) -> None:
+    """Testing Bitmap class ``FileNotFoundError`` exception."""
     with pytest.raises(FileNotFoundError):
         assert Bitmap(png, hotspot)
 
 
 def test_Bitmap_non_png_exception(test_file, hotspot) -> None:
+    """Testing Bitmap class ``ValueError`` (Not a valid image type) exception."""
     with pytest.raises(ValueError):
         assert Bitmap(test_file, hotspot)
 
 
 def test_static_Bitmap_hotspot_underflow_exception(static_png) -> None:
+    """Testing Bitmap class hotspot ``ValueError`` (provided ``hotspot`` is \
+    smaller than image pixel size) exception for static png.
+    """
     with pytest.raises(ValueError):
         assert Bitmap(static_png, (2, -3))
         assert Bitmap(static_png, (-2, -3))
 
 
 def test_animated_Bitmap_hotspot_underflow_exception(animated_png) -> None:
+    """Testing Bitmap class hotspot ``ValueError`` (provided ``hotspot`` is \
+    smaller than image pixel size) exception for animated png.
+    """
     with pytest.raises(ValueError):
         assert Bitmap(animated_png, (2, -3))
         assert Bitmap(animated_png, (-2, -3))
 
 
 def test_static_Bitmap_hotspot_overflow_exception(static_png) -> None:
+    """Testing Bitmap class hotspot ``ValueError`` (provided ``hotspot`` is \
+    larger than image pixel size) exception for static png.
+    """
     with pytest.raises(ValueError):
         assert Bitmap(static_png, (12, 60))
         assert Bitmap(static_png, (55, 60))
 
 
 def test_animated_Bitmap_hotspot_overflow_exception(animated_png) -> None:
+    """Testing Bitmap class hotspot ``ValueError`` (provided ``hotspot`` is \
+    larger than image pixel size) exception for animated png.
+    """
     with pytest.raises(ValueError):
         assert Bitmap(animated_png, (12, 60))
         assert Bitmap(animated_png, (55, 60))
 
 
 def test_static_Bitmap_str(static_png, hotspot) -> None:
+    """Testing Bitmap class ``__str__`` datamethod for **static png**."""
     bmp = Bitmap(static_png, hotspot)
     assert (
         bmp.__str__()
@@ -171,6 +197,7 @@ def test_static_Bitmap_str(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_str(animated_png, hotspot) -> None:
+    """Testing Bitmap class ``__str__`` datamethod for **animated png**."""
     bmp = Bitmap(animated_png, hotspot)
     assert (
         bmp.__str__()
@@ -179,6 +206,7 @@ def test_animated_Bitmap_str(animated_png, hotspot) -> None:
 
 
 def test_static_Bitmap_repr(static_png, hotspot) -> None:
+    """Testing Bitmap class ``__repr__`` datamethod for **static png**."""
     bmp = Bitmap(static_png, hotspot)
     assert (
         bmp.__repr__()
@@ -187,6 +215,7 @@ def test_static_Bitmap_repr(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_repr(animated_png, hotspot) -> None:
+    """Testing Bitmap class ``__repr__`` datamethod for **animated png**."""
     bmp = Bitmap(animated_png, hotspot)
     assert (
         bmp.__repr__()
@@ -195,6 +224,7 @@ def test_animated_Bitmap_repr(animated_png, hotspot) -> None:
 
 
 def test_static_Bitmap_context_manager(static_png, hotspot) -> None:
+    """Testing Bitmap class contextmanagment datamethod for **static png**."""
     with Bitmap(static_png, hotspot) as bmp:
         with pytest.raises(AttributeError):
             assert bmp.grouped_png
@@ -209,6 +239,7 @@ def test_static_Bitmap_context_manager(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
+    """Testing Bitmap class contextmanagment datamethod for **animated png**."""
     with Bitmap(animated_png, hotspot) as bmp:
         with pytest.raises(AttributeError):
             assert bmp.png
@@ -225,6 +256,9 @@ def test_animated_Bitmap_context_manager(animated_png, hotspot) -> None:
 def test_Bitmap_png_must_had_equal_width_and_height_exception(
     image_dir, hotspot
 ) -> None:
+    """Testing Bitmap class ``ValueError`` (Image width and height not same) \
+    exception for **static png**.
+    """
     png = create_test_image(image_dir, 1, size=(2, 3))
     with pytest.raises(ValueError):
         assert Bitmap(png, hotspot)
@@ -233,6 +267,9 @@ def test_Bitmap_png_must_had_equal_width_and_height_exception(
 def test_animated_Bitmap_all_png_size_must_be_equal_exception(
     image_dir, hotspot
 ) -> None:
+    """Testing Bitmap class ``ValueError`` (Image width and height not same) \
+    exception for **animated png**.
+    """
     png = create_test_image(image_dir, 2, size=(2, 2))
     png.extend(create_test_image(image_dir, 1, size=(3, 6)))
     png.extend(create_test_image(image_dir, 1, size=(3, 3)))
@@ -242,6 +279,9 @@ def test_animated_Bitmap_all_png_size_must_be_equal_exception(
 
 
 def test_invalid_animated_Bitmap_name_exception(image_dir, hotspot) -> None:
+    """Testing Bitmap class ``ValueError`` (Invalid image name) \
+    exception for **animated png**.
+    """
     png = []
     images = create_test_image(image_dir, 3, size=(5, 5))
 
@@ -255,6 +295,9 @@ def test_invalid_animated_Bitmap_name_exception(image_dir, hotspot) -> None:
 
 
 def test_animated_Bitmap_group_had_same_key_exception(image_dir, hotspot) -> None:
+    """Testing Bitmap class ``ValueError`` (Invalid image key) \
+    exception for **animated png**.
+    """
     png = []
     images = create_test_image(image_dir, 3, size=(5, 5))
 
@@ -273,6 +316,7 @@ def test_animated_Bitmap_group_had_same_key_exception(image_dir, hotspot) -> Non
 
 
 def test_static_Bitmap_resize_without_save(static_png) -> None:
+    """Testing Bitmap ``resize`` method without ``save`` flag for static png."""
     new_size = (10, 10)
     bmp = Bitmap(static_png, (10, 10))
     assert bmp.x_hot == 10
@@ -287,6 +331,7 @@ def test_static_Bitmap_resize_without_save(static_png) -> None:
 
 
 def test_animated_Bitmap_resize_without_save(animated_png) -> None:
+    """Testing Bitmap ``resize`` method without ``save`` flag for animated png."""
     new_size = (10, 10)
     bmp = Bitmap(animated_png, (10, 10))
     assert bmp.x_hot == 10
@@ -301,6 +346,7 @@ def test_animated_Bitmap_resize_without_save(animated_png) -> None:
 
 
 def test_static_Bitmap_resize_with_save(static_png) -> None:
+    """Testing Bitmap ``resize`` method with ``save`` flag for static png."""
     new_size = (10, 10)
     bmp = Bitmap(static_png, (10, 10))
     assert bmp.x_hot == 10
@@ -314,6 +360,7 @@ def test_static_Bitmap_resize_with_save(static_png) -> None:
 
 
 def test_animated_Bitmap_resize_with_save(animated_png) -> None:
+    """Testing Bitmap ``resize`` method with ``save`` flag for animated png."""
     new_size = (10, 10)
     bmp = Bitmap(animated_png, (10, 10))
     assert bmp.x_hot == 10
@@ -328,6 +375,7 @@ def test_animated_Bitmap_resize_with_save(animated_png) -> None:
 
 
 def test_static_Bitmap_reproduce_with_save(static_png) -> None:
+    """Testing Bitmap ``reproduce`` method with ``save`` flag for static png."""
     bmp = Bitmap(static_png, (10, 10))
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=True
@@ -341,6 +389,7 @@ def test_static_Bitmap_reproduce_with_save(static_png) -> None:
 
 
 def test_static_Bitmap_reproduce_without_save(static_png) -> None:
+    """Testing Bitmap ``reproduce`` method without ``save`` flag for static png."""
     bmp = Bitmap(static_png, (10, 10))
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=False
@@ -356,6 +405,7 @@ def test_static_Bitmap_reproduce_without_save(static_png) -> None:
 
 
 def test_animated_Bitmap_reproduce_with_save(animated_png) -> None:
+    """Testing Bitmap ``reproduce`` method with ``save`` flag for animated png."""
     bmp = Bitmap(animated_png, (10, 10))
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=True
@@ -370,6 +420,7 @@ def test_animated_Bitmap_reproduce_with_save(animated_png) -> None:
 
 
 def test_animated_Bitmap_reproduce_without_save(animated_png) -> None:
+    """Testing Bitmap ``reproduce`` method without ``save`` flag for animated png."""
     bmp = Bitmap(animated_png, (10, 10))
     return_value = bmp.reproduce(
         size=(10, 10), canvas_size=(10, 10), position="center", save=False
@@ -385,6 +436,7 @@ def test_animated_Bitmap_reproduce_without_save(animated_png) -> None:
 
 
 def test_static_Bitmap_rename(static_png: Path, hotspot) -> None:
+    """Testing Bitmap ``rename`` method with static png."""
     bmp = Bitmap(static_png, hotspot)
     assert bmp.key == "test-0"
     assert bmp.png == static_png
@@ -399,6 +451,7 @@ def test_static_Bitmap_rename(static_png: Path, hotspot) -> None:
 
 
 def test_animated_Bitmap_rename(animated_png: List[Path], hotspot) -> None:
+    """Testing Bitmap ``rename`` method with animated png."""
     bmp = Bitmap(animated_png, hotspot)
     assert bmp.key == "test"
     assert bmp.grouped_png == animated_png
@@ -415,12 +468,14 @@ def test_animated_Bitmap_rename(animated_png: List[Path], hotspot) -> None:
 def test_Bitmap_copy_is_raising_not_a_directory_exception(
     static_png, hotspot, test_file
 ) -> None:
+    """Testing Bitmap ``copy`` method ``NotADirectoryError`` exception."""
     bmp = Bitmap(static_png, hotspot)
     with pytest.raises(NotADirectoryError):
         bmp.copy(test_file)
 
 
 def test_Bitmap_copy_is_not_creating_not_exists_directory(static_png, hotspot) -> None:
+    """Testing Bitmap ``copy`` method creating directory is not exists."""
     bmp = Bitmap(static_png, hotspot)
     copy_dir = Path(tempfile.mkdtemp("test_copy_dir"))
     shutil.rmtree(copy_dir)
@@ -428,6 +483,9 @@ def test_Bitmap_copy_is_not_creating_not_exists_directory(static_png, hotspot) -
 
 
 def test_static_Bitmap_copy_with_path_argument(static_png, hotspot) -> None:
+    """Testing Bitmap ``copy`` method with passing ``Path`` type argument for \
+    static png.
+    """
     bmp = Bitmap(static_png, hotspot)
 
     assert bmp.png == static_png
@@ -446,6 +504,9 @@ def test_static_Bitmap_copy_with_path_argument(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_copy_with_path_argument(animated_png, hotspot) -> None:
+    """Testing Bitmap ``copy`` method with passing ``Path`` type argument for \
+    animated png.
+    """
     bmp = Bitmap(animated_png, hotspot)
 
     assert bmp.grouped_png == animated_png
@@ -466,6 +527,9 @@ def test_animated_Bitmap_copy_with_path_argument(animated_png, hotspot) -> None:
 
 
 def test_static_Bitmap_copy_without_path_argument(static_png, hotspot) -> None:
+    """Testing Bitmap ``copy`` method without passing ``Path`` type argument for \
+    static png.
+    """
     bmp = Bitmap(static_png, hotspot)
 
     assert bmp.png == static_png
@@ -487,6 +551,9 @@ def test_static_Bitmap_copy_without_path_argument(static_png, hotspot) -> None:
 
 
 def test_animated_Bitmap_copy_without_path_argument(animated_png, hotspot) -> None:
+    """Testing Bitmap ``copy`` method without passing ``Path`` type argument for \
+    animated png.
+    """
     bmp = Bitmap(animated_png, hotspot)
 
     assert bmp.grouped_png == animated_png
@@ -508,15 +575,14 @@ def test_animated_Bitmap_copy_without_path_argument(animated_png, hotspot) -> No
 
 
 #
-#
 # CursorAlias Test Cases
-#
 #
 
 
 def test_CursorAlias_with_static_Bitmap(
     static_bitmap: Bitmap,
 ) -> None:
+    """Testing CursorAlias class members value with static bitmap."""
     alias = CursorAlias(static_bitmap)
 
     assert static_bitmap.key in alias.prefix
@@ -531,6 +597,7 @@ def test_CursorAlias_with_static_Bitmap(
 def test_CursorAlias_with_animated_Bitmap(
     animated_bitmap: Bitmap,
 ) -> None:
+    """Testing CursorAlias class members value with animated bitmap."""
     alias = CursorAlias(animated_bitmap)
 
     assert animated_bitmap.key in alias.prefix
@@ -543,6 +610,7 @@ def test_CursorAlias_with_animated_Bitmap(
 
 
 def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
+    """Testing CursorAlias ``from_bitmap`` method."""
     directory: Path
 
     with CursorAlias.from_bitmap(static_png, hotspot) as ca:
@@ -566,6 +634,7 @@ def test_CursorAlias_from_bitmap(static_png, hotspot) -> None:
 
 
 def test_static_CursorAlias_str(static_bitmap):
+    """Testing CursorAlias ``__str__`` datamethod."""
     alias = CursorAlias(static_bitmap)
     assert (
         alias.__str__()
@@ -581,6 +650,7 @@ def test_static_CursorAlias_str(static_bitmap):
 
 
 def test_static_CursorAlias_repr(static_bitmap):
+    """Testing CursorAlias ``__repr__`` datamethod."""
     alias = CursorAlias(static_bitmap)
     assert (
         alias.__repr__()
@@ -604,6 +674,7 @@ def test_static_CursorAlias_repr(static_bitmap):
     ],
 )
 def test_CursorAlias_create_type_error_exception(mock_sizes, static_bitmap) -> None:
+    """Testing CursorAlias create method ``TypeError`` exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(TypeError) as excinfo:
         assert alias.create(sizes=mock_sizes)
@@ -617,6 +688,7 @@ def test_CursorAlias_create_type_error_exception(mock_sizes, static_bitmap) -> N
 def test_CursorAlias_create_with_static_bitmap_and_single_size(
     static_bitmap, static_png
 ) -> None:
+    """Testing CursorAlias create method with single pixel size and static bitmap."""
     alias = CursorAlias(static_bitmap)
 
     assert len(sorted(alias.alias_dir.iterdir())) == 0
@@ -645,6 +717,7 @@ def test_CursorAlias_create_with_static_bitmap_and_single_size(
 
 
 def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> None:
+    """Testing CursorAlias create method with multiple pixel size and static bitmap."""
     static_bitmap = Bitmap(static_png, (9, 13))
     mock_sizes = [(10, 10), (15, 15), (16, 16)]
     alias = CursorAlias(static_bitmap)
@@ -688,6 +761,7 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
 
 
 def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> None:
+    """Testing CursorAlias create method with single pixel size and animated bitmap."""
     animated_png = create_test_image(image_dir, 4)
     animated_bitmap = Bitmap(animated_png, (13, 6))
     alias = CursorAlias(animated_bitmap)
@@ -725,6 +799,7 @@ def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> N
 
 
 def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) -> None:
+    """Testing CursorAlias create method with multiple pixel size and animated bitmap."""
     animated_png = create_test_image(image_dir, 4)
     animated_bitmap = Bitmap(animated_png, (4, 2))
     alias = CursorAlias(animated_bitmap)
@@ -792,6 +867,7 @@ alias_not_exists_err = "Alias directory is empty or not exists."
 
 
 def test_CursorAlias_check_alias(static_bitmap, animated_bitmap) -> None:
+    """Testing CursorAlias ``check_alias`` method."""
     alias = CursorAlias(static_bitmap)
 
     with pytest.raises(FileNotFoundError) as excinfo:
@@ -813,6 +889,7 @@ def test_CursorAlias_check_alias(static_bitmap, animated_bitmap) -> None:
 
 
 def test_CursorAlias_extension_excpetion(static_bitmap) -> None:
+    """Testing CursorAlias extension ``FileNotFoundError``(If alias file not created) exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
         alias.extension()
@@ -824,6 +901,7 @@ def test_CursorAlias_extension_excpetion(static_bitmap) -> None:
 
 
 def test_CursorAlias_extension(static_bitmap) -> None:
+    """Testing CursorAlias ``extension`` method."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     assert alias.alias_file.suffix == ".alias"
@@ -836,6 +914,7 @@ def test_CursorAlias_extension(static_bitmap) -> None:
 
 
 def test_CursorAlias_copy_alias_not_found_exception(static_bitmap) -> None:
+    """Testing CursorAlias copy method ``FileNotFoundError`` (alias file not created) exception."""
     alias = CursorAlias(static_bitmap)
     with pytest.raises(FileNotFoundError) as excinfo:
         alias.copy()
@@ -847,6 +926,7 @@ def test_CursorAlias_copy_alias_not_found_exception(static_bitmap) -> None:
 def test_CursorAlias_copy_path_not_directory_exception(
     static_bitmap, test_file
 ) -> None:
+    """Testing CursorAlias copy method ``NotADirectoryError`` (provided path is not a directory) exception."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     with pytest.raises(NotADirectoryError) as excinfo:
@@ -880,6 +960,7 @@ def check_alias_copy(
 
 # tests continue...
 def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None:
+    """Testing CursorAlias copy method with static bitmap without any arguments."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
     copy_of_alias = alias.copy()
@@ -890,6 +971,7 @@ def test_CursorAlias_copy_with_static_bitmap_without_args(static_bitmap) -> None
 
 
 def test_CursorAlias_copy_with_animated_bitmap_without_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with animated bitmap without any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     copy_of_alias = alias.copy()
@@ -900,6 +982,7 @@ def test_CursorAlias_copy_with_animated_bitmap_without_args(animated_bitmap) -> 
 
 
 def test_CursorAlias_copy_with_static_bitmap_with_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with static bitmap with any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     param_dst = Path(tempfile.mkdtemp())
@@ -911,6 +994,7 @@ def test_CursorAlias_copy_with_static_bitmap_with_args(animated_bitmap) -> None:
 
 
 def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> None:
+    """Testing CursorAlias copy method with animated bitmap with any arguments."""
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
     param_dst = Path(tempfile.mkdtemp())
@@ -922,6 +1006,7 @@ def test_CursorAlias_copy_with_animated_bitmap_with_args(animated_bitmap) -> Non
 
 
 def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
+    """Testing CursorAlias rename method with static bitmap."""
     alias = CursorAlias(static_bitmap)
     alias.create((10, 10))
 
@@ -943,6 +1028,7 @@ def test_CursorAlias_rename_with_static_bitmap(static_bitmap) -> None:
 
 
 def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
+    """Testing CursorAlias rename method with animated bitmap."""
     animated_bitmap = Bitmap(create_test_image(image_dir, 4), (0, 0))
     alias = CursorAlias(animated_bitmap)
     alias.create((10, 10))
@@ -977,6 +1063,7 @@ def test_CursorAlias_rename_with_animated_bitmap(image_dir) -> None:
 
 
 def test_CursorAlias_reproduce_exception(static_bitmap) -> None:
+    """Testing CursorAlias reproduce method ``FileNotFoundError`` (If cursor alias not created) exception."""
     alias = CursorAlias(static_bitmap)
 
     with pytest.raises(FileNotFoundError) as excinfo:
@@ -987,6 +1074,7 @@ def test_CursorAlias_reproduce_exception(static_bitmap) -> None:
 
 
 def test_CursorAlias_reproduce(static_png, hotspot) -> None:
+    """Testing CursorAlias reproduce method with static bitmap."""
     testing_dirs: List[Path]
     with CursorAlias.from_bitmap(static_png, hotspot) as alias:
         alias.create((10, 10))
