@@ -86,7 +86,7 @@ def test_CursorDB_search_symlinks_with_find_similar(data) -> None:
 def test_CursorDB_rename_file_is_not_file_exception(data) -> None:
     """Testing CursorDB rename_file method ``FileNotFoundError`` exception. """
     db = CursorDB(data)
-    test_p = Path(tempfile.tempdir) / "fffaf"
+    test_p = Path(str(tempfile.tempdir)) / "fffaf"
     with pytest.raises(FileNotFoundError) as excinfo:
         db.rename_file(test_p)
     assert str(excinfo.value) == f"'{test_p}' is not file"
@@ -103,15 +103,15 @@ def test_CursorDB_rename_file(data) -> None:
     """Testing CursorDB rename_file method."""
     db = CursorDB(data)
 
-    test_p = Path(tempfile.tempdir) / "fffaf"
+    test_p = Path(str(tempfile.tempdir)) / "fffaf"
     test_p.write_text("test")
 
     return_p = db.rename_file(test_p)
-    assert str(return_p) == str(Path(tempfile.tempdir) / "ffffff")
+    assert str(return_p) == str(Path(str(tempfile.tempdir)) / "ffffff")
 
     test_p.unlink(missing_ok=True)
 
-    test_p1 = Path(tempfile.tempdir) / "aa"
+    test_p1 = Path(str(tempfile.tempdir)) / "aa"
     test_p1.write_text("test")
 
     return_p = db.rename_file(test_p1)
