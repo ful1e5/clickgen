@@ -20,12 +20,15 @@ from tests.utils import create_test_image
 
 
 def test_XCursor_config_file_not_found_exception(image_dir) -> None:
+    """Testing XCursor raises **FileNotFoundError** for config_file or not."""
     with pytest.raises(FileNotFoundError) as excinfo:
         XCursor(image_dir, image_dir)
     assert str(excinfo.value) == f"'{image_dir.name}' is not found or not a config file"
 
 
 def test_XCursor(static_config, image_dir) -> None:
+    """Testing XCursor members value."""
+
     x = XCursor(static_config, image_dir)
     assert x.config_file == static_config
 
@@ -35,6 +38,7 @@ def test_XCursor(static_config, image_dir) -> None:
 
 
 def test_XCursor_generate_exception(image_dir) -> None:
+    """Testing XCursor generate **RuntimeError** exception."""
     cfg: Path = image_dir / "test.alias"
     cfg.write_text("10 10 10 test/test.png")
     x = XCursor(cfg, image_dir)
@@ -48,6 +52,7 @@ def test_XCursor_generate_exception(image_dir) -> None:
 
 
 def test_XCursor_generate_with_static_config(static_config, image_dir) -> None:
+    """Testing XCursor generate **static** cursors."""
     x = XCursor(static_config, image_dir)
     x.generate()
 
@@ -56,6 +61,7 @@ def test_XCursor_generate_with_static_config(static_config, image_dir) -> None:
 
 
 def test_XCursor_generate_with_animated_config(animated_config, image_dir) -> None:
+    """Testing XCursor generate **animated** cursors."""
     x = XCursor(animated_config, image_dir)
     x.generate()
 
@@ -64,18 +70,25 @@ def test_XCursor_generate_with_animated_config(animated_config, image_dir) -> No
 
 
 def test_XCursor_create_with_static_config(static_config, image_dir) -> None:
+    """Testing XCursor `create` classmethod for generating **static** \
+    cursor.
+    """
     x = XCursor.create(static_config, image_dir)
     assert x.exists() is True
     assert x.__sizeof__() > 0
 
 
 def test_XCursor_create_with_animated_config(animated_config, image_dir) -> None:
+    """Testing XCursor `create` classmethod for generating **animated** \
+    cursor.
+    """
     x = XCursor.create(animated_config, image_dir)
     assert x.exists() is True
     assert x.__sizeof__() > 0
 
 
 def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
+    """Testing WindowsCursor `framesets` Exceptions."""
     win = WindowsCursor(static_config, image_dir, options=Options())
 
     f1 = [
@@ -147,6 +160,7 @@ def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
 
 
 def test_WindowsCursor(static_config, image_dir) -> None:
+    """Testing WindowsCursor members value."""
     win = WindowsCursor(static_config, image_dir, options=Options())
     assert win.config_file == static_config
 
@@ -155,6 +169,9 @@ def test_WindowsCursor(static_config, image_dir) -> None:
 
 
 def test_WindowsCursor_generate_with_static_config(static_config, image_dir) -> None:
+    """Testing WindowsCursor generate method for generating static (.cur) \
+    cursor.
+    """
     win = WindowsCursor(static_config, image_dir, options=Options())
     win.generate()
 
@@ -166,6 +183,9 @@ def test_WindowsCursor_generate_with_static_config(static_config, image_dir) -> 
 def test_WindowsCursor_generate_with_animated_config(
     animated_config, image_dir
 ) -> None:
+    """Testing WindowsCursor generate method for generating animated (.ani) \
+    cursor.
+    """
     win = WindowsCursor(animated_config, image_dir, options=Options())
     win.generate()
 
@@ -177,6 +197,9 @@ def test_WindowsCursor_generate_with_animated_config(
 def test_WindowsCursor_generate_with_static_config_and_shadow(
     static_config, image_dir
 ) -> None:
+    """Testing WindowsCursor generate method for generating static (.cur) \
+    cursor with shadows.
+    """
     options = Options(add_shadows=True)
     win = WindowsCursor(static_config, image_dir, options)
     win.generate()
@@ -189,6 +212,9 @@ def test_WindowsCursor_generate_with_static_config_and_shadow(
 def test_WindowsCursor_generate_with_animated_config_and_shadow(
     animated_config, image_dir
 ) -> None:
+    """Testing WindowsCursor generate method for generating animated (.ani) \
+    cursor with shadows.
+    """
     options = Options(add_shadows=True)
     win = WindowsCursor(animated_config, image_dir, options)
     win.generate()
@@ -199,6 +225,9 @@ def test_WindowsCursor_generate_with_animated_config_and_shadow(
 
 
 def test_WindowsCursor_create_with_static_config(static_config, image_dir) -> None:
+    """Testing WindowsCursor generate static (.cur) cursor with ``create`` \
+    classmethod.
+    """
     with WindowsCursor.create(static_config, image_dir) as win:
         assert win.exists() is True
         assert win.suffix == ".cur"
@@ -206,6 +235,9 @@ def test_WindowsCursor_create_with_static_config(static_config, image_dir) -> No
 
 
 def test_WindowsCursor_create_with_animated_config(hotspot, image_dir) -> None:
+    """Testing WindowsCursor generate animated (.ani) cursor with ``create`` \
+    classmethod.
+    """
     animated_png = create_test_image(image_dir, 4)
     with CursorAlias.from_bitmap(animated_png, hotspot) as alias:
         cfg = alias.create((10, 10), delay=999999999)
