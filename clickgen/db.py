@@ -250,7 +250,6 @@ class CursorDB:
 
         :return: List of missing ``XCursor`` in string list or None.
         :rtype: List[str] or None
-
         """
         if find_similar:
             key = self.__find_similar(key)

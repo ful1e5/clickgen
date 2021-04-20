@@ -475,13 +475,13 @@ class Bitmap:
 
 
 class CursorAlias:
+    """Cursor Config ``.in`` or ``.alias`` file provider."""
+
     bitmap: Bitmap
     prefix: str
     alias_dir: Path
     alias_file: Path
     garbage_dirs: List[Path] = []
-
-    """Cursor Config ``.in`` or ``.alias`` file provider."""
 
     def __init__(
         self,

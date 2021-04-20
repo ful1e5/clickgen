@@ -24,8 +24,7 @@ clickgen_pypi_path = "".join(map(str, __path__))
 
 
 class XCursor:
-    """
-    Build `XCursor` from the ``.in`` config file. \
+    """Build `XCursor` from the ``.in`` config file. \
     This class call ``xcursorgen`` for generating static \
     and animated ``xcursor``.
     """
@@ -53,7 +52,6 @@ class XCursor:
         :raise FileNotFoundError: If ``config_file`` not existed on \
                 filesystem.
         """
-
         if not config_file.exists() or not config_file.is_file():
             raise FileNotFoundError(
                 f"'{config_file.name}' is not found or not a config file"
@@ -76,7 +74,6 @@ class XCursor:
                 ``ctype``.
         :rtype: ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
         """
-
         p = (self._LP_c_char * len(argv))()
 
         for i, arg in enumerate(argv):
@@ -87,10 +84,10 @@ class XCursor:
 
     def generate(self) -> None:
         """ Generate the ``xcursor`` at ``out_dir``.
+
         :raise RuntimeError: unable to generate ``xcursor`` from \
                 ``config_file``.
         """
-
         # remove old cursor file
         remove_util(self.out)
 
@@ -117,7 +114,7 @@ class XCursor:
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path) -> Path:
         """ Class method for generate ``xcursor`` from cursor's \
-                config files.
+        config files.
 
         This method gives ability to generate ``xcursor`` with initiate the \
         XCursor object.
@@ -125,7 +122,6 @@ class XCursor:
         :returns: Generated ``XCursor`` pathlib.Path object.
         :rtype: pathlib.Path
         """
-
         cursor = cls(alias_file, out_dir)
         cursor.generate()
         return cursor.out
@@ -135,8 +131,7 @@ Color = Tuple[int, int, int, int]
 
 
 class Options(NamedTuple):
-    """
-    Structure `anicursorgen.py` CLI arguments.
+    """Structure `anicursorgen.py` CLI arguments.
 
     :param add_shadow : Do not generate shadows for cursors \
             (assign False to cancel its effect).
@@ -171,9 +166,10 @@ ConfigFrame = Tuple[int, int, int, str, int]
 
 class WindowsCursor:
     """Build **Windows cursors** from ``.in`` configs files. This class \
-            code is inspired on `anicursorgen.py`.
+    code is inspired on `anicursorgen.py`.
 
-    Yaru Icons <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
+    Yaru Icons \
+        <https://github.com/ubuntu/yaru/blob/master/icons/src/cursors/anicursorgen.py>
 
     Copyright (C) 2015 Руслан Ижбулатов <lrn1986@gmail.com>
     Copyright (C) 2021 Kaiz Khatri <kaizmandhu@gmail.com>
@@ -210,7 +206,6 @@ class WindowsCursor:
         :param options: ``anicursorgen`` commandline arguments.
         :type options: Options
         """
-
         self.config_file = config_file
         self.prefix = config_file.parent
         self.out_dir = out_dir
@@ -226,7 +221,6 @@ class WindowsCursor:
                 typing ``Tuple``.
         :rtype: List[ConfigFrame]
         """
-
         in_buffer = self.config_file.open("rb")
         frames = []
 
@@ -259,7 +253,6 @@ class WindowsCursor:
         :returns: ``True`` for animated and ``False`` for static.
         :rtype: bool
         """
-
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -290,7 +283,6 @@ class WindowsCursor:
         :raise ValueError: If frame's **animation durations** are not same \
                 as other frame.
         """
-
         framesets = []
         sizes = set()
 
@@ -342,7 +334,6 @@ class WindowsCursor:
         :param buf: input Buffer.
         :type buf: io.BytesIO
         """
-
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -366,7 +357,6 @@ class WindowsCursor:
         :returns: None
         :rtype: None
         """
-
         framesets = self.make_framesets(frames)
 
         buf = io.BytesIO()
@@ -451,7 +441,6 @@ class WindowsCursor:
         :returns: None
         :rtype: None
         """
-
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -477,7 +466,6 @@ class WindowsCursor:
         :returns: Tuple of code status and Image instance.
         :rtype: Tuple[int, PIL.Image.Image]
         """
-
         blur_px = orig.size[0] / 100.0 * self.options.blur
         right_px = int(orig.size[0] / 100.0 * self.options.right_shift)
         down_px = int(orig.size[1] / 100.0 * self.options.down_shift)
@@ -522,7 +510,6 @@ class WindowsCursor:
         :returns: None
         :rtype: None
         """
-
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
@@ -545,7 +532,6 @@ class WindowsCursor:
         :returns: None
         :rtype: None
         """
-
         pixels = frame_png.load()
 
         out.write(
@@ -584,7 +570,6 @@ class WindowsCursor:
         :returns: Buffer of `.cur` cursor.
         :rtype: io.BytesIO
         """
-
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
@@ -676,7 +661,7 @@ class WindowsCursor:
     @classmethod
     def create(cls, alias_file: Path, out_dir: Path, options=Options()) -> Path:
         """This method gives ability to generate ``Windows Cursor`` without \
-            initiate the WindowsCursor object.
+        initiate the WindowsCursor object.
 
         :param alias_file: Cursor config file location.
         :type alias_file: Path

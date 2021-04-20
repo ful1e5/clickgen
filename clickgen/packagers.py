@@ -35,7 +35,6 @@ def XPackager(directory: Path, theme_name: str, comment: str) -> None:
     :returns: Nothing
     :rtype: None
     """
-
     # Writing all .theme files
     files: Dict[str, str] = {}
     for file, template in THEME_FILES_TEMPLATES.items():
@@ -130,7 +129,8 @@ def WindowsPackager(
     author: str,
     website_url: Optional[str] = None,
 ) -> None:
-    """This packager generates ``install.inf`` files at ``directory``. Also, Cursor extensions is identified by its type (.cur/.ani).
+    """This packager generates ``install.inf`` files at ``directory``. Also, \
+    Cursor extensions is identified by its type (.cur/.ani).
 
     :param directory: Path where ``.theme`` files save.
     :param directory: Path
@@ -153,7 +153,6 @@ def WindowsPackager(
     :raise FileNotFoundError: If Windows cursors are not exists on \
             provided directory.
     """
-
     files: List[Path] = []
 
     for extensions in ("*.ani", "*.cur"):

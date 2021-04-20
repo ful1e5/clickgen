@@ -24,9 +24,7 @@ def chdir(directory: Union[str, Path]):
 
     :param directory: path to directory.
     :type directory: Union[str, pathlib.Path]
-
     """
-
     prev_cwd = os.getcwd()
     os.chdir(directory)
     try:
@@ -40,9 +38,9 @@ def remove_util(p: Union[str, Path]) -> None:
 
     :param p: path to directory.
     :type p: Union[str, pathlib.Path]
+
     :return: None
     :rtype: None
-
     """
     p_obj: Path = Path(p)
 
@@ -66,7 +64,6 @@ class PNGProvider:
 
         :param bitmaps_dir: Path to directory where `.png` files are stored.
         :type bitmaps_dir: Union[str, Path]
-
         """
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
@@ -83,16 +80,17 @@ class PNGProvider:
 
         This method return file location in `pathlib.Path` object.
 
-        Runtime directory `sync` is **not supported**, Which means creating
-        or deleting a file on programs execution is not update class `__pngs`
+        Runtime directory `sync` is **not supported**, Which means creating \
+        or deleting a file on programs execution is not update class `__pngs` \
         state.
 
         :param key: `key` is filename
         :type key: str
-        :return: Returns `pathlib.Path` object or `list` of `pathlib.Path`
-                 object/s.
-        """
 
+        :returns: Returns `pathlib.Path` object or `list` of `pathlib.Path`
+                 object/s.
+        :rtype: List[Path] or path
+        """
         k = key.split(".")
         if len(k) == 1:
             reg = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
