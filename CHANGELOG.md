@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - WindowsCursor support `options` instead of `args`
 - clickgen pip dependencies _installation_ method changed inside [workflows/app-ci.yml](./.github/workflows/app-ci.yml)
 - Only `python3` syntax (removed `(object) inheritation`)
+- `clickgen.utils.timer` & `clickgen.utils.debug` removed
 
 ## [1.1.9] - 22 Mar 2021
 
