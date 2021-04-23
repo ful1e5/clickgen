@@ -205,14 +205,16 @@ class CursorDB:
 
         :param data: Provide custom dataset of cursors. default to \
         ``clickgen.db.DATA``
-        :type data: List[Set[str]]
+        :type data: ``List[Set[str]]``
 
-        :returns: Instance of ``CursorDB``
+        :returns: None.
+        :rtype: ``None``
 
         :raises TypeError: If provided ``data`` is not type of ``List``
-        :raises TypeError: If provided ``data``'s list member is not type \
-        of ``Set``
+        :raises TypeError: If provided ``data``'s list member is not type 
+        of ``Set``.
         """
+
         super().__init__()
         self.__seed(data)
 
@@ -241,15 +243,15 @@ class CursorDB:
     ) -> Optional[List[str]]:
         """Retrieve similar implementation Xcursor from database.
 
-        :param key: Name of XCursor
-        :type key: str
+        :param key: Name of XCursor.
+        :type key: ``str``
 
         :param find_similar: If this flag set to ``True``, It return similar \
         named ``XCursor`` from database.
-        :type find_similar: bool
+        :type find_similar: ``bool``
 
         :return: List of missing ``XCursor`` in string list or None.
-        :rtype: List[str] or None
+        :rtype: ``List[str]`` or ``None``
         """
         if find_similar:
             key = self.__find_similar(key)
@@ -271,11 +273,11 @@ class CursorDB:
         """Search similar named Xcursor in database. If name of XCursor is not
         correct this return ``pathlib.Path`` Object.
 
-        :param fp: Path to XCursor
-        :type fp: Path
+        :param fp: Path to XCursor.
+        :type fp: ``pathlib.Path``
 
         :return: Return renamed ``Path`` If XCursor name not correct.
-        :rtype: Path or None
+        :rtype: ``pathlib.Path`` or ``None``
 
         :raise FileNotFoundError: If file is not found in file system or it's \
         a directory.

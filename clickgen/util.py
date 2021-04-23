@@ -6,11 +6,9 @@
 .. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
 """
 
-import functools
 import os
 import re
 import shutil
-import time
 from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Set, Union
@@ -23,8 +21,9 @@ def chdir(directory: Union[str, Path]):
     """Temporary change working directory using `with` syntax.
 
     :param directory: path to directory.
-    :type directory: Union[str, pathlib.Path]
+    :type directory: ``str`` or ``pathlib.Path``
     """
+
     prev_cwd = os.getcwd()
     os.chdir(directory)
     try:
@@ -37,11 +36,12 @@ def remove_util(p: Union[str, Path]) -> None:
     """Remove this file, directory or symlink.
 
     :param p: path to directory.
-    :type p: Union[str, pathlib.Path]
+    :type p: ``str`` or ``pathlib.Path``
 
-    :return: None
-    :rtype: None
+    :return: None.
+    :rtype: ``None``
     """
+
     p_obj: Path = Path(p)
 
     if p_obj.exists():
@@ -63,8 +63,12 @@ class PNGProvider:
         """Init `PNGProvider`.
 
         :param bitmaps_dir: Path to directory where `.png` files are stored.
-        :type bitmaps_dir: Union[str, Path]
+        :type bitmaps_dir: ``str`` or ``pathlib.Path``
+
+        :returns: None.
+        :return: ``None``
         """
+
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
         for f in sorted(self.bitmaps_dir.iterdir()):
@@ -84,13 +88,14 @@ class PNGProvider:
         or deleting a file on programs execution is not update class `__pngs` \
         state.
 
-        :param key: `key` is filename
-        :type key: str
+        :param key: `key` is filename.
+        :type key: ``str``
 
         :returns: Returns `pathlib.Path` object or `list` of `pathlib.Path`
                  object/s.
-        :rtype: List[Path] or path
+        :rtype: ``List[pathlib.Path]`` or ``pathlib.Path``
         """
+
         k = key.split(".")
         if len(k) == 1:
             reg = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
@@ -111,7 +116,23 @@ def add_missing_xcursors(
     rename: bool = False,
     force: bool = False,
 ) -> None:
-    """Create symlinks of missing ``Xcursor``"""
+    """Create symlinks of missing ``Xcursor``.
+
+    :param directory: path to Xcursor directory.
+    :type directory: ``pathlib.Path``
+
+    :param data: Provide custom dataset of cursors. default to \
+    ~``clickgen.db.DATA``
+    :type data: ``List[Set[str]]``
+
+    :param rename: If you want to rename ``Xcursor`` according to \
+        ``data``.
+    :type rename: ``bool``
+
+    :param force: To enable force renaming.
+    :type force: ``bool``
+    """
+
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())
 

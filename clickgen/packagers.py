@@ -21,20 +21,22 @@ THEME_FILES_TEMPLATES: Dict[str, Template] = {
 
 
 def XPackager(directory: Path, theme_name: str, comment: str) -> None:
-    """This packager generates ``cursor.theme`` & ``index.theme`` files at ``directory``.
+    """This packager generates ``cursor.theme`` & ``index.theme`` files at \
+        ``directory``.
 
     :param directory: Path where ``.theme`` files save.
-    :param directory: Path
+    :param directory: ``pathlib.Path``
 
     :param theme_name: Cursor theme name.
-    :param theme_name: str
+    :param theme_name: ``str``
 
     :param comment: Extra information about this cursor theme.
-    :param comment: str
+    :param comment: ``str``
 
-    :returns: Nothing
-    :rtype: None
+    :returns: None.
+    :rtype: ``None``
     """
+
     # Writing all .theme files
     files: Dict[str, str] = {}
     for file, template in THEME_FILES_TEMPLATES.items():
@@ -133,26 +135,27 @@ def WindowsPackager(
     Cursor extensions is identified by its type (.cur/.ani).
 
     :param directory: Path where ``.theme`` files save.
-    :param directory: Path
+    :param directory: ``pathlib.Path``
 
     :param theme_name: Cursor theme name.
-    :param theme_name: str
+    :param theme_name: ``str``
 
     :param comment: Extra information about this cursor theme.
-    :param comment: str
+    :param comment: ``str``
 
     :param author: Author name.
-    :param author: str
+    :param author: ``str``
 
     :param website_url: Website web address.(Useful for **bug reports**)
-    :param author: str (, optional)
+    :param author: ``str`` or ``None``
 
-    :returns: Nothing
-    :rtype: None
+    :returns: None.
+    :rtype: ``None``
 
     :raise FileNotFoundError: If Windows cursors are not exists on \
             provided directory.
     """
+
     files: List[Path] = []
 
     for extensions in ("*.ani", "*.cur"):
