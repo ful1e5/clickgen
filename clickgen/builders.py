@@ -44,10 +44,10 @@ class XCursor:
     def __init__(self, config_file: Path, out_dir: Path) -> None:
         """
         :param config_file: Cursor config file location.
-        :type config_file: Path
+        :type config_file: ``pathlib.Path``
 
         :param out_dir: directory path where ``xcursor`` generated.
-        :type out_dir: Path
+        :type out_dir: ``pathlib.Path``
 
         :raise FileNotFoundError: If ``config_file`` not existed on \
                 filesystem.
@@ -120,7 +120,8 @@ class XCursor:
         XCursor object.
 
         :returns: Generated ``XCursor`` pathlib.Path object.
-        :rtype: pathlib.Path
+        :rtype: ``pathlib.Path``
+
         """
         cursor = cls(alias_file, out_dir)
         cursor.generate()
@@ -198,14 +199,18 @@ class WindowsCursor:
         """Initiate WindowsCursor instance.
 
         :param config_file: Cursor config file location.
-        :type config_file: Path
+        :type config_file: ``pathlib.Path``
 
         :param out_dir: directory path where ``Windows Cursor`` generated.
-        :type out_dir: Path
+        :type out_dir: ``pathlib.Path``
 
         :param options: ``anicursorgen`` commandline arguments.
         :type options: Options
+
+        :returns: None.
+        :rtype: ``None``
         """
+
         self.config_file = config_file
         self.prefix = config_file.parent
         self.out_dir = out_dir
@@ -219,8 +224,9 @@ class WindowsCursor:
         :returns: This method is return frames of ``config_file``. **Frames** \
                 are basically line of config file structure with python \
                 typing ``Tuple``.
-        :rtype: List[ConfigFrame]
+        :rtype: ``List[ConfigFrame]``
         """
+
         in_buffer = self.config_file.open("rb")
         frames = []
 
@@ -251,8 +257,9 @@ class WindowsCursor:
                 animated or not.
 
         :returns: ``True`` for animated and ``False`` for static.
-        :rtype: bool
+        :rtype: ``bool``
         """
+
         sizes = set()
         for frame in frames:
             if frame[4] == 0:
@@ -271,10 +278,10 @@ class WindowsCursor:
                 structured with python structure ``List``.
 
         :param frames: ``config_file`` lines with List & Tuple typing.
-        :type frames: List[ConfigFrame]
+        :type frames: ``List[ConfigFrame]``
 
         :returns: Grouped frames in ``List`` structure.
-        :rtype: List[List[ConfigFrame]]
+        :rtype: ``List[List[ConfigFrame]]``
 
         :raise ValueError: If config_file lines are not sorted with pixel \
                 size & frame number.
@@ -283,6 +290,7 @@ class WindowsCursor:
         :raise ValueError: If frame's **animation durations** are not same \
                 as other frame.
         """
+
         framesets = []
         sizes = set()
 
@@ -329,11 +337,15 @@ class WindowsCursor:
         """Internal **static method** for copy buffer value to another.
 
         :param out: Buffer where value copied.
-        :type out: io.BytesIO or io.BufferedWriter
+        :type out: ``io.BytesIO`` or ``io.BufferedWriter``
 
         :param buf: input Buffer.
-        :type buf: io.BytesIO
+        :type buf: ``io.BytesIO``
+
+        :returns: None.
+        :rtype: ``None``
         """
+
         buf.seek(0, io.SEEK_SET)
         while True:
             b = buf.read(1024)
@@ -349,14 +361,15 @@ class WindowsCursor:
         """Generate `.ani` from config file's ``frames``.
 
         :param frames: List of ``config_file`` lines.
-        :type frames: List[ConfigFrame]
+        :type frames: ``List[ConfigFrame]``
 
         :param out_buffer: Where `.ani` cursor data stored.
-        :type out_buffer: io.BytesIO
+        :type out_buffer: ``io.BytesIO`` or ``io.BufferedWriter``
 
-        :returns: None
-        :rtype: None
+        :returns: None.
+        :rtype: ``None``
         """
+
         framesets = self.make_framesets(frames)
 
         buf = io.BytesIO()
@@ -430,17 +443,18 @@ class WindowsCursor:
         inside constructor
 
         :param shadow: PIL.Image.Image instance where shadowed image will stored.
-        :type frames: PIL.Image.Image
+        :type frames: ``PIL.Image.Image``
 
         :param orig: Cursor PIL.Image.Image instance frame.
-        :type orig: PIL.Image.Image
+        :type orig: ``PIL.Image.Image``
 
         :param color: Shadow color in ``Tuple`` structure.(RGBA format)
-        :type color: Tuple[int, int, int, int]
+        :type color: ``Tuple[int, int, int, int]``
 
-        :returns: None
-        :rtype: None
+        :returns: None.
+        :rtype: ``None``
         """
+
         o_pxs = orig.load()
         s_pxs = shadow.load()
         for y in range(orig.size[1]):
@@ -461,11 +475,12 @@ class WindowsCursor:
         inside constructor
 
         :param orig: Cursor PIL.Image.Image instance frame.
-        :type orig: PIL.Image.Image
+        :type orig: ``PIL.Image.Image``
 
         :returns: Tuple of code status and Image instance.
-        :rtype: Tuple[int, PIL.Image.Image]
+        :rtype: ``Tuple[int, PIL.Image.Image]``
         """
+
         blur_px = orig.size[0] / 100.0 * self.options.blur
         right_px = int(orig.size[0] / 100.0 * self.options.right_shift)
         down_px = int(orig.size[1] / 100.0 * self.options.down_shift)
@@ -502,14 +517,15 @@ class WindowsCursor:
         """Write buffer value to PIL.Image.Image instance.
 
         :param out: Buffer of `.png` frame.
-        :type out: io.BytesIO or io.BufferedWriter
+        :type out: ``io.BytesIO`` or ``io.BufferedWriter``
 
         :param frame_png: ``.png`` frame PIL.Image.Image instance.
-        :type frame_png: PIL.Image.Image
+        :type frame_png: ``PIL.Image.Image``
 
-        :returns: None
-        :rtype: None
+        :returns: None.
+        :rtype: ``None``
         """
+
         frame_png.save(out, "png", optimize=True)
 
     @staticmethod
@@ -521,17 +537,18 @@ class WindowsCursor:
         """Generate Windows Cursor data of single frame.
 
         :param out: Buffer of `.png` frame.
-        :type out: io.BytesIO or io.BufferedWriter
+        :type out: ``io.BytesIO`` or ``io.BufferedWriter``
 
         :param frame: ``config_file`` lines.
         :type frame: ConfigFrame
 
         :param frame_png: ``.png`` frame PIL.Image.Image instance.
-        :type frame_png: PIL.Image.Image
+        :type frame_png: ``PIL.Image.Image``
 
-        :returns: None
-        :rtype: None
+        :returns: None.
+        :rtype: ``None``
         """
+
         pixels = frame_png.load()
 
         out.write(
@@ -562,14 +579,15 @@ class WindowsCursor:
         """Generate `.cur` from config file's ``frames``.
 
         :param frames: List of ``config_file`` lines.
-        :type frames: List[ConfigFrame]
+        :type frames: ``List[ConfigFrame]``
 
         :param animated: Enable for compression.
-        :type animated: bool
+        :type animated: ``bool``
 
-        :returns: Buffer of `.cur` cursor.
-        :rtype: io.BytesIO
+        :returns: Buffer of `.cur` typed cursor.
+        :rtype: ``io.BytesIO``
         """
+
         buf = io.BytesIO()
         buf.write(pack("<HHH", 0, 2, len(frames)))
         frame_offsets = []
@@ -634,7 +652,11 @@ class WindowsCursor:
     def generate(self) -> None:
         """Generate Windows Cursor from ``config_file``.
         Automatically identify cursor type ``.ani`` or ``.cur``.
+
+        :returns: None.
+        :rtype: ``None``
         """
+
         frames = self.get_frames()
         is_animated = self.frames_have_animation(frames)
 
@@ -664,17 +686,18 @@ class WindowsCursor:
         initiate the WindowsCursor object.
 
         :param alias_file: Cursor config file location.
-        :type alias_file: Path
+        :type alias_file: ``pathlib.Path``
 
         :param out_dir: directory path where ``Windows Cursor`` generated.
-        :type out_dir: Path
+        :type out_dir: ``pathlib.Path``
 
         :param options: ``anicursorgen`` commandline arguments.
         :type options: Options
 
         :returns: Generated ``Windows Cursor`` pathlib.Path object.
-        :rtype: pathlib.Path
+        :rtype: ``pathlib.Path``
         """
+
         cursor = cls(alias_file, out_dir, options)
         cursor.generate()
         return cursor.out
