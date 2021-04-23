@@ -50,15 +50,19 @@ class Bitmap:
     ) -> None:
         """
         :param png: File location. Use ``List`` for animated Cursor.
-        :type png: Union[LikePath, LikePathList]
+        :type png: ``str`` or ``pathlib.Path`` or ``List[str]`` or ``List[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: Tuple[int, int]
+        :type hotspot: ``Tuple[int, int]``
+
+        :returns: None.
+        :rtype: ``None``
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
         """
+
         super().__init__()
 
         # Is png == _P             => 'static' bitmap
@@ -108,11 +112,14 @@ class Bitmap:
                 .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location.
-        :type png: Union[str,Path]
+        :type png: ``str`` or ``pathlib.Path``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: Tuple[int, int]
+        :type hotspot: ``Tuple[int, int]``
+
+        :returns: None.
+        :rtype: ``None``
 
         :raise FileNotFoundError: If ``.png`` file not found
         :raise ValueError: If provided bitmap is not ``.png``
@@ -120,6 +127,7 @@ class Bitmap:
         :raise ValueError: If grouped ``.png`` files naming is invalid
         :raise ValueError: If hotspot is set higher or lower then image pixels
         """
+
         self.png = self._check_bitmap(png)
         self._set_key(self.png, check=False)
         self._set_size(self.png)
@@ -133,11 +141,14 @@ class Bitmap:
                 .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location ***List***.
-        :type png: List[Union[str,Path]]
+        :type png: ``List[str]`` or ``List[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: Tuple[int, int]
+        :type hotspot: ``Tuple[int,`` int]
+
+        :returns: None.
+        :rtype: ``None``
 
         :raise FileNotFoundError: If ``.png`` file not found
         :raise ValueError: If provided bitmap is not ``.png``
@@ -145,6 +156,7 @@ class Bitmap:
         :raise ValueError: If grouped ``.png`` files naming is invalid
         :raise ValueError: If hotspot is set higher or lower then image pixels
         """
+
         self.grouped_png = []
         for p in png:
             frame: Path = self._check_bitmap(p)
@@ -166,15 +178,16 @@ class Bitmap:
         """Checks bitmap is supported by clickgen.
 
         :param bmp_path: Bitmap file location.
-        :type bmp_path: Union[str, Path]
-
-        :raise FileNotFoundError: If ``.png`` file not found
-        :raise ValueError: If provided bitmap is not ``.png``
+        :type bmp_path: ``str`` or ``pathlib.Path``
 
         :returns: Return the ``pathlib.Path`` instant, If provided \
                 **bitmap path** checks passed.
-        :rtype: Path
+        :rtype: ``pathlib.Path``
+
+        :raise FileNotFoundError: If ``.png`` file not found
+        :raise ValueError: If provided bitmap is not ``.png``
         """
+
         p: Path = Path(bmp_path)
         if not p.exists():
             raise FileNotFoundError(
@@ -194,14 +207,15 @@ class Bitmap:
         """Set or overwrite size of this bitmap.
 
         :param bmp_path: Bitmap file location.
-        :type bmp_path: Path
+        :type bmp_path: ``pathlib.Path``
 
         :param prev_check: If you want to match size with previous size. This \
                 flag is useful for grouped ``png``.(@default True )
-        :type prev_check: bool
+        :type prev_check: ``bool``
 
         :raise ValueError: If image width & height are not same
         """
+
         with Image.open(bmp_path) as i:
 
             def __set() -> None:
@@ -235,9 +249,13 @@ class Bitmap:
         :param check: If you want sure multiple ``png`` files identity is same
         :type check: bool
 
+        :returns: None.
+        :return: ``None``
+
         :raise ValueError: If grouped png indexing invalid.
         :raise ValueError: If new identity not matched with old.
         """
+
         if check:
             try:
                 k, _ = bmp_path.stem.rsplit("-", 1)
@@ -261,11 +279,15 @@ class Bitmap:
         """Set this bitmap reaction state.
 
         :param img_path: Bitmap file location.
-        :type img_path: Path
+        :type img_path: ``pathlib.Path``
+
+        :returns: None.
+        :return: ``None``
 
         :param hotspot: ``xy`` coordinates for this bitmap.
-        :type hotspot: Tuple[int, int]
+        :type hotspot: ``Tuple[int,`` int]
         """
+
         x = hotspot[0]
         y = hotspot[1]
         with Image.open(img_path) as i:
@@ -282,8 +304,12 @@ class Bitmap:
         """Update this bitmap reaction state.
 
         :param new_size: Bitmap width & height tuple (in pixel)
-        :type new_size: Tuple[int, int]
+        :type new_size: ``Tuple[int, int]``
+
+        :returns: None.
+        :return: ``None``
         """
+
         if self.size != new_size:
             self.x_hot = int(round(new_size[0] / self.width * self.x_hot))
             self.y_hot = int(round(new_size[1] / self.height * self.y_hot))
@@ -300,17 +326,17 @@ class Bitmap:
         """Resize this bitmap.
 
         :param size: New width & height in pixel.
-        :type size: Tuple[int, int]
+        :type size: ``Tuple[int, int]``
 
         :param resample: Pillow resample algorithm.
-        :type resample: int
+        :type resample: ``int``
 
         :param save: If you want to overwrite resized bitmap to actual png \
                 file. Neither it return pillow ``Image`` buffer.
-        :type save: bool
+        :type save: ``bool``
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Image or List[Image] or None
+        :rtype: ``Image`` or ``List[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -353,20 +379,20 @@ class Bitmap:
         """Resize bitmap with more options.
 
         :param size: Bitmap width & height in pixel.
-        :type size: Tuple[int, int]
+        :type size: ``Tuple[int,`` int]
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: Tuple[int, int]
+        :type canvas_size: ``Tuple[int,`` int]
 
         :param position: Bitmap's canvas width & height in pixel. (@default "center")
         :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
 
         :param save: If you want to overwrite resized bitmap to actual png \
                        file. Neither it return pillow ``Image`` buffer.
-        :type save: bool
+        :type save: ``bool``
 
         :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: Image or List[Image] or None
+        :rtype: ``Image`` or ``List[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -412,7 +438,10 @@ class Bitmap:
         """Rename unique identity of bitmap.
 
         :param key: Bitmap unique identity.
-        :type key: str
+        :type key: ``str``
+
+        :returns: None.
+        :return: ``None``
 
         :raise ValueError: If grouped png indexing invalid.
         :raise ValueError: If new identity not matched with old.
@@ -442,7 +471,7 @@ class Bitmap:
         :param path: Provide custom path to store deepcopy bitmaps. \
                      Set ``None`` to store in temporary directory. \
                      (@default None)
-        :type path: str
+        :type path: ``str``
 
         :returns: deepcopy of this bitmap state.
         :rtype: Bitmap
@@ -490,6 +519,9 @@ class CursorAlias:
         """
         :param bitmap: Cursor :py:class:`~clickgen.core.Bitmap` instant.
         :type bitmap: Bitmap
+
+        :returns: None.
+        :return: ``None``
         """
         super().__init__()
 
@@ -500,8 +532,9 @@ class CursorAlias:
     def __get_alias_file(self) -> Optional[Path]:
         """
         :returns: Return cursor alias file path, If it's exists.
-        :rtype: Path or None
+        :rtype: ``pathlib.Path`` or ``None``
         """
+
         if hasattr(self, "alias_file"):
             return self.alias_file
         return None
@@ -534,15 +567,16 @@ class CursorAlias:
         """Create cursor alias config file from ``.png`` files instant.
 
         :param png: File location. Use ``List`` for animated Cursor.
-        :type png: Union[LikePath, LikePathList]
+        :type png: ``str`` or ``pathlib.Path`` or ``List[str]`` or ``List[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: Tuple[int, int]
+        :type hotspot: ``Tuple[int, int]``
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
         """
+
         bmp: Bitmap = Bitmap(png, hotspot)
         return cls(bmp)
 
@@ -554,14 +588,14 @@ class CursorAlias:
         """Generate and store cursor's config file at ``temporary`` storage.
 
         :param sizes: Cursor pixel size tuple.
-        :type sizes: Union[Tuple[int, int], List[Tuple[int, int]]]
+        :type sizes: ``Tuple[int, int]`` or ``List[Tuple[int, int]]``
 
         :param delay: Delay between every cursor frame.(Affect on only \
                 animated :py:class:`~clickgen.core.Bitmap`)
-        :type delay: int
+        :type delay: ``int``
 
         :returns: Cursor alias file path.
-        :rtype: Path
+        :rtype: ``pathlib.Path``
 
         :raise TypeError: If provided ``size`` is not type of Tuple[int, int] \
                 or List of Tuple[int, int]
@@ -632,6 +666,7 @@ class CursorAlias:
                 Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
                 recreate it.
         """
+
         if not any(self.alias_dir.iterdir()):
             raise FileNotFoundError("Alias directory is empty or not exists.")
 
@@ -641,12 +676,13 @@ class CursorAlias:
 
         :param ext: Provide custom cursor's config file extension. Like \
                     ``o.extension(ext = ".in")``. (@default None)
-        :type ext: Optional[str]
+        :type ext: ``str`` or ``None``
 
         :returns: Provide ``None`` value to retrieve current extension. \
                 Either returns the updated cursor's config file path.
-        :rtype: str or Path
+        :rtype: ``str`` or ``pathlib.Path``
         """
+
         self.check_alias()
         if ext:
             new_path: Path = self.alias_file.with_suffix(ext)
@@ -664,7 +700,7 @@ class CursorAlias:
         :param dst: Custom directory path for store deepcopy of cursor config \
                 file and it's bitmaps. Provide ``None`` value to store at \
                 temporary storage.
-        :type dst: Optional[Union[str, Path]]
+        :type dst: ``str`` or ``pathlib.Path`` or ``None``
 
         :returns: deepcopy object of current ``CursorAlias`` state.
         :rtype: CursorAlias
@@ -674,6 +710,7 @@ class CursorAlias:
                 recreate it.
         :raise NotADirectoryError: If provided ``dst`` is not a directory.
         """
+
         self.check_alias()
 
         if not dst:
@@ -702,10 +739,10 @@ class CursorAlias:
         internaly for renaming bitmaps name.
 
         :param key: Unique identity.
-        :type key: str
+        :type key: ``str``
 
         :returns: Renamed config file path.
-        :rtype: Path
+        :rtype: ``pathlib.Path``
 
         :raise FileNotFoundError:  If cursor config file not generate. \
                 Calling :py:meth:`~clickgen.core.CursorAlias.create` to \
@@ -713,6 +750,7 @@ class CursorAlias:
         :raise ValueError: If grouped png indexing invalid.
         :raise ValueError: If new identity not matched with old.
         """
+
         self.check_alias()
         old_key: str = self.bitmap.key
 
@@ -753,17 +791,17 @@ class CursorAlias:
         """Resize cursor config and bitmap.
 
         :param size: Bitmap width & height in pixel.
-        :type size: Tuple[int, int]
+        :type size: ``Tuple[int, int]``
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: Tuple[int, int]
+        :type canvas_size: ``Tuple[int, int]``
 
         :param position: Bitmap's canvas width & height in pixel. (@default "center")
         :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
 
         :param save: If you want to overwrite resized bitmap to actual png \
                        file. Neither it return pillow ``Image`` buffer.
-        :type save: bool
+        :type save: ``bool``
 
         :returns: Returns reproduced ``CursorAlias`` object.
         :rtype: CursorAlias
@@ -773,6 +811,7 @@ class CursorAlias:
                 recreate it.
         :raise ValueError: If image width & height are not same.
         """
+
         self.check_alias()
 
         tmp_bitmaps_dir: Path = Path(mkdtemp(prefix=f"{self.prefix}__garbage_bmps__"))
