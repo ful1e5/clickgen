@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - docstring `param type` and `rtype` typing with **"or"** inside `Optional` and `Union`
 - `WindowsCursor` docstring init
 - `tests` module docstring init
+- use built-in typing inside `clickgen.*`
 
 ### Changed
 
