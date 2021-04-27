@@ -9,16 +9,16 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Optional, Union
 
 from PIL import Image
 
 from clickgen.util import remove_util
 
 # Typing
-Size = Tuple[int, int]
+Size = tuple[int, int]
 LikePath = Union[str, Path]
-LikePathList = Union[List[str], List[Path]]
+LikePathList = Union[list[str], list[Path]]
 
 
 class Bitmap:
@@ -30,14 +30,14 @@ class Bitmap:
 
     animated: bool
     png: Path
-    grouped_png: List[Path]
+    grouped_png: list[Path]
 
     key: str
 
     x_hot: int
     y_hot: int
 
-    size: Tuple[int, int]
+    size: tuple[int, int]
     width: int
     height: int
 
@@ -46,7 +46,7 @@ class Bitmap:
     def __init__(
         self,
         png: Union[LikePath, LikePathList],
-        hotspot: Tuple[int, int],
+        hotspot: tuple[int, int],
     ) -> None:
         """
         :param png: File location. Use ``List`` for animated Cursor.
@@ -54,7 +54,7 @@ class Bitmap:
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``Tuple[int, int]``
+        :type hotspot: ``tuple[int, int]``
 
         :returns: None.
         :rtype: ``None``
@@ -106,7 +106,7 @@ class Bitmap:
     #
     # Private methods
     #
-    def __set_as_static(self, png: LikePath, hotspot: Tuple[int, int]) -> None:
+    def __set_as_static(self, png: LikePath, hotspot: tuple[int, int]) -> None:
         """Set this Bitmap as **static**, It means this bitmap hold single ``png``.
 
                 .. note:: This method called by ``self.__init__``.
@@ -116,7 +116,7 @@ class Bitmap:
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``Tuple[int, int]``
+        :type hotspot: ``tuple[int, int]``
 
         :returns: None.
         :rtype: ``None``
@@ -134,18 +134,18 @@ class Bitmap:
         self._set_hotspot(self.png, hotspot)
         self.animated = False
 
-    def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
+    def __set_as_animated(self, png: LikePathList, hotspot: tuple[int, int]) -> None:
         """Set this Bitmap as **animated**, It means this bitmap holds multiple \
                 ``png``.
 
                 .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location ***List***.
-        :type png: ``List[str]`` or ``List[pathlib.Path]``
+        :type png: ``list[str]`` or ``list[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``Tuple[int,`` int]
+        :type hotspot: ``tuple[int,`` int]
 
         :returns: None.
         :rtype: ``None``
@@ -213,7 +213,7 @@ class Bitmap:
                 flag is useful for grouped ``png``.(@default True )
         :type prev_check: ``bool``
 
-        :raise ValueError: If image width & height are not same
+        :raise ValueError: If image width & height are not same.
         """
 
         with Image.open(bmp_path) as i:
@@ -244,9 +244,9 @@ class Bitmap:
         """Set unique identity for this bitmap.
 
         :param bmp_path: Bitmap file location.
-        :type bmp_path: Path
+        :type bmp_path: ``pathlib.Path``
 
-        :param check: If you want sure multiple ``png`` files identity is same
+        :param check: If you want sure multiple ``png`` files identity is same.
         :type check: bool
 
         :returns: None.
@@ -275,7 +275,7 @@ class Bitmap:
         else:
             self.key = bmp_path.stem
 
-    def _set_hotspot(self, img_path: Path, hotspot: Tuple[int, int]) -> None:
+    def _set_hotspot(self, img_path: Path, hotspot: tuple[int, int]) -> None:
         """Set this bitmap reaction state.
 
         :param img_path: Bitmap file location.
@@ -285,7 +285,7 @@ class Bitmap:
         :return: ``None``
 
         :param hotspot: ``xy`` coordinates for this bitmap.
-        :type hotspot: ``Tuple[int,`` int]
+        :type hotspot: ``tuple[int, int]``
         """
 
         x = hotspot[0]
@@ -303,8 +303,8 @@ class Bitmap:
     def _update_hotspots(self, new_size: Size) -> None:
         """Update this bitmap reaction state.
 
-        :param new_size: Bitmap width & height tuple (in pixel)
-        :type new_size: ``Tuple[int, int]``
+        :param new_size: Bitmap width & height tuple (in pixel).
+        :type new_size: ``tuple[int, int]``
 
         :returns: None.
         :return: ``None``
@@ -322,11 +322,11 @@ class Bitmap:
         size: Size,
         resample: int = Image.NONE,
         save: bool = True,
-    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
+    ) -> Optional[Union[Image.Image, list[Image.Image]]]:
         """Resize this bitmap.
 
         :param size: New width & height in pixel.
-        :type size: ``Tuple[int, int]``
+        :type size: ``tuple[int, int]``
 
         :param resample: Pillow resample algorithm.
         :type resample: ``int``
@@ -335,8 +335,8 @@ class Bitmap:
                 file. Neither it return pillow ``Image`` buffer.
         :type save: ``bool``
 
-        :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: ``Image`` or ``List[Image]`` or ``None``
+        :returns: Returns image buffers, If *save* flag is set to ``False``.
+        :rtype: ``Image`` or ``list[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -356,7 +356,7 @@ class Bitmap:
             return img
 
         if self.animated:
-            images: List[Image.Image] = []
+            images: list[Image.Image] = []
             for i, png in enumerate(self.grouped_png):
                 img: Image.Image = __resize(png, i)
                 images.append(img)
@@ -375,24 +375,26 @@ class Bitmap:
         canvas_size: Size = (32, 32),
         position: str = "center",
         save=True,
-    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
+    ) -> Optional[Union[Image.Image, list[Image.Image]]]:
         """Resize bitmap with more options.
 
         :param size: Bitmap width & height in pixel.
-        :type size: ``Tuple[int,`` int]
+        :type size: ``tuple[int, int]``
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: ``Tuple[int,`` int]
+        :type canvas_size: ``tuple[int, int]``
 
-        :param position: Bitmap's canvas width & height in pixel. (@default "center")
-        :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
+        :param position: Bitmap's canvas width & height in pixel. \
+                (@default "center")
+        :type position: "center" or "top_left" or "top_right" or \
+            "bottom_left" or "bottom_right"
 
         :param save: If you want to overwrite resized bitmap to actual png \
                        file. Neither it return pillow ``Image`` buffer.
         :type save: ``bool``
 
-        :returns: Returns image buffers, If *save* flag is set to ``False``
-        :rtype: ``Image`` or ``List[Image]`` or ``None``
+        :returns: Returns image buffers, If *save* flag is set to ``False``.
+        :rtype: ``Image`` or ``list[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -401,7 +403,7 @@ class Bitmap:
             frame: Image = Image.open(p).resize(size, resample=Image.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
-            switch: Dict[str, Tuple[int, int]] = {
+            switch: dict[str, tuple[int, int]] = {
                 "top_left": (0, 0),
                 "top_right": (x, 0),
                 "bottom_left": (0, y),
@@ -409,7 +411,7 @@ class Bitmap:
                 "center": (round(x / 2), round(y / 2)),
             }
 
-            box: Tuple[int, int] = switch[position]
+            box: tuple[int, int] = switch[position]
 
             canvas: Image.Image = Image.new("RGBA", canvas_size, color=(256, 0, 0, 0))
             canvas.paste(frame, box=box)
@@ -422,7 +424,7 @@ class Bitmap:
             return canvas
 
         if self.animated:
-            images: List[Image.Image] = []
+            images: list[Image.Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
             if not save:
@@ -494,7 +496,7 @@ class Bitmap:
             return dst
 
         if self.animated:
-            pngs: List[Path] = []
+            pngs: list[Path] = []
             for p in self.grouped_png:
                 pngs.append(__copy(p))
             return Bitmap(pngs, (self.x_hot, self.y_hot))
@@ -510,7 +512,7 @@ class CursorAlias:
     prefix: str
     alias_dir: Path
     alias_file: Path
-    garbage_dirs: List[Path] = []
+    garbage_dirs: list[Path] = []
 
     def __init__(
         self,
@@ -562,16 +564,16 @@ class CursorAlias:
     def from_bitmap(
         cls,
         png: Union[LikePath, LikePathList],
-        hotspot: Tuple[int, int],
+        hotspot: tuple[int, int],
     ) -> "CursorAlias":
         """Create cursor alias config file from ``.png`` files instant.
 
-        :param png: File location. Use ``List`` for animated Cursor.
-        :type png: ``str`` or ``pathlib.Path`` or ``List[str]`` or ``List[pathlib.Path]``
+        :param png: File location. Use ``list`` for animated Cursor.
+        :type png: ``str`` or ``pathlib.Path`` or ``list[str]`` or ``list[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``Tuple[int, int]``
+        :type hotspot: ``tuple[int, int]``
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
@@ -582,13 +584,13 @@ class CursorAlias:
 
     def create(
         self,
-        sizes: Union[Size, List[Size]],
+        sizes: Union[Size, list[Size]],
         delay: int = 10,
     ) -> Path:
         """Generate and store cursor's config file at ``temporary`` storage.
 
         :param sizes: Cursor pixel size tuple.
-        :type sizes: ``Tuple[int, int]`` or ``List[Tuple[int, int]]``
+        :type sizes: ``tuple[int, int]`` or ``list[tuple[int, int]]``
 
         :param delay: Delay between every cursor frame.(Affect on only \
                 animated :py:class:`~clickgen.core.Bitmap`)
@@ -597,17 +599,17 @@ class CursorAlias:
         :returns: Cursor alias file path.
         :rtype: ``pathlib.Path``
 
-        :raise TypeError: If provided ``size`` is not type of Tuple[int, int] \
-                or List of Tuple[int, int]
+        :raise TypeError: If provided ``size`` is not type of \
+            ``tuple[int, int]`` or ``list``.
         """
 
-        def __generate(size: Size) -> List[str]:
+        def __generate(size: Size) -> list[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
             bmp.resize(size, resample=Image.BICUBIC)
 
-            l: List[str] = []
+            l: list[str] = []
 
             for file in d.glob("*.png"):
                 fp: str = f"{file.relative_to(self.alias_dir)}"
@@ -620,7 +622,7 @@ class CursorAlias:
 
             return l
 
-        def __write_alias(lines: List[str]) -> None:
+        def __write_alias(lines: list[str]) -> None:
             # sorting all lines according to size (24x24, 28x28, ..)
             lines.sort()
             # remove newline from EOF
@@ -640,7 +642,7 @@ class CursorAlias:
             # Removing duplicate sizes
             sizes = sorted(set(sizes))
 
-            lines: List[str] = []
+            lines: list[str] = []
             for size in sizes:
                 if isinstance(size, tuple):
                     lines.extend(__generate(size))
@@ -791,13 +793,15 @@ class CursorAlias:
         """Resize cursor config and bitmap.
 
         :param size: Bitmap width & height in pixel.
-        :type size: ``Tuple[int, int]``
+        :type size: ``tuple[int, int]``
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: ``Tuple[int, int]``
+        :type canvas_size: ``tuple[int, int]``
 
-        :param position: Bitmap's canvas width & height in pixel. (@default "center")
-        :type position: "center" | "top_left" | "top_right" | "bottom_left" | "bottom_right"
+        :param position: Bitmap's canvas width & height in pixel. \
+            (@default "center")
+        :type position: "center" or "top_left" or "top_right" or \
+            "bottom_left" or "bottom_right"
 
         :param save: If you want to overwrite resized bitmap to actual png \
                        file. Neither it return pillow ``Image`` buffer.
