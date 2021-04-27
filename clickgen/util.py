@@ -11,7 +11,7 @@ import re
 import shutil
 from contextlib import contextmanager
 from pathlib import Path
-from typing import List, Set, Union
+from typing import Union
 
 from clickgen.db import DATA, CursorDB
 
@@ -57,7 +57,7 @@ class PNGProvider:
     """Provide organized `.png` files."""
 
     bitmaps_dir: Path
-    __pngs: List[str] = []
+    __pngs: list[str] = []
 
     def __init__(self, bitmaps_dir: Union[str, Path]) -> None:
         """Init `PNGProvider`.
@@ -71,15 +71,15 @@ class PNGProvider:
 
         super().__init__()
         self.bitmaps_dir = Path(bitmaps_dir)
-        for f in sorted(self.bitmaps_dir.iterdir()):
-            self.__pngs.append(f.name)
+        for file in sorted(self.bitmaps_dir.iterdir()):
+            self.__pngs.append(file.name)
 
         if len(self.__pngs) == 0:
             raise FileNotFoundError(
                 f"'*.png' files not found in '{self.bitmaps_dir.absolute()}'"
             )
 
-    def get(self, key: str) -> Union[List[Path], Path]:
+    def get(self, key: str) -> Union[list[Path], Path]:
         """Retrieve `pathlib.Path` of filtered `.png` file/s.
 
         This method return file location in `pathlib.Path` object.
@@ -93,7 +93,7 @@ class PNGProvider:
 
         :returns: Returns `pathlib.Path` object or `list` of `pathlib.Path`
                  object/s.
-        :rtype: ``List[pathlib.Path]`` or ``pathlib.Path``
+        :rtype: ``list[pathlib.Path]`` or ``pathlib.Path``
         """
 
         k = key.split(".")
@@ -112,7 +112,7 @@ class PNGProvider:
 
 def add_missing_xcursors(
     directory: Path,
-    data: List[Set[str]] = DATA,
+    data: list = None,
     rename: bool = False,
     force: bool = False,
 ) -> None:
@@ -123,7 +123,7 @@ def add_missing_xcursors(
 
     :param data: Provide custom dataset of cursors. default to \
     ~``clickgen.db.DATA``
-    :type data: ``List[Set[str]]``
+    :type data: ``list[set[str]]``
 
     :param rename: If you want to rename ``Xcursor`` according to \
         ``data``.
@@ -133,10 +133,13 @@ def add_missing_xcursors(
     :type force: ``bool``
     """
 
+    if data is None:
+        data = DATA
+
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())
 
-    db: CursorDB = CursorDB(data)
+    cur_db: CursorDB = CursorDB(data)
 
     # Removing all symlinks cursors
     if force:
@@ -149,12 +152,12 @@ def add_missing_xcursors(
     for xcursor in xcursors:
         # Rename Xcursor according to Database, If necessary
         if rename:
-            new_path = db.rename_file(xcursor)
+            new_path = cur_db.rename_file(xcursor)
             if new_path:
                 xcursor = xcursor.rename(new_path)
 
         # Creating symlinks
-        links = db.search_symlinks(xcursor.stem)
+        links = cur_db.search_symlinks(xcursor.stem)
         if links:
             for link in links:
                 with chdir(directory):
