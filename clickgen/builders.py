@@ -13,7 +13,7 @@ import shlex
 from ctypes import CDLL
 from pathlib import Path
 from struct import pack
-from typing import Any, List, NamedTuple, Tuple, Union
+from typing import Any, NamedTuple, Union
 
 from PIL import Image, ImageFilter
 
@@ -63,12 +63,12 @@ class XCursor:
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.out = self.out_dir / self.config_file.stem
 
-    def gen_argv_ctypes(self, argv: List[str]) -> Any:
+    def gen_argv_ctypes(self, argv: list[str]) -> Any:
         """Convert `string` arguments to `ctypes` pointer.
 
         :param argv: ``xcursorgen`` command-line arguments. First argument \
                 must be named of program, Here it's ``xcursorgen``.
-        :type argv: List[str]
+        :type argv: list[str]
 
         :returns: **Casted** command line arguments for *xcursorgen* with \
                 ``ctype``.
@@ -91,7 +91,7 @@ class XCursor:
         # remove old cursor file
         remove_util(self.out)
 
-        argv: List[str] = [
+        argv: list[str] = [
             "xcursorgen",
             # prefix args for xcursorgen (do not remove)
             "-p",
@@ -128,7 +128,7 @@ class XCursor:
         return cursor.out
 
 
-Color = Tuple[int, int, int, int]
+Color = tuple[int, int, int, int]
 
 
 class Options(NamedTuple):
@@ -144,7 +144,7 @@ class Options(NamedTuple):
 
     :param color: Shadow color in (RR,GG,BB,AA) \
             (default is (0, 0, 0, 64)).
-    :type color: Tuple[int, int, int, int]
+    :type color: tuple[int, int, int, int]
 
     :param down_shift: Shift shadow down by this percentage of the \
             canvas size (default is 3.125)
@@ -162,7 +162,7 @@ class Options(NamedTuple):
     right_shift: float = 9.375
 
 
-ConfigFrame = Tuple[int, int, int, str, int]
+ConfigFrame = tuple[int, int, int, str, int]
 
 
 class WindowsCursor:
@@ -218,13 +218,13 @@ class WindowsCursor:
 
         self.out_dir.mkdir(exist_ok=True, parents=True)
 
-    def get_frames(self) -> List[ConfigFrame]:
-        """Internal method for passing cursor's config file to ``List``.
+    def get_frames(self) -> list[ConfigFrame]:
+        """Internal method for passing cursor's config file to ``list``.
 
         :returns: This method is return frames of ``config_file``. **Frames** \
                 are basically line of config file structure with python \
-                typing ``Tuple``.
-        :rtype: ``List[ConfigFrame]``
+                typing ``tuple``.
+        :rtype: ``list[ConfigFrame]``
         """
 
         in_buffer = self.config_file.open("rb")
@@ -252,7 +252,7 @@ class WindowsCursor:
         return frames
 
     @staticmethod
-    def frames_have_animation(frames: List[ConfigFrame]) -> bool:
+    def frames_have_animation(frames: list[ConfigFrame]) -> bool:
         """Internal **static method** for checking passed ``config_file`` is \
                 animated or not.
 
@@ -271,17 +271,17 @@ class WindowsCursor:
         return False
 
     @staticmethod
-    def make_framesets(frames: List[ConfigFrame]) -> List[List[ConfigFrame]]:
+    def make_framesets(frames: list[ConfigFrame]) -> list[list[ConfigFrame]]:
         """Internal **static method** for convert ``frames`` to ``framessets``.
 
         **framessets** are group of similar pixel sizes. Each **frameset** is \
-                structured with python structure ``List``.
+                structured with python structure ``list``.
 
-        :param frames: ``config_file`` lines with List & Tuple typing.
-        :type frames: ``List[ConfigFrame]``
+        :param frames: ``config_file`` lines with list & tuple typing.
+        :type frames: ``list[ConfigFrame]``
 
-        :returns: Grouped frames in ``List`` structure.
-        :rtype: ``List[List[ConfigFrame]]``
+        :returns: Grouped frames in ``list`` structure.
+        :rtype: ``list[list[ConfigFrame]]``
 
         :raise ValueError: If config_file lines are not sorted with pixel \
                 size & frame number.
@@ -355,13 +355,13 @@ class WindowsCursor:
 
     def make_ani(
         self,
-        frames: List[ConfigFrame],
+        frames: list[ConfigFrame],
         out_buffer: Union[io.BytesIO, io.BufferedWriter],
     ) -> None:
         """Generate `.ani` from config file's ``frames``.
 
-        :param frames: List of ``config_file`` lines.
-        :type frames: ``List[ConfigFrame]``
+        :param frames: list of ``config_file`` lines.
+        :type frames: ``list[ConfigFrame]``
 
         :param out_buffer: Where `.ani` cursor data stored.
         :type out_buffer: ``io.BytesIO`` or ``io.BufferedWriter``
@@ -448,8 +448,8 @@ class WindowsCursor:
         :param orig: Cursor PIL.Image.Image instance frame.
         :type orig: ``PIL.Image.Image``
 
-        :param color: Shadow color in ``Tuple`` structure.(RGBA format)
-        :type color: ``Tuple[int, int, int, int]``
+        :param color: Shadow color in ``tuple`` structure.(RGBA format)
+        :type color: ``tuple[int, int, int, int]``
 
         :returns: None.
         :rtype: ``None``
@@ -468,7 +468,7 @@ class WindowsCursor:
                         int(color[3] * (o_px[3] / 255.0)),
                     )
 
-    def create_shadow(self, orig: Image.Image) -> Tuple[int, Image.Image]:
+    def create_shadow(self, orig: Image.Image) -> tuple[int, Image.Image]:
         """Add shadows to Windows Cursor.
 
         This effect is enable by providing ``options`` parameter \
@@ -477,8 +477,8 @@ class WindowsCursor:
         :param orig: Cursor PIL.Image.Image instance frame.
         :type orig: ``PIL.Image.Image``
 
-        :returns: Tuple of code status and Image instance.
-        :rtype: ``Tuple[int, PIL.Image.Image]``
+        :returns: tuple of code status and Image instance.
+        :rtype: ``tuple[int, PIL.Image.Image]``
         """
 
         blur_px = orig.size[0] / 100.0 * self.options.blur
@@ -575,11 +575,11 @@ class WindowsCursor:
             if wrote % 4 != 0:
                 out.write(b"\x00" * (4 - wrote % 4))
 
-    def make_cur(self, frames: List[ConfigFrame], animated: bool = False) -> io.BytesIO:
+    def make_cur(self, frames: list[ConfigFrame], animated: bool = False) -> io.BytesIO:
         """Generate `.cur` from config file's ``frames``.
 
-        :param frames: List of ``config_file`` lines.
-        :type frames: ``List[ConfigFrame]``
+        :param frames: list of ``config_file`` lines.
+        :type frames: ``list[ConfigFrame]``
 
         :param animated: Enable for compression.
         :type animated: ``bool``
