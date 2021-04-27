@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
-Data = list[set[str]]
+Data = List[Set[str]]
 DATA: Data
 
 class CursorDB:

@@ -7,10 +7,10 @@
 
 from difflib import SequenceMatcher as SM
 from pathlib import Path
-from typing import ClassVar, Optional
+from typing import ClassVar, List, Optional, Set
 
 # Typing
-Data = list[set[str]]
+Data = List[Set[str]]
 
 DATA: Data = [
     {
