@@ -7,10 +7,10 @@
 
 from difflib import SequenceMatcher as SM
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Optional
 
 # Typing
-Data = List[Set[str]]
+Data = list[set[str]]
 
 DATA: Data = [
     {
@@ -196,7 +196,7 @@ class CursorDB:
     /XWayland.
     """
 
-    data: Dict[str, List[str]] = {}
+    data: dict[str, list[str]] = {}
 
     def __init__(self, data: Data) -> None:
         """Initiate CursorDB instance.
@@ -219,7 +219,7 @@ class CursorDB:
         self.__seed(data)
 
     def __str__(self) -> str:
-        string: List[str] = []
+        string: list[str] = []
         for index, data in self.data.items():
             string.append(f"{index}={data}")
         return f"CursorDB({', '.join(string)})"
@@ -234,13 +234,13 @@ class CursorDB:
             if not isinstance(item, set):
                 raise TypeError(f"Item '{item}' is not type of 'Set'")
             for i in sorted(item):
-                symlinks: List[str] = list(item)
+                symlinks: list[str] = list(item)
                 symlinks.remove(i)
                 self.data[i] = symlinks
 
     def search_symlinks(
         self, key: str, find_similar: bool = False
-    ) -> Optional[List[str]]:
+    ) -> Optional[list[str]]:
         """Retrieve similar implementation Xcursor from database.
 
         :param key: Name of XCursor.
@@ -251,7 +251,7 @@ class CursorDB:
         :type find_similar: ``bool``
 
         :return: List of missing ``XCursor`` in string list or None.
-        :rtype: ``List[str]`` or ``None``
+        :rtype: ``list[str]`` or ``None``
         """
         if find_similar:
             key = self.__find_similar(key)
