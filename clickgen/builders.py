@@ -13,7 +13,7 @@ import shlex
 from ctypes import CDLL
 from pathlib import Path
 from struct import pack
-from typing import Any, NamedTuple, Union
+from typing import Any, ClassVar, NamedTuple, Union
 
 from PIL import Image, ImageFilter
 
@@ -29,10 +29,10 @@ class XCursor:
     and animated ``xcursor``.
     """
 
-    config_file: Path
-    prefix: Path
-    out_dir: Path
-    out: Path
+    config_file: ClassVar[Path]
+    prefix: ClassVar[Path]
+    out_dir: ClassVar[Path]
+    out: ClassVar[Path]
 
     # main function ctypes define
     _lib_location: Path = Path(clickgen_pypi_path) / "xcursorgen.so"
@@ -189,11 +189,11 @@ class WindowsCursor:
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     """
 
-    options: Options
-    config_file: Path
-    prefix: Path
-    out_dir: Path
-    out: Path
+    options: ClassVar[Options]
+    config_file: ClassVar[Path]
+    prefix: ClassVar[Path]
+    out_dir: ClassVar[Path]
+    out: ClassVar[Path]
 
     def __init__(self, config_file: Path, out_dir: Path, options: Options) -> None:
         """Initiate WindowsCursor instance.

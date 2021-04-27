@@ -3,15 +3,15 @@ from PIL import Image
 from clickgen import __path__ as __path__
 from clickgen.util import remove_util as remove_util
 from pathlib import Path
-from typing import Any, NamedTuple, Union
+from typing import Any, ClassVar, NamedTuple, Union
 
 clickgen_pypi_path: Any
 
 class XCursor:
-    config_file: Path
-    prefix: Path
-    out_dir: Path
-    out: Path
+    config_file: ClassVar[Path]
+    prefix: ClassVar[Path]
+    out_dir: ClassVar[Path]
+    out: ClassVar[Path]
     def __init__(self, config_file: Path, out_dir: Path) -> None: ...
     def gen_argv_ctypes(self, argv: list[str]) -> Any: ...
     def generate(self) -> None: ...
@@ -28,11 +28,11 @@ class Options(NamedTuple):
 ConfigFrame = tuple[int, int, int, str, int]
 
 class WindowsCursor:
-    options: Options
-    config_file: Path
-    prefix: Path
-    out_dir: Path
-    out: Path
+    options: ClassVar[Options]
+    config_file: ClassVar[Path]
+    prefix: ClassVar[Path]
+    out_dir: ClassVar[Path]
+    out: ClassVar[Path]
     def __init__(self, config_file: Path, out_dir: Path, options: Options) -> None: ...
     def get_frames(self) -> list[ConfigFrame]: ...
     @staticmethod

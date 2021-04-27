@@ -7,7 +7,7 @@
 
 from difflib import SequenceMatcher as SM
 from pathlib import Path
-from typing import Optional
+from typing import ClassVar, Optional
 
 # Typing
 Data = list[set[str]]
@@ -196,7 +196,7 @@ class CursorDB:
     /XWayland.
     """
 
-    data: dict[str, list[str]] = {}
+    data: ClassVar[dict[str, list[str]]] = {}
 
     def __init__(self, data: Data) -> None:
         """Initiate CursorDB instance.

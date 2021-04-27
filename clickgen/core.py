@@ -9,7 +9,7 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Optional, Union
+from typing import ClassVar, Optional, Union
 
 from PIL import Image
 
@@ -28,20 +28,20 @@ class Bitmap:
     **reproduce** size of same image/s.
     """
 
-    animated: bool
-    png: Path
-    grouped_png: list[Path]
+    animated: ClassVar[bool]
+    png: ClassVar[Path]
+    grouped_png: ClassVar[list[Path]]
 
-    key: str
+    key: ClassVar[str]
 
-    x_hot: int
-    y_hot: int
+    x_hot: ClassVar[int]
+    y_hot: ClassVar[int]
 
-    size: tuple[int, int]
-    width: int
-    height: int
+    size: ClassVar[tuple[int, int]]
+    width: ClassVar[int]
+    height: ClassVar[int]
 
-    compress: int = 0
+    compress: ClassVar[int] = 0
 
     def __init__(
         self,
@@ -508,11 +508,11 @@ class Bitmap:
 class CursorAlias:
     """Cursor Config ``.in`` or ``.alias`` file provider."""
 
-    bitmap: Bitmap
-    prefix: str
-    alias_dir: Path
-    alias_file: Path
-    garbage_dirs: list[Path] = []
+    bitmap: ClassVar[Bitmap]
+    prefix: ClassVar[str]
+    alias_dir: ClassVar[Path]
+    alias_file: ClassVar[Path]
+    garbage_dirs: ClassVar[list[Path]] = []
 
     def __init__(
         self,

@@ -1,23 +1,23 @@
 from PIL import Image
 from clickgen.util import remove_util as remove_util
 from pathlib import Path
-from typing import Any, Optional, Union
+from typing import Any, ClassVar, Optional, Union
 
 Size = tuple[int, int]
 LikePath = Union[str, Path]
 LikePathList = Union[list[str], list[Path]]
 
 class Bitmap:
-    animated: bool
-    png: Path
-    grouped_png: list[Path]
-    key: str
-    x_hot: int
-    y_hot: int
-    size: tuple[int, int]
-    width: int
-    height: int
-    compress: int = ...
+    animated: ClassVar[bool]
+    png: ClassVar[Path]
+    grouped_png: ClassVar[list[Path]]
+    key: ClassVar[str]
+    x_hot: ClassVar[int]
+    y_hot: ClassVar[int]
+    size: ClassVar[tuple[int, int]]
+    width: ClassVar[int]
+    height: ClassVar[int]
+    compress: ClassVar[int] = ...
     def __init__(self, png: Union[LikePath, LikePathList], hotspot: tuple[int, int]) -> None: ...
     def __enter__(self) -> Bitmap: ...
     def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None: ...
@@ -27,11 +27,11 @@ class Bitmap:
     def copy(self, path: Optional[LikePath]=...) -> Bitmap: ...
 
 class CursorAlias:
-    bitmap: Bitmap
-    prefix: str
-    alias_dir: Path
-    alias_file: Path
-    garbage_dirs: list[Path] = ...
+    bitmap: ClassVar[Bitmap]
+    prefix: ClassVar[str]
+    alias_dir: ClassVar[Path]
+    alias_file: ClassVar[Path]
+    garbage_dirs: ClassVar[list[Path]] = ...
     def __init__(self, bitmap: Bitmap) -> None: ...
     def __enter__(self) -> CursorAlias: ...
     def __exit__(self, exception_type: Any, exception_value: Any, traceback: Any) -> None: ...
