@@ -8,7 +8,7 @@
 
 from pathlib import Path
 from string import Template
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 # --- X11
 
@@ -105,7 +105,7 @@ link              = "$Link"
 """
 )
 
-REQUIRED_WIN_CURSORS: set[str] = {
+REQUIRED_WIN_CURSORS: Set[str] = {
     "Work",
     "Busy",
     "Default",
@@ -163,7 +163,7 @@ def WindowsPackager(
             if i.stem in REQUIRED_WIN_CURSORS:
                 files.append(i)
 
-    cursors: set[Path] = set(files)
+    cursors: Set[Path] = set(files)
 
     # Checking cursor files
     if not cursors:
