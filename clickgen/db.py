@@ -7,7 +7,7 @@
 
 from difflib import SequenceMatcher as SM
 from pathlib import Path
-from typing import ClassVar, List, Optional, Set
+from typing import Dict, List, Optional, Set
 
 # Typing
 Data = List[Set[str]]
@@ -196,7 +196,7 @@ class CursorDB:
     /XWayland.
     """
 
-    data: ClassVar[dict[str, list[str]]] = {}
+    data: Dict[str, List[str]] = {}
 
     def __init__(self, data: Data) -> None:
         """Initiate CursorDB instance.
@@ -219,7 +219,7 @@ class CursorDB:
         self.__seed(data)
 
     def __str__(self) -> str:
-        string: list[str] = []
+        string: List[str] = []
         for index, data in self.data.items():
             string.append(f"{index}={data}")
         return f"CursorDB({', '.join(string)})"
@@ -234,13 +234,13 @@ class CursorDB:
             if not isinstance(item, set):
                 raise TypeError(f"Item '{item}' is not type of 'Set'")
             for i in sorted(item):
-                symlinks: list[str] = list(item)
+                symlinks: List[str] = list(item)
                 symlinks.remove(i)
                 self.data[i] = symlinks
 
     def search_symlinks(
         self, key: str, find_similar: bool = False
-    ) -> Optional[list[str]]:
+    ) -> Optional[List[str]]:
         """Retrieve similar implementation Xcursor from database.
 
         :param key: Name of XCursor.

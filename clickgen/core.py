@@ -9,16 +9,16 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import ClassVar, Optional, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from PIL import Image
 
 from clickgen.util import remove_util
 
 # Typing
-Size = tuple[int, int]
+Size = Tuple[int, int]
 LikePath = Union[str, Path]
-LikePathList = Union[list[str], list[Path]]
+LikePathList = Union[List[str], List[Path]]
 
 
 class Bitmap:
@@ -28,25 +28,25 @@ class Bitmap:
     **reproduce** size of same image/s.
     """
 
-    animated: ClassVar[bool]
-    png: ClassVar[Path]
-    grouped_png: ClassVar[list[Path]]
+    animated: bool
+    png: Path
+    grouped_png: List[Path]
 
-    key: ClassVar[str]
+    key: str
 
-    x_hot: ClassVar[int]
-    y_hot: ClassVar[int]
+    x_hot: int
+    y_hot: int
 
-    size: ClassVar[tuple[int, int]]
-    width: ClassVar[int]
-    height: ClassVar[int]
+    size: Tuple[int, int]
+    width: int
+    height: int
 
-    compress: ClassVar[int] = 0
+    compress: int = 0
 
     def __init__(
         self,
         png: Union[LikePath, LikePathList],
-        hotspot: tuple[int, int],
+        hotspot: Tuple[int, int],
     ) -> None:
         """
         :param png: File location. Use ``List`` for animated Cursor.
@@ -54,7 +54,7 @@ class Bitmap:
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``tuple[int, int]``
+        :type hotspot: ``Tuple[int, int]``
 
         :returns: None.
         :rtype: ``None``
@@ -106,7 +106,7 @@ class Bitmap:
     #
     # Private methods
     #
-    def __set_as_static(self, png: LikePath, hotspot: tuple[int, int]) -> None:
+    def __set_as_static(self, png: LikePath, hotspot: Tuple[int, int]) -> None:
         """Set this Bitmap as **static**, It means this bitmap hold single ``png``.
 
                 .. note:: This method called by ``self.__init__``.
@@ -116,7 +116,7 @@ class Bitmap:
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``tuple[int, int]``
+        :type hotspot: ``Tuple[int, int]``
 
         :returns: None.
         :rtype: ``None``
@@ -134,18 +134,18 @@ class Bitmap:
         self._set_hotspot(self.png, hotspot)
         self.animated = False
 
-    def __set_as_animated(self, png: LikePathList, hotspot: tuple[int, int]) -> None:
+    def __set_as_animated(self, png: LikePathList, hotspot: Tuple[int, int]) -> None:
         """Set this Bitmap as **animated**, It means this bitmap holds multiple \
                 ``png``.
 
                 .. note:: This method called by ``self.__init__``.
 
         :param png: ``.png`` file location ***List***.
-        :type png: ``list[str]`` or ``list[pathlib.Path]``
+        :type png: ``List[str]`` or ``List[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``tuple[int,`` int]
+        :type hotspot: ``Tuple[int,`` int]
 
         :returns: None.
         :rtype: ``None``
@@ -275,7 +275,7 @@ class Bitmap:
         else:
             self.key = bmp_path.stem
 
-    def _set_hotspot(self, img_path: Path, hotspot: tuple[int, int]) -> None:
+    def _set_hotspot(self, img_path: Path, hotspot: Tuple[int, int]) -> None:
         """Set this bitmap reaction state.
 
         :param img_path: Bitmap file location.
@@ -285,7 +285,7 @@ class Bitmap:
         :return: ``None``
 
         :param hotspot: ``xy`` coordinates for this bitmap.
-        :type hotspot: ``tuple[int, int]``
+        :type hotspot: ``Tuple[int, int]``
         """
 
         x = hotspot[0]
@@ -303,8 +303,8 @@ class Bitmap:
     def _update_hotspots(self, new_size: Size) -> None:
         """Update this bitmap reaction state.
 
-        :param new_size: Bitmap width & height tuple (in pixel).
-        :type new_size: ``tuple[int, int]``
+        :param new_size: Bitmap width & height Tuple (in pixel).
+        :type new_size: ``Tuple[int, int]``
 
         :returns: None.
         :return: ``None``
@@ -322,11 +322,11 @@ class Bitmap:
         size: Size,
         resample: int = Image.NONE,
         save: bool = True,
-    ) -> Optional[Union[Image.Image, list[Image.Image]]]:
+    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize this bitmap.
 
         :param size: New width & height in pixel.
-        :type size: ``tuple[int, int]``
+        :type size: ``Tuple[int, int]``
 
         :param resample: Pillow resample algorithm.
         :type resample: ``int``
@@ -336,7 +336,7 @@ class Bitmap:
         :type save: ``bool``
 
         :returns: Returns image buffers, If *save* flag is set to ``False``.
-        :rtype: ``Image`` or ``list[Image]`` or ``None``
+        :rtype: ``Image`` or ``List[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -356,7 +356,7 @@ class Bitmap:
             return img
 
         if self.animated:
-            images: list[Image.Image] = []
+            images: List[Image.Image] = []
             for i, png in enumerate(self.grouped_png):
                 img: Image.Image = __resize(png, i)
                 images.append(img)
@@ -375,14 +375,14 @@ class Bitmap:
         canvas_size: Size = (32, 32),
         position: str = "center",
         save=True,
-    ) -> Optional[Union[Image.Image, list[Image.Image]]]:
+    ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize bitmap with more options.
 
         :param size: Bitmap width & height in pixel.
-        :type size: ``tuple[int, int]``
+        :type size: ``Tuple[int, int]``
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: ``tuple[int, int]``
+        :type canvas_size: ``Tuple[int, int]``
 
         :param position: Bitmap's canvas width & height in pixel. \
                 (@default "center")
@@ -394,7 +394,7 @@ class Bitmap:
         :type save: ``bool``
 
         :returns: Returns image buffers, If *save* flag is set to ``False``.
-        :rtype: ``Image`` or ``list[Image]`` or ``None``
+        :rtype: ``Image`` or ``List[Image]`` or ``None``
 
         :raise ValueError: If image width & height are not same.
         """
@@ -403,7 +403,7 @@ class Bitmap:
             frame: Image = Image.open(p).resize(size, resample=Image.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
-            switch: dict[str, tuple[int, int]] = {
+            switch: Dict[str, Tuple[int, int]] = {
                 "top_left": (0, 0),
                 "top_right": (x, 0),
                 "bottom_left": (0, y),
@@ -411,7 +411,7 @@ class Bitmap:
                 "center": (round(x / 2), round(y / 2)),
             }
 
-            box: tuple[int, int] = switch[position]
+            box: Tuple[int, int] = switch[position]
 
             canvas: Image.Image = Image.new("RGBA", canvas_size, color=(256, 0, 0, 0))
             canvas.paste(frame, box=box)
@@ -424,7 +424,7 @@ class Bitmap:
             return canvas
 
         if self.animated:
-            images: list[Image.Image] = []
+            images: List[Image.Image] = []
             for png in self.grouped_png:
                 images.append(__reproduce(png))
             if not save:
@@ -496,7 +496,7 @@ class Bitmap:
             return dst
 
         if self.animated:
-            pngs: list[Path] = []
+            pngs: List[Path] = []
             for p in self.grouped_png:
                 pngs.append(__copy(p))
             return Bitmap(pngs, (self.x_hot, self.y_hot))
@@ -508,11 +508,11 @@ class Bitmap:
 class CursorAlias:
     """Cursor Config ``.in`` or ``.alias`` file provider."""
 
-    bitmap: ClassVar[Bitmap]
-    prefix: ClassVar[str]
-    alias_dir: ClassVar[Path]
-    alias_file: ClassVar[Path]
-    garbage_dirs: ClassVar[list[Path]] = []
+    bitmap: Bitmap
+    prefix: str
+    alias_dir: Path
+    alias_file: Path
+    garbage_dirs: List[Path] = []
 
     def __init__(
         self,
@@ -564,16 +564,16 @@ class CursorAlias:
     def from_bitmap(
         cls,
         png: Union[LikePath, LikePathList],
-        hotspot: tuple[int, int],
+        hotspot: Tuple[int, int],
     ) -> "CursorAlias":
         """Create cursor alias config file from ``.png`` files instant.
 
-        :param png: File location. Use ``list`` for animated Cursor.
-        :type png: ``str`` or ``pathlib.Path`` or ``list[str]`` or ``list[pathlib.Path]``
+        :param png: File location. Use ``List`` for animated Cursor.
+        :type png: ``str`` or ``pathlib.Path`` or ``List[str]`` or ``List[pathlib.Path]``
 
         :param hotspot: Hotspot is coordinate value in Tuple. Cursor change \
                         state is calculated from this value.
-        :type hotspot: ``tuple[int, int]``
+        :type hotspot: ``Tuple[int, int]``
 
         :raise TypeError: If provided ``.png`` file/s location is not type \
                           **str** or **pathlib.Path**
@@ -584,13 +584,13 @@ class CursorAlias:
 
     def create(
         self,
-        sizes: Union[Size, list[Size]],
+        sizes: Union[Size, List[Size]],
         delay: int = 10,
     ) -> Path:
         """Generate and store cursor's config file at ``temporary`` storage.
 
-        :param sizes: Cursor pixel size tuple.
-        :type sizes: ``tuple[int, int]`` or ``list[tuple[int, int]]``
+        :param sizes: Cursor pixel size Tuple.
+        :type sizes: ``Tuple[int, int]`` or ``List[Tuple[int, int]]``
 
         :param delay: Delay between every cursor frame.(Affect on only \
                 animated :py:class:`~clickgen.core.Bitmap`)
@@ -600,16 +600,16 @@ class CursorAlias:
         :rtype: ``pathlib.Path``
 
         :raise TypeError: If provided ``size`` is not type of \
-            ``tuple[int, int]`` or ``list``.
+            ``Tuple[int, int]`` or ``List``.
         """
 
-        def __generate(size: Size) -> list[str]:
+        def __generate(size: Size) -> List[str]:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
             bmp.resize(size, resample=Image.BICUBIC)
 
-            l: list[str] = []
+            l: List[str] = []
 
             for file in d.glob("*.png"):
                 fp: str = f"{file.relative_to(self.alias_dir)}"
@@ -622,7 +622,7 @@ class CursorAlias:
 
             return l
 
-        def __write_alias(lines: list[str]) -> None:
+        def __write_alias(lines: List[str]) -> None:
             # sorting all lines according to size (24x24, 28x28, ..)
             lines.sort()
             # remove newline from EOF
@@ -642,7 +642,7 @@ class CursorAlias:
             # Removing duplicate sizes
             sizes = sorted(set(sizes))
 
-            lines: list[str] = []
+            lines: List[str] = []
             for size in sizes:
                 if isinstance(size, tuple):
                     lines.extend(__generate(size))
@@ -715,21 +715,24 @@ class CursorAlias:
 
         self.check_alias()
 
-        if not dst:
-            dst = mkdtemp(prefix=self.prefix)
-        dst = Path(dst)
+        dest: Path
 
-        if dst.is_file():
-            raise NotADirectoryError(f"path '{dst.absolute()}' is not a directory")
+        if dst is None:
+            dest = Path(mkdtemp(prefix=self.prefix))
+        else:
+            dest = Path(dst)
+
+        if dest.is_file():
+            raise NotADirectoryError(f"path '{dest.absolute()}' is not a directory")
 
         replica_object = deepcopy(self)
 
         shutil.copytree(
-            self.alias_dir, dst, dirs_exist_ok=True, copy_function=shutil.copy
+            self.alias_dir, dest, dirs_exist_ok=True, copy_function=shutil.copy
         )
-        replica_object.alias_dir = dst
-        replica_object.prefix = dst.stem
-        replica_object.alias_file = dst / self.alias_file.name
+        replica_object.alias_dir = dest
+        replica_object.prefix = dest.stem
+        replica_object.alias_file = dest / self.alias_file.name
 
         return replica_object
 
@@ -793,10 +796,10 @@ class CursorAlias:
         """Resize cursor config and bitmap.
 
         :param size: Bitmap width & height in pixel.
-        :type size: ``tuple[int, int]``
+        :type size: ``Tuple[int, int]``
 
         :param canvas_size: Bitmap's canvas width & height in pixel.
-        :type canvas_size: ``tuple[int, int]``
+        :type canvas_size: ``Tuple[int, int]``
 
         :param position: Bitmap's canvas width & height in pixel. \
             (@default "center")

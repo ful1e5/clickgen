@@ -11,7 +11,7 @@ import re
 import shutil
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Union
+from typing import List, Union
 
 from clickgen.db import DATA, CursorDB
 
@@ -57,7 +57,7 @@ class PNGProvider:
     """Provide organized `.png` files."""
 
     bitmaps_dir: Path
-    __pngs: list[str] = []
+    __pngs: List[str] = []
 
     def __init__(self, bitmaps_dir: Union[str, Path]) -> None:
         """Init `PNGProvider`.
@@ -79,7 +79,7 @@ class PNGProvider:
                 f"'*.png' files not found in '{self.bitmaps_dir.absolute()}'"
             )
 
-    def get(self, key: str) -> Union[list[Path], Path]:
+    def get(self, key: str) -> Union[List[Path], Path]:
         """Retrieve `pathlib.Path` of filtered `.png` file/s.
 
         This method return file location in `pathlib.Path` object.
@@ -91,9 +91,9 @@ class PNGProvider:
         :param key: `key` is filename.
         :type key: ``str``
 
-        :returns: Returns `pathlib.Path` object or `list` of `pathlib.Path`
+        :returns: Returns `pathlib.Path` object or `List` of `pathlib.Path`
                  object/s.
-        :rtype: ``list[pathlib.Path]`` or ``pathlib.Path``
+        :rtype: ``List[pathlib.Path]`` or ``pathlib.Path``
         """
 
         k = key.split(".")
@@ -112,7 +112,7 @@ class PNGProvider:
 
 def add_missing_xcursors(
     directory: Path,
-    data: list = None,
+    data: List = None,
     rename: bool = False,
     force: bool = False,
 ) -> None:
@@ -123,7 +123,7 @@ def add_missing_xcursors(
 
     :param data: Provide custom dataset of cursors. default to \
     ~``clickgen.db.DATA``
-    :type data: ``list[set[str]]``
+    :type data: ``List[set[str]]``
 
     :param rename: If you want to rename ``Xcursor`` according to \
         ``data``.

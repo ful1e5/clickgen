@@ -1,8 +1,8 @@
 from pathlib import Path
 from string import Template
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 
-THEME_FILES_TEMPLATES: dict[str, Template]
+THEME_FILES_TEMPLATES: Dict[str, Template]
 
 def XPackager(directory: Path, theme_name: str, comment: str) -> None: ...
 

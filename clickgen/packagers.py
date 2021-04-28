@@ -8,11 +8,11 @@
 
 from pathlib import Path
 from string import Template
-from typing import Optional
+from typing import Dict, List, Optional
 
 # --- X11
 
-THEME_FILES_TEMPLATES: dict[str, Template] = {
+THEME_FILES_TEMPLATES: Dict[str, Template] = {
     "cursor.theme": Template('[Icon Theme]\nName=$theme_name\nInherits="$theme_name"'),
     "index.theme": Template(
         '[Icon Theme]\nName=$theme_name\nComment=$comment\nInherits="hicolor"'
@@ -38,7 +38,7 @@ def XPackager(directory: Path, theme_name: str, comment: str) -> None:
     """
 
     # Writing all .theme files
-    files: dict[str, str] = {}
+    files: Dict[str, str] = {}
     for file, template in THEME_FILES_TEMPLATES.items():
         files[file] = template.safe_substitute(theme_name=theme_name, comment=comment)
 
@@ -156,7 +156,7 @@ def WindowsPackager(
             provided directory.
     """
 
-    files: list[Path] = []
+    files: List[Path] = []
 
     for extensions in ("*.ani", "*.cur"):
         for i in sorted(directory.glob(extensions)):
@@ -182,7 +182,7 @@ def WindowsPackager(
 
     # Real magic of python
     # replace $Default => Default.ani | Default.cur (as file was provided)
-    cursor_data: dict[str, str] = {}
+    cursor_data: Dict[str, str] = {}
     for cur in cursors:
         cursor_data[cur.stem] = cur.name
 
