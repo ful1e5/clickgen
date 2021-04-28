@@ -1,5 +1,5 @@
 clean:
-	rm -rf .vscode .vim venv
+	rm -rf .vscode .vim venv 	
 	# remove build & test cache files
 	rm -rf build dist clickgen.egg-info .mypy_cache .pytest_cache
 	rm -rf clickgen/__pycache__ tests/__pycache__
