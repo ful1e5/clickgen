@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import subprocess
+from setuptools import setup
 from distutils.command.install import install as _install
 from shutil import which
-
-from setuptools import setup
 
 
 def make_path() -> str:

@@ -21,9 +21,7 @@ from clickgen.util import (
     PNGProvider,
     add_missing_xcursors,
     chdir,
-    debug,
     remove_util,
-    timer,
 )
 from tests.utils import create_test_image
 
@@ -174,29 +172,3 @@ def test_add_missing_xcursors_with_rename_and_force(
         ["ddddd", "ffffff"]
     )
     shutil.rmtree(tmp_dir)
-
-
-# Development helpers testing
-def test_timer_wrapper_func() -> None:
-    @timer
-    def pp() -> None:
-        print("time ?")
-
-    f = io.StringIO()
-    with redirect_stdout(f):
-        pp()
-
-    assert "time ?" in f.getvalue()
-    assert "Finished 'pp' in" in f.getvalue()
-
-
-def test_debug_wrapper_func() -> None:
-    @debug
-    def pp(a: int) -> int:
-        return a - 1
-
-    f = io.StringIO()
-    with redirect_stdout(f):
-        pp(2)
-
-    assert f.getvalue() == "Calling pp(2)\n'pp' returned 1\n"

@@ -25,12 +25,3 @@ Utility
 :py:mod:`~clickgen.util.remove_util`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .. autofunction:: remove_util
-
-:py:mod:`~clickgen.util.timer`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: timer
-
-:py:mod:`~clickgen.util.debug`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-.. autofunction:: debug
-
