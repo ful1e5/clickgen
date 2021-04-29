@@ -127,6 +127,10 @@ class XCursor:
         cursor.generate()
         return cursor.out
 
+    @classmethod
+    def from_bitmap(cls, **kwargs) -> None:
+        return None
+
 
 Color = Tuple[int, int, int, int]
 
@@ -701,3 +705,7 @@ class WindowsCursor:
         cursor = cls(alias_file, out_dir, options)
         cursor.generate()
         return cursor.out
+
+    @classmethod
+    def from_bitmap(cls, **kwargs) -> None:
+        return None
