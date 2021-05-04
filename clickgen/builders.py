@@ -138,9 +138,9 @@ Color = Tuple[int, int, int, int]
 class Options(NamedTuple):
     """Structure `anicursorgen.py` CLI arguments.
 
-    :param add_shadow : Do not generate shadows for cursors \
+    :param add_shadow: Do not generate shadows for cursors \
             (assign False to cancel its effect).
-    :type add_shadow : bool
+    :type add_shadow: bool
 
     :param blur: Blur radius, in percentage of the canvas size \
             (default is 3.125, set to 0 to disable blurring).
