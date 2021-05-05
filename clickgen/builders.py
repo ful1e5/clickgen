@@ -18,6 +18,7 @@ from typing import Any, List, NamedTuple, Tuple, Union
 from PIL import Image, ImageFilter
 
 from clickgen import __path__
+from clickgen.core import CursorAlias
 from clickgen.util import remove_util
 
 clickgen_pypi_path = "".join(map(str, __path__))
@@ -128,8 +129,21 @@ class XCursor:
         return cursor.out
 
     @classmethod
-    def from_bitmap(cls, **kwargs) -> None:
-        return None
+    def from_bitmap(cls, **kwargs) -> Path:
+        if "png" not in kwargs:
+            raise Exception(f"argument 'png' required")
+        elif "hotspot" not in kwargs:
+            raise Exception(f"argument 'hotspot' required")
+        elif "x_sizes" not in kwargs:
+            raise Exception(f"argument 'x_sizes' required")
+        elif "out_dir" not in kwargs:
+            raise Exception(f"argument 'out_dir' required")
+
+        with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
+            x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
+            cursor = cls(x_cfg, kwargs["out_dir"])
+            cursor.generate()
+            return cursor.out
 
 
 Color = Tuple[int, int, int, int]
