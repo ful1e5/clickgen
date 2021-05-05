@@ -721,5 +721,41 @@ class WindowsCursor:
         return cursor.out
 
     @classmethod
-    def from_bitmap(cls, **kwargs) -> None:
-        return None
+    def from_bitmap(cls, **kwargs) -> Path:
+        options = Options()
+
+        if "png" not in kwargs:
+            raise Exception(f"argument 'png' required")
+        elif "hotspot" not in kwargs:
+            raise Exception(f"argument 'hotspot' required")
+        elif "size" not in kwargs:
+            raise Exception(f"argument 'size' required")
+        elif "out_dir" not in kwargs:
+            raise Exception(f"argument 'out_dir' required")
+        elif "options" not in kwargs:
+            options = kwargs["options"]
+
+        size_factor: float = 1.0
+        position: str = "center"
+
+        if "size_factor" in kwargs:
+            size_factor = kwargs["size_factor"]
+
+        if "position" in kwargs:
+            position = kwargs["position"]
+
+        with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
+            alias.create(kwargs["win_size"], kwargs["delay"])
+
+            # Reproducing bitmap if size_factor is not 1
+            if size_factor != 1.0:
+                canvas_size = kwargs["size"]
+                size = (
+                    int(round(canvas_size[0] / size_factor)),
+                    int(round(canvas_size[1] / size_factor)),
+                )
+                alias.reproduce(size, canvas_size, position, kwargs["delay"])
+
+            cursor = cls(alias.alias_file, kwargs["out_dir"], options)
+            cursor.generate()
+            return cursor.out
