@@ -142,7 +142,10 @@ class XCursor:
         with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
             x_cfg: Path
             if alias.bitmap.animated == True:
-                x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
+                if "delay" not in kwargs:
+                    raise KeyError("argument 'delay' required")
+                else:
+                    x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
             else:
                 x_cfg = alias.create(kwargs["x_sizes"])
             cursor = cls(x_cfg, kwargs["out_dir"])

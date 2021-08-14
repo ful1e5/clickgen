@@ -87,6 +87,114 @@ def test_XCursor_create_with_animated_config(animated_config, image_dir) -> None
     assert x.__sizeof__() > 0
 
 
+def test_XCursor_from_bitmap_with_static_png(static_png, hotspot, image_dir) -> None:
+    """Testing XCursor `form_bitmap` classmethod for generating **static** \
+    cursor.
+    """
+    x = XCursor.from_bitmap(
+        png=static_png, hotspot=hotspot, x_sizes=(10, 10), out_dir=image_dir
+    )
+    assert x.exists() is True
+    assert x.__sizeof__() > 0
+
+    x1 = XCursor.from_bitmap(
+        png=static_png, hotspot=hotspot, x_sizes=[(10, 10)], out_dir=image_dir
+    )
+    assert x1.exists() is True
+    assert x1.__sizeof__() > 0
+
+    x1 = XCursor.from_bitmap(
+        png=static_png, hotspot=hotspot, x_sizes=[(10, 10), (20, 20)], out_dir=image_dir
+    )
+    assert x1.exists() is True
+    assert x1.__sizeof__() > 0
+
+
+def test_XCursor_from_bitmap_with_static_png_exceptions(static_png, hotspot) -> None:
+    """Testing XCursor `form_bitmap` classmethod exceptions for generating **static** \
+    cursor.
+    """
+    with pytest.raises(KeyError) as excinfo1:
+        XCursor.from_bitmap()
+    assert str(excinfo1.value) == "\"argument 'png' required\""
+
+    with pytest.raises(KeyError) as excinfo2:
+        XCursor.from_bitmap(png=static_png)
+    assert str(excinfo2.value) == "\"argument 'hotspot' required\""
+
+    with pytest.raises(KeyError) as excinfo3:
+        XCursor.from_bitmap(png=static_png, hotspot=hotspot)
+    assert str(excinfo3.value) == "\"argument 'x_sizes' required\""
+
+    with pytest.raises(KeyError) as excinfo4:
+        XCursor.from_bitmap(png=static_png, hotspot=hotspot, x_sizes=(10, 10))
+    assert str(excinfo4.value) == "\"argument 'out_dir' required\""
+
+
+def test_XCursor_from_bitmap_with_animated_png(
+    animated_png, hotspot, image_dir
+) -> None:
+    """Testing XCursor `form_bitmap` classmethod for generating **animated** \
+    cursor.
+    """
+    # testing with single size
+    x = XCursor.from_bitmap(
+        png=animated_png,
+        hotspot=hotspot,
+        x_sizes=[(10, 10)],
+        out_dir=image_dir,
+        delay=1,
+    )
+    assert x.exists() is True
+    assert x.__sizeof__() > 0
+
+    x1 = XCursor.from_bitmap(
+        png=animated_png, hotspot=hotspot, x_sizes=(10, 10), out_dir=image_dir, delay=1
+    )
+    assert x1.exists() is True
+    assert x1.__sizeof__() > 0
+
+    # testing with multiple sizes
+    x2 = XCursor.from_bitmap(
+        png=animated_png,
+        hotspot=hotspot,
+        x_sizes=[(10, 10), (20, 20)],
+        out_dir=image_dir,
+        delay=1,
+    )
+    assert x2.exists() is True
+    assert x2.__sizeof__() > 0
+
+
+def test_XCursor_from_bitmap_with_animated_png_exceptions(
+    animated_png, hotspot, image_dir
+) -> None:
+    """Testing XCursor `form_bitmap` classmethod exceptions for generating **animated** \
+    cursor.
+    """
+    with pytest.raises(KeyError) as excinfo1:
+        XCursor.from_bitmap()
+    assert str(excinfo1.value) == "\"argument 'png' required\""
+
+    with pytest.raises(KeyError) as excinfo2:
+        XCursor.from_bitmap(png=animated_png)
+    assert str(excinfo2.value) == "\"argument 'hotspot' required\""
+
+    with pytest.raises(KeyError) as excinfo3:
+        XCursor.from_bitmap(png=animated_png, hotspot=hotspot)
+    assert str(excinfo3.value) == "\"argument 'x_sizes' required\""
+
+    with pytest.raises(KeyError) as excinfo4:
+        XCursor.from_bitmap(png=animated_png, hotspot=hotspot, x_sizes=(10, 10))
+    assert str(excinfo4.value) == "\"argument 'out_dir' required\""
+
+    with pytest.raises(KeyError) as excinfo5:
+        XCursor.from_bitmap(
+            png=animated_png, hotspot=hotspot, x_sizes=(10, 10), out_dir=image_dir
+        )
+    assert str(excinfo5.value) == "\"argument 'delay' required\""
+
+
 def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
     """Testing WindowsCursor `framesets` Exceptions."""
     win = WindowsCursor(static_config, image_dir, options=Options())
