@@ -211,7 +211,7 @@ class CursorDB:
         :rtype: ``None``
 
         :raises TypeError: If provided ``data`` is not type of ``List``
-        :raises TypeError: If provided ``data``'s list member is not type 
+        :raises TypeError: If provided ``data``'s list member is not type
         of ``Set``.
         """
 

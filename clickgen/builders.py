@@ -75,7 +75,7 @@ class XCursor:
                 ``ctype``.
         :rtype: ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
         """
-        p = (self._LP_c_char * len(argv))()
+        p = (self._LP_c_char * len(argv))()  # type: ignore
 
         for i, arg in enumerate(argv):
             enc_arg: bytes = str(arg).encode("utf-8")
@@ -131,13 +131,13 @@ class XCursor:
     @classmethod
     def from_bitmap(cls, **kwargs) -> Path:
         if "png" not in kwargs:
-            raise Exception(f"argument 'png' required")
+            raise Exception("argument 'png' required")
         elif "hotspot" not in kwargs:
-            raise Exception(f"argument 'hotspot' required")
+            raise Exception("argument 'hotspot' required")
         elif "x_sizes" not in kwargs:
-            raise Exception(f"argument 'x_sizes' required")
+            raise Exception("argument 'x_sizes' required")
         elif "out_dir" not in kwargs:
-            raise Exception(f"argument 'out_dir' required")
+            raise Exception("argument 'out_dir' required")
 
         with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
             x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
@@ -245,11 +245,10 @@ class WindowsCursor:
         :rtype: ``List[ConfigFrame]``
         """
 
-        in_buffer = self.config_file.open("rb")
+        in_buffer = self.config_file.open("r")
         frames = []
 
         for line in in_buffer.readlines():
-            line = line.decode()
             words = shlex.split(line.rstrip("\n").rstrip("\r"))
 
             size = int(words[0])
@@ -309,7 +308,7 @@ class WindowsCursor:
                 as other frame.
         """
 
-        framesets = []
+        framesets: List[List[ConfigFrame]] = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -725,13 +724,13 @@ class WindowsCursor:
         options = Options()
 
         if "png" not in kwargs:
-            raise Exception(f"argument 'png' required")
+            raise Exception("argument 'png' required")
         elif "hotspot" not in kwargs:
-            raise Exception(f"argument 'hotspot' required")
+            raise Exception("argument 'hotspot' required")
         elif "size" not in kwargs:
-            raise Exception(f"argument 'size' required")
+            raise Exception("argument 'size' required")
         elif "out_dir" not in kwargs:
-            raise Exception(f"argument 'out_dir' required")
+            raise Exception("argument 'out_dir' required")
         elif "options" not in kwargs:
             options = kwargs["options"]
 
