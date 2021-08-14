@@ -131,16 +131,20 @@ class XCursor:
     @classmethod
     def from_bitmap(cls, **kwargs) -> Path:
         if "png" not in kwargs:
-            raise Exception("argument 'png' required")
+            raise KeyError("argument 'png' required")
         elif "hotspot" not in kwargs:
-            raise Exception("argument 'hotspot' required")
+            raise KeyError("argument 'hotspot' required")
         elif "x_sizes" not in kwargs:
-            raise Exception("argument 'x_sizes' required")
+            raise KeyError("argument 'x_sizes' required")
         elif "out_dir" not in kwargs:
-            raise Exception("argument 'out_dir' required")
+            raise KeyError("argument 'out_dir' required")
 
         with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
-            x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
+            x_cfg: Path
+            if alias.bitmap.animated == True:
+                x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
+            else:
+                x_cfg = alias.create(kwargs["x_sizes"])
             cursor = cls(x_cfg, kwargs["out_dir"])
             cursor.generate()
             return cursor.out
@@ -724,13 +728,13 @@ class WindowsCursor:
         options = Options()
 
         if "png" not in kwargs:
-            raise Exception("argument 'png' required")
+            raise KeyError("argument 'png' required")
         elif "hotspot" not in kwargs:
-            raise Exception("argument 'hotspot' required")
+            raise KeyError("argument 'hotspot' required")
         elif "size" not in kwargs:
-            raise Exception("argument 'size' required")
+            raise KeyError("argument 'size' required")
         elif "out_dir" not in kwargs:
-            raise Exception("argument 'out_dir' required")
+            raise KeyError("argument 'out_dir' required")
         elif "options" not in kwargs:
             options = kwargs["options"]
 
