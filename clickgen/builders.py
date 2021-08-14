@@ -18,6 +18,7 @@ from typing import Any, List, NamedTuple, Tuple, Union
 from PIL import Image, ImageFilter
 
 from clickgen import __path__
+from clickgen.core import CursorAlias
 from clickgen.util import remove_util
 
 clickgen_pypi_path = "".join(map(str, __path__))
@@ -74,7 +75,7 @@ class XCursor:
                 ``ctype``.
         :rtype: ctypes.POINTER(ctypes.POINTER(ctypes.c_char))
         """
-        p = (self._LP_c_char * len(argv))()
+        p = (self._LP_c_char * len(argv))()  # type: ignore
 
         for i, arg in enumerate(argv):
             enc_arg: bytes = str(arg).encode("utf-8")
@@ -127,6 +128,30 @@ class XCursor:
         cursor.generate()
         return cursor.out
 
+    @classmethod
+    def from_bitmap(cls, **kwargs) -> Path:
+        if "png" not in kwargs:
+            raise KeyError("argument 'png' required")
+        elif "hotspot" not in kwargs:
+            raise KeyError("argument 'hotspot' required")
+        elif "x_sizes" not in kwargs:
+            raise KeyError("argument 'x_sizes' required")
+        elif "out_dir" not in kwargs:
+            raise KeyError("argument 'out_dir' required")
+
+        with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
+            x_cfg: Path
+            if alias.bitmap.animated == True:
+                if "delay" not in kwargs:
+                    raise KeyError("argument 'delay' required")
+                else:
+                    x_cfg = alias.create(kwargs["x_sizes"], kwargs["delay"])
+            else:
+                x_cfg = alias.create(kwargs["x_sizes"])
+            cursor = cls(x_cfg, kwargs["out_dir"])
+            cursor.generate()
+            return cursor.out
+
 
 Color = Tuple[int, int, int, int]
 
@@ -134,9 +159,9 @@ Color = Tuple[int, int, int, int]
 class Options(NamedTuple):
     """Structure `anicursorgen.py` CLI arguments.
 
-    :param add_shadow : Do not generate shadows for cursors \
+    :param add_shadow: Do not generate shadows for cursors \
             (assign False to cancel its effect).
-    :type add_shadow : bool
+    :type add_shadow: bool
 
     :param blur: Blur radius, in percentage of the canvas size \
             (default is 3.125, set to 0 to disable blurring).
@@ -227,11 +252,10 @@ class WindowsCursor:
         :rtype: ``List[ConfigFrame]``
         """
 
-        in_buffer = self.config_file.open("rb")
+        in_buffer = self.config_file.open("r")
         frames = []
 
         for line in in_buffer.readlines():
-            line = line.decode()
             words = shlex.split(line.rstrip("\n").rstrip("\r"))
 
             size = int(words[0])
@@ -291,7 +315,7 @@ class WindowsCursor:
                 as other frame.
         """
 
-        framesets = []
+        framesets: List[List[ConfigFrame]] = []
         sizes = set()
 
         # This assumes that frames are sorted
@@ -701,3 +725,43 @@ class WindowsCursor:
         cursor = cls(alias_file, out_dir, options)
         cursor.generate()
         return cursor.out
+
+    @classmethod
+    def from_bitmap(cls, **kwargs) -> Path:
+        options = Options()
+
+        if "png" not in kwargs:
+            raise KeyError("argument 'png' required")
+        elif "hotspot" not in kwargs:
+            raise KeyError("argument 'hotspot' required")
+        elif "size" not in kwargs:
+            raise KeyError("argument 'size' required")
+        elif "out_dir" not in kwargs:
+            raise KeyError("argument 'out_dir' required")
+        elif "options" not in kwargs:
+            options = kwargs["options"]
+
+        size_factor: float = 1.0
+        position: str = "center"
+
+        if "size_factor" in kwargs:
+            size_factor = kwargs["size_factor"]
+
+        if "position" in kwargs:
+            position = kwargs["position"]
+
+        with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
+            alias.create(kwargs["win_size"], kwargs["delay"])
+
+            # Reproducing bitmap if size_factor is not 1
+            if size_factor != 1.0:
+                canvas_size = kwargs["size"]
+                size = (
+                    int(round(canvas_size[0] / size_factor)),
+                    int(round(canvas_size[1] / size_factor)),
+                )
+                alias.reproduce(size, canvas_size, position, kwargs["delay"])
+
+            cursor = cls(alias.alias_file, kwargs["out_dir"], options)
+            cursor.generate()
+            return cursor.out

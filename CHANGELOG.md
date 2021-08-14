@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `WindowsCursor` docstring init
 - `tests` module docstring init
 - use built-in typing inside `clickgen.*`
+- `from_bitmap` classmethod init inside `XCursor` class
+- `from_bitmap` classmethod init inside `WindowsCursor` class
 
 ### Changed
 
