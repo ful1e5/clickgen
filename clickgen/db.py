@@ -203,16 +203,14 @@ class CursorDB:
 
         This call ``self.__seed`` for setting dataset into ``Dict`` structure.
 
-        :param data: Provide custom dataset of cursors. default to \
-        ``clickgen.db.DATA``
+        :param data: Provide custom dataset of cursors. default to ``clickgen.db.DATA``
         :type data: ``List[Set[str]]``
 
         :returns: None.
         :rtype: ``None``
 
         :raises TypeError: If provided ``data`` is not type of ``List``
-        :raises TypeError: If provided ``data``'s list member is not type
-        of ``Set``.
+        :raises TypeError: If provided ``data``'s list member is not type of ``Set``.
         """
 
         super().__init__()
