@@ -13,10 +13,6 @@ from clickgen.builders import Options, WindowsCursor
 from clickgen.core import CursorAlias
 from tests.utils import create_test_image
 
-#
-# WindowsCursor
-#
-
 
 def test_WindowsCursor_from_bitmap_with_static_png(
     static_png, hotspot, image_dir
@@ -34,7 +30,7 @@ def test_WindowsCursor_from_bitmap_with_static_png(
 
 
 def test_WindowsCursor_from_bitmap_with_static_png_exceptions(
-    static_png, hotspot
+    static_png, hotspot, image_dir
 ) -> None:
     """Testing WindowsCursor `form_bitmap` classmethod exceptions for generating **static** cursor."""
     with pytest.raises(KeyError) as excinfo1:
@@ -50,14 +46,33 @@ def test_WindowsCursor_from_bitmap_with_static_png_exceptions(
     assert str(excinfo3.value) == "\"argument 'size' required\""
 
     with pytest.raises(KeyError) as excinfo4:
-        WindowsCursor.from_bitmap(png=static_png, hotspot=hotspot, canvas_size=(10, 10))
-    assert str(excinfo4.value) == "\"argument 'size' required\""
+        WindowsCursor.from_bitmap(png=static_png, hotspot=hotspot, size=(5, 5))
+    assert str(excinfo4.value) == "\"argument 'canvas_size' required\""
 
     with pytest.raises(KeyError) as excinfo5:
         WindowsCursor.from_bitmap(
-            png=static_png, hotspot=hotspot, canvas_size=(10, 10), size=(5, 5)
+            png=static_png, hotspot=hotspot, size=(5, 5), canvas_size=(10, 10)
         )
     assert str(excinfo5.value) == "\"argument 'out_dir' required\""
+
+    WindowsCursor.from_bitmap(
+        png=static_png,
+        hotspot=hotspot,
+        canvas_size=(10, 10),
+        size=(5, 5),
+        out_dir=image_dir,
+        position="top_left",
+    )
+
+    WindowsCursor.from_bitmap(
+        png=static_png,
+        hotspot=hotspot,
+        canvas_size=(10, 10),
+        size=(5, 5),
+        out_dir=image_dir,
+        position="top_left",
+        options=Options(add_shadows=True),
+    )
 
 
 def test_WindowsCursor_from_bitmap_with_animated_png(
@@ -95,14 +110,12 @@ def test_WindowsCursor_from_bitmap_with_animated_png_exceptions(
     assert str(excinfo3.value) == "\"argument 'size' required\""
 
     with pytest.raises(KeyError) as excinfo4:
-        WindowsCursor.from_bitmap(
-            png=animated_png, hotspot=hotspot, canvas_size=(10, 10)
-        )
-    assert str(excinfo4.value) == "\"argument 'size' required\""
+        WindowsCursor.from_bitmap(png=animated_png, hotspot=hotspot, size=(5, 5))
+    assert str(excinfo4.value) == "\"argument 'canvas_size' required\""
 
     with pytest.raises(KeyError) as excinfo5:
         WindowsCursor.from_bitmap(
-            png=animated_png, hotspot=hotspot, canvas_size=(10, 10), size=(5, 5)
+            png=animated_png, hotspot=hotspot, size=(5, 5), canvas_size=(10, 10)
         )
     assert str(excinfo5.value) == "\"argument 'out_dir' required\""
 
@@ -115,6 +128,27 @@ def test_WindowsCursor_from_bitmap_with_animated_png_exceptions(
             out_dir=image_dir,
         )
     assert str(excinfo6.value) == "\"argument 'delay' required\""
+
+    WindowsCursor.from_bitmap(
+        png=animated_png,
+        hotspot=hotspot,
+        canvas_size=(10, 10),
+        size=(5, 5),
+        out_dir=image_dir,
+        position="top_left",
+        delay=2,
+    )
+
+    WindowsCursor.from_bitmap(
+        png=animated_png,
+        hotspot=hotspot,
+        canvas_size=(10, 10),
+        size=(5, 5),
+        out_dir=image_dir,
+        position="top_left",
+        delay=2,
+        options=Options(add_shadows=True),
+    )
 
 
 def test_WindowsCursor_exceptions(static_config, image_dir) -> None:
