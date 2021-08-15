@@ -141,7 +141,7 @@ class XCursor:
 
         with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
             x_cfg: Path
-            if alias.bitmap.animated == True:
+            if alias.bitmap.animated:
                 if "delay" not in kwargs:
                     raise KeyError("argument 'delay' required")
                 else:
@@ -350,7 +350,7 @@ class WindowsCursor:
             for i in range(1, len(frameset)):
                 if frameset[i - 1][4] != frameset[i][4]:
                     raise ValueError(
-                        f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}",
+                        f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}"  # type: ignore
                     )
         framesets = sorted(framesets, reverse=True)
 
@@ -728,7 +728,6 @@ class WindowsCursor:
 
     @classmethod
     def from_bitmap(cls, **kwargs) -> Path:
-        options = Options()
 
         if "png" not in kwargs:
             raise KeyError("argument 'png' required")
@@ -736,31 +735,35 @@ class WindowsCursor:
             raise KeyError("argument 'hotspot' required")
         elif "size" not in kwargs:
             raise KeyError("argument 'size' required")
+        elif "canvas_size" not in kwargs:
+            raise KeyError("argument 'canvas_size' required")
         elif "out_dir" not in kwargs:
             raise KeyError("argument 'out_dir' required")
-        elif "options" not in kwargs:
-            options = kwargs["options"]
 
-        size_factor: float = 1.0
-        position: str = "center"
-
-        if "size_factor" in kwargs:
-            size_factor = kwargs["size_factor"]
-
+        position: str
         if "position" in kwargs:
             position = kwargs["position"]
+        else:
+            position = "center"
+
+        options: Options
+        if "options" in kwargs:
+            options = kwargs["options"]
+        else:
+            options = Options()
 
         with CursorAlias.from_bitmap(kwargs["png"], kwargs["hotspot"]) as alias:
-            alias.create(kwargs["win_size"], kwargs["delay"])
-
-            # Reproducing bitmap if size_factor is not 1
-            if size_factor != 1.0:
-                canvas_size = kwargs["size"]
-                size = (
-                    int(round(canvas_size[0] / size_factor)),
-                    int(round(canvas_size[1] / size_factor)),
-                )
-                alias.reproduce(size, canvas_size, position, kwargs["delay"])
+            if alias.bitmap.animated:
+                if "delay" not in kwargs:
+                    raise KeyError("argument 'delay' required")
+                else:
+                    alias.create(kwargs["size"], kwargs["delay"])
+                    alias.reproduce(
+                        kwargs["size"], kwargs["canvas_size"], position, kwargs["delay"]
+                    )
+            else:
+                alias.create(kwargs["size"])
+                alias.reproduce(kwargs["size"], kwargs["canvas_size"], position)
 
             cursor = cls(alias.alias_file, kwargs["out_dir"], options)
             cursor.generate()
