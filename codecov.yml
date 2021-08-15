@@ -5,3 +5,6 @@ ignore:
 
 fixes:
   - "/clickgen::/clickgen"
+
+codecov:
+  disable_default_path_fixes: true
