@@ -3,8 +3,5 @@ ignore:
   - examples
   - setup.py
 
-fixes:
-  - "/clickgen::/clickgen"
-
 codecov:
   disable_default_path_fixes: true
