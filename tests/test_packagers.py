@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import shutil
-from tests.utils import create_test_cursor
-import pytest
 from pathlib import Path
+
+import pytest
+
 from clickgen.packagers import WindowsPackager, XPackager
+from tests.utils import create_test_cursor
 
 
 def test_XPackger(image_dir: Path) -> None:

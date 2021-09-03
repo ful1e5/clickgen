@@ -5,11 +5,9 @@
 .. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
 """
 
-import io
 import os
 import shutil
 import tempfile
-from contextlib import redirect_stdout
 from os import getcwd, symlink
 from pathlib import Path
 
@@ -17,12 +15,7 @@ import pytest
 
 from clickgen.builders import XCursor
 from clickgen.core import CursorAlias
-from clickgen.util import (
-    PNGProvider,
-    add_missing_xcursors,
-    chdir,
-    remove_util,
-)
+from clickgen.util import PNGProvider, add_missing_xcursors, chdir, remove_util
 from tests.utils import create_test_image
 
 
