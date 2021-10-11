@@ -75,11 +75,8 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-sizes = []
 hotspot = (args.hotspot[0], args.hotspot[1])
-for s in args.sizes:
-    sizes.append((s, s))
-
+sizes = [(s, s) for s in args.sizes]
 out_dir = Path(args.out_dir)
 if not out_dir.exists():
     out_dir.mkdir(parents=True, exist_ok=True)

@@ -707,10 +707,7 @@ def test_CursorAlias_create_with_static_bitmap_and_single_size(
             with file.open("r") as f:
                 assert f.readlines() == ["10 0 0 10x10/test-0.png"]
 
-    files = []
-    for f in alias.alias_dir.glob("**/*"):
-        files.append(f.name)
-
+    files = [f.name for f in alias.alias_dir.glob("**/*")]
     assert sorted(files) == sorted(["10x10", "test-0.alias", "test-0.png"])
 
     shutil.rmtree(alias.alias_dir)
@@ -742,10 +739,7 @@ def test_CursorAlias_create_with_static_bitmap_and_multiple_size(static_png) -> 
                     "16 7 10 16x16/test-0.png",
                 ]
 
-    files = []
-    for f in alias.alias_dir.glob("**/*"):
-        files.append(f.name)
-
+    files = [f.name for f in alias.alias_dir.glob("**/*")]
     assert sorted(files) == sorted(
         [
             "10x10",

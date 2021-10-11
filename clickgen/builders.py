@@ -420,11 +420,7 @@ class WindowsCursor:
                 0x01,
             )
         )
-
-        rates = set()
-        for frameset in framesets:
-            rates.add(frameset[0][4])
-
+        rates = {frameset[0][4] for frameset in framesets}
         if len(rates) != 1:
             buf.write(b"rate")
             buf.write(pack("<I", len(framesets) * 4))
