@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `make dev` command for development purpose
 - `make docs_gen` command for generating docs
 - Build `xcursorgen` with extra flags
-- `xcursorgen.c` formated with tool **[indent](https://www.gnu.org/software/indent/)**
+- `xcursorgen.c` formatted with tool **[indent](https://www.gnu.org/software/indent/)**
 - Linting & typing fixes inside `clickgen.builders`
 - `Linting`, `pip package caching`, and `stubgen` commands inside [workflows/app-publish.yml](./.github/workflows/app-publish.yml)
 - `ConfigFrame` typing added inside `WindowsCursor` class
@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - clickgen pip dependencies _installation_ method changed inside [workflows/app-ci.yml](./.github/workflows/app-ci.yml)
 - Only `python3` syntax (removed `(object) inheritation`)
 - `clickgen.utils.timer` & `clickgen.utils.debug` removed
-- formating inside `CHANGELOG.md`
+- formatting inside `CHANGELOG.md`
 - CI: run ci on every branch push
 
 ## [1.1.9] - 22 Mar 2021
