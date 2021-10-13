@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Only `python3` syntax (removed `(object) inheritation`)
 - `clickgen.utils.timer` & `clickgen.utils.debug` removed
 - formating inside `CHANGELOG.md`
+- CI: run ci on every branch push
 
 ## [1.1.9] - 22 Mar 2021
 
