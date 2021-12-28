@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - use built-in typing inside `clickgen.*`
 - `from_bitmap` classmethod init inside `XCursor` class
 - `from_bitmap` classmethod init inside `WindowsCursor` class
+- GitHub Sponsorships added
 
 ### Changed
 
