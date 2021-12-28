@@ -16,14 +16,12 @@ from clickgen.db import CursorDB
 
 def test_CursorDB_exceptions() -> None:
     """Testing CursorDB ``TypeError`` exceptions."""
-    data = "aa"
     with pytest.raises(TypeError) as excinfo:
-        CursorDB(data)
+        CursorDB("aa") # type: ignore
     assert str(excinfo.value) == "'data' is not type of 'List'"
 
-    data = ["aa"]
     with pytest.raises(TypeError) as excinfo:
-        CursorDB(data)
+        CursorDB(["aa"]) # type: ignore
     assert str(excinfo.value) == "Item 'aa' is not type of 'Set'"
 
 

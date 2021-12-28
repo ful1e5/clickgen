@@ -768,7 +768,7 @@ def test_CursorAlias_create_with_animated_bitmap_and_single_size(image_dir) -> N
 
     for file in alias.alias_dir.iterdir():
         if file.is_dir():
-            frames = file.iterdir()
+            frames = list(file.iterdir())
             assert as_list(frames) == as_list(animated_png)
         else:
             assert file.stem == animated_bitmap.key
@@ -808,7 +808,7 @@ def test_CursorAlias_create_with_animated_bitmap_and_multiple_size(image_dir) ->
 
     for file in alias.alias_dir.iterdir():
         if file.is_dir():
-            frames = file.iterdir()
+            frames = list(file.iterdir())
             assert as_list(frames) == as_list(animated_png)
         else:
             assert file.stem == animated_bitmap.key

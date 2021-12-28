@@ -41,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - formatting inside `CHANGELOG.md`
 - CI: run ci on every branch push
 - refactor: init `setup.cfg`
+- lsp warning fixed in `tests` module
 
 ## [1.1.9] - 22 Mar 2021
 
