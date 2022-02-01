@@ -123,6 +123,27 @@ REQUIRED_WIN_CURSORS: Set[str] = {
     "Alternate",
 }
 
+UNINSTALL_BAT = Template(
+    """@echo off
+:: ===========================================================
+::
+:: Replace the name of cursor according to the cursor schemes.
+:: Credit: https://github.com/smit-sms
+:: More Information: https://github.com/ful1e5/apple_cursor/issues/79
+::
+:: ===========================================================
+
+REG DELETE "HKCU\\Control Panel\\Cursors\\Schemes" /v "$theme_name Cursors" /f
+
+:: ===============================================================================
+:: This enables a popup message box to indicate a user for the operation complete.
+:: ===============================================================================
+echo x=msgbox("Successfully deleted the cursor!", 0+64, "Cursor") > %tmp%\tmp.vbs
+wscript %tmp%\tmp.vbs
+del %tmp%\tmp.vbs
+"""
+)
+
 
 def WindowsPackager(
     directory: Path,
@@ -186,10 +207,13 @@ def WindowsPackager(
     for cur in cursors:
         cursor_data[cur.stem] = cur.name
 
+    # Store install.inf file
     data: str = INSTALL_INF.safe_substitute(
         theme_name=theme_name, comment=comment, author=author, **cursor_data
     )
-
-    # Store install.inf file
     install_inf: Path = directory / "install.inf"
     install_inf.write_text(data)
+
+    # Store uninstall.bat file
+    uninstall_bat: Path = directory / "uninstall.bat"
+    uninstall_bat.write_text(UNINSTALL_BAT.safe_substitute(theme_name=theme_name))

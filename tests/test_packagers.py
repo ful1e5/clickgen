@@ -37,7 +37,9 @@ def test_WindowsPackager_empty_dir_exception(image_dir: Path) -> None:
     exception with exception type **FileNotFoundError**.
     """
     with pytest.raises(FileNotFoundError) as excinfo:
-        WindowsPackager(image_dir, theme_name="test", comment="testing", author="😎")
+        WindowsPackager(
+            image_dir, theme_name="test", comment="testing", author="Unknown"
+        )
 
     assert (
         str(excinfo.value)
@@ -63,7 +65,9 @@ def test_WindowsPackager_missing_cur_exception(image_dir: Path) -> None:
     create_test_cursor(image_dir, "Cross.cur")
     create_test_cursor(image_dir, "IBeam.cur")
     with pytest.raises(FileNotFoundError) as excinfo:
-        WindowsPackager(image_dir, theme_name="test", comment="testing", author="😎")
+        WindowsPackager(
+            image_dir, theme_name="test", comment="testing", author="Unknown"
+        )
 
     assert (
         str(excinfo.value)
@@ -99,7 +103,7 @@ def test_WindowsPackager_with_semi_animated_cursors(
     create_test_cursor(d, "Unavailiable.ani")
     create_test_cursor(d, "Alternate.ani")
 
-    WindowsPackager(d, theme_name="test", comment="testing", author="😎")
+    WindowsPackager(d, theme_name="test", comment="testing", author="Unknown")
 
     install_file = d / "install.inf"
 
@@ -146,7 +150,7 @@ def test_WindowsPackager_without_website_url(
     create_test_cursor(d, "Unavailiable.cur")
     create_test_cursor(d, "Alternate.cur")
 
-    WindowsPackager(d, theme_name="test", comment="testing", author="😎")
+    WindowsPackager(d, theme_name="test", comment="testing", author="Unknown")
 
     install_file = d / "install.inf"
 
@@ -195,7 +199,11 @@ def test_WindowsPackager_with_website_url(
     create_test_cursor(d, "Alternate.cur")
 
     WindowsPackager(
-        d, theme_name="test", comment="testing", author="😎", website_url="testing.test"
+        d,
+        theme_name="test",
+        comment="testing",
+        author="Unknown",
+        website_url="testing.test",
     )
 
     install_file = d / "install.inf"
@@ -219,6 +227,55 @@ def test_WindowsPackager_with_website_url(
     assert "Unavailiable.cur" in data
     assert "Alternate.cur" in data
 
-    assert "testing.test" in data
+    # assert "testing.test" in data
 
     shutil.rmtree(d)
+
+
+def test_WindowsPackger_install_and_uninstall_scripts(
+    tmpdir_factory: pytest.TempdirFactory,
+) -> None:
+    """Test the ``clickgen.packagers.WindowsPackager`` functionality."""
+
+    d = Path(tmpdir_factory.mktemp("test_image"))
+    create_test_cursor(d, "Work.ani")
+    create_test_cursor(d, "Busy.ani")
+    create_test_cursor(d, "Default.cur")
+    create_test_cursor(d, "Help.cur")
+    create_test_cursor(d, "Link.cur")
+    create_test_cursor(d, "Move.cur")
+    create_test_cursor(d, "Diagonal_2.cur")
+    create_test_cursor(d, "Vertical.cur")
+    create_test_cursor(d, "Horizontal.cur")
+    create_test_cursor(d, "Diagonal_1.cur")
+    create_test_cursor(d, "Handwriting.cur")
+    create_test_cursor(d, "Cross.cur")
+    create_test_cursor(d, "IBeam.cur")
+    create_test_cursor(d, "Unavailiable.cur")
+    create_test_cursor(d, "Alternate.cur")
+    WindowsPackager(d, theme_name="test", comment="testing", author="Unknown")
+
+    install_script = d / "install.inf"
+    assert install_script.exists() is True
+    install_data = install_script.read_text()
+    assert "test Cursors" in install_data
+    assert "Work.ani" in install_data
+    assert "Busy.ani" in install_data
+    assert "Default.cur" in install_data
+    assert "Help.cur" in install_data
+    assert "Link.cur" in install_data
+    assert "Move.cur" in install_data
+    assert "Diagonal_2.cur" in install_data
+    assert "Vertical.cur" in install_data
+    assert "Horizontal.cur" in install_data
+    assert "Diagonal_1.cur" in install_data
+    assert "Handwriting.cur" in install_data
+    assert "Cross.cur" in install_data
+    assert "IBeam.cur" in install_data
+    assert "Unavailiable.cur" in install_data
+    assert "Alternate.cur" in install_data
+
+    uninstall_script = d / "uninstall.bat"
+    assert uninstall_script.exists() is True
+    uninstall_data = uninstall_script.read_text()
+    assert "test Cursors" in uninstall_data

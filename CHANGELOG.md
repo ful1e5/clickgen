@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `from_bitmap` classmethod init inside `XCursor` class
 - `from_bitmap` classmethod init inside `WindowsCursor` class
 - GitHub Sponsorships added
+- feat: uninstall script added in `WindowsPackager` ful1e5/apple_cursor#79
 
 ### Changed
 

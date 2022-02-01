@@ -8,5 +8,6 @@ def XPackager(directory: Path, theme_name: str, comment: str) -> None: ...
 
 INSTALL_INF: Any
 REQUIRED_WIN_CURSORS: Set[str]
+UNINSTALL_BAT: Any
 
 def WindowsPackager(directory: Path, theme_name: str, comment: str, author: str, website_url: Optional[str] = ...) -> None: ...

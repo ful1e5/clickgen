@@ -7,9 +7,10 @@ clean:
 	cd docs && make clean
 	python3 -m pip uninstall -y clickgen
 
-
 MODULES = __init__ builders core db packagers util
+
 stubgen:
+	pip install mypy
 	rm -rf clickgen/*.pyi
 	$(foreach module,$(MODULES), stubgen "clickgen/$(module).py" -o .;)
 
