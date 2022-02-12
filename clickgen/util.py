@@ -98,9 +98,9 @@ class PNGProvider:
 
         k = key.split(".")
         if len(k) == 1:
-            reg = re.compile(fr"^{k[0]}(?:-\d+)?.png$")
+            reg = re.compile(rf"^{k[0]}(?:-\d+)?.png$")
         else:
-            reg = re.compile(fr"^{k[0]}(?:-\d+)?.{k[1]}$")
+            reg = re.compile(rf"^{k[0]}(?:-\d+)?.{k[1]}$")
 
         matched_pngs = filter(reg.match, self.__pngs)
 
@@ -112,7 +112,7 @@ class PNGProvider:
 
 def add_missing_xcursors(
     directory: Path,
-    data: List = None,
+    data: List = DATA,
     rename: bool = False,
     force: bool = False,
 ) -> None:
@@ -132,9 +132,6 @@ def add_missing_xcursors(
     :param force: To enable force renaming.
     :type force: ``bool``
     """
-
-    if data is None:
-        data = DATA
 
     if not directory.exists() or not directory.is_dir():
         raise NotADirectoryError(directory.absolute())

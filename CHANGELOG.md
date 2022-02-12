@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - lsp warning fixed in `tests` module
 - removed emoji from `README.md`
 - chore: compact `Makefile` with variables
+- coverage: assign default value of `data` parameter in `clickgen/util.py`
 
 ## [1.1.9] - 22 Mar 2021
 
