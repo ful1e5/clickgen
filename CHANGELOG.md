@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `from_bitmap` classmethod init inside `WindowsCursor` class
 - GitHub Sponsorships added
 - feat: uninstall script added in `WindowsPackager` ful1e5/apple_cursor#79
+- feat: run `pip install` command according to make target (use for dev env setup)
 
 ### Changed
 
@@ -45,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - refactor: init `setup.cfg`
 - lsp warning fixed in `tests` module
 - removed emoji from `README.md`
+- chore: compact `Makefile` with variables
 
 ## [1.1.9] - 22 Mar 2021
 
