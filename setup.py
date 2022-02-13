@@ -21,4 +21,4 @@ class install(_install):
         _install.run(self)
 
 
-setup(cmdclass={"install": install})
+setup(cmdclass={"install": install})  # type: ignore
