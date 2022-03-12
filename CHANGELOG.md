@@ -49,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - chore: compact `Makefile` with variables
 - coverage: assign default value of `data` parameter in `clickgen/util.py`
 - fix: updated donation link and fixed type warning in `setup.py`
+- refactor: source moved to `src/*` directory
 
 ## [1.1.9] - 22 Mar 2021
 

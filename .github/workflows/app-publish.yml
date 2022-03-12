@@ -53,12 +53,15 @@ jobs:
 
       - name: Generating clickgen `stubfile`
         run: |
-          rm -rf clickgen/*.pyi
+          rm -rf src/clickgen/*.pyi
           make stubgen
 
+      - name: Build Xcursorgen
+        run: make compile_xcursorgen
+        continue-on-error: false
+
       - name: Building
-        run: |
-          python setup.py install sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
         continue-on-error: false
 
       - name: Testing
@@ -96,4 +99,4 @@ jobs:
         if: success()
         with:
           name: xcursorgen
-          path: ./clickgen/xcursorgen.so
+          path: src/clickgen/xcursorgen.so

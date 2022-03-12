@@ -122,21 +122,23 @@ jobs:
           # clickgen dependencies
           python -m pip install pillow
 
-          # for build
+          # build dependencies
           python -m pip install setuptools wheel
 
-          # for Testing
+          # test dependencies
           python -m pip install pytest pytest-cov
         continue-on-error: false
 
+      - name: Build Xcursorgen
+        run: make compile_xcursorgen
+        continue-on-error: false
+
       - name: Package build
-        run: |
-          python setup.py install sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
         continue-on-error: false
 
       - name: Generating 'coverage.xml'
-        run: |
-          python -m py.test --cov-report=xml --cov=clickgen tests/
+        run: python -m py.test --cov-report=xml --cov=src/clickgen tests/
         continue-on-error: false
 
       - name: Upload coverage to Codecov
@@ -161,4 +163,4 @@ jobs:
         if: success()
         with:
           name: xcursorgen
-          path: ./clickgen/xcursorgen.so
+          path: src/clickgen/xcursorgen.so

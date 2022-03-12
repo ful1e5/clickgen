@@ -9,7 +9,7 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, List, Literal, Optional, Tuple, Union
 
 from PIL import Image
 
@@ -320,7 +320,7 @@ class Bitmap:
     def resize(
         self,
         size: Size,
-        resample: int = Image.NONE,
+        resample: Literal[0, 1, 2, 3, 4, 5] | None = Image.NONE,
         save: bool = True,
     ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize this bitmap.
@@ -329,7 +329,7 @@ class Bitmap:
         :type size: ``Tuple[int, int]``
 
         :param resample: Pillow resample algorithm.
-        :type resample: ``int``
+        :type resample: ``Literal[0, 1, 2, 3, 4, 5] | None``
 
         :param save: If you want to overwrite resized bitmap to actual png \
                 file. Neither it return pillow ``Image`` buffer.
@@ -400,7 +400,7 @@ class Bitmap:
         """
 
         def __reproduce(p: Path) -> Image.Image:
-            frame: Image = Image.open(p).resize(size, resample=Image.BICUBIC)
+            frame = Image.open(p).resize(size, resample=Image.BICUBIC)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch: Dict[str, Tuple[int, int]] = {
