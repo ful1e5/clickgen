@@ -86,6 +86,7 @@ jobs:
 
       - name: Testing
         run: |
+          make -C src/xcursorgen
           python setup.py install
           python -m pytest -vv
         continue-on-error: false
