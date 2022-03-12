@@ -320,7 +320,7 @@ class Bitmap:
     def resize(
         self,
         size: Size,
-        resample: Literal[0, 1, 2, 3, 4, 5] | None = Image.NONE,
+        resample: int = Image.NONE,
         save: bool = True,
     ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize this bitmap.
