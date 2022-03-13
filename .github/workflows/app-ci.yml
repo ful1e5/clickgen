@@ -92,8 +92,12 @@ jobs:
         run: make -C src/xcursorgen
         continue-on-error: false
 
-      - name: Package build
+      - name: Building clickgen
         run: python setup.py sdist bdist_wheel
+        continue-on-error: false
+
+      - name: Installing clickgen locally for test
+        run: python setup.py install
         continue-on-error: false
 
       - name: Generating 'coverage.xml'
