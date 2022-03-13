@@ -14,40 +14,7 @@ on:
       - main
 
 jobs:
-  Linting:
-    runs-on: ubuntu-18.04
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python "3.x"
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.x"
-
-      - name: Caching pip packages
-        uses: actions/cache@v2
-        id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install 'flake8'
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-        continue-on-error: false
-
-      - name: Linting
-        run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-
-  Linux-Testing:
-    needs: Linting
+  test:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
@@ -65,7 +32,7 @@ jobs:
         id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
@@ -76,23 +43,20 @@ jobs:
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-
-          # clickgen dependencies
-          python -m pip install pillow
-
-          # for Testing
-          python -m pip install pytest
+          python -m pip install -r requirements.txt
+          python -m pip install tox-gh-actions
         continue-on-error: false
 
-      - name: Testing
-        run: |
-          make -C src/xcursorgen
-          python setup.py install
-          python -m pytest -vv
+      - name: Compiling Xcursorgen C library
+        run: make -C src/xcursorgen
+        continue-on-error: false
+
+      - name: Test with tox
+        run: tox
         continue-on-error: false
 
   build:
-    needs: [Linting, Linux-Testing]
+    needs: test
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -119,23 +83,16 @@ jobs:
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-
-          # clickgen dependencies
-          python -m pip install pillow
-
-          # build dependencies
-          python -m pip install setuptools wheel
-
-          # test dependencies
+          python -m pip install -r requirements.txt
           python -m pip install pytest pytest-cov
         continue-on-error: false
 
-      - name: Build Xcursorgen
-        run: make compile_xcursorgen
+      - name: Compiling Xcursorgen C library
+        run: make -C src/xcursorgen
         continue-on-error: false
 
       - name: Package build
-        run: python setup.py install sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
         continue-on-error: false
 
       - name: Generating 'coverage.xml'

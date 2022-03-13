@@ -9,7 +9,7 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from tempfile import mkdtemp
-from typing import Dict, List, Literal, Optional, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from PIL import Image
 

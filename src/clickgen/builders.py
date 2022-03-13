@@ -350,7 +350,7 @@ class WindowsCursor:
             for i in range(1, len(frameset)):
                 if frameset[i - 1][4] != frameset[i][4]:
                     raise ValueError(
-                        f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}"  # type: ignore
+                        f"Frameset {i} has duration {int(frameset[i][4])} for framesize {int(frameset[i][0])}, but {int(frameset[i - 1][4])} for framesize {int(frameset[i - 1][0])}"
                     )
         framesets = sorted(framesets, reverse=True)
 

@@ -1,0 +1,8 @@
+flake8==4.0.1
+tox==3.24.5
+pytest==7.0.1
+pytest-cov==3.0.0
+mypy==0.940
+sphinx==4.4.0
+sphinx-rtd-theme==1.0.0
+coverage==6.3.2

@@ -112,7 +112,7 @@ class PNGProvider:
 
 def add_missing_xcursors(
     directory: Path,
-    data: List = DATA,
+    data=DATA,
     rename: bool = False,
     force: bool = False,
 ) -> None:
