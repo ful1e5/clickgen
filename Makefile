@@ -2,7 +2,7 @@ py3 = python3
 
 clean:
 	rm -rf .vscode .vim venv
-	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache
+	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov
 	rm -rf src/clickgen/__pycache__ tests/__pycache__
 	make -C src/xcursorgen clean
 	make -C docs clean
@@ -27,7 +27,7 @@ coverage:
 xcursorgen.so:
 	@make -C src/xcursorgen
 
-build: clean
+build: clean xcursorgen.so
 	$(py3) setup.py sdist bdist_wheel
 
 MODULES = __init__ builders core db packagers util

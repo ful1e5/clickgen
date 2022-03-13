@@ -93,12 +93,20 @@ jobs:
         continue-on-error: false
 
       - name: Building clickgen
-        run: python setup.py sdist bdist_wheel
+        run: python setup.py install sdist bdist_wheel
         continue-on-error: false
 
-      - name: Installing clickgen locally for test
-        run: python setup.py install
-        continue-on-error: false
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: xcursorgen
+          path: src/clickgen/xcursorgen.so
 
       - name: Generating 'coverage.xml'
         run: python -m py.test --cov-report=xml --cov=src/clickgen tests/
@@ -115,15 +123,3 @@ jobs:
         with:
           name: coverage
           path: coverage.xml
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: dist
-          path: dist
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: xcursorgen
-          path: src/clickgen/xcursorgen.so
