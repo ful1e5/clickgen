@@ -10,7 +10,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
@@ -21,53 +20,51 @@ jobs:
         id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install build dependencies
-        run: |
-          sudo apt install libx11-dev libxcursor-dev libpng-dev
+      - name: Install build dependencies using 'apt'
+        run: sudo apt install libx11-dev libxcursor-dev libpng-dev
         continue-on-error: false
 
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
-
-          # For generating stubfiles using `stubgen` & Linting
-          python -m pip install mypy flake8
-
-          # clickgen dependencies
-          python -m pip install pillow
-
-          # for build
+          python -m pip install -r requirements.txt
+          python -m pip install mypy flake8 pytest
           python -m pip install setuptools wheel twine
         continue-on-error: false
 
       - name: Linting
         run: |
-          # stop the build if there are Python syntax errors or undefined names
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+          flake8 src
+          flake8 tests
+
+      - name: Checking static types
+        run: mypy src
 
       - name: Generating clickgen `stubfile`
-        run: |
-          rm -rf src/clickgen/*.pyi
-          make stubgen
+        run: make stubgen
 
-      - name: Build Xcursorgen
-        run: make compile_xcursorgen
+      - name: Compiling Xcursorgen C library
+        run: make -C src/xcursorgen
         continue-on-error: false
 
       - name: Building
-        run: python setup.py install sdist bdist_wheel
+        run: python setup.py sdist bdist_wheel
         continue-on-error: false
+
+      - uses: actions/upload-artifact@master
+        if: success()
+        with:
+          name: dist
+          path: dist
 
       - name: Testing
         run: |
-          pip install -U pytest
-          python -m pytest -vv
+          python -m pip install -e .
+          python -m pytest
         continue-on-error: false
 
       - name: Push to Docker Hub
@@ -88,15 +85,3 @@ jobs:
         run: |
           twine --version
           twine upload dist/*
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: dist
-          path: dist
-
-      - uses: actions/upload-artifact@master
-        if: success()
-        with:
-          name: xcursorgen
-          path: src/clickgen/xcursorgen.so
