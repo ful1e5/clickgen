@@ -1,4 +1,0 @@
-include src/clickgen/xcursorgen.so
-include src/clickgen/py.typed
-include src/clickgen/*.pyi
-include LICENSE
