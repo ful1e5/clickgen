@@ -2,7 +2,7 @@ py3 = python3
 
 clean:
 	rm -rf .vscode .vim venv
-	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov
+	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	rm -rf src/clickgen/__pycache__ tests/__pycache__
 	make -C src/xcursorgen clean
 	make -C docs clean
@@ -15,7 +15,7 @@ install_dev_requirements:
 	$(py3) -m pip install -r requirements.dev.txt
 
 install:
-	sudo $(py3) -m pip install -e .
+	sudo $(py3) -m pip install --user -e .
 
 test:
 	$(py3) -m pytest
@@ -35,7 +35,7 @@ stubgen:
 	rm -rf src/clickgen/*.pyi
 	$(foreach module,$(MODULES), stubgen "src/clickgen/$(module).py" -o src;)
 
-docsgen:
+docsgen: build install
 	make -C docs html
 
 dev: clean install_requirements install_dev_requirements stubgen install xcursorgen.so test coverage docsgen
