@@ -52,6 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fix: updated donation link and fixed type warning in `setup.py`
 - refactor: source moved to `src/*` directory
 - chore: tox init
+- make-stubgen: generate type interface(.pyi) files without `MODULES` variable
 
 ## [1.1.9] - 22 Mar 2021
 

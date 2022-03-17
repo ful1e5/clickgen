@@ -30,10 +30,9 @@ xcursorgen.so:
 build: clean xcursorgen.so
 	$(py3) setup.py sdist bdist_wheel
 
-MODULES = __init__ builders core db packagers util
 stubgen:
 	rm -rf src/clickgen/*.pyi
-	$(foreach module,$(MODULES), stubgen "src/clickgen/$(module).py" -o src;)
+	stubgen "src/clickgen" -o src
 
 docsgen: build install
 	make -C docs html
