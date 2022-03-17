@@ -9,7 +9,6 @@
 import os
 import re
 import shutil
-from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Union
@@ -18,7 +17,7 @@ from clickgen.db import DATA, CursorDB, Data
 
 
 @contextmanager
-def chdir(directory: Union[str, Path]) -> Generator[None, None, None]:
+def chdir(directory: Union[str, Path]):
     """Temporary change working directory using `with` syntax.
 
     :param directory: path to directory.
