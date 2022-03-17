@@ -9,15 +9,16 @@
 import os
 import re
 import shutil
+from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path
 from typing import List, Union
 
-from clickgen.db import DATA, CursorDB
+from clickgen.db import DATA, CursorDB, Data
 
 
 @contextmanager
-def chdir(directory: Union[str, Path]):
+def chdir(directory: Union[str, Path]) -> Generator[None, None, None]:
     """Temporary change working directory using `with` syntax.
 
     :param directory: path to directory.
@@ -112,7 +113,7 @@ class PNGProvider:
 
 def add_missing_xcursors(
     directory: Path,
-    data=DATA,
+    data: Data = DATA,
     rename: bool = False,
     force: bool = False,
 ) -> None:
