@@ -53,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - refactor: source moved to `src/*` directory
 - chore: tox init
 - make-stubgen: generate type interface(.pyi) files without `MODULES` variable
+- refactor: `scripts` -> `src/clickgen/scripts`
 
 ## [1.1.9] - 22 Mar 2021
 
