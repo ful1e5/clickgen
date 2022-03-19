@@ -48,7 +48,7 @@ jobs:
         run: make stubgen
 
       - name: Compiling Xcursorgen C library
-        run: make -C src/xcursorgen
+        run: make xcursorgen.so
         continue-on-error: false
 
       - name: Building
