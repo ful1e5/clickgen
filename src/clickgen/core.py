@@ -320,16 +320,12 @@ class Bitmap:
     def resize(
         self,
         size: Size,
-        resample: int = Image.NONE,
         save: bool = True,
     ) -> Optional[Union[Image.Image, List[Image.Image]]]:
         """Resize this bitmap.
 
         :param size: New width & height in pixel.
         :type size: ``Tuple[int, int]``
-
-        :param resample: Pillow resample algorithm.
-        :type resample: ``Literal[0, 1, 2, 3, 4, 5] | None``
 
         :param save: If you want to overwrite resized bitmap to actual png \
                 file. Neither it return pillow ``Image`` buffer.
@@ -346,7 +342,7 @@ class Bitmap:
 
             # Preventing image quality degrades
             if img.size != size:
-                img = img.resize(size, resample=resample)
+                img = img.resize(size, resample=Image.BICUBIC)
                 # If save => Update attribute
                 if save:
                     self._set_size(p)
@@ -400,7 +396,7 @@ class Bitmap:
         """
 
         def __reproduce(p: Path) -> Image.Image:
-            frame = Image.open(p).resize(size, resample=Image.BICUBIC)
+            frame = Image.open(p).resize(size)
             x, y = tuple(map(lambda i, j: i - j, canvas_size, size))
 
             switch: Dict[str, Tuple[int, int]] = {
@@ -607,7 +603,7 @@ class CursorAlias:
             d: Path = self.alias_dir / f"{size[0]}x{size[1]}"
 
             bmp: Bitmap = self.bitmap.copy(d)
-            bmp.resize(size, resample=Image.BICUBIC)
+            bmp.resize(size)
 
             l: List[str] = []
 
