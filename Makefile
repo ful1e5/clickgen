@@ -31,7 +31,7 @@ build: clean xcursorgen.so
 	$(py3) setup.py sdist bdist_wheel
 
 stubgen:
-	rm -rf src/clickgen/*.pyi
+	find src/clickgen/ -type f -name '*.pyi' -delete
 	stubgen "src/clickgen" -o src
 
 docsgen: build install
