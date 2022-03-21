@@ -1,7 +1,7 @@
 py3 = python3
 
 clean:
-	rm -rf .vscode .vim venv
+	rm -rf .vscode .vim venv coverage.xml
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	rm -rf src/clickgen/__pycache__ tests/__pycache__
 	make -C src/xcursorgen clean

@@ -105,7 +105,7 @@ jobs:
       - name: Generating 'coverage.xml'
         run: |
           python -m pip install -e .
-          python -m py.test --cov-report=xml --cov=src/clickgen tests/
+          python -m pytest --cov-report=xml --cov=src/clickgen
         continue-on-error: false
 
       - name: Upload coverage to Codecov
