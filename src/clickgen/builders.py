@@ -475,8 +475,8 @@ class WindowsCursor:
         :rtype: ``None``
         """
 
-        o_pxs = orig.load()
-        s_pxs = shadow.load()
+        o_pxs: Any = orig.load()
+        s_pxs: Any = shadow.load()
         for y in range(orig.size[1]):
             for x in range(orig.size[0]):
                 o_px = o_pxs[x, y]
@@ -569,7 +569,7 @@ class WindowsCursor:
         :rtype: ``None``
         """
 
-        pixels = frame_png.load()
+        pixels: Any = frame_png.load()
 
         out.write(
             pack("<I II HH IIIIII", 40, frame[0], frame[0] * 2, 1, 32, 0, 0, 0, 0, 0, 0)
