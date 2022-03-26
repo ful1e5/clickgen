@@ -1,4 +1,4 @@
-name: Publish PyPI Package & Docker
+name: Publish
 
 on:
   release:
@@ -74,7 +74,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
           cache_froms: python:3-alpine:latest
-          tags: latest, 1.1
+          tags: latest
           tag_with_ref: true
         continue-on-error: false
 
