@@ -37,4 +37,8 @@ stubgen:
 docsgen: build install
 	make -C docs html
 
+tox: build install
+	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
+	tox
+
 dev: clean install_requirements install_dev_requirements stubgen install xcursorgen.so test coverage docsgen

@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- python 3.10 support
 - `Makefile` at the project root added for development operations command
 - Generate `stubfiles` from `make stubgen` command
 - `make clean` command for cleaning clickgen cache
