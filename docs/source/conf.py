@@ -22,7 +22,7 @@ copyright = "2021, Kaiz Khatri"
 author = "Kaiz Khatri"
 
 # The full version, including alpha/beta/rc tags
-release = "1.1.9"
+release = "1.2.0"
 
 
 # -- General configuration ---------------------------------------------------

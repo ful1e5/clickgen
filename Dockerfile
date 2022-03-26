@@ -1,7 +1,7 @@
 FROM python:3-alpine
 
 # Installing necessary runtime libraries
-RUN apk --no-cache add build-base jpeg-dev zlib-dev libx11-dev libpng-dev libxcursor-dev 
+RUN apk --no-cache add build-base jpeg-dev zlib-dev libx11-dev libpng-dev libxcursor-dev
 
 # For caching
 ADD requirements.txt /app/
@@ -13,7 +13,6 @@ ADD . /app
 # Building app
 RUN python setup.py install sdist bdist_wheel
 RUN cd ./dist && pip install clickgen-*.tar.gz
-
 
 # Cleaning build libraries
 WORKDIR /

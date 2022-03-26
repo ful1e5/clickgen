@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+## [1.2.0] - 26 Mar 2022
+
+### Added
+
 - python 3.10 support
 - `Makefile` at the project root added for development operations command
 - Generate `stubfiles` from `make stubgen` command
@@ -182,8 +188,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-<<<<<<< HEAD
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.8...main
-=======
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.1.9...main
-[1.1.9]: https://github.com/ful1e5/clickgen/compare/v1.1.8...v1.1.9
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.2.0...main
+[1.2.0]: https://github.com/ful1e5/clickgen/compare/1.1.9...v1.2.0
+[1.1.9]: https://github.com/ful1e5/clickgen/compare/1.1.8...v1.1.9
+[1.1.8]: https://github.com/ful1e5/clickgen/compare/1.1.7...v1.1.8
+[1.1.7]: https://github.com/ful1e5/clickgen/compare/1.1.6...v1.1.7
+[1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
+[1.1.5-beta]: https://github.com/ful1e5/clickgen/compare/1.1.4-alpha...1.1.5-beta
+[1.1.4-beta]: https://github.com/ful1e5/clickgen/compare/1.1.3-alpha...1.1.4-beta
+[1.1.3-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.2-alpha...1.1.3-alpha
+[1.1.2-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.1-alpha...1.1.2-alpha
+[1.1.1-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.0-alpha...1.1.1-alpha
+[1.1.0-alpha]: https://github.com/ful1e5/clickgen/releases/tag/1.1.0-alpha
