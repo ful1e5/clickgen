@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- 'Twitter' and 'Download' links added on PYPI page
+
 ### Changed
 
 ## [1.2.0] - 26 Mar 2022
