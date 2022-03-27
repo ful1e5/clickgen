@@ -14,9 +14,9 @@ and `xcursorgen <https://linux.die.net/man/1/xcursorgen>`_.
   :target: https://clickgen.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 
-.. image:: https://github.com/ful1e5/clickgen/actions/workflows/app-ci.yml/badge.svg
+.. image:: https://github.com/ful1e5/clickgen/actions/workflows/ci.yml/badge.svg
    :target: https://github.com/ful1e5/clickgen/actions
-   :alt: GitHub Actions build status
+   :alt: CI
 
 .. image:: https://img.shields.io/pypi/wheel/pytype
    :target: https://pypi.org/project/clickgen/#files

@@ -14,6 +14,9 @@ install_requirements:
 install_dev_requirements:
 	$(py3) -m pip install -r requirements.dev.txt
 
+install_docs_requirements:
+	$(py3) -m pip install -r docs/requirements.txt
+
 install:
 	sudo $(py3) -m pip install --user -e .
 
@@ -41,4 +44,4 @@ tox: build install
 	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
 	tox
 
-dev: clean install_requirements install_dev_requirements stubgen install xcursorgen.so test coverage docsgen
+dev: clean install_requirements install_dev_requirements install_docs_requirements stubgen install xcursorgen.so test coverage docsgen

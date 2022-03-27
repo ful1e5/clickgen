@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Changed docs theme to 'furo'
+
 ## [1.2.0] - 26 Mar 2022
 
 ### Added
