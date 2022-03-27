@@ -6,15 +6,15 @@ RUN apk --no-cache add build-base jpeg-dev zlib-dev libx11-dev libpng-dev libxcu
 # For caching
 ADD requirements.txt /app/
 WORKDIR /app
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 ADD . /app
 
 # Building app
 RUN python setup.py install sdist bdist_wheel
-RUN cd ./dist && pip install clickgen-*.tar.gz
+RUN cd ./dist && pip install --no-cache-dir clickgen-*.tar.gz
 
 # Cleaning build libraries
-WORKDIR /
 RUN apk del build-base
+WORKDIR /
 RUN rm -rf /app
