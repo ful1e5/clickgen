@@ -20,7 +20,7 @@ jobs:
         id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
