@@ -2,12 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import shutil
-import tempfile
-from pathlib import Path
-
-from clickgen.builders import WindowsCursor, XCursor
-from clickgen.core import CursorAlias
 
 
 def main() -> None:
@@ -76,32 +70,9 @@ def main() -> None:
     )
 
     args = parser.parse_args()
-
-    hotspot = (args.hotspot[0], args.hotspot[1])
-    sizes = [(s, s) for s in args.sizes]
-    out_dir = Path(args.out_dir)
-    if not out_dir.exists():
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-    with CursorAlias.from_bitmap(args.png, hotspot) as alias:
-        cfg = alias.create(sizes)
-
-        if args.type == "windows":
-            WindowsCursor.create(cfg, out_dir)
-        elif args.type == "xcursor":
-            # Using Temporary directory, Because 'XCursor' create inside 'cursors' directory.
-            tmp_dir = Path(tempfile.mkdtemp())
-            try:
-                xcursor = XCursor.create(cfg, tmp_dir)
-                shutil.move(str(xcursor.absolute()), str(out_dir.absolute()))
-            finally:
-                shutil.rmtree(tmp_dir)
-        else:
-            tmp_dir = Path(tempfile.mkdtemp())
-            try:
-                xcursor = XCursor.create(cfg, tmp_dir)
-                win_cursor = WindowsCursor.create(cfg, tmp_dir)
-                shutil.move(str(xcursor.absolute()), str(out_dir.absolute()))
-                shutil.move(str(win_cursor.absolute()), str(out_dir.absolute()))
-            finally:
-                shutil.rmtree(tmp_dir)
+    print(args)
+    # hotspot = (args.hotspot[0], args.hotspot[1])
+    # sizes = [(s, s) for s in args.sizes]
+    # out_dir = Path(args.out_dir)
+    # if not out_dir.exists():
+    #     out_dir.mkdir(parents=True, exist_ok=True)

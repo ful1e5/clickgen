@@ -24,10 +24,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install build dependencies using 'apt'
-        run: sudo apt install libx11-dev libxcursor-dev libpng-dev
-        continue-on-error: false
-
       - name: Install pip dependencies
         run: |
           python -m pip install --upgrade pip
@@ -46,10 +42,6 @@ jobs:
 
       - name: Generating clickgen `stubfile`
         run: make stubgen
-
-      - name: Compiling Xcursorgen C library
-        run: make xcursorgen.so
-        continue-on-error: false
 
       - name: Building
         run: python setup.py sdist bdist_wheel

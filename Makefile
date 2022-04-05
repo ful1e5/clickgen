@@ -4,7 +4,6 @@ clean:
 	rm -rf .vscode .vim venv coverage.xml
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	rm -rf src/clickgen/__pycache__ tests/__pycache__
-	make -C src/xcursorgen clean
 	make -C docs clean
 	$(py3) -m pip uninstall -y clickgen
 
@@ -27,10 +26,7 @@ coverage:
 	$(py3) -m coverage run -m pytest
 	coverage html
 
-xcursorgen.so:
-	@make -C src/xcursorgen
-
-build: clean xcursorgen.so
+build: clean
 	$(py3) setup.py sdist bdist_wheel
 
 stubgen:
@@ -44,4 +40,4 @@ tox: build install
 	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
 	tox
 
-dev: clean install_requirements install_dev_requirements install_docs_requirements stubgen install xcursorgen.so test coverage docsgen
+dev: clean install_requirements install_dev_requirements install_docs_requirements stubgen install test coverage docsgen
