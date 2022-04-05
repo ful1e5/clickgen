@@ -5,7 +5,7 @@ from typing import List
 
 from wxcursors.cursors import CursorFrame
 
-#### XCURSOR FILE FORMAT
+# XCURSOR FILE FORMAT
 MAGIC = b"Xcur"
 VERSION = 0x1_0000
 FILE_HEADER = struct.Struct("<4sIII")

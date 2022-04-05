@@ -5,7 +5,7 @@ from typing import List, Tuple
 
 from wxcursors.cursors import CursorFrame
 
-#### .CUR FILE FORMAT
+# .CUR FILE FORMAT
 MAGIC = b"\0\0\02\0"
 ICO_TYPE_CUR = 2
 ICON_DIR = struct.Struct("<HHH")
@@ -45,7 +45,7 @@ def to_cur(frame: CursorFrame) -> bytes:
     return b"".join(chain([header], directory, image_data))
 
 
-#### .ANI FILE FORMAT
+# .ANI FILE FORMAT
 SIGNATURE = b"RIFF"
 ANI_TYPE = b"ACON"
 HEADER_CHUNK = b"anih"
