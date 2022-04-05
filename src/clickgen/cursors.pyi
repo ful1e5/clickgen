@@ -1,0 +1,16 @@
+from PIL.Image import Image as Image
+from typing import Iterator, List, Tuple
+
+class CursorImage:
+    image: Image
+    hotspot: Tuple[int, int]
+    nominal: int
+    def __init__(self, image: Image, hotspot: Tuple[int, int], nominal: int) -> None: ...
+
+class CursorFrame:
+    images: List[CursorImage]
+    delay: int
+    def __init__(self, images: List[CursorImage], delay: int = ...) -> None: ...
+    def __getitem__(self, item: int) -> CursorImage: ...
+    def __len__(self) -> int: ...
+    def __iter__(self) -> Iterator[CursorImage]: ...
