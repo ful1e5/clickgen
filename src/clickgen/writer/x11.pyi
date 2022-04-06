@@ -1,5 +1,5 @@
+from clickgen.cursors import CursorFrame as CursorFrame
 from typing import Any, List
-from wxcursors.cursors import CursorFrame as CursorFrame
 
 MAGIC: bytes
 VERSION: int

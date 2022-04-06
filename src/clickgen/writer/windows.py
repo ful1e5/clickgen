@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import struct
 from io import BytesIO
 from itertools import chain
 from typing import List, Tuple
 
-from wxcursors.cursors import CursorFrame
+from clickgen.cursors import CursorFrame
 
 # .CUR FILE FORMAT
 MAGIC = b"\0\0\02\0"

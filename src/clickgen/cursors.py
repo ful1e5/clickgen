@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from typing import Iterator, List, Tuple
 
 from PIL.Image import Image

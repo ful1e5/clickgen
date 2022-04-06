@@ -1,5 +1,6 @@
+from clickgen.cursors import CursorFrame as CursorFrame, CursorImage as CursorImage
+from clickgen.parser.base import BaseParser as BaseParser
 from typing import Any, List, Optional, Tuple
-from wxcursors.parser.base import BaseParser
 
 SIZES: Any
 DELAY: int

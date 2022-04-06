@@ -1,9 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import struct
 from itertools import chain
 from operator import itemgetter
 from typing import List
 
-from wxcursors.cursors import CursorFrame
+from clickgen.cursors import CursorFrame
 
 # XCURSOR FILE FORMAT
 MAGIC = b"Xcur"

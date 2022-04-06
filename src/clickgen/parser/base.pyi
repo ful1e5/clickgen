@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
-from typing import List
-from wxcursors.cursors import CursorFrame as CursorFrame
+from clickgen.cursors import CursorFrame as CursorFrame
+from typing import Any, List
 
 class BaseParser(metaclass=ABCMeta):
     blob: bytes
@@ -9,4 +9,4 @@ class BaseParser(metaclass=ABCMeta):
     def __init__(self, blob: bytes): ...
     @classmethod
     @abstractmethod
-    def can_parse(cls, blob: bytes) -> bool: ...
+    def can_parse(cls, blob: Any) -> bool: ...

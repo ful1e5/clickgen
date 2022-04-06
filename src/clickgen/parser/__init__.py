@@ -1,7 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from typing import List, Optional, Tuple, Union
 
-from wxcursors.parser.base import BaseParser
-from wxcursors.parser.png import MultiPNGParser, SinglePNGParser
+from clickgen.parser.base import BaseParser
+from clickgen.parser.png import MultiPNGParser, SinglePNGParser
 
 __all__ = ["SinglePNGParser", "MultiPNGParser", "open_blob"]
 

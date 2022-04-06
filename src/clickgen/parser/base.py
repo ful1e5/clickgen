@@ -1,7 +1,10 @@
-from abc import ABCMeta, abstractmethod
-from typing import List
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from wxcursors.cursors import CursorFrame
+from abc import ABCMeta, abstractmethod
+from typing import Any, List
+
+from clickgen.cursors import CursorFrame
 
 
 class BaseParser(metaclass=ABCMeta):
@@ -14,5 +17,5 @@ class BaseParser(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def can_parse(cls, blob: bytes) -> bool:
+    def can_parse(cls, blob: Any) -> bool:
         raise NotImplementedError()
