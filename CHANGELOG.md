@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed docs theme to 'furo'
 - chore: updated template variables inside `packer.windows`
+- make: install all dependencies with `make install_deps` command
 
 ## [1.2.0] - 26 Mar 2022
 
