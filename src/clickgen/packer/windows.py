@@ -14,7 +14,7 @@ FILE_TEMPLATES: Dict[str, Template] = {
     "install.inf": Template(
         """[Version]
 signature="$CHICAGO$"
-$comment
+$info
 
 [DefaultInstall]
 CopyFiles = Scheme.Cur, Scheme.Txt
@@ -47,8 +47,8 @@ HKCU,"Control Panel\\Cursors\\Schemes","%SCHEME_NAME%",,"%10%\\%CUR_DIR%\\%point
 "$Alternate"
 
 [Strings]
-CUR_DIR           = "Cursors\\$theme_name Cursors"
-SCHEME_NAME       = "$theme_name Cursors"
+CUR_DIR           = "Cursors\\$theme_name"
+SCHEME_NAME       = "$theme_name"
 pointer           = "$Default"
 help              = "$Help"
 work              = "$Work"
@@ -76,7 +76,7 @@ link              = "$Link"
 ::
 :: ===========================================================
 
-REG DELETE "HKCU\\Control Panel\\Cursors\\Schemes" /v "$theme_name Cursors" /f
+REG DELETE "HKCU\\Control Panel\\Cursors\\Schemes" /v "$theme_name" /f
 
 :: ===============================================================================
 :: This enables a popup message box to indicate a user for the operation complete.
@@ -160,18 +160,19 @@ def pack_win(
         missing = sorted(REQUIRED_CURSORS - set(c))
         raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
+    info: str = ""
     if website_url:
-        comment = f"{comment}\n{website_url}"
+        info = f"{comment}\n{website_url}"
 
-    # replace $Default => Default.ani | Default.cur (as file was provided)
+    # replace $Default => Default.ani | Default.cur
     cursor_data: Dict[str, str] = {}
     for cur in cursors:
         cursor_data[cur.stem] = cur.name
 
     for fname, template in FILE_TEMPLATES.items():
         data: str = template.safe_substitute(
-            theme_name=theme_name,
-            comment=comment,
+            theme_name=f"{theme_name} Cursors",
+            info=info,
             author=author,
             **cursor_data,
         )
