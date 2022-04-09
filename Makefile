@@ -1,7 +1,7 @@
 py3 = python3
 
 clean:
-	rm -rf .vscode .vim venv coverage.xml
+	rm -rf .vscode .vim venv coverage.xml out samples/out
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	rm -rf src/clickgen/__pycache__ tests/__pycache__
 	make -C docs clean
@@ -13,7 +13,7 @@ install_deps:
 	$(py3) -m pip install -r docs/requirements.txt
 
 install:
-	sudo $(py3) -m pip install --user -e .
+	$(py3) -m pip install -e .
 
 test:
 	$(py3) -m pytest
