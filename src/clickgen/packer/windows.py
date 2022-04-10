@@ -112,7 +112,7 @@ def pack_win(
     theme_name: str,
     comment: str,
     author: str,
-    website_url: Optional[str] = None,
+    website: Optional[str] = None,
 ) -> None:
     """This packager generates ``install.inf`` files at ``directory``. Also, \
     Cursor extensions is identified by its type (.cur/.ani).
@@ -129,8 +129,8 @@ def pack_win(
     :param author: Author name.
     :param author: ``str``
 
-    :param website_url: Website web address.(Useful for **bug reports**)
-    :param website_url: ``str`` or ``None``
+    :param website: Website web address.(Useful for **bug reports**)
+    :param website: ``str`` or ``None``
 
     :returns: None.
     :rtype: ``None``
@@ -161,8 +161,8 @@ def pack_win(
         raise FileNotFoundError(f"Windows cursors are missing {missing}")
 
     info: str = ""
-    if website_url:
-        info = f"{comment}\n{website_url}"
+    if website:
+        info = f"{comment}\n{website}"
 
     # replace $Default => Default.ani | Default.cur
     cursor_data: Dict[str, str] = {}
