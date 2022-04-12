@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
+from clickgen.configparser.utils import str_to_list
+
 
 @dataclass
 class ConfigSection:
@@ -15,7 +17,7 @@ class ConfigSection:
 def parse_config_section(cp: ConfigParser) -> ConfigSection:
     bitmaps_dir = Path(cp.get("config", "bitmaps"))
     out_dir = Path(cp.get("config", "out"))
-    sizes = list(map(int, cp.get("config", "sizes").split(",")))
-    platforms = [x.strip(" ") for x in cp.get("config", "platforms").split(",")]
+    sizes = list(map(int, str_to_list(cp.get("config", "sizes"))))
+    platforms = str_to_list(cp.get("config", "platforms"))
 
     return ConfigSection(bitmaps_dir, out_dir, sizes, platforms)

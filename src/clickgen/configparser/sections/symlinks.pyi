@@ -1,4 +1,4 @@
 from configparser import ConfigParser
-from typing import Dict
+from typing import Dict, List
 
-def parse_symlinks_section(cp: ConfigParser) -> Dict[str, str]: ...
+def parse_symlinks_section(cp: ConfigParser) -> Dict[str, List[str]]: ...

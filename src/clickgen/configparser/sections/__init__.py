@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 from dataclasses import dataclass
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 
 from clickgen.configparser.sections.config import ConfigSection, parse_config_section
 from clickgen.configparser.sections.hotspots import parse_hotspot_section
@@ -12,7 +12,7 @@ __all__ = [
     "parse_theme_section",
     "parse_config_section",
     "parse_hotspot_section",
-    "parse_symlinks_section"
+    "parse_symlinks_section",
 ]
 
 
@@ -21,7 +21,7 @@ class ClickgenConfig:
     theme: ThemeSection
     config: ConfigSection
     hotspots: Dict[str, Tuple[int, int]]
-    symlinks: Dict[str, str]
+    symlinks: Dict[str, List[str]]
 
 
 def parse_sections(cp: ConfigParser) -> ClickgenConfig:

@@ -1,3 +1,4 @@
+from clickgen.configparser.utils import str_to_list as str_to_list
 from configparser import ConfigParser
 from pathlib import Path
 from typing import List
