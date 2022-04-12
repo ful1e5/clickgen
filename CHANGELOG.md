@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - add: python 3.7 support
 - init: `cursor`, `configparser`, `packer`, `parser` and `writer` module
 - 'Twitter' and 'Download' links added on PYPI page
+- cli init ( `clickgen -h` )
 
 ### Changed
 
