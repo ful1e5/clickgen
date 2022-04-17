@@ -1,19 +1,46 @@
+import io
+from configparser import ConfigParser
+from pathlib import Path
 from typing import List, Tuple
 
 import pytest
-from PIL.Image import Image
+from PIL.Image import Image, open
 
 from clickgen.cursors import CursorFrame, CursorImage
 
+samples_dir = Path(__file__).parents[1] / "samples"
+
 
 @pytest.fixture
-def image() -> Image:
-    return Image()
+def blob() -> bytes:
+    pointer_png = samples_dir / "pngs/pointer.png"
+    return pointer_png.read_bytes()
+
+
+@pytest.fixture
+def blobs(blob) -> List[bytes]:
+    return [blob, blob]
+
+
+@pytest.fixture
+def dummy_blob() -> bytes:
+    txt = samples_dir / "sample.cfg"
+    return txt.read_bytes()
+
+
+@pytest.fixture
+def dummy_blobs(dummy_blob) -> List[bytes]:
+    return [dummy_blob, dummy_blob]
+
+
+@pytest.fixture
+def image(blob) -> Image:
+    return open(io.BytesIO(blob))
 
 
 @pytest.fixture
 def hotspot() -> Tuple[int, int]:
-    return (0, 0)
+    return (100, 105)
 
 
 @pytest.fixture
@@ -32,6 +59,11 @@ def images(cursor_image) -> List[CursorImage]:
 
 
 @pytest.fixture
+def sizes() -> List[int]:
+    return [12, 12, 24]
+
+
+@pytest.fixture
 def delay() -> int:
     return 5
 
@@ -39,3 +71,18 @@ def delay() -> int:
 @pytest.fixture
 def cursor_frame(images, delay) -> CursorFrame:
     return CursorFrame(images, delay)
+
+
+@pytest.fixture
+def sample_cfg() -> str:
+    txt = samples_dir / "sample.cfg"
+    return txt.read_text()
+
+
+@pytest.fixture
+def cp() -> ConfigParser:
+    cfg = samples_dir / "sample.cfg"
+
+    cp = ConfigParser()
+    cp.read(cfg)
+    return cp

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from typing import List, Optional, Tuple, Union
+from typing import List, Optional, Tuple, Type, Union
 
 from clickgen.parser.base import BaseParser
 from clickgen.parser.png import MultiPNGParser, SinglePNGParser
 
 __all__ = ["SinglePNGParser", "MultiPNGParser", "open_blob"]
 
-PARSERS = [SinglePNGParser, MultiPNGParser]
+PARSERS: List[Type[BaseParser]] = [SinglePNGParser, MultiPNGParser]
 
 
 def open_blob(
@@ -19,5 +19,5 @@ def open_blob(
 ) -> BaseParser:
     for parser in PARSERS:
         if parser.can_parse(blob):
-            return parser(blob, hotspot, sizes, delay)
+            return parser(blob, hotspot, sizes, delay)  # type: ignore
     raise ValueError("Unsupported file format")
