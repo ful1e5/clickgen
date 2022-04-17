@@ -16,11 +16,10 @@ install:
 	$(py3) -m pip install -e .
 
 test:
-	$(py3) -m pytest
+	pytest
 
 coverage:
-	$(py3) -m coverage run -m pytest
-	coverage html
+	pytest --cov=clickgen --cov-report=html
 
 build: clean
 	$(py3) setup.py sdist bdist_wheel
