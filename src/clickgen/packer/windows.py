@@ -111,7 +111,6 @@ def pack_win(
     dir: Path,
     theme_name: str,
     comment: str,
-    author: str,
     website: Optional[str] = None,
 ) -> None:
     """This packager generates ``install.inf`` files at ``directory``. Also, \
@@ -125,9 +124,6 @@ def pack_win(
 
     :param comment: Extra information about theme.
     :param comment: ``str``
-
-    :param author: Author name.
-    :param author: ``str``
 
     :param website: Website web address.(Useful for **bug reports**)
     :param website: ``str`` or ``None``
@@ -173,7 +169,6 @@ def pack_win(
         data: str = template.safe_substitute(
             theme_name=f"{theme_name} Cursors",
             info=info,
-            author=author,
             **cursor_data,
         )
         f = dir / fname

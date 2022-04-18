@@ -7,6 +7,7 @@ import pytest
 from PIL.Image import Image, open
 
 from clickgen.cursors import CursorFrame, CursorImage
+from clickgen.packer.windows import REQUIRED_CURSORS
 
 samples_dir = Path(__file__).parents[1] / "samples"
 
@@ -92,3 +93,41 @@ def cp() -> ConfigParser:
     cp = ConfigParser()
     cp.read(cfg)
     return cp
+
+
+@pytest.fixture
+def theme_name() -> str:
+    return "test"
+
+
+@pytest.fixture
+def comment() -> str:
+    return "comment"
+
+
+@pytest.fixture
+def website() -> str:
+    return "https://www.example.com"
+
+
+@pytest.fixture(scope="session")
+def x11_tmp_dir(tmpdir_factory) -> Path:
+    return Path(tmpdir_factory.mktemp("x11_tmp"))
+
+
+@pytest.fixture(scope="session")
+def win_cur_tmp_dir(tmpdir_factory) -> Path:
+    p = Path(tmpdir_factory.mktemp("x11_tmp"))
+    for f in REQUIRED_CURSORS:
+        cfile = p.joinpath(f"{f}.cur")
+        cfile.write_text("test win cursors")
+    return p
+
+
+@pytest.fixture(scope="session")
+def win_ani_tmp_dir(tmpdir_factory) -> Path:
+    p = Path(tmpdir_factory.mktemp("x11_tmp"))
+    for f in REQUIRED_CURSORS:
+        cfile = p.joinpath(f"{f}.ani")
+        cfile.write_text("test win cursors")
+    return p
