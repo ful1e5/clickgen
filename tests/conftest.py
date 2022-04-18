@@ -80,6 +80,12 @@ def sample_cfg() -> str:
 
 
 @pytest.fixture
+def cp_path() -> str:
+    cfg = samples_dir / "sample.cfg"
+    return str(cfg)
+
+
+@pytest.fixture
 def cp() -> ConfigParser:
     cfg = samples_dir / "sample.cfg"
 

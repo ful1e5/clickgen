@@ -10,8 +10,7 @@ def test_cursor_image(cursor_image, image, hotspot, nominal):
     assert cursor_image.hotspot is hotspot
     assert cursor_image.nominal is nominal
 
-    assert "image=<PIL.Image.Image" in repr(cursor_image)
-    assert "hotspot=(0, 0)" in repr(cursor_image)
+    assert "hotspot=(100, 105)" in repr(cursor_image)
     assert "nominal=24" in repr(cursor_image)
 
 
@@ -35,5 +34,4 @@ def test_cursor_frame(cursor_frame, cursor_image, images, delay):
     for c in iter(cursor_frame):
         assert isinstance(c, CursorImage)
 
-    assert "images=[CursorImage(" in repr(cursor_frame)
     assert "delay=5" in repr(cursor_frame)
