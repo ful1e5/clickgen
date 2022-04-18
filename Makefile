@@ -3,9 +3,8 @@ py3 = python3
 clean:
 	rm -rf .vscode .vim venv coverage.xml out samples/out
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
-	rm -rf src/clickgen/__pycache__ tests/__pycache__
+	find . -name "__pycache__" -type d -exec /bin/rm -rf {} + 
 	make -C docs clean
-	$(py3) -m pip uninstall -y clickgen
 
 install_deps:
 	$(py3) -m pip install -r requirements.txt
@@ -31,7 +30,7 @@ stubgen:
 docsgen: build install
 	make -C docs html
 
-tox: build install
+tox: clean
 	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
 	tox
 
