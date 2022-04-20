@@ -9,11 +9,14 @@ from PIL.Image import Image, open
 from clickgen.cursors import CursorFrame, CursorImage
 from clickgen.packer.windows import REQUIRED_CURSORS
 
-samples_dir = Path(__file__).parents[1] / "samples"
+
+@pytest.fixture
+def samples_dir() -> Path:
+    return Path(__file__).parents[1] / "samples"
 
 
 @pytest.fixture
-def blob() -> bytes:
+def blob(samples_dir) -> bytes:
     pointer_png = samples_dir / "pngs/pointer.png"
     return pointer_png.read_bytes()
 
@@ -24,7 +27,7 @@ def blobs(blob) -> List[bytes]:
 
 
 @pytest.fixture
-def dummy_blob() -> bytes:
+def dummy_blob(samples_dir) -> bytes:
     txt = samples_dir / "sample.cfg"
     return txt.read_bytes()
 
@@ -75,19 +78,19 @@ def cursor_frame(images, delay) -> CursorFrame:
 
 
 @pytest.fixture
-def sample_cfg() -> str:
+def sample_cfg(samples_dir) -> str:
     txt = samples_dir / "sample.cfg"
     return txt.read_text()
 
 
 @pytest.fixture
-def cp_path() -> str:
+def cp_path(samples_dir) -> str:
     cfg = samples_dir / "sample.cfg"
     return str(cfg)
 
 
 @pytest.fixture
-def cp() -> ConfigParser:
+def cp(samples_dir) -> ConfigParser:
     cfg = samples_dir / "sample.cfg"
 
     cp = ConfigParser()
