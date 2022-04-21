@@ -33,5 +33,6 @@ docsgen: build install
 tox: clean
 	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
 	tox
+	pyenv local system
 
 dev: clean install_deps stubgen install test coverage docsgen

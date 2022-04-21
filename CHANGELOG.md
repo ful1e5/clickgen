@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - refactor: removed old source code
 - add: python 3.7 support
+- add: **Windows** and **macOS** support #24
 - init: `cursor`, `configparser`, `packer`, `parser` and `writer` module
 - 'Twitter' and 'Download' links added on PYPI page
 - cli init ( `clickgen -h` )
