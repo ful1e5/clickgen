@@ -13,6 +13,8 @@
 import os
 import sys
 
+import clickgen
+
 sys.path.insert(0, os.path.abspath("./../.."))
 
 # -- Project information -----------------------------------------------------
@@ -22,7 +24,7 @@ copyright = "2021, Kaiz Khatri"
 author = "Kaiz Khatri"
 
 # The full version, including alpha/beta/rc tags
-release = "1.2.0"
+release = clickgen.__version__  # type: ignore
 
 
 # -- General configuration ---------------------------------------------------

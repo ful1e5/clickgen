@@ -3,6 +3,7 @@ env
 themes
 .vscode
 .vim
+samples/out
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -2,12 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import shutil
-import tempfile
+import os
+import sys
+import traceback
 from pathlib import Path
+from threading import Lock
+from typing import BinaryIO, List
 
-from clickgen.builders import WindowsCursor, XCursor
-from clickgen.core import CursorAlias
+import clickgen
+from clickgen.parser import open_blob
+from clickgen.parser.png import DELAY, SIZES
+from clickgen.writer.windows import to_win
+from clickgen.writer.x11 import to_x11
 
 
 def main() -> None:
@@ -16,92 +22,93 @@ def main() -> None:
         description="The hassle-free cursor building toolbox",
     )
 
-    # Positional Args.
     parser.add_argument(
-        "png",
-        metavar="PNG",
-        type=str,
+        "files",
+        type=argparse.FileType("rb"),
         nargs="+",
-        help="Path to .png file. If animated, Try to mask frame-number using asterisk( * ). For Example 'wait-*.png'",
+        help="Cursor bitmap files to generate (*.png)",
     )
     parser.add_argument(
         "-o",
-        "--out-dir",
-        dest="out_dir",
-        metavar="OUT",
-        type=str,
-        default="./",
-        help="To change output directory. (default: %(default)s)",
-    )
-
-    # Optional Args.
-    parser.add_argument(
-        "-hot",
-        "--hotspot",
-        dest="hotspot",
-        metavar="cord",
-        nargs=2,
-        default=(0, 0),
-        type=int,
-        help="To set 'x' & 'y' coordinates of cursor's hotspot. (default: %(default)s)",
+        "--output",
+        "--output-dir",
+        default=os.curdir,
+        help="Directory to store generated cursor file.",
     )
     parser.add_argument(
-        "-t",
-        "--type",
-        dest="type",
-        choices=("windows", "xcursor", "all"),
+        "-p",
+        "--platform",
+        choices=["windows", "x11", "all"],
         default="all",
-        help="Set cursor type, Which you want to build. (default: '%(default)s')",
+        help="Platform for generated cursor file.",
     )
-
+    parser.add_argument(
+        "-x",
+        "--hotspot-x",
+        type=int,
+        default=0,
+        help="x-offset of cursor (as fraction of width)",
+    )
+    parser.add_argument(
+        "-y",
+        "--hotspot-y",
+        type=int,
+        default=0,
+        help="y-offset of cursor (as fraction of height)",
+    )
     parser.add_argument(
         "-s",
         "--sizes",
         dest="sizes",
-        metavar="size",
         nargs="+",
-        default=[22],
+        default=SIZES,
         type=int,
-        help="Set pixel-size for cursor. (default: %(default)s)",
+        help="Set pixel-size for cursor.",
     )
-
     parser.add_argument(
         "-d",
         "--delay",
-        dest="delay",
-        metavar="ms",
-        default=50,
+        default=DELAY,
         type=int,
-        help="Set animated cursor's frames delay in 'micro-second'. (default: %(default)s)",
+        help="Set delay between frames of cursor.",
+    )
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version=f"%(prog)s {clickgen.__version__}",  # type: ignore
     )
 
     args = parser.parse_args()
+    print_lock = Lock()
+    files: List[BinaryIO] = args.files
 
-    hotspot = (args.hotspot[0], args.hotspot[1])
-    sizes = [(s, s) for s in args.sizes]
-    out_dir = Path(args.out_dir)
-    if not out_dir.exists():
-        out_dir.mkdir(parents=True, exist_ok=True)
+    hotspot = (args.hotspot_x, args.hotspot_y)
+    name = Path(files[0].name.split("-")[0])
+    output = Path(args.output, name.stem)
+    blobs: List[bytes] = [f.read() for f in files]
 
-    with CursorAlias.from_bitmap(args.png, hotspot) as alias:
-        cfg = alias.create(sizes)
+    try:
+        cursor = open_blob(blobs, hotspot, args.sizes, args.delay)
+    except Exception:
+        with print_lock:
+            print(f"Error occurred while processing {name.name}:", file=sys.stderr)
+            traceback.print_exc()
+    else:
 
-        if args.type == "windows":
-            WindowsCursor.create(cfg, out_dir)
-        elif args.type == "xcursor":
-            # Using Temporary directory, Because 'XCursor' create inside 'cursors' directory.
-            tmp_dir = Path(tempfile.mkdtemp())
-            try:
-                xcursor = XCursor.create(cfg, tmp_dir)
-                shutil.move(str(xcursor.absolute()), str(out_dir.absolute()))
-            finally:
-                shutil.rmtree(tmp_dir)
+        def gen_xcursor() -> None:
+            result = to_x11(cursor.frames)
+            output.write_bytes(result)
+
+        def gen_wincursor() -> None:
+            ext, result = to_win(cursor.frames)
+            win_output = output.with_suffix(ext)
+            win_output.write_bytes(result)
+
+        if args.platform == "x11":
+            gen_xcursor()
+        elif args.platform == "windows":
+            gen_wincursor()
         else:
-            tmp_dir = Path(tempfile.mkdtemp())
-            try:
-                xcursor = XCursor.create(cfg, tmp_dir)
-                win_cursor = WindowsCursor.create(cfg, tmp_dir)
-                shutil.move(str(xcursor.absolute()), str(out_dir.absolute()))
-                shutil.move(str(win_cursor.absolute()), str(out_dir.absolute()))
-            finally:
-                shutil.rmtree(tmp_dir)
+            gen_xcursor()
+            gen_wincursor()

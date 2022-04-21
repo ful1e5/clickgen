@@ -1,98 +1,136 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
-"""
-
-import shutil
+import io
+from configparser import ConfigParser
 from pathlib import Path
-from random import randint
+from typing import List, Tuple
 
 import pytest
+from PIL.Image import Image, open
 
-from clickgen.core import Bitmap, CursorAlias
-
-from .utils import create_test_image
-
-
-@pytest.fixture(scope="module")
-def image_dir(tmpdir_factory: pytest.TempdirFactory):
-    """Autoremoved directory for storing images, Using \
-    ``TempdirFactory`` understood."""
-
-    directory = Path(tmpdir_factory.mktemp("test_image"))
-    yield directory
-    shutil.rmtree(directory)
+from clickgen.cursors import CursorFrame, CursorImage
+from clickgen.packer.windows import REQUIRED_CURSORS
 
 
-@pytest.fixture(scope="function")
-def test_file(image_dir):
-    """provide single test file named ``test.test``."""
-
-    file: Path = image_dir / "test.test"
-    file.write_text("testing")
-    return file
+@pytest.fixture
+def samples_dir() -> Path:
+    return Path(__file__).parents[1] / "samples"
 
 
-@pytest.fixture(scope="function")
-def static_png(image_dir):
-    """provide single test image file with ``.png`` type."""
-
-    p = create_test_image(image_dir, 1)
-    return p[0]
+@pytest.fixture
+def blob(samples_dir) -> bytes:
+    pointer_png = samples_dir / "pngs/pointer.png"
+    return pointer_png.read_bytes()
 
 
-@pytest.fixture(scope="function")
-def animated_png(image_dir):
-    """provide multiple test image file with ``.png`` type."""
-    p = create_test_image(image_dir, randint(2, 5))
+@pytest.fixture
+def blobs(blob) -> List[bytes]:
+    return [blob, blob]
 
+
+@pytest.fixture
+def dummy_blob(samples_dir) -> bytes:
+    txt = samples_dir / "sample.cfg"
+    return txt.read_bytes()
+
+
+@pytest.fixture
+def dummy_blobs(dummy_blob) -> List[bytes]:
+    return [dummy_blob, dummy_blob]
+
+
+@pytest.fixture
+def image(blob) -> Image:
+    return open(io.BytesIO(blob))
+
+
+@pytest.fixture
+def hotspot() -> Tuple[int, int]:
+    return (100, 105)
+
+
+@pytest.fixture
+def nominal() -> int:
+    return 24
+
+
+@pytest.fixture
+def cursor_image(image, hotspot, nominal) -> CursorImage:
+    return CursorImage(image, hotspot, nominal)
+
+
+@pytest.fixture
+def images(cursor_image) -> List[CursorImage]:
+    return [cursor_image, cursor_image, cursor_image]
+
+
+@pytest.fixture
+def sizes() -> List[int]:
+    return [12, 12, 24]
+
+
+@pytest.fixture
+def delay() -> int:
+    return 5
+
+
+@pytest.fixture
+def cursor_frame(images, delay) -> CursorFrame:
+    return CursorFrame(images, delay)
+
+
+@pytest.fixture
+def sample_cfg(samples_dir) -> str:
+    txt = samples_dir / "sample.cfg"
+    return txt.read_text()
+
+
+@pytest.fixture
+def cp_path(samples_dir) -> str:
+    cfg = samples_dir / "sample.cfg"
+    return str(cfg)
+
+
+@pytest.fixture
+def cp(samples_dir) -> ConfigParser:
+    cfg = samples_dir / "sample.cfg"
+
+    cp = ConfigParser()
+    cp.read(cfg)
+    return cp
+
+
+@pytest.fixture
+def theme_name() -> str:
+    return "test"
+
+
+@pytest.fixture
+def comment() -> str:
+    return "comment"
+
+
+@pytest.fixture
+def website() -> str:
+    return "https://www.example.com"
+
+
+@pytest.fixture(scope="session")
+def x11_tmp_dir(tmpdir_factory) -> Path:
+    return Path(tmpdir_factory.mktemp("x11_tmp"))
+
+
+@pytest.fixture(scope="session")
+def win_cur_tmp_dir(tmpdir_factory) -> Path:
+    p = Path(tmpdir_factory.mktemp("x11_tmp"))
+    for f in REQUIRED_CURSORS:
+        cfile = p.joinpath(f"{f}.cur")
+        cfile.write_text("test win cursors")
     return p
 
 
-@pytest.fixture(scope="function")
-def hotspot():
-    """Mock hotspot tuple."""
-
-    return (0, 0)
-
-
-@pytest.fixture(scope="function")
-def static_bitmap(static_png, hotspot):
-    """Mock static bitmap instace."""
-
-    return Bitmap(static_png, hotspot)
-
-
-@pytest.fixture(scope="function")
-def animated_bitmap(animated_png, hotspot):
-    """Mock animated bitmap instace."""
-
-    return Bitmap(animated_png, hotspot)
-
-
-@pytest.fixture(scope="function")
-def static_config(static_bitmap):
-    """Mock static cursor config file."""
-    alias = CursorAlias(static_bitmap)
-    yield alias.create((10, 10))
-
-    shutil.rmtree(alias.alias_dir)
-
-
-@pytest.fixture(scope="function")
-def animated_config(animated_bitmap):
-    """Mock animated cursor config file."""
-
-    alias = CursorAlias(animated_bitmap)
-    yield alias.create((10, 10))
-
-    shutil.rmtree(alias.alias_dir)
-
-
-@pytest.fixture(scope="function")
-def data():
-    """Mock cursor data dict."""
-
-    return [{"aa"}, {"bb", "cc"}, {"ddddd", "ffffff"}]
+@pytest.fixture(scope="session")
+def win_ani_tmp_dir(tmpdir_factory) -> Path:
+    p = Path(tmpdir_factory.mktemp("x11_tmp"))
+    for f in REQUIRED_CURSORS:
+        cfile = p.joinpath(f"{f}.ani")
+        cfile.write_text("test win cursors")
+    return p

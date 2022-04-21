@@ -2,14 +2,6 @@
 Installation
 ============
 
-Warnings
---------
-
-.. warning:: 
-    clickgen CI & Building is tested on Linux platform only.
-    Check `GitHub Action <https://github.com/ful1e5/clickgen/actions>`_ for
-    more detail.
-
 
 Python Support
 --------------
@@ -18,6 +10,8 @@ clickgen supports these Python versions.
 +---------------------+----------+---------+---------+---------+---------+
 | **Python**          | **3.10** | **3.9** | **3.8** | **3.7** | **3.6** |
 +=====================+==========+=========+=========+=========+=========+
+| clickgen 2.0.0      | Yes      | Yes     | Yes     | Yes     |         |
++---------------------+----------+---------+---------+---------+---------+
 | clickgen 1.2.0      | Yes      | Yes     | Yes     |         |         |
 +---------------------+----------+---------+---------+---------+---------+
 | clickgen 1.1.9      |          | Yes     | Yes     |         |         |
@@ -44,12 +38,6 @@ clickgen supports these Python versions.
 
 Basic Installation
 ------------------
-.. note::
-
-    The following instructions will install clickgen with support for
-    most common image formats. See :ref:`external-libraries` for a
-    full list of external libraries supported.
-
 Install clickgen with :command:`pip`::
 
     python3 -m pip install --upgrade pip
@@ -63,42 +51,9 @@ Download and extract the `compressed archive from PyPI`_.
 
 .. _compressed archive from PyPI: https://pypi.org/project/clickgen/
 
-.. _external-libraries:
-
-External Libraries
-^^^^^^^^^^^^^^^^^^
-.. note::
-    clickgen is using ``xcursorgen`` CLI internally for making xcursors.
-
-xcursorgen require external libraries:
-
-* **libpng** provides PNG functionality.
-  * Starting with clickgen 1.1.0, libpng is required by default.
-
-* **zlib** provides access to compressed PNGs.
-  * Starting with clickgen 1.1.0, zlib is required by default.
-
-* **libXcursor** X Window System Cursor management library.
-  * Starting with clickgen 1.1.0, libXcursor is required by default.
-
-* **libX11** Core X11 protocol client library.
-  * Starting with clickgen 1.1.0, libX11 is required by default.
-
-
-Once you have installed the prerequisites, run::
-
-    python3 -m pip install --upgrade pip
-    python3 -m pip install --upgrade clickgen
-
 Building on macOS
 ^^^^^^^^^^^^^^^^^
-The easiest way to install external libraries is via `Homebrew
-<https://brew.sh/>`_. After you install Homebrew, run::
-
-    brew install gcc libpng
-    brew install --cask xquartz
-
-Now install clickgen with::
+To install clickgen with::
 
     python3 -m pip install --upgrade pip
     python3 -m pip install --upgrade clickgen
@@ -122,26 +77,20 @@ In Fedora, the command is::
 
 .. Note:: ``redhat-rpm-config`` is required on Fedora 23, but not earlier versions.
 
-Prerequisites for **Ubuntu 16.04 LTS - 20.04 LTS** are installed with::
+To install clickgen with::
 
-    sudo apt install libx11-dev libxcursor-dev libpng-dev
+    python3 -m pip install --upgrade pip
+    python3 -m pip install --upgrade clickgen
 
-Prerequisites are installed on **Arch Linux, Manjaro** with::
+or from within the uncompressed source directory::
 
-    sudo pacman -S libx11 libxcursor libpng
-
-Prerequisites are installed on recent **Red Hat, CentOS** or **Fedora** with::
-
-    sudo dnf install libx11-devel libxcursor-devel libpng-devel
-
-Note that the package manager may be yum or DNF, depending on the exact distribution.
-
+    python3 setup.py install
 
 Platform Support
 ----------------
 Current platform support for clickgen. Binary distributions are contributed for each 
 release on a volunteer basis, but the source should compile and run everywhere platform 
-support is listed. In general, we aim to support all current versions of Linux and macOS.
+support is listed. In general, we aim to support all current versions of Windows, Linux and macOS.
 
 Continuous Integration Targets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -150,9 +99,12 @@ These platforms are built and tested for every change.
 +---------------------------------+----------------------------+-------------------------+
 | **Operating system**            | **Tested Python versions** | **Tested architecture** |
 +---------------------------------+----------------------------+-------------------------+
-| Ubuntu Linux 18.04 LTS (Bionic) | 3.8, 3.9                   | x86-64                  |
+| Ubuntu Linux 20.04.4 LTS        | 3.7, 3.8, 3.9, 3.10        | x86-64                  |
 +---------------------------------+----------------------------+-------------------------+
-
+| macOS 11.6.5                    | 3.7, 3.8, 3.9, 3.10        | x86-64                  |
++---------------------------------+----------------------------+-------------------------+
+| Windows Server 2022             | 3.7, 3.8, 3.9, 3.10        | x86-64                  |
++---------------------------------+----------------------------+-------------------------+
 
 .. _release history at PyPI: https://pypi.org/project/clickgen/#history
 

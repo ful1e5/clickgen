@@ -20,13 +20,9 @@ jobs:
         id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Install build dependencies using 'apt'
-        run: sudo apt install libx11-dev libxcursor-dev libpng-dev
-        continue-on-error: false
 
       - name: Install pip dependencies
         run: |
@@ -46,10 +42,6 @@ jobs:
 
       - name: Generating clickgen `stubfile`
         run: make stubgen
-
-      - name: Compiling Xcursorgen C library
-        run: make xcursorgen.so
-        continue-on-error: false
 
       - name: Building
         run: python setup.py sdist bdist_wheel
