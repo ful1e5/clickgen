@@ -62,7 +62,7 @@ def test_clickgen_all_windows_build(samples_dir, x11_tmp_dir, hotspot):
 
 
 def test_clickgen_raises(capsys, samples_dir, x11_tmp_dir, hotspot):
-    fp = samples_dir / "sample.cfg"
+    fp = samples_dir / "sample.toml"
     with open(fp, "rb") as f:
         with mock.patch(
             "argparse.ArgumentParser.parse_args",
@@ -78,4 +78,4 @@ def test_clickgen_raises(capsys, samples_dir, x11_tmp_dir, hotspot):
         ):
             main()
             captured = capsys.readouterr()
-            assert "Error occurred while processing sample.cfg" in captured.err
+            assert "Error occurred while processing sample.toml" in captured.err
