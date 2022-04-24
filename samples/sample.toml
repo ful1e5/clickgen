@@ -1,0 +1,29 @@
+[theme]
+name = "Sample"
+comment = "This is sample cursor theme"
+website = "https://www.example.com/"
+
+[config]
+bitmapsDir = "./pngs"
+outDir = "./out"
+platforms = windows, x11
+
+
+[cursors.fallback]
+sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
+delay = 10
+hotspot = (7,7)
+
+[[cursors]]
+png = 'pointer'
+hotspot = (10, 10)
+win_name = 'Pointer'
+x_name = 'left_ptr'
+x11_symlinks = ['c']
+
+[[cursors]]
+png = 'wait-*'
+hotspot = (10, 10)
+win_name = 'Progress'
+x_name = 'wait'
+x11_symlinks = ['d', 'e', 'f']

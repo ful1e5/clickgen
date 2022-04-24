@@ -1,5 +1,4 @@
 import io
-from configparser import ConfigParser
 from pathlib import Path
 from typing import List, Tuple
 
@@ -28,7 +27,7 @@ def blobs(blob) -> List[bytes]:
 
 @pytest.fixture
 def dummy_blob(samples_dir) -> bytes:
-    txt = samples_dir / "sample.cfg"
+    txt = samples_dir / "sample.toml"
     return txt.read_bytes()
 
 
@@ -75,27 +74,6 @@ def delay() -> int:
 @pytest.fixture
 def cursor_frame(images, delay) -> CursorFrame:
     return CursorFrame(images, delay)
-
-
-@pytest.fixture
-def sample_cfg(samples_dir) -> str:
-    txt = samples_dir / "sample.cfg"
-    return txt.read_text()
-
-
-@pytest.fixture
-def cp_path(samples_dir) -> str:
-    cfg = samples_dir / "sample.cfg"
-    return str(cfg)
-
-
-@pytest.fixture
-def cp(samples_dir) -> ConfigParser:
-    cfg = samples_dir / "sample.cfg"
-
-    cp = ConfigParser()
-    cp.read(cfg)
-    return cp
 
 
 @pytest.fixture

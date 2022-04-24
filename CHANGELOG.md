@@ -80,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Couple of **linting** problem fixes
-- **Bitmap** and **CursorsAlias** memember access outside the context manager
+- **Bitmap** and **CursorsAlias** member access outside the context manager
 - Check `make` command in `setup.py`
 - Better typing experience
 - Configure readthedocs with `sphinx`

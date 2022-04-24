@@ -1,3 +1,0 @@
-from clickgen.configparser.sections import ClickgenConfig as ClickgenConfig
-
-def parse_config_file(fp: str) -> ClickgenConfig: ...
