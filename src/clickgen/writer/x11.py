@@ -32,7 +32,7 @@ def to_x11(frames: List[CursorFrame]) -> bytes:
                 cursor.image.height,
                 hx,
                 hy,
-                int(frame.delay * 1000),
+                int(frame.delay),
             )
             chunks.append(
                 (
