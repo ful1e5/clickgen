@@ -58,9 +58,7 @@ class SinglePNGParser(BaseParser):
     def _parse(self) -> List[CursorFrame]:
         images: List[CursorImage] = []
         for s in sorted(self.sizes):
-            res_img = self._image.resize(
-                size=(s, s), resample=3  # resample= Image.BICUBIC
-            )
+            res_img = self._image.resize((s, s), 1)
             res_hotspot = self._cal_hotspot(res_img)
             images.append(CursorImage(image=res_img, hotspot=res_hotspot, nominal=s))
 
