@@ -144,12 +144,6 @@ def pack_win(
 
     cursors = set(files)
 
-    # Checking cursor files
-    if not cursors:
-        raise FileNotFoundError(
-            f"Windows cursors '*.cur' or '*.ani' not found in '{dir}'"
-        )
-
     if len(cursors) < len(REQUIRED_CURSORS):
         # Some cursors are missing
         c = set(map(lambda x: x.stem, cursors))

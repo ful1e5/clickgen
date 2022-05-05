@@ -1,8 +1,6 @@
 import argparse
 from unittest import mock
 
-import pytest
-
 from clickgen.parser.png import DELAY, SIZES
 from clickgen.scripts.clickgen import main
 

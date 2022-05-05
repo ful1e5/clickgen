@@ -7,11 +7,6 @@ from clickgen.packer.windows import REQUIRED_CURSORS
 
 
 def test_windows_packer_raises(x11_tmp_dir: Path, theme_name, comment, website):
-    with pytest.raises(FileNotFoundError) as e:
-        pack_win(x11_tmp_dir, theme_name, comment, website)
-
-    assert "Windows cursors '*.cur' or '*.ani' not found" in str(e.value)
-
     x11_tmp_dir.joinpath("Work.ani").write_text("test")
 
     with pytest.raises(FileNotFoundError) as e1:
