@@ -23,7 +23,7 @@ def test_clickgen_all_cursor_build(samples_dir, x11_tmp_dir, hotspot):
             main()
 
 
-def test_clickgen_all_x11_build(samples_dir, x11_tmp_dir, hotspot):
+def test_clickgen_x11_build(samples_dir, x11_tmp_dir, hotspot):
     fp = samples_dir / "pngs/pointer.png"
     with open(fp, "rb") as f:
         with mock.patch(
@@ -41,7 +41,7 @@ def test_clickgen_all_x11_build(samples_dir, x11_tmp_dir, hotspot):
             main()
 
 
-def test_clickgen_all_windows_build(samples_dir, x11_tmp_dir, hotspot):
+def test_clickgen_windows_build(samples_dir, x11_tmp_dir, hotspot):
     fp = samples_dir / "pngs/pointer.png"
     with open(fp, "rb") as f:
         with mock.patch(
