@@ -42,8 +42,7 @@ def parse_toml_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSec
     def absolute_path(path: str) -> Path:
         if Path(path).is_absolute():
             return Path(path)
-        else:
-            return (p / path).absolute()
+        return (p / path).absolute()
 
     return ConfigSection(
         bitmaps_dir=kwargs.get("bitmaps_dir", absolute_path(c["bitmaps_dir"])),
