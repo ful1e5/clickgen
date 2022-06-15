@@ -6,8 +6,16 @@
 
 **Clickgen** is cross-platform python library for building **X11** and **Windows** Cursors.
 Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
+from `clickgen<=v2.0.0`
 
 **Support project with $1 or more on GitHub Sponsors.**
+
+## Notices
+
+- **2022-6-15:** Docker Image support deprecated due to cross-platform compatibility.
+- **2022-7-9:** :warning: All the **functionality and modules are removed from `v2.0.0`**.
+  I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
+  Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#clis) usage.
 
 ## Install
 
@@ -24,9 +32,11 @@ clickgen can be installed using the PKGBUILD `python-clickgen`, available on the
 yay -S python-clickgen
 ```
 
-## Usage: `clickgen`
+## CLIs
 
-### Linux Format (XCursor)
+### Usage: `clickgen`
+
+#### Linux Format (XCursor)
 
 For example, if you have to build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Linux Format:
@@ -41,7 +51,7 @@ You also **build animated Xcursor** by providing multiple png files to argument 
 clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s 22 24 32 -p x11
 ```
 
-### Windows Formats (.cur and .ani)
+#### Windows Formats (.cur and .ani)
 
 To build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Windows Format (`.cur`):
@@ -60,7 +70,7 @@ clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s
 
 For more information, run `clickgen --help`.
 
-## Usage: `ctgen`
+### Usage: `ctgen`
 
 This CLI allow you to generate Windows and Linux Cursor themes from config (.toml) file.
 

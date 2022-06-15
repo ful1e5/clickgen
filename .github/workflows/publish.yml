@@ -59,17 +59,6 @@ jobs:
           python -m pytest
         continue-on-error: false
 
-      - name: Push to Docker Hub
-        uses: docker/build-push-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ secrets.DOCKER_USERNAME }}/clickgen
-          cache_froms: python:3-alpine:latest
-          tags: latest
-          tag_with_ref: true
-        continue-on-error: false
-
       - name: Publishing to PyPI
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}

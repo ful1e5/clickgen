@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### :warning: **deprecated** all functionalities and modules of [v1.2.0]
+
+### :warning: **deprecated** Docker Image Support
+
 ### Added
 
-- refactor: removed old source code
 - add: python 3.7 support
 - add: **Windows** and **macOS** support fixed #24
 - init: `cursor`, `configparser`, `packer`, `parser` and `writer` module
@@ -24,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - make: install all dependencies with `make install_deps` command
 - chore: directory renamed `examples` -> `samples`
 
-## [1.2.0] - 26 Mar 2022
+## [v1.2.0] - 26 Mar 2022
 
 ### Added
 
@@ -76,7 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - make-stubgen: generate type interface(.pyi) files without `MODULES` variable
 - refactor: `scripts` -> `src/clickgen/scripts`
 
-## [1.1.9] - 22 Mar 2021
+## [v1.1.9] - 22 Mar 2021
 
 ### Added
 
@@ -95,7 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed #23 packaging issue of `XPackager`
 - Fixed #22 Inside `util.PNGProvider`
 
-## [1.1.8] - 24 Jan 2021
+## [v1.1.8] - 24 Jan 2021
 
 ### Added
 
@@ -115,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow with `matrix`
 - fixed #12
 
-## [1.1.7] - 5 Oct 2020
+## [v1.1.7] - 5 Oct 2020
 
 ### Added
 
@@ -127,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - skip `Pillow` is already installed
 
-## [1.1.6] - 24 Sept 2020
+## [v1.1.6] - 24 Sept 2020
 
 ### Changed
 
@@ -141,7 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - clickgen **info** in [README.md](./README.md)
 
-## [1.1.5-beta] - 29 July 2020
+## [v1.1.5-beta] - 29 July 2020
 
 ### Changed
 
@@ -161,11 +164,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fixed _built-in_ **conflicts**
 - `import` packages manner changed
 
-## [1.1.3-alpha] - 24 June 2020
+## [v1.1.3-alpha] - 24 June 2020
 
 - docker image **publishing workflow** fixed
 
-## [1.1.2-alpha] - 23 June 2020
+## [v1.1.2-alpha] - 23 June 2020
 
 ### Added
 
@@ -178,7 +181,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Exited with an error if `exception` occurred.
 - Empty cursor theme `archive` generation **fixed**.
 
-## [1.1.1-alpha] - 12 June 2020
+## [v1.1.1-alpha] - 12 June 2020
 
 ### Changed
 
@@ -189,7 +192,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow name changed
 - badges in `README.md`
 
-## [1.1.0-alpha] - 9 June 2020
+## [v1.1.0-alpha] - 9 June 2020
 
 ### Added
 
@@ -202,14 +205,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.tar` archive & `directory` as out **package**.
 
 [unreleased]: https://github.com/ful1e5/clickgen/compare/v1.2.0...main
-[1.2.0]: https://github.com/ful1e5/clickgen/compare/1.1.9...v1.2.0
-[1.1.9]: https://github.com/ful1e5/clickgen/compare/1.1.8...v1.1.9
-[1.1.8]: https://github.com/ful1e5/clickgen/compare/1.1.7...v1.1.8
-[1.1.7]: https://github.com/ful1e5/clickgen/compare/1.1.6...v1.1.7
-[1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
-[1.1.5-beta]: https://github.com/ful1e5/clickgen/compare/1.1.4-alpha...1.1.5-beta
-[1.1.4-beta]: https://github.com/ful1e5/clickgen/compare/1.1.3-alpha...1.1.4-beta
-[1.1.3-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.2-alpha...1.1.3-alpha
-[1.1.2-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.1-alpha...1.1.2-alpha
-[1.1.1-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.0-alpha...1.1.1-alpha
-[1.1.0-alpha]: https://github.com/ful1e5/clickgen/releases/tag/1.1.0-alpha
+[v1.2.0]: https://github.com/ful1e5/clickgen/compare/v1.1.9...v1.2.0
+[v1.1.9]: https://github.com/ful1e5/clickgen/compare/v1.1.8...v1.1.9
+[v1.1.8]: https://github.com/ful1e5/clickgen/compare/v1.1.7...v1.1.8
+[v1.1.7]: https://github.com/ful1e5/clickgen/compare/1.1.6...v1.1.7
+[v1.1.6]: https://github.com/ful1e5/clickgen/compare/1.1.5-beta...1.1.6
+[v1.1.5-beta]: https://github.com/ful1e5/clickgen/compare/1.1.4-alpha...1.1.5-beta
+[v1.1.4-beta]: https://github.com/ful1e5/clickgen/compare/1.1.3-alpha...1.1.4-beta
+[v1.1.3-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.2-alpha...1.1.3-alpha
+[v1.1.2-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.1-alpha...1.1.2-alpha
+[v1.1.1-alpha]: https://github.com/ful1e5/clickgen/compare/1.1.0-alpha...1.1.1-alpha
+[v1.1.0-alpha]: https://github.com/ful1e5/clickgen/releases/tag/1.1.0-alpha
