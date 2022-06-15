@@ -7,9 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### :warning: **deprecated** all functionalities and modules of [v1.2.0]
-
-### :warning: **deprecated** Docker Image Support
+- **:warning: Breaking change**: removed all functionalities and modules from older versions in [v2.0.0].
+- **Deprecated** Docker Image support due to cross-platform compatibility.
 
 ### Added
 

@@ -12,8 +12,8 @@ from `clickgen<=v2.0.0`
 
 ## Notices
 
-- **2022-6-15:** Docker Image support deprecated due to cross-platform compatibility.
-- **2022-7-9:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
+- **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
+- **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
   I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
   Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#clis) usage.
 
@@ -174,3 +174,5 @@ ext, result = to_win(cur.frames)
 with open(f"test-ani{ext}", "wb") as o:
     o.write(aresult)
 ```
+
+Read the full documentation at [readthedocs](https://clickgen.readthedocs.io).
