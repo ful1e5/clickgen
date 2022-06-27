@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.0.0] - 27 Jun 2022
+
 - **:warning: Breaking change**: removed all functionalities and modules from older versions in [v2.0.0].
 - **Deprecated** Docker Image support due to cross-platform compatibility.
 
@@ -203,7 +205,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v1.2.0...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.0.0...main
+[v2.0.0]: https://github.com/ful1e5/clickgen/compare/v2.0.0...v1.1.9
 [v1.2.0]: https://github.com/ful1e5/clickgen/compare/v1.1.9...v1.2.0
 [v1.1.9]: https://github.com/ful1e5/clickgen/compare/v1.1.8...v1.1.9
 [v1.1.8]: https://github.com/ful1e5/clickgen/compare/v1.1.7...v1.1.8

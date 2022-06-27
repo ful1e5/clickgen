@@ -35,4 +35,4 @@ tox: clean
 	tox
 	pyenv local system
 
-dev: clean install_deps stubgen install test coverage docsgen
+dev: install_deps clean stubgen install test coverage docsgen

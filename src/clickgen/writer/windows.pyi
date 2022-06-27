@@ -1,10 +1,11 @@
+from _typeshed import Incomplete
 from clickgen.cursors import CursorFrame as CursorFrame
-from typing import Any, List, Tuple
+from typing import List, Tuple
 
 MAGIC: bytes
 ICO_TYPE_CUR: int
-ICON_DIR: Any
-ICON_DIR_ENTRY: Any
+ICON_DIR: Incomplete
+ICON_DIR_ENTRY: Incomplete
 
 def to_cur(frame: CursorFrame) -> bytes: ...
 
@@ -16,10 +17,10 @@ SEQ_CHUNK: bytes
 RATE_CHUNK: bytes
 FRAME_TYPE: bytes
 ICON_CHUNK: bytes
-RIFF_HEADER: Any
-CHUNK_HEADER: Any
-ANIH_HEADER: Any
-UNSIGNED: Any
+RIFF_HEADER: Incomplete
+CHUNK_HEADER: Incomplete
+ANIH_HEADER: Incomplete
+UNSIGNED: Incomplete
 SEQUENCE_FLAG: int
 ICON_FLAG: int
 

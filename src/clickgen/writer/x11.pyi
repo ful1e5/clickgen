@@ -1,11 +1,12 @@
+from _typeshed import Incomplete
 from clickgen.cursors import CursorFrame as CursorFrame
-from typing import Any, List
+from typing import List
 
 MAGIC: bytes
 VERSION: int
-FILE_HEADER: Any
-TOC_CHUNK: Any
+FILE_HEADER: Incomplete
+TOC_CHUNK: Incomplete
 CHUNK_IMAGE: int
-IMAGE_HEADER: Any
+IMAGE_HEADER: Incomplete
 
 def to_x11(frames: List[CursorFrame]) -> bytes: ...

@@ -8,8 +8,6 @@
 Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
 from `clickgen<=v2.0.0`
 
-**Support project with $1 or more on GitHub Sponsors.**
-
 ## Notices
 
 - **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
@@ -17,24 +15,26 @@ from `clickgen<=v2.0.0`
   I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
   Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#clis) usage.
 
+## Requirements
+
+- Python version 3.7 or higher
+
 ## Install
 
 ```bash
 pip3 install clickgen
 ```
 
-### ArchLinux
+:warning: Distributions' packages are not affiliated with clickgen developers.
+If you encounter any issues with the incorrect installation, you should contact the package maintainer first.
 
-clickgen can be installed using the PKGBUILD `python-clickgen`, available on the
-[AUR](https://aur.archlinux.org/packages/python-clickgen).
+### Arch Linux
 
-```bash
-yay -S python-clickgen
-```
+- [AUR](https://aur.archlinux.org/packages/python-clickgen)
 
-## CLIs
+## Usage
 
-### Usage: `clickgen`
+### `clickgen` CLI
 
 #### Linux Format (XCursor)
 
@@ -53,6 +53,8 @@ clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s
 
 #### Windows Formats (.cur and .ani)
 
+**WORK IN PROGRESS!**
+
 To build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Windows Format (`.cur`):
 
@@ -70,7 +72,7 @@ clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s
 
 For more information, run `clickgen --help`.
 
-### Usage: `ctgen`
+### `ctgen` CLI
 
 This CLI allow you to generate Windows and Linux Cursor themes from config (.toml) file.
 
@@ -93,7 +95,7 @@ ctgen theme1.toml -n "New Theme"
 You can run `ctgen --help` to view all available options and you also check
 [samples](https://github.com/ful1e5/clickgen/blob/main/samples) directory for more information.
 
-## API Examples
+### API Examples
 
 ### Static `XCursor`
 
@@ -176,3 +178,4 @@ with open(f"test-ani{ext}", "wb") as o:
 ```
 
 Read the full documentation at [readthedocs](https://clickgen.readthedocs.io).
+Support my work with $1 or more on GitHub Sponsors.
