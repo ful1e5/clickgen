@@ -80,7 +80,7 @@ def get_ani_rate_chunk(frames: List[CursorFrame]) -> bytes:
     io = BytesIO()
     io.write(CHUNK_HEADER.pack(RATE_CHUNK, UNSIGNED.size * len(frames)))
     for frame in frames:
-        io.write(UNSIGNED.pack(int(round(frame.delay * 60))))
+        io.write(UNSIGNED.pack(int(round(frame.delay * 2))))
     return io.getvalue()
 
 

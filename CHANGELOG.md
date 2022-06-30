@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - ctgen (cli): fixed platform assignment type in '-p/--platform' argument
+- windows-writer: fixed slow animation in `.ani` cursors (60jifs(1000ms) -> 2 jifs(33ms))
 
 ## [v2.0.0-beta.1] - 27 Jun 2022
 
