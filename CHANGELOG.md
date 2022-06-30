@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Added
+
+-
+
+### Changed
+
+- ctgen (cli): fixed platform assignment type in '-p/--platform' argument
+
 ## [v2.0.0-beta.1] - 27 Jun 2022
 
 - **:warning: Breaking change**: removed all functionalities and modules from older versions in [v2.0.0].

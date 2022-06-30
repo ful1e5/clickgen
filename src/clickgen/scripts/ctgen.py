@@ -116,7 +116,6 @@ def main() -> None:  # noqa: C901
         "-p",
         "--platforms",
         choices=["windows", "x11"],
-        type=list,
         default=None,
         help="Force platform cursor theme.",
     )
