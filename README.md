@@ -6,7 +6,7 @@
 
 **Clickgen** is cross-platform python library for building **X11** and **Windows** Cursors.
 Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
-from `clickgen<=v2.0.0`
+from `clickgen<=v2.0.0`.
 
 ## Notices
 
@@ -177,5 +177,6 @@ with open(f"test-ani{ext}", "wb") as o:
     o.write(aresult)
 ```
 
-Read the full documentation at [readthedocs](https://clickgen.readthedocs.io).
-Support my work with $1 or more on GitHub Sponsors.
+### Documentation
+
+Check [wiki](https://github.com/ful1e5/clickgen/wiki) for documentation.

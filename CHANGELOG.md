@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+-
+
+## [v2.0.0-beta.1] - 09 Jul 2022
+
+### Changed
+
+- :warning: Documentation moved to [wiki](https://github.com/ful1e5/clickgen/wiki)
 - ctgen (cli): fixed platform assignment type in '-p/--platform' argument
 - windows-writer: fixed slow animation in `.ani` cursors (60jifs(1000ms) -> 2 jifs(33ms))
 
@@ -214,7 +221,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.1...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.2...main
+[v2.0.0-beta.2]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.2...v2.0.0-beta.1
 [v2.0.0-beta.1]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.1...v1.1.9
 [v1.2.0]: https://github.com/ful1e5/clickgen/compare/v1.1.9...v1.2.0
 [v1.1.9]: https://github.com/ful1e5/clickgen/compare/v1.1.8...v1.1.9
