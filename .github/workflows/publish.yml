@@ -1,4 +1,4 @@
-name: Publish
+name: publish
 
 on:
   release:
@@ -24,7 +24,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Install pip dependencies
+      - name: Installing pip dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt

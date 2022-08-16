@@ -1,4 +1,4 @@
-name: CI
+name: ci
 
 on:
   push:
@@ -20,6 +20,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
+        include:
+          - os: ubuntu-latest
+            path: ~/.cache/pip
+          - os: macos-latest
+            path: ~/Library/Caches/pip
+          - os: windows-latest
+            path: ~\AppData\Local\pip\Cache
 
     steps:
       - uses: actions/checkout@v2
@@ -30,12 +37,10 @@ jobs:
 
       - name: Caching pip packages
         uses: actions/cache@v2
-        id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
-          path: ~/.cache/pip
+          path: ${{ matrix.path }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          restore-keys: ${{ runner.os }}-pip-
 
       - name: Install pip dependencies
         run: |

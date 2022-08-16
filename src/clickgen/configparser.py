@@ -92,7 +92,7 @@ def parse_toml_cursors_section(
         # Because all cursors don't have windows configuration
         win_cursor: Union[bytes, None] = None
         win_cursor_name: Union[str, None] = None
-        if v["win_name"]:
+        if "win_name" in v:
             win_blob = open_blob(blobs, hotspot, [config.win_size], win_delay)
             ext, win_cursor = to_win(win_blob.frames)
             win_cursor_name = v["win_name"] + ext
@@ -101,7 +101,7 @@ def parse_toml_cursors_section(
             CursorSection(
                 x11_cursor=x11_cursor,
                 x11_cursor_name=v["x11_name"],
-                x11_symlinks=v["x11_symlinks"],
+                x11_symlinks=v.get("x11_symlinks", []),
                 win_cursor=win_cursor,
                 win_cursor_name=win_cursor_name,
             )

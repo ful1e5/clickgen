@@ -1,17 +1,17 @@
 [theme]
-name = "Sample"
-comment = "This is sample cursor theme"
-website = "https://www.example.com/"
+name = 'Sample'
+comment = 'This is sample cursor theme'
+website = 'https://www.example.com/'
 
 [config]
-bitmaps_dir = "pngs"
-out_dir = "out"
-platforms = ['x11','windows']
+bitmaps_dir = 'pngs'
+out_dir = 'out'
+platforms = ['x11', 'windows']
 x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
 win_size = 32
 
-
 [cursors]
+
 [cursors.fallback_settings]
 x_hotspot = 100
 y_hotspot = 100

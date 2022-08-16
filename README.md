@@ -1,12 +1,25 @@
 # Clickgen
 
-[![CI](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml/badge.svg)](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml)
-[![Docs](https://readthedocs.org/projects/clickgen/badge/?version=latest)](https://clickgen.readthedocs.io/en/latest/)
-[![Code Coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
+[![ci](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml/badge.svg)](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml)
+[![code coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 
 **Clickgen** is cross-platform python library for building **X11** and **Windows** Cursors.
 Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
-from `clickgen<=v2.0.0`.
+from `clickgen v2.0.0` and onwards.
+
+##### Become Sponsor
+
+This library is funded by the community. I appreciate all these wonderful people who patronize and sponsoring me.
+
+Visit the [GitHub Sponsor](https://github.com/sponsors/ful1e5) page to become a partner.
+DM me on [Twitter](https://twitter.com/ful1e5) if your company would like to sponsor this library,
+I will gladly look into it and embed your logo in the README.
+
+##### Sponsors
+
+<!-- Add your name and avatar here with the Pull Request in case I missed it. -->
+
+Be you first.
 
 ## Notices
 
@@ -25,8 +38,9 @@ from `clickgen<=v2.0.0`.
 pip3 install clickgen
 ```
 
-:warning: Distributions' packages are not affiliated with clickgen developers.
-If you encounter any issues with the incorrect installation, you should contact the package maintainer first.
+> **Note**
+> Distributions' packages are not affiliated with clickgen developers.
+> If you encounter any issues with the incorrect installation, you should contact the package maintainer first.
 
 ### Arch Linux
 
@@ -52,8 +66,6 @@ clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s
 ```
 
 #### Windows Formats (.cur and .ani)
-
-**WORK IN PROGRESS!**
 
 To build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Windows Format (`.cur`):

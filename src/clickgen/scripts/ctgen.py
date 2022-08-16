@@ -51,7 +51,7 @@ def cwd(path) -> Generator[None, None, None]:
 def main() -> None:  # noqa: C901
     parser = argparse.ArgumentParser(
         prog="ctgen",
-        description="The hassle-free cursor theme generator",
+        description="ctgen: Cursor Theme GENerator.",
     )
 
     parser.add_argument(
@@ -67,7 +67,7 @@ def main() -> None:  # noqa: C901
         dest="name",
         type=str,
         default=None,
-        help="Force name of cursor theme.",
+        help="Force rename cursor theme name.",
     )
 
     parser.add_argument(
@@ -76,7 +76,7 @@ def main() -> None:  # noqa: C901
         dest="comment",
         type=str,
         default=None,
-        help="Force comment of cursor theme.",
+        help="Force rename comment of cursor theme.",
     )
 
     parser.add_argument(
@@ -85,7 +85,7 @@ def main() -> None:  # noqa: C901
         dest="website",
         type=str,
         default=None,
-        help="Force website of cursor theme.",
+        help="Force rename website url of cursor theme.",
     )
 
     parser.add_argument(
@@ -99,7 +99,7 @@ def main() -> None:  # noqa: C901
         "-o",
         "--out-dir",
         type=str,
-        help="Force output directory location.",
+        help="Change output directory.",
     )
 
     parser.add_argument(
@@ -109,7 +109,9 @@ def main() -> None:  # noqa: C901
         nargs="+",
         default=None,
         type=int,
-        help="Force pixel-size for cursors.",
+        help=""" Change cursor size.
+        Multiple sizes are assigned to XCursor
+        while one size will be assigned to Windows.""",
     )
 
     parser.add_argument(
@@ -117,11 +119,10 @@ def main() -> None:  # noqa: C901
         "--platforms",
         choices=["windows", "x11"],
         default=None,
-        help="Force platform cursor theme.",
+        help="Change Platform for output cursors.",
     )
 
     parser.add_argument(
-        "-v",
         "--version",
         action="version",
         version=f"%(prog)s {clickgen.__version__}",  # type: ignore
@@ -147,31 +148,49 @@ def main() -> None:  # noqa: C901
             config = cfg.config
             cursors = cfg.cursors
 
+            # Display Theme Info
+            print(f"- Cursor Theme Name: {theme.name}")
+            print(f"- Comment: {theme.comment}")
+            print(f"- Platform Compliblity: {config.platforms}\n")
+
             # Generating XCursor
             if "x11" in config.platforms:
+                print("Generating XCursors ...'")
+
                 x11_out_dir = config.out_dir / theme.name / "cursors"
                 x11_out_dir.mkdir(parents=True, exist_ok=True)
 
                 for c in cursors:
+                    print(f"- Bitmaping XCursor '{c.x11_cursor_name}'")
                     x_cursor = x11_out_dir / c.x11_cursor_name
                     x_cursor.write_bytes(c.x11_cursor)
                     # Creating symlinks
                     with cwd(x11_out_dir):
                         for link in c.x11_symlinks:
+                            print(
+                                f"   Linking XCursor '{link}' with '{c.x11_cursor_name}'"
+                            )
                             os.symlink(x_cursor.name, link)
 
+                print("Generating XCursors ... DONE\n")
                 pack_x11(x11_out_dir.parent, theme.name, theme.comment)
 
             # Generating Windows cursors
             if "windows" in config.platforms:
+                print("Generating Windows Cursors ...")
+
                 win_out_dir = config.out_dir / f"{theme.name}-Windows"
                 win_out_dir.mkdir(parents=True, exist_ok=True)
 
                 for c in cursors:
                     if c.win_cursor and c.win_cursor_name:
+                        print(
+                            f"- Bitmaping Windows Cursor '{c.win_cursor_name}' from '{c.x11_cursor_name}'"
+                        )
                         win_cursor = win_out_dir / c.win_cursor_name
                         win_cursor.write_bytes(c.win_cursor)
 
+                print("Generating Windows Cursors ... DONE\n")
                 try:
                     pack_win(win_out_dir, theme.name, theme.comment, theme.website)
                 except Exception:

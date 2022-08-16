@@ -7,44 +7,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Added
+## [v2.0.0] - 16 August 2022
 
--
+> **Warning**
+> I removed all functionalities and modules from older versions in `v2.0.0`.
 
-### Changed
-
--
-
-## [v2.0.0-beta.2] - 09 Jul 2022
-
-### Changed
-
-- :warning: Documentation moved to [wiki](https://github.com/ful1e5/clickgen/wiki)
-- ctgen (cli): fixed platform assignment type in '-p/--platform' argument
-- windows-writer: fixed slow animation in `.ani` cursors (60jifs(1000ms) -> 2 jifs(33ms))
-
-## [v2.0.0-beta.1] - 27 Jun 2022
-
-- **:warning: Breaking change**: removed all functionalities and modules from older versions in [v2.0.0].
-- **Deprecated** Docker Image support due to cross-platform compatibility.
+> **Warning**
+> Docker Image support deprecated due to cross-platform compatibility.
 
 ### Added
 
+- Building logs added in `ctgen`
 - add: python 3.7 support
 - add: **Windows** and **macOS** support fixed #24
 - init: `cursor`, `configparser`, `packer`, `parser` and `writer` module
 - 'Twitter' and 'Download' links added on PYPI page
-- Cursor CLI: `clickgen -h`
-- Theme CLI: `ctgen -h`
+- Added cursor generator cli: `clickgen -h`
+- Added cursor theme generator cli: `ctgen -h` (supports config file)
+- Uninstall script added in Windows cursors theme.
 
 ### Changed
 
-- Changed docs theme to 'furo'
+- `KeyNotFound` Exception fixed while reading cursor configuration in `configparser` module
+- ctgen (cli): fixed platform assignment type in '-p/--platform' argument
+- windows-writer: fixed slow animation in `.ani` cursors (60jifs(1000ms) -> 2 jifs(33ms))
 - chore: updated template variables inside `packer.windows`
 - make: install all dependencies with `make install_deps` command
 - chore: directory renamed `examples` -> `samples`
 
-## [v1.2.0] - 26 Mar 2022
+## [v2.0.0-beta.2] - 09 July 2022
+
+## [v2.0.0-beta.1] - 27 June 2022
+
+## [v1.2.0] - 26 March 2022
 
 ### Added
 
@@ -96,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - make-stubgen: generate type interface(.pyi) files without `MODULES` variable
 - refactor: `scripts` -> `src/clickgen/scripts`
 
-## [v1.1.9] - 22 Mar 2021
+## [v1.1.9] - 22 March 2021
 
 ### Added
 
@@ -115,7 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed #23 packaging issue of `XPackager`
 - Fixed #22 Inside `util.PNGProvider`
 
-## [v1.1.8] - 24 Jan 2021
+## [v1.1.8] - 24 January 2021
 
 ### Added
 
@@ -135,7 +130,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub workflow with `matrix`
 - fixed #12
 
-## [v1.1.7] - 5 Oct 2020
+## [v1.1.7] - 5 October 2020
 
 ### Added
 
@@ -147,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - skip `Pillow` is already installed
 
-## [v1.1.6] - 24 Sept 2020
+## [v1.1.6] - 24 September 2020
 
 ### Changed
 
@@ -203,7 +198,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Windows cursors extension `null` to `.ani` or `.cur` in linker module.
-- Restructure **test** 🧪
+- Restructure **test**
 - Logo **Alignment fix** in `README.md`
 - CI Pipeline
 - GitHub workflow name changed
@@ -221,7 +216,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.2...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.0.0...main
+[v2.0.0]: https://github.com/ful1e5/clickgen/compare/v2.0.0...v2.0.0-beta.2
 [v2.0.0-beta.2]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.2...v2.0.0-beta.1
 [v2.0.0-beta.1]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.1...v1.1.9
 [v1.2.0]: https://github.com/ful1e5/clickgen/compare/v1.1.9...v1.2.0
