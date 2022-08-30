@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.1] - 30 August 2022
+
+### Changed
+
+- Fix size argument type with **windows** platform in `ctgen` script
+
 ## [v2.1.0] - 19 August 2022
 
 ### Changed
@@ -222,7 +228,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.0...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.1...main
+[v2.1.1]: https://github.com/ful1e5/clickgen/compare/v2.1.1...v2.1.0
 [v2.1.0]: https://github.com/ful1e5/clickgen/compare/v2.1.0...v2.0.0
 [v2.0.0]: https://github.com/ful1e5/clickgen/compare/v2.0.0...v2.0.0-beta.2
 [v2.0.0-beta.2]: https://github.com/ful1e5/clickgen/compare/v2.0.0-beta.2...v2.0.0-beta.1
