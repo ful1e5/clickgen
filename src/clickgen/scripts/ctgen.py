@@ -27,7 +27,7 @@ def get_kwargs(args) -> Dict[str, Any]:
         kwargs["platforms"] = args.platforms
 
     if args.sizes:
-        kwargs["win_size"] = args.sizes
+        kwargs["win_size"] = args.sizes[0]
         kwargs["x11_sizes"] = args.sizes
 
     if args.bitmaps_dir:
