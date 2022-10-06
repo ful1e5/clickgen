@@ -4,7 +4,9 @@
 import struct
 from itertools import chain
 from operator import itemgetter
-from typing import List
+from typing import Any, List
+
+import numpy as np
 
 from clickgen.cursors import CursorFrame
 
@@ -15,6 +17,17 @@ FILE_HEADER = struct.Struct("<4sIII")
 TOC_CHUNK = struct.Struct("<III")
 CHUNK_IMAGE = 0xFFFD0002
 IMAGE_HEADER = struct.Struct("<IIIIIIIII")
+
+
+def premultiply_alpha(source: bytes) -> bytes:
+    buffer: np.ndarray[Any, np.dtype[np.double]] = np.frombuffer(
+        source, dtype=np.uint8
+    ).astype(np.double)
+    alpha = buffer[3::4] / 255.0
+    buffer[0::4] *= alpha
+    buffer[1::4] *= alpha
+    buffer[2::4] *= alpha
+    return buffer.astype(np.uint8).tobytes()
 
 
 def to_x11(frames: List[CursorFrame]) -> bytes:
@@ -38,7 +51,7 @@ def to_x11(frames: List[CursorFrame]) -> bytes:
                 (
                     CHUNK_IMAGE,
                     cursor.nominal,
-                    header + cursor.image.tobytes("raw", "BGRA"),
+                    header + premultiply_alpha(cursor.image.tobytes("raw", "BGRA")),
                 )
             )
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+
+- Fix distortion transparency in XCursors exports ful1e5/Bibata_Cursor#118
+
 ## [v2.1.1] - 30 August 2022
 
 ### Changed
