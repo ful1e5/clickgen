@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Generate Windows install and uninstall files.
-
-.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
-"""
-
 from pathlib import Path
 from string import Template
 from typing import Dict, List, Optional, Set

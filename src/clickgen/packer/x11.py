@@ -1,11 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Generate X11 .theme files.
-
-.. moduleauthor:: Kaiz Khatri <kaizmandhu@gmail.com>
-"""
-
 from pathlib import Path
 from string import Template
 from typing import Dict
