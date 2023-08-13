@@ -7,21 +7,15 @@
 Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
 from `clickgen v2.0.0` and onwards.
 
-##### Become Sponsor
-
-This library is funded by the community. I appreciate all these wonderful people who patronize and sponsoring me.
-
-Visit the [GitHub Sponsor](https://github.com/sponsors/ful1e5) page to become a partner.
-DM me on [Twitter](https://twitter.com/ful1e5) if your company would like to sponsor this library,
-I will gladly look into it and embed your logo in the README.
-
-##### Sponsors
-
-<!-- Add your name and avatar here with the Pull Request in case I missed it. -->
-
-Be you first.
-
 ## Notices
+
+<!-- If you're interested, you can learn more about 'sponsor-spotlight' on
+ https://dev.to/ful1e5/lets-give-recognition-to-those-supporting-our-work-on-github-sponsors-b00 -->
+
+![shoutout-sponsors](https://sponsor-spotlight.vercel.app/sponsor?login=ful1e5)
+
+> **Note**
+> The project's success depends on sponsorships. Meeting sponsorship goals for [ful1e5](https://github.com/ful1e5) GitHub Account will drive new releases and ongoing development.
 
 - **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
 - **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
