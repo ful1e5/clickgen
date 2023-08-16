@@ -28,6 +28,7 @@ from `clickgen v2.0.0` and onwards.
 - [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
 - [toml](https://pypi.org/project/toml) >= 0.10.2
 - [numpy](https://pypi.org/project/numpy) >= 1.21.6
+- [attrs](https://pypi.org/project/attrs) >= 15.0.0
 
 ## Install
 
