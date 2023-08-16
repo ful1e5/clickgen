@@ -24,7 +24,7 @@ from `clickgen v2.0.0` and onwards.
 
 ## Requirements
 
-- Python version 3.7 or higher
+- Python version 3.7.5 or higher
 - [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
 - [toml](https://pypi.org/project/toml) >= 0.10.2
 - [numpy](https://pypi.org/project/numpy) >= 1.21.6

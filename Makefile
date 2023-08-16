@@ -26,7 +26,7 @@ stubgen:
 	stubgen "src/clickgen" -o src
 
 tox: clean
-	pyenv local 3.7.5 3.8.12 3.9.10 3.10.2
+	pyenv local 3.7.5 3.8.0 3.9.0 3.10.0 3.11.0
 	tox
 	pyenv local system
 
