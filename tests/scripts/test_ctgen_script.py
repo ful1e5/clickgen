@@ -24,7 +24,7 @@ def test_get_kwargs():
     assert isinstance(res1["bitmaps_dir"], Path)
     assert isinstance(res1["out_dir"], Path)
     assert res1["x11_sizes"] == d1["sizes"]
-    assert res1["win_size"] == d1["sizes"][0]
+    assert res1["win_sizes"] == d1["sizes"]
 
     for k in ["name", "bitmaps_dir", "out_dir", "sizes"]:
         del d1[k]

@@ -27,7 +27,7 @@ def get_kwargs(args) -> Dict[str, Any]:
         kwargs["platforms"] = args.platforms
 
     if args.sizes:
-        kwargs["win_size"] = args.sizes[0]
+        kwargs["win_sizes"] = args.sizes
         kwargs["x11_sizes"] = args.sizes
 
     if args.bitmaps_dir:
@@ -138,7 +138,9 @@ def main() -> None:  # noqa: C901
 
     def process(file: Path) -> None:
         try:
+            print("Parsing Configuration File...")
             cfg = parse_toml_file(str(file.resolve()), **kwargs)
+            print()
         except Exception:
             with print_lock:
                 print(f"Error occurred while processing {file.name}:", file=sys.stderr)
@@ -149,13 +151,14 @@ def main() -> None:  # noqa: C901
             cursors = cfg.cursors
 
             # Display Theme Info
+            print("Cursor Theme Info:")
             print(f"- Cursor Theme Name: {theme.name}")
             print(f"- Comment: {theme.comment}")
             print(f"- Platform Compliblity: {config.platforms}\n")
 
             # Generating XCursor
             if "x11" in config.platforms:
-                print("Generating XCursors ...'")
+                print("Generating XCursors ...")
 
                 x11_out_dir = config.out_dir / theme.name / "cursors"
                 x11_out_dir.mkdir(parents=True, exist_ok=True)

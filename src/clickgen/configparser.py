@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Any, Dict, List, TypeVar, Union
+from typing import Any, Dict, List, Optional, TypeVar, Union
 
 import toml
 from attr import dataclass
 
 from clickgen.parser import open_blob
-from clickgen.parser.png import DELAY
+from clickgen.parser.png import DELAY, SIZES
 from clickgen.writer.windows import to_win
 from clickgen.writer.x11 import to_x11
 
@@ -17,7 +17,7 @@ class ThemeSection:
     website: str
 
 
-def parse_toml_theme_section(d: Dict[str, Any], **kwargs) -> ThemeSection:
+def parse_theme_section(d: Dict[str, Any], **kwargs) -> ThemeSection:
     t = d["theme"]
     return ThemeSection(
         name=kwargs.get("name", t["name"]),
@@ -31,11 +31,9 @@ class ConfigSection:
     bitmaps_dir: Path
     out_dir: Path
     platforms: List[str]
-    x11_sizes: List[int]
-    win_size: int
 
 
-def parse_toml_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSection:
+def parse_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSection:
     c = d["config"]
     p = Path(fp).parent
 
@@ -44,12 +42,20 @@ def parse_toml_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSec
             return Path(path)
         return (p / path).absolute()
 
+    if c.get("win_size"):
+        print(
+            "Warning: Option 'win_size' is deprecated. Use 'win_sizes' inside individual cursor settings or set to 'cursor.fallback'",
+        )
+
+    if c.get("x11_sizes"):
+        print(
+            "Warning: Option 'x11_size' is deprecated. Use 'x11_sizes' inside individual cursor settings or set to 'cursor.fallback'",
+        )
+
     return ConfigSection(
         bitmaps_dir=kwargs.get("bitmaps_dir", absolute_path(c["bitmaps_dir"])),
         out_dir=kwargs.get("out_dir", absolute_path(c["out_dir"])),
         platforms=kwargs.get("platforms", c["platforms"]),
-        x11_sizes=kwargs.get("x11_sizes", c["x11_sizes"]),
-        win_size=kwargs.get("win_size", c["win_size"]),
     )
 
 
@@ -65,35 +71,44 @@ class CursorSection:
     win_cursor: Union[bytes, None]
 
 
-def parse_toml_cursors_section(
-    d: Dict[str, Any], config: ConfigSection
+def parse_cursors_section(
+    d: Dict[str, Any], config: ConfigSection, **kwargs
 ) -> List[CursorSection]:
+    def get_value(k: str, def_val: Optional[T] = None) -> T:
+        return kwargs.get(k, v.get(k, fb.get(k, def_val)))
+
+    def size_typing(s: Union[int, List[int]]) -> List[int]:
+        if isinstance(s, int):
+            return [s]
+        elif isinstance(s, List):
+            return s
+
     result: List[CursorSection] = []
 
     fb = d["cursors"]["fallback_settings"]
     del d["cursors"]["fallback_settings"]
 
-    def get_value_with_fallback(key: str, deflt: T) -> T:
-        return v.get(key, fb.get(key, deflt))
-
     for _, v in d["cursors"].items():
         hotspot = (
-            get_value_with_fallback("x_hotspot", 0),
-            get_value_with_fallback("y_hotspot", 0),
+            get_value("x_hotspot"),
+            get_value("y_hotspot"),
         )
-        x11_delay = get_value_with_fallback("x11_delay", DELAY)
-        win_delay = get_value_with_fallback("win_delay", DELAY)
+        x11_delay = get_value("x11_delay", DELAY)
+        win_delay = get_value("win_delay", DELAY)
+
+        x11_sizes = size_typing(get_value("x11_sizes", SIZES))
+        win_sizes = size_typing(get_value("win_sizes", SIZES))
 
         blobs = [f.read_bytes() for f in sorted(config.bitmaps_dir.glob(v["png"]))]
 
-        x11_blob = open_blob(blobs, hotspot, config.x11_sizes, x11_delay)
+        x11_blob = open_blob(blobs, hotspot, x11_sizes, x11_delay)
         x11_cursor = to_x11(x11_blob.frames)
 
         # Because all cursors don't have windows configuration
         win_cursor: Union[bytes, None] = None
         win_cursor_name: Union[str, None] = None
         if "win_name" in v:
-            win_blob = open_blob(blobs, hotspot, [config.win_size], win_delay)
+            win_blob = open_blob(blobs, hotspot, win_sizes, win_delay)
             ext, win_cursor = to_win(win_blob.frames)
             win_cursor_name = v["win_name"] + ext
 
@@ -119,8 +134,8 @@ class ClickgenConfig:
 
 def parse_toml_file(fp: str, **kwargs) -> ClickgenConfig:
     d: Dict[str, Any] = toml.load(fp)
-    theme = parse_toml_theme_section(d, **kwargs)
-    config = parse_toml_config_section(fp, d, **kwargs)
-    cursors = parse_toml_cursors_section(d, config)
+    theme = parse_theme_section(d, **kwargs)
+    config = parse_config_section(fp, d, **kwargs)
+    cursors = parse_cursors_section(d, config, **kwargs)
 
     return ClickgenConfig(theme, config, cursors)
