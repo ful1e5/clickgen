@@ -17,6 +17,7 @@ from `clickgen v2.0.0` and onwards.
 > **Note**
 > The project's success depends on sponsorships. Meeting sponsorship goals for [ful1e5](https://github.com/ful1e5) GitHub Account will drive new releases and ongoing development.
 
+- **2023-08-17:** Cursor size settings moved to `[cursors.fallback_settings]` in config. See [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
 - **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
 - **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
   I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.

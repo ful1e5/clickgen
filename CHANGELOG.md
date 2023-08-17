@@ -9,30 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecation
 
-In the configuration file, the `[config]` section no longer supports the `win_size` and `x11_sizes` options. Instead, utilize the `win_sizes` and `x11_sizes` settings within each cursor's configuration. Alternatively, you can assign them to `cursors.fallback_settings`.
-
-Here's the updated configuration:
-
-```diff
-# Deprecated - Avoid using these settings
-[config]
-# ...
-- x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
-- win_size = 32
-
-[cursors]
-
-# Use this as the fallback for cursor sizes
-[cursors.fallback_settings]
-# ...
-+ x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
-+ win_sizes = [32, 48]
-
-[cursors.fake_pointer]
-# ...
-+ x11_sizes = [28, 32, 88, 96] # Adjust sizes for XCursors and...
-+ win_sizes = [20] # ...Windows Cursors for this specific cursor
-```
+- Check [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
 
 ### What's New?
 
@@ -41,6 +18,7 @@ Here's the updated configuration:
 ### Changes
 
 - Added 'attrs>=15.0.0' dependency for safely import `dataclass` class
+- Updated ubuntu version in CI
 
 ## [v2.1.3] - 10 October 2022
 
