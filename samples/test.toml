@@ -1,0 +1,25 @@
+[theme]
+name = 'Test'
+comment = 'This is test cursor theme'
+website = 'https://www.example.com/'
+
+[config]
+bitmaps_dir = 'pngs'
+out_dir = 'out'
+platforms = ['x11', 'windows']
+
+[cursors]
+[cursors.fallback_settings]
+x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
+win_sizes = [24, 32, 48, 64, 96]
+x_hotspot = 53
+y_hotspot = 36
+x11_delay = 30
+win_delay = 1
+
+[cursors.test_pointer1]
+png = 'pointer.png'
+win_name = 'Default'
+x11_name = 'pointer1'
+x11_symlinks = ['link1']
+
