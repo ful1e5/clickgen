@@ -40,7 +40,9 @@ def test_win_size_deprecation_message(capsys):
 
     captured = capsys.readouterr()
     assert (
-        "Warning: Option 'win_size' is deprecated. Use 'win_sizes' inside individual cursor settings or set to 'cursor.fallback'"
+        "The 'win_size' option is deprecated."
+        " Please use 'win_sizes' within individual cursor settings or set it to '[cursor.fallback_settings]'."
+        " For more information, visit: https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666"
         in captured.out
     )
 
@@ -50,7 +52,9 @@ def test_x11_sizes_deprecation_message(capsys):
 
     captured = capsys.readouterr()
     assert (
-        "Warning: Option 'x11_size' is deprecated. Use 'x11_sizes' inside individual cursor settings or set to 'cursor.fallback'"
+        "The 'x11_sizes' option is deprecated."
+        " Please use 'x11_sizes' within individual cursor settings or set it to '[cursor.fallback_settings]'."
+        " For more information, visit: https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666"
         in captured.out
     )
 
@@ -105,8 +109,42 @@ def test_parse_config_section_with_kwargs():
 def test_parse_file(samples_dir: Path):
     fp = samples_dir / "sample.toml"
     c = parse_toml_file(str(fp.absolute()))
-    assert c.cursors[0].win_cursor_name == "Default.cur"
-    assert c.cursors[1].win_cursor_name == "Work.ani"
 
-    assert c.cursors[0].x11_cursor_name == "left_ptr"
-    assert c.cursors[1].x11_cursor_name == "wait"
+    x11_list = [
+        "pointer1",
+        "pointer2",
+        "pointer3",
+        "pointer4",
+        "pointer5",
+        "pointer6",
+        "pointer7",
+        "pointer8",
+        "pointer9",
+        "pointer10",
+        "pointer11",
+        "pointer12",
+        "pointer13",
+        "wait1",
+        "wait2",
+    ]
+    win_list = [
+        "Default.cur",
+        "Alternate.cur",
+        "Cross.cur",
+        "Diagonal_1.cur",
+        "Diagonal_2.cur",
+        "Handwriting.cur",
+        "Help.cur",
+        "Horizontal.cur",
+        "IBeam.cur",
+        "Link.cur",
+        "Move.cur",
+        "Unavailiable.cur",
+        "Vertical.cur",
+        "Busy.ani",
+        "Work.ani",
+    ]
+
+    for cur in c.cursors:
+        assert cur.win_cursor_name in win_list
+        assert cur.x11_cursor_name in x11_list

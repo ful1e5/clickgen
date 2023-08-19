@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Optional, TypeVar, Union
 import toml
 from attr import dataclass
 
+from clickgen.libs.colors import print_warning
 from clickgen.parser import open_blob
 from clickgen.parser.png import DELAY, SIZES
 from clickgen.writer.windows import to_win
@@ -42,15 +43,15 @@ def parse_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSection:
             return Path(path)
         return (p / path).absolute()
 
-    if c.get("win_size"):
-        print(
-            "Warning: Option 'win_size' is deprecated. Use 'win_sizes' inside individual cursor settings or set to 'cursor.fallback'",
-        )
-
-    if c.get("x11_sizes"):
-        print(
-            "Warning: Option 'x11_size' is deprecated. Use 'x11_sizes' inside individual cursor settings or set to 'cursor.fallback'",
-        )
+    # Deprecation
+    deprecated_opts = {"win_size": "win_sizes", "x11_sizes": "x11_sizes"}
+    for opt in deprecated_opts:
+        if c.get(opt):
+            print_warning(
+                f"The '{opt}' option is deprecated."
+                f" Please use '{deprecated_opts.get(opt)}' within individual cursor settings or set it to '[cursor.fallback_settings]'."
+                " For more information, visit: https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666"
+            )
 
     return ConfigSection(
         bitmaps_dir=kwargs.get("bitmaps_dir", absolute_path(c["bitmaps_dir"])),

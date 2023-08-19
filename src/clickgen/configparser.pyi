@@ -1,3 +1,4 @@
+from clickgen.libs.colors import print_warning as print_warning
 from clickgen.parser import open_blob as open_blob
 from clickgen.parser.png import DELAY as DELAY, SIZES as SIZES
 from clickgen.writer.windows import to_win as to_win

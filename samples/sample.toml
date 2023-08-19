@@ -1,41 +1,103 @@
 [theme]
-name = 'Sample'
-comment = 'This is sample cursor theme'
+name = 'Test'
+comment = 'This is test cursor theme'
 website = 'https://www.example.com/'
 
 [config]
 bitmaps_dir = 'pngs'
 out_dir = 'out'
 platforms = ['x11', 'windows']
-x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
-win_size = 32
 
 [cursors]
-
 [cursors.fallback_settings]
 x11_sizes = [21, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
-win_sizes = 32
-x_hotspot = 100
-y_hotspot = 100
+win_sizes = [24, 32, 48, 64, 96]
+x_hotspot = 53
+y_hotspot = 36
 x11_delay = 30
 win_delay = 1
 
-[cursors.pointer]
+[cursors.test_pointer1]
 png = 'pointer.png'
-x_hotspot = 53
-y_hotspot = 36
 win_name = 'Default'
-x11_name = 'left_ptr'
-x11_symlinks = ['c']
+x11_name = 'pointer1'
+x11_symlinks = ['link1']
 
-[cursors.wait]
+[cursors.test_pointer2]
+png = 'pointer.png'
+win_name = 'Alternate'
+x11_name = 'pointer2'
+x11_symlinks = ['link2', 'link3']
+
+
+[cursors.test_pointer3]
+png = 'pointer.png'
+win_name = 'Cross'
+x11_name = 'pointer3'
+
+[cursors.test_pointer4]
+png = 'pointer.png'
+win_name = 'Diagonal_1'
+x11_name = 'pointer4'
+
+[cursors.test_pointer5]
+png = 'pointer.png'
+win_name = 'Diagonal_2'
+x11_name = 'pointer5'
+
+
+[cursors.test_pointer6]
+png = 'pointer.png'
+win_name = 'Handwriting'
+x11_name = 'pointer6'
+
+[cursors.test_pointer7]
+png = 'pointer.png'
+win_name = 'Help'
+x11_name = 'pointer7'
+
+[cursors.test_pointer8]
+png = 'pointer.png'
+win_name = 'Horizontal'
+x11_name = 'pointer8'
+
+[cursors.test_pointer9]
+png = 'pointer.png'
+win_name = 'IBeam'
+x11_name = 'pointer9'
+
+[cursors.test_pointer10]
+png = 'pointer.png'
+win_name = 'Link'
+x11_name = 'pointer10'
+
+[cursors.test_pointer11]
+png = 'pointer.png'
+win_name = 'Move'
+x11_name = 'pointer11'
+
+[cursors.test_pointer12]
+png = 'pointer.png'
+win_name = 'Unavailiable'
+x11_name = 'pointer12'
+
+[cursors.test_pointer13]
+png = 'pointer.png'
+win_name = 'Vertical'
+x11_name = 'pointer13'
+
+[cursors.test_animated_pointer1]
+png = 'wait-*.png'
+win_name = 'Busy'
+x11_name = 'wait1'
+x_hotspot = 100
+y_hotspot = 100
+win_sizes = [32]
+
+[cursors.test_animated_pointer2]
 png = 'wait-*.png'
 win_name = 'Work'
-x11_name = 'wait'
-x11_symlinks = ['d', 'e', 'f']
-
-[cursors.progress]
-png = 'wait-*.png'
-win_name = 'Progress'
-x11_name = 'progress'
-win_sizes = [20]
+x11_name = 'wait2'
+x_hotspot = 100
+y_hotspot = 100
+win_sizes = [32]

@@ -79,7 +79,9 @@ def test_ctgen_with_x11_platform(samples_dir, x11_tmp_dir):
             main()
 
 
-def test_ctgen_with_windows_platform(samples_dir, x11_tmp_dir, capsys):
+def test_ctgen_with_windows_platform_packaging_exception(
+    samples_dir, x11_tmp_dir, capsys
+):
     fp = samples_dir / "sample.toml"
     with open(fp, "rb") as f:
         with mock.patch(
@@ -98,5 +100,24 @@ def test_ctgen_with_windows_platform(samples_dir, x11_tmp_dir, capsys):
             main()
             captured = capsys.readouterr()
             assert (
-                "Error occurred while packaging windows theme 'Sample':" in captured.err
+                "Error occurred while packaging windows theme 'Sample'" in captured.err
             )
+
+
+def test_ctgen_with_windows_platform(samples_dir, win_cur_tmp_dir: Path):
+    fp = samples_dir / "sample.toml"
+    with open(fp, "rb") as f:
+        with mock.patch(
+            "argparse.ArgumentParser.parse_args",
+            return_value=argparse.Namespace(
+                files=[f],
+                name=None,
+                comment=None,
+                website=None,
+                platforms=["windows"],
+                sizes=None,
+                bitmaps_dir=None,
+                out_dir=win_cur_tmp_dir,
+            ),
+        ):
+            main()

@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### What's New?
 
 - Support for `Python 3.11` has been added, along with test suites for it.
+- Prettier Logs in `ctgen` CLI.
 
 ### Changes
 
