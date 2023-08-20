@@ -3,9 +3,9 @@
 [![ci](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml/badge.svg)](https://github.com/ful1e5/clickgen/actions/workflows/ci.yml)
 [![code coverage](https://codecov.io/gh/ful1e5/clickgen/branch/main/graph/badge.svg)](https://codecov.io/gh/ful1e5/clickgen)
 
-**Clickgen** is cross-platform python library for building **X11** and **Windows** Cursors.
-Clickgen's core functionality is heavily inspired by **[quantum5/win2xcur](https://github.com/quantum5/win2xcur)**
-from `clickgen v2.0.0` and onwards.
+Clickgen is cross-platform python library for building XCursor and Windows Cursors.
+
+Clickgen's core functionality is heavily inspired by [quantum5/win2xcur](https://github.com/quantum5/win2xcur) from _v2.0.0_ and onwards.
 
 ## Notices
 
@@ -21,15 +21,15 @@ from `clickgen v2.0.0` and onwards.
 - **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
 - **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
   I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
-  Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#clis) usage.
+  Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#usage) usage.
 
 ## Requirements
 
 - Python version 3.7.5 or higher
-- [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
-- [toml](https://pypi.org/project/toml) >= 0.10.2
-- [numpy](https://pypi.org/project/numpy) >= 1.21.6
 - [attrs](https://pypi.org/project/attrs) >= 15.0.0
+- [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
+- [numpy](https://pypi.org/project/numpy) >= 1.21.6
+- [toml](https://pypi.org/project/toml) >= 0.10.2
 
 ## Install
 
