@@ -1,6 +1,5 @@
 class bcolors:
     BOLD = "\033[1m"
-    UNDERLINE = "\033[4m"
 
     BLUE = "\033[94m"
     CYAN = "\033[96m"
@@ -15,10 +14,6 @@ class bcolors:
 # Text Formate
 def bold(s: str) -> str:
     return f"{bcolors.BOLD}{s}{bcolors.NORMAL}"
-
-
-def underline(s: str) -> str:
-    return f"{bcolors.UNDERLINE}{s}{bcolors.NORMAL}"
 
 
 # Colors
