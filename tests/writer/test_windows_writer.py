@@ -11,7 +11,7 @@ def test_windows_cur_writer(cursor_frame, x11_tmp_dir: Path):
     o = to_cur(cursor_frame)
     assert isinstance(o, bytes)
 
-    cfile = x11_tmp_dir.joinpath("test.cur")
+    cfile = x11_tmp_dir / "test.cur"
     cfile.write_bytes(o)
 
     assert cfile.exists()
@@ -31,7 +31,7 @@ def test_windows_ani_writer(cursor_frame: CursorFrame, x11_tmp_dir: Path):
     o = to_ani([cursor_frame, cursor_frame])
     assert isinstance(o, bytes)
 
-    cfile = x11_tmp_dir.joinpath("test.ani")
+    cfile = x11_tmp_dir / "test.ani"
     cfile.write_bytes(o)
 
     assert cfile.exists()
@@ -42,7 +42,7 @@ def test_windows_writer(cursor_frame: CursorFrame, x11_tmp_dir: Path):
     ext, o = to_win([cursor_frame, cursor_frame])
     assert isinstance(o, bytes)
 
-    cfile = x11_tmp_dir.joinpath(f"test.{ext}")
+    cfile = x11_tmp_dir / f"test.{ext}"
     cfile.write_bytes(o)
 
     assert cfile.exists()
@@ -52,7 +52,7 @@ def test_windows_writer(cursor_frame: CursorFrame, x11_tmp_dir: Path):
     ext1, o1 = to_win([cursor_frame])
     assert isinstance(o1, bytes)
 
-    cfile1 = x11_tmp_dir.joinpath(f"test.{ext1}")
+    cfile1 = x11_tmp_dir / f"test.{ext1}"
     cfile1.write_bytes(o1)
 
     assert cfile1.exists()

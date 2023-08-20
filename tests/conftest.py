@@ -100,7 +100,7 @@ def x11_tmp_dir(tmpdir_factory) -> Path:
 def win_cur_tmp_dir(tmpdir_factory) -> Path:
     p = Path(tmpdir_factory.mktemp("x11_tmp"))
     for f in REQUIRED_CURSORS:
-        cfile = p.joinpath(f"{f}.cur")
+        cfile = p / f"{f}.cur"
         cfile.write_text("test win cursors")
     return p
 
@@ -109,6 +109,6 @@ def win_cur_tmp_dir(tmpdir_factory) -> Path:
 def win_ani_tmp_dir(tmpdir_factory) -> Path:
     p = Path(tmpdir_factory.mktemp("x11_tmp"))
     for f in REQUIRED_CURSORS:
-        cfile = p.joinpath(f"{f}.ani")
+        cfile = p / f"{f}.ani"
         cfile.write_text("test win cursors")
     return p

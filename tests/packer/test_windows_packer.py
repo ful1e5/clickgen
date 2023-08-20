@@ -21,8 +21,8 @@ def test_windows_packer_raises(x11_tmp_dir: Path, theme_name, comment, website):
 def test_windows_packer_with_cur(win_cur_tmp_dir: Path, theme_name, comment, website):
     pack_win(win_cur_tmp_dir, theme_name, comment, website)
 
-    install_inf = win_cur_tmp_dir.joinpath("install.inf")
-    uninstall_bat = win_cur_tmp_dir.joinpath("uninstall.bat")
+    install_inf = win_cur_tmp_dir / "install.inf"
+    uninstall_bat = win_cur_tmp_dir / "uninstall.bat"
     assert install_inf.exists()
     assert uninstall_bat.exists()
     install_data = install_inf.read_text()
@@ -40,7 +40,7 @@ def test_windows_packer_with_cur(win_cur_tmp_dir: Path, theme_name, comment, web
 def test_windows_packer_with_ani(win_ani_tmp_dir: Path, theme_name, comment, website):
     pack_win(win_ani_tmp_dir, theme_name, comment, website)
 
-    install_inf = win_ani_tmp_dir.joinpath("install.inf")
+    install_inf = win_ani_tmp_dir / "install.inf"
     install_data = install_inf.read_text()
 
     for c in REQUIRED_CURSORS:
