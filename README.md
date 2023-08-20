@@ -127,6 +127,7 @@ with open("samples/pngs/pointer.png", "rb") as p:
 
 ```python
 from glob import glob
+from typing import List
 
 from clickgen.parser import open_blob
 from clickgen.writer import to_x11
@@ -167,6 +168,7 @@ with open("samples/pngs/pointer.png", "rb") as p:
 
 ```python
 from glob import glob
+from typing import List
 
 from clickgen.parser import open_blob
 from clickgen.writer import to_win
@@ -185,7 +187,7 @@ cur = open_blob(pngs, hotspot=(100, 100))
 # save Windows animated cursor
 ext, result = to_win(cur.frames)
 with open(f"test-ani{ext}", "wb") as o:
-    o.write(aresult)
+    o.write(result)
 ```
 
 ### Documentation
