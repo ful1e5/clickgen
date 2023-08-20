@@ -100,4 +100,4 @@ win_name = 'Work'
 x11_name = 'wait2'
 x_hotspot = 100
 y_hotspot = 100
-win_sizes = [32]
+win_sizes = 32
