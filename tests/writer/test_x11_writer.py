@@ -3,25 +3,20 @@ from typing import Any, List, Tuple
 
 from clickgen.writer.x11 import to_x11
 
+
 # Helpers
-MAGIC = b"Xcur"
-VERSION = 0x1_0000
-FILE_HEADER = struct.Struct("<4sIII")
-TOC_CHUNK = struct.Struct("<III")
-CHUNK_IMAGE = 0xFFFD0002
-IMAGE_HEADER = struct.Struct("<IIIIIIIII")
+def assert_xcursor(blob):
+    MAGIC = b"Xcur"
+    VERSION = 0x1_0000
+    FILE_HEADER = struct.Struct("<4sIII")
+    TOC_CHUNK = struct.Struct("<III")
+    CHUNK_IMAGE = 0xFFFD0002
+    IMAGE_HEADER = struct.Struct("<IIIIIIIII")
 
+    def _unpack(blob, struct_cls: struct.Struct, offset: int) -> Tuple[Any, ...]:
+        return struct_cls.unpack(blob[offset : offset + struct_cls.size])
 
-def _unpack(blob, struct_cls: struct.Struct, offset: int) -> Tuple[Any, ...]:
-    return struct_cls.unpack(blob[offset : offset + struct_cls.size])
-
-
-def test_static_xcursor_file_formate(cursor_frame):
-    blob = to_x11([cursor_frame])
-
-    assert isinstance(blob, bytes)
-
-    magic, header_size, version, toc_size = _unpack(blob, FILE_HEADER, 0)
+    magic, _, version, toc_size = _unpack(blob, FILE_HEADER, 0)
 
     assert magic == MAGIC
     assert version == VERSION
@@ -72,3 +67,17 @@ def test_static_xcursor_file_formate(cursor_frame):
         image_size = width * height * 4
         new_blob = blob[image_start : image_start + image_size]
         assert len(new_blob) == image_size
+
+
+def test_static_xcursor_file_formate(cursor_frame):
+    blob = to_x11([cursor_frame])
+
+    assert isinstance(blob, bytes)
+    assert_xcursor(blob)
+
+
+def test_animated_xcursor_file_formate(cursor_frame):
+    blob = to_x11([cursor_frame, cursor_frame])
+
+    assert isinstance(blob, bytes)
+    assert_xcursor(blob)
