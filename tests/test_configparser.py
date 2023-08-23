@@ -1,9 +1,13 @@
 from pathlib import Path
 
 from clickgen.configparser import (
+    ClickgenConfig,
+    parse_config_file,
     parse_config_section,
+    parse_json_file,
     parse_theme_section,
     parse_toml_file,
+    parse_yaml_file,
 )
 
 td = {"theme": {"name": "test", "comment": "test", "website": "test"}}
@@ -106,9 +110,10 @@ def test_parse_config_section_with_kwargs():
     assert c.platforms == kwargs["platforms"]
 
 
-def test_parse_file(samples_dir: Path):
-    fp = samples_dir / "sample.toml"
-    c = parse_toml_file(str(fp.absolute()))
+def assert_clickgen_config(c: ClickgenConfig):
+    assert c.theme.name == "Sample"
+    assert c.theme.comment == "This is sample cursor theme"
+    assert c.theme.website == "https://www.example.com/"
 
     x11_list = [
         "pointer1",
@@ -148,3 +153,28 @@ def test_parse_file(samples_dir: Path):
     for cur in c.cursors:
         assert cur.win_cursor_name in win_list
         assert cur.x11_cursor_name in x11_list
+
+
+def test_parse_toml_file(samples_dir: Path):
+    fp = samples_dir / "sample.toml"
+    c: ClickgenConfig = parse_toml_file(str(fp.absolute()))
+    assert_clickgen_config(c)
+
+
+def test_parse_yaml_file(samples_dir: Path):
+    fp = samples_dir / "sample.yaml"
+    c: ClickgenConfig = parse_yaml_file(str(fp.absolute()))
+    assert_clickgen_config(c)
+
+
+def test_parse_json_file(samples_dir: Path):
+    fp = samples_dir / "sample.json"
+    c: ClickgenConfig = parse_json_file(str(fp.absolute()))
+    assert_clickgen_config(c)
+
+
+def test_parse_config_files(samples_dir: Path):
+    for ext in ["json", "yaml", "toml"]:
+        fp = samples_dir / f"sample.{ext}"
+        c: ClickgenConfig = parse_config_file(str(fp.absolute()))
+        assert_clickgen_config(c)
