@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import argparse
 import os
 import sys
@@ -10,7 +13,7 @@ from threading import Lock
 from typing import Any, Dict, Generator, List
 
 import clickgen
-from clickgen.configparser import CursorSection, parse_toml_file
+from clickgen.configparser import CursorSection, parse_config_file
 from clickgen.libs.colors import (
     blue,
     bold,
@@ -70,7 +73,7 @@ def main() -> None:  # noqa: C901
         "files",
         type=argparse.FileType("rb"),
         nargs="+",
-        help="Config files (.toml) for generate cursor theme",
+        help="Config files (.toml,.yaml,.yml,.json) for generate cursor theme",
     )
 
     parser.add_argument(
@@ -149,7 +152,7 @@ def main() -> None:  # noqa: C901
 
     def process(file: Path) -> None:
         try:
-            cfg = parse_toml_file(str(file.resolve()), **kwargs)
+            cfg = parse_config_file(str(file.resolve()), **kwargs)
         except Exception:
             print(
                 fail(f"Error occurred while processing {file.name}:"),

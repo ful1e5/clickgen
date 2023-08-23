@@ -1,6 +1,6 @@
 [theme]
-name = 'Test'
-comment = 'This is test cursor theme'
+name = 'Sample'
+comment = 'This is sample cursor theme'
 website = 'https://www.example.com/'
 
 [config]

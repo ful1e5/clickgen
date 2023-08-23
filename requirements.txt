@@ -1,4 +1,5 @@
 Pillow>=8.1.1
-toml>=0.10.2
-numpy>=1.21.6
+PyYaml>=6.0.1
 attrs>=15.0.0
+numpy>=1.21.6
+toml>=0.10.2

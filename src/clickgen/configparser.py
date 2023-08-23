@@ -1,7 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TypeVar, Union
 
 import toml
+import yaml
 from attr import dataclass
 
 from clickgen.libs.colors import print_warning
@@ -140,3 +145,45 @@ def parse_toml_file(fp: str, **kwargs) -> ClickgenConfig:
     cursors = parse_cursors_section(d, config, **kwargs)
 
     return ClickgenConfig(theme, config, cursors)
+
+
+def parse_yaml_file(fp: str, **kwargs) -> ClickgenConfig:
+    d: Dict[str, Any] = {}
+
+    with open(fp, "r") as file:
+        d = yaml.safe_load(file)
+
+    theme = parse_theme_section(d, **kwargs)
+    config = parse_config_section(fp, d, **kwargs)
+    cursors = parse_cursors_section(d, config, **kwargs)
+
+    return ClickgenConfig(theme, config, cursors)
+
+
+def parse_json_file(fp: str, **kwargs) -> ClickgenConfig:
+    d: Dict[str, Any] = {}
+
+    with open(fp, "r") as file:
+        d = json.load(file)
+
+    theme = parse_theme_section(d, **kwargs)
+    config = parse_config_section(fp, d, **kwargs)
+    cursors = parse_cursors_section(d, config, **kwargs)
+
+    return ClickgenConfig(theme, config, cursors)
+
+
+def parse_config_file(fp: str, **kwargs) -> ClickgenConfig:
+    ext = fp.split(".")[1]
+    config: ClickgenConfig
+
+    if ext == "yml" or ext == "yaml":
+        config = parse_yaml_file(fp, **kwargs)
+    elif ext == "json":
+        config = parse_json_file(fp, **kwargs)
+    elif ext == "toml":
+        config = parse_toml_file(fp, **kwargs)
+    else:
+        raise IOError("Configuration File type is not supported")
+
+    return config

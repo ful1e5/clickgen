@@ -1,6 +1,9 @@
+# CAUTION: This file is used in clickgen test suit.
+#          DON'T DELETE IT.
+
 [theme]
 name = 'Test'
-comment = 'This is test cursor theme'
+comment = 'This is test cursor config for pytest'
 website = 'https://www.example.com/'
 
 [config]

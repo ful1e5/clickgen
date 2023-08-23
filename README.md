@@ -26,8 +26,9 @@ Clickgen's core functionality is heavily inspired by [quantum5/win2xcur](https:/
 ## Requirements
 
 - Python version 3.7.5 or higher
-- [attrs](https://pypi.org/project/attrs) >= 15.0.0
 - [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
+- [PyYaml](https://pypi.org/project/PyYaml) >= 6.0.1
+- [attrs](https://pypi.org/project/attrs) >= 15.0.0
 - [numpy](https://pypi.org/project/numpy) >= 1.21.6
 - [toml](https://pypi.org/project/toml) >= 0.10.2
 
@@ -85,22 +86,24 @@ For more information, run `clickgen --help`.
 
 ### `ctgen` CLI
 
-This CLI allow you to generate Windows and Linux Cursor themes from config (.toml) file.
+This CLI allow you to generate Windows and Linux Cursor themes from config (.toml.yml,and .json) files.
 
-```
-ctgen theme.toml
+```bash
+ctgen sample/sample.json
+ctgen sample/sample.toml
+ctgen sample/sample.yaml
 ```
 
 You also provide multiple theme configuration file once as following:
 
 ```
-ctgen theme1.toml theme2.toml
+ctgen sample/sample.toml sample/sample.json
 ```
 
 Override theme's `name` of theme with `-n` option:
 
 ```
-ctgen theme1.toml -n "New Theme"
+ctgen sample/sample.toml -n "New Theme"
 ```
 
 You can run `ctgen --help` to view all available options and you also check

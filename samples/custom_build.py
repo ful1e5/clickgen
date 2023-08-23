@@ -51,7 +51,7 @@ if __name__ == "__main__":
                 o.write(xresult)
     except Exception:
         with print_lock:
-            print(f"Error occurred while processing ", file=sys.stderr)
+            print("Error occurred while processing ", file=sys.stderr)
             traceback.print_exc()
 
     print("Building ... DONE")

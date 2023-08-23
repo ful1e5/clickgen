@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Prettier Logs in `ctgen` CLI.
 - Change size of individual cursor assiging `win_sizes` and `x11_sizes` to individual cursor config in `ctgen` CLI
+- Support `.yaml` and `.json` manifest config files inside `ctgen`
 - Support for `Python 3.11` has been added, along with test suites for it.
 
 ### Changes
