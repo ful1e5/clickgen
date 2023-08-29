@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.4] - 29 August 2023
+
 ### Deprecation
 
-- Check [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
+- In the `ctgen` configuration file, the `[config]` section no longer supports the `win_size` and `x11_sizes` options. Check [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
 
 ### What's New?
 
 - Prettier Logs in `ctgen` CLI.
-- Change size of individual cursor assiging `win_sizes` and `x11_sizes` to individual cursor config in `ctgen` CLI
-- Support `.yaml` and `.json` manifest config files inside `ctgen`
+- Change size of individual cursor assigning `win_sizes` and `x11_sizes` to individual cursor config in `ctgen` CLI
+- Support `.yaml` and `.json` manifest config files for `ctgen`
 - Support for `Python 3.11` has been added, along with test suites for it.
 
 ### Changes
@@ -256,7 +258,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.3...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.4...main
+[v2.1.4]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.3
 [v2.1.3]: https://github.com/ful1e5/clickgen/compare/v2.1.3...v2.1.2
 [v2.1.2]: https://github.com/ful1e5/clickgen/compare/v2.1.2...v2.1.1
 [v2.1.1]: https://github.com/ful1e5/clickgen/compare/v2.1.1...v2.1.0

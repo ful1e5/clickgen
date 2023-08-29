@@ -64,16 +64,17 @@ def cwd(path) -> Generator[None, None, None]:
 
 
 def main() -> None:  # noqa: C901
+    # fix description
     parser = argparse.ArgumentParser(
         prog="ctgen",
-        description="ctgen: Cursor Theme GENerator.",
+        description=f"ctgen: {bold('C')}ursor {bold('T')}heme {bold('Gen')}erator. Clickgen CLI utility for crafting a whole cursor theme from .png files with a manifest file.'",
     )
 
     parser.add_argument(
         "files",
         type=argparse.FileType("rb"),
         nargs="+",
-        help="Config files (.toml,.yaml,.yml,.json) for generate cursor theme",
+        help="Config files (.toml,.yaml,.json) for generate cursor theme",
     )
 
     parser.add_argument(
