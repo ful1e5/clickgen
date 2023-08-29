@@ -29,7 +29,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip install mypy flake8 pytest
-          python -m pip install setuptools wheel twine
+          python -m pip install setuptools build twine
         continue-on-error: false
 
       - name: Linting
@@ -44,7 +44,7 @@ jobs:
         run: make stubgen
 
       - name: Building
-        run: python setup.py sdist bdist_wheel
+        run: python -m build
         continue-on-error: false
 
       - uses: actions/upload-artifact@master

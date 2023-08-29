@@ -1,7 +1,7 @@
 py3 = python3
 
 clean:
-	rm -rf .vscode .vim venv coverage.xml out samples/out
+	rm -rf .vscode .vim venv coverage.xml out samples/out dist build
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	find . -name "__pycache__" -type d -exec /bin/rm -rf {} +
 
@@ -19,7 +19,7 @@ coverage:
 	pytest --cov=clickgen --cov-report=html
 
 build: clean
-	$(py3) setup.py sdist bdist_wheel
+	$(py3) -m build
 
 stubgen:
 	find src/clickgen/ -type f -name '*.pyi' -delete
