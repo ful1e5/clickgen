@@ -1,7 +1,7 @@
 py3 = python3
 
 clean:
-	rm -rf .vscode .vim venv coverage.xml out samples/out dist build
+	rm -rf .vscode .vim venv coverage.xml out samples/out
 	rm -rf .tox build dist src/clickgen.egg-info .mypy_cache .pytest_cache .coverage htmlcov .python-version
 	find . -name "__pycache__" -type d -exec /bin/rm -rf {} +
 
