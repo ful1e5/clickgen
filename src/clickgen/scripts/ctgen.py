@@ -13,7 +13,7 @@ from threading import Lock
 from typing import Any, Dict, Generator, List
 
 import clickgen
-from clickgen.configparser import CursorSection, parse_config_file
+from clickgen.configparser import parse_config_file
 from clickgen.libs.colors import (
     blue,
     bold,
@@ -64,7 +64,6 @@ def cwd(path) -> Generator[None, None, None]:
 
 
 def main() -> None:  # noqa: C901
-    # fix description
     parser = argparse.ArgumentParser(
         prog="ctgen",
         description=f"ctgen: {bold('C')}ursor {bold('T')}heme {bold('Gen')}erator. Clickgen CLI utility for crafting a whole cursor theme from .png files with a manifest file.'",
@@ -139,6 +138,7 @@ def main() -> None:  # noqa: C901
     )
 
     parser.add_argument(
+        "-v",
         "--version",
         action="version",
         version=f"%(prog)s {clickgen.__version__}",  # type: ignore
@@ -146,6 +146,7 @@ def main() -> None:  # noqa: C901
 
     args = parser.parse_args()
     kwargs = get_kwargs(args)
+    print_lock = Lock()
 
     files: List[Path] = []
     for f in args.files:
@@ -155,11 +156,12 @@ def main() -> None:  # noqa: C901
         try:
             cfg = parse_config_file(str(file.resolve()), **kwargs)
         except Exception:
-            print(
-                fail(f"Error occurred while processing {file.name}:"),
-                file=sys.stderr,
-            )
-            traceback.print_exc()
+            with print_lock:
+                print(
+                    fail(f"Error occurred while processing {file.name}:"),
+                    file=sys.stderr,
+                )
+                traceback.print_exc()
         else:
             theme = cfg.theme
             config = cfg.config
@@ -175,12 +177,11 @@ def main() -> None:  # noqa: C901
             # Generating XCursor
             if "x11" in config.platforms:
                 print_info("Generating XCursors:")
-                print_lock = Lock()
 
                 x11_out_dir = config.out_dir / theme.name / "cursors"
                 x11_out_dir.mkdir(parents=True, exist_ok=True)
 
-                def generate(c: CursorSection) -> None:
+                for c in cursors:
                     print_text(f"Bitmaping '{blue(c.x11_cursor_name)}'")
                     x_cursor = x11_out_dir / c.x11_cursor_name
                     x_cursor.write_bytes(c.x11_cursor)
@@ -193,10 +194,6 @@ def main() -> None:  # noqa: C901
                             )
                             os.symlink(x_cursor.name, link)
 
-                with ThreadPool(cpu_count()) as pool:
-                    with print_lock:
-                        pool.map(generate, cursors)
-
                 print_done("XCursors Generation")
 
                 pack_x11(x11_out_dir.parent, theme.name, theme.comment)
@@ -205,20 +202,15 @@ def main() -> None:  # noqa: C901
             # Generating Windows cursors
             if "windows" in config.platforms:
                 print_info("Generating Windows Cursors:")
-                print_lock = Lock()
 
                 win_out_dir = config.out_dir / f"{theme.name}-Windows"
                 win_out_dir.mkdir(parents=True, exist_ok=True)
 
-                def generate(c: CursorSection) -> None:
+                for c in cursors:
                     if c.win_cursor and c.win_cursor_name:
                         print_text(f"Bitmaping '{magenta(c.win_cursor_name)}'")
                         win_cursor = win_out_dir / c.win_cursor_name
                         win_cursor.write_bytes(c.win_cursor)
-
-                with ThreadPool(cpu_count()) as pool:
-                    with print_lock:
-                        pool.map(generate, cursors)
 
                 print_done("Windows Cursors Generation")
 
@@ -226,16 +218,17 @@ def main() -> None:  # noqa: C901
                     pack_win(win_out_dir, theme.name, theme.comment, theme.website)
 
                 except Exception:
-                    print(
-                        fail(
-                            f"Error occurred while packaging windows theme '{theme.name}'"
-                        ),
-                        file=sys.stderr,
-                    )
-                    traceback.print_exc()
-                    print((f"{yellow('[Skiping]')} Windows Packaging"))
+                    with print_lock:
+                        print(
+                            fail(
+                                f"Error occurred while packaging windows theme '{theme.name}'"
+                            ),
+                            file=sys.stderr,
+                        )
+                        traceback.print_exc()
+                        print((f"{yellow('[Skiping]')} Windows Packaging"))
                 else:
                     print_done("Packaging Windows Cursors")
 
-    for file in files:
-        process(file)
+    with ThreadPool(cpu_count()) as pool:
+        pool.map(process, files)

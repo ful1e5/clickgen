@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.5] -
+
+### Issues Fixes
+
+- XCursor symlink generated in wrong directory bug fixed
+- Short parameter for `-v` added for `ctgen --version`
+
 ## [v2.1.4] - 29 August 2023
 
 ### Deprecation
@@ -259,7 +266,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.4...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.5...main
+[v2.1.5]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.5
 [v2.1.4]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.3
 [v2.1.3]: https://github.com/ful1e5/clickgen/compare/v2.1.3...v2.1.2
 [v2.1.2]: https://github.com/ful1e5/clickgen/compare/v2.1.2...v2.1.1
