@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changes
 
 - ci: Use actions/checkout@v3
+- ci: Use `ubuntu-latest` in Linux Runner
+- ci: Use distributed local package from `dist/` directory for performing tests
+- ci: `test` operation renamed to `pytest`
 
 ### Issues Fixes
 

@@ -14,7 +14,7 @@ on:
       - main
 
 jobs:
-  test:
+  pytest:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
