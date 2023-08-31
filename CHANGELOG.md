@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v2.1.5] - 31 August 2023
 
+### Changes
+
+- ci: Use actions/checkout@v3
+
 ### Issues Fixes
 
 - XCursor symlink generated in wrong directory bug fixed
