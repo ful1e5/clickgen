@@ -54,7 +54,7 @@ jobs:
         continue-on-error: false
 
   build:
-    needs: test
+    needs: pytest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
