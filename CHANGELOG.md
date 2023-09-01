@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.6] - 01 September 2023
+
+### Issues Fixes
+
+- Included `clickgen.libs` directory in distributing package #60
+
 ## [v2.1.5] - 31 August 2023
 
 ### Changes
@@ -273,7 +279,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.5...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.6...main
+[v2.1.6]: https://github.com/ful1e5/clickgen/compare/v2.1.5...v2.1.6
 [v2.1.5]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.5
 [v2.1.4]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.3
 [v2.1.3]: https://github.com/ful1e5/clickgen/compare/v2.1.3...v2.1.2
