@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changes
+
+- dev: include `clickgen.*` modules with `find` method in package
+
 ## [v2.1.6] - 01 September 2023
 
 ### Issues Fixes
