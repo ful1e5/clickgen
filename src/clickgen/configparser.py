@@ -39,9 +39,9 @@ class ConfigSection:
     platforms: List[str]
 
 
-def parse_config_section(fp: str, d: Dict[str, Any], **kwargs) -> ConfigSection:
+def parse_config_section(fp: Path, d: Dict[str, Any], **kwargs) -> ConfigSection:
     c = d["config"]
-    p = Path(fp).parent
+    p = fp.parent
 
     def absolute_path(path: str) -> Path:
         if Path(path).is_absolute():
@@ -138,7 +138,7 @@ class ClickgenConfig:
     cursors: List[CursorSection]
 
 
-def parse_toml_file(fp: str, **kwargs) -> ClickgenConfig:
+def parse_toml_file(fp: Path, **kwargs) -> ClickgenConfig:
     d: Dict[str, Any] = toml.load(fp)
     theme = parse_theme_section(d, **kwargs)
     config = parse_config_section(fp, d, **kwargs)
@@ -147,7 +147,7 @@ def parse_toml_file(fp: str, **kwargs) -> ClickgenConfig:
     return ClickgenConfig(theme, config, cursors)
 
 
-def parse_yaml_file(fp: str, **kwargs) -> ClickgenConfig:
+def parse_yaml_file(fp: Path, **kwargs) -> ClickgenConfig:
     d: Dict[str, Any] = {}
 
     with open(fp, "r") as file:
@@ -160,7 +160,7 @@ def parse_yaml_file(fp: str, **kwargs) -> ClickgenConfig:
     return ClickgenConfig(theme, config, cursors)
 
 
-def parse_json_file(fp: str, **kwargs) -> ClickgenConfig:
+def parse_json_file(fp: Path, **kwargs) -> ClickgenConfig:
     d: Dict[str, Any] = {}
 
     with open(fp, "r") as file:
@@ -173,16 +173,19 @@ def parse_json_file(fp: str, **kwargs) -> ClickgenConfig:
     return ClickgenConfig(theme, config, cursors)
 
 
-def parse_config_file(fp: str, **kwargs) -> ClickgenConfig:
-    ext = fp.split(".")[1]
+def parse_config_file(fp: Path, **kwargs) -> ClickgenConfig:
+    ext = fp.suffix
     config: ClickgenConfig
 
-    if ext == "yml" or ext == "yaml":
+    if ext == ".yml" or ext == ".yaml":
         config = parse_yaml_file(fp, **kwargs)
-    elif ext == "json":
+
+    elif ext == ".json":
         config = parse_json_file(fp, **kwargs)
-    elif ext == "toml":
+
+    elif ext == ".toml":
         config = parse_toml_file(fp, **kwargs)
+
     else:
         raise IOError("Configuration File type is not supported")
 

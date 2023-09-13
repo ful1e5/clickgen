@@ -154,7 +154,7 @@ def main() -> None:  # noqa: C901
 
     def process(file: Path) -> None:
         try:
-            cfg = parse_config_file(str(file.resolve()), **kwargs)
+            cfg = parse_config_file(file, **kwargs)
         except Exception:
             with print_lock:
                 print(

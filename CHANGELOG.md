@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### What's New?
+
 ### Changes
 
 - dev: include `clickgen.*` modules with `find` method in package
+
+### Issues Fixes
+
+- Parse config files as `Path` in `configparser` module (Fixes ful1e5/Bibata_Cursor#143)
 
 ## [v2.1.6] - 01 September 2023
 

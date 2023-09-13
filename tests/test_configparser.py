@@ -40,7 +40,7 @@ dd1 = {
 
 
 def test_win_size_deprecation_message(capsys):
-    parse_config_section("", dd1)
+    parse_config_section(Path(), dd1)
 
     captured = capsys.readouterr()
     assert (
@@ -52,7 +52,7 @@ def test_win_size_deprecation_message(capsys):
 
 
 def test_x11_sizes_deprecation_message(capsys):
-    parse_config_section("", dd1)
+    parse_config_section(Path(), dd1)
 
     captured = capsys.readouterr()
     assert (
@@ -73,7 +73,7 @@ dd2 = {
 
 
 def test_parse_config_section():
-    c = parse_config_section("", dd2)
+    c = parse_config_section(Path(), dd2)
     assert isinstance(c.bitmaps_dir, Path)
     assert c.bitmaps_dir.name is "test"
     assert c.bitmaps_dir.is_absolute()
@@ -88,7 +88,7 @@ def test_parse_config_section_with_absolute_paths():
     dd2["config"]["bitmaps_dir"] = str(Path("test").absolute())
     dd2["config"]["out_dir"] = str(Path("test").absolute())
 
-    c = parse_config_section("", dd2)
+    c = parse_config_section(Path(), dd2)
 
     assert isinstance(c.bitmaps_dir, Path)
     assert c.bitmaps_dir.is_absolute()
@@ -104,7 +104,7 @@ def test_parse_config_section_with_kwargs():
         "platforms": "new",
     }
 
-    c = parse_config_section("", dd2, **kwargs)
+    c = parse_config_section(Path(), dd2, **kwargs)
     assert c.bitmaps_dir == kwargs["bitmaps_dir"]
     assert c.out_dir == kwargs["out_dir"]
     assert c.platforms == kwargs["platforms"]
@@ -157,24 +157,24 @@ def assert_clickgen_config(c: ClickgenConfig):
 
 def test_parse_toml_file(samples_dir: Path):
     fp = samples_dir / "sample.toml"
-    c: ClickgenConfig = parse_toml_file(str(fp.absolute()))
+    c: ClickgenConfig = parse_toml_file(fp)
     assert_clickgen_config(c)
 
 
 def test_parse_yaml_file(samples_dir: Path):
     fp = samples_dir / "sample.yaml"
-    c: ClickgenConfig = parse_yaml_file(str(fp.absolute()))
+    c: ClickgenConfig = parse_yaml_file(fp)
     assert_clickgen_config(c)
 
 
 def test_parse_json_file(samples_dir: Path):
     fp = samples_dir / "sample.json"
-    c: ClickgenConfig = parse_json_file(str(fp.absolute()))
+    c: ClickgenConfig = parse_json_file(fp)
     assert_clickgen_config(c)
 
 
 def test_parse_config_files(samples_dir: Path):
     for ext in ["json", "yaml", "toml"]:
         fp = samples_dir / f"sample.{ext}"
-        c: ClickgenConfig = parse_config_file(str(fp.absolute()))
+        c: ClickgenConfig = parse_config_file(fp)
         assert_clickgen_config(c)
