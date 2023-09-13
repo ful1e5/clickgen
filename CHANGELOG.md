@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.7] - 13 September 2023
+
 ### What's New?
 
 - Generate `install.inf` based on directory's cursor files dynamically.
@@ -292,7 +294,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.6...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.7...main
+[v2.1.7]: https://github.com/ful1e5/clickgen/compare/v2.1.6...v2.1.7
 [v2.1.6]: https://github.com/ful1e5/clickgen/compare/v2.1.5...v2.1.6
 [v2.1.5]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.5
 [v2.1.4]: https://github.com/ful1e5/clickgen/compare/v2.1.4...v2.1.3
