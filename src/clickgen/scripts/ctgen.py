@@ -214,21 +214,8 @@ def main() -> None:  # noqa: C901
 
                 print_done("Windows Cursors Generation")
 
-                try:
-                    pack_win(win_out_dir, theme.name, theme.comment, theme.website)
-
-                except Exception:
-                    with print_lock:
-                        print(
-                            fail(
-                                f"Error occurred while packaging windows theme '{theme.name}'"
-                            ),
-                            file=sys.stderr,
-                        )
-                        traceback.print_exc()
-                        print((f"{yellow('[Skiping]')} Windows Packaging"))
-                else:
-                    print_done("Packaging Windows Cursors")
+                pack_win(win_out_dir, theme.name, theme.comment, theme.website)
+                print_done("Packaging Windows Cursors")
 
     with ThreadPool(cpu_count()) as pool:
         pool.map(process, files)

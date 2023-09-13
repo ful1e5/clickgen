@@ -6,7 +6,6 @@ import pytest
 from PIL.Image import Image, open
 
 from clickgen.cursors import CursorFrame, CursorImage
-from clickgen.packer.windows import REQUIRED_CURSORS
 
 
 @pytest.fixture
@@ -99,7 +98,7 @@ def x11_tmp_dir(tmpdir_factory) -> Path:
 @pytest.fixture(scope="session")
 def win_cur_tmp_dir(tmpdir_factory) -> Path:
     p = Path(tmpdir_factory.mktemp("x11_tmp"))
-    for f in REQUIRED_CURSORS:
+    for f in ["test1", "test2", "test3"]:
         cfile = p / f"{f}.cur"
         cfile.write_text("test win cursors")
     return p
@@ -108,7 +107,7 @@ def win_cur_tmp_dir(tmpdir_factory) -> Path:
 @pytest.fixture(scope="session")
 def win_ani_tmp_dir(tmpdir_factory) -> Path:
     p = Path(tmpdir_factory.mktemp("x11_tmp"))
-    for f in REQUIRED_CURSORS:
+    for f in ["test1", "test2", "test3"]:
         cfile = p / f"{f}.ani"
         cfile.write_text("test win cursors")
     return p

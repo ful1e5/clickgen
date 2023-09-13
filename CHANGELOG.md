@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### What's New?
 
+- Generate `install.inf` based on directory's cursor files dynamically.
+  (Related to ful1e5/Bibata_Cursor#124, ful1e5/Bibata_Cursor#133)
+
 ### Changes
 
 - dev: include `clickgen.*` modules with `find` method in package
