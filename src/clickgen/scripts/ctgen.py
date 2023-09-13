@@ -24,7 +24,6 @@ from clickgen.libs.colors import (
     print_info,
     print_subtext,
     print_text,
-    yellow,
 )
 from clickgen.packer.windows import pack_win
 from clickgen.packer.x11 import pack_x11
