@@ -32,8 +32,8 @@ def parse_config_section(fp: Path, d: Dict[str, Any], **kwargs) -> ConfigSection
 T = TypeVar('T')
 
 class CursorSection:
-    x11_cursor_name: str
-    x11_cursor: bytes
+    x11_cursor_name: Union[str, None]
+    x11_cursor: Union[bytes, None]
     x11_symlinks: List[str]
     win_cursor_name: Union[str, None]
     win_cursor: Union[bytes, None]

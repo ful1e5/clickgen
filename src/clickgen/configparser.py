@@ -70,8 +70,8 @@ T = TypeVar("T")
 
 @dataclass
 class CursorSection:
-    x11_cursor_name: str
-    x11_cursor: bytes
+    x11_cursor_name: Union[str, None]
+    x11_cursor: Union[bytes, None]
     x11_symlinks: List[str]
     win_cursor_name: Union[str, None]
     win_cursor: Union[bytes, None]
@@ -107,12 +107,15 @@ def parse_cursors_section(
 
         blobs = [f.read_bytes() for f in sorted(config.bitmaps_dir.glob(v["png"]))]
 
-        x11_blob = open_blob(blobs, hotspot, x11_sizes, x11_delay)
-        x11_cursor = to_x11(x11_blob.frames)
+        x11_cursor = None
+        x11_cursor_name = None
+        if "x11_name" in v:
+            x11_blob = open_blob(blobs, hotspot, x11_sizes, x11_delay)
+            x11_cursor = to_x11(x11_blob.frames)
+            x11_cursor_name = v["x11_name"]
 
-        # Because all cursors don't have windows configuration
-        win_cursor: Union[bytes, None] = None
-        win_cursor_name: Union[str, None] = None
+        win_cursor = None
+        win_cursor_name = None
         if "win_name" in v:
             win_blob = open_blob(blobs, hotspot, win_sizes, win_delay)
             ext, win_cursor = to_win(win_blob.frames)
@@ -121,7 +124,7 @@ def parse_cursors_section(
         result.append(
             CursorSection(
                 x11_cursor=x11_cursor,
-                x11_cursor_name=v["x11_name"],
+                x11_cursor_name=x11_cursor_name,
                 x11_symlinks=v.get("x11_symlinks", []),
                 win_cursor=win_cursor,
                 win_cursor_name=win_cursor_name,

@@ -181,17 +181,18 @@ def main() -> None:  # noqa: C901
                 x11_out_dir.mkdir(parents=True, exist_ok=True)
 
                 for c in cursors:
-                    print_text(f"Bitmaping '{blue(c.x11_cursor_name)}'")
-                    x_cursor = x11_out_dir / c.x11_cursor_name
-                    x_cursor.write_bytes(c.x11_cursor)
+                    if c.x11_cursor and c.x11_cursor_name:
+                        print_text(f"Bitmaping '{blue(c.x11_cursor_name)}'")
+                        x_cursor = x11_out_dir / c.x11_cursor_name
+                        x_cursor.write_bytes(c.x11_cursor)
 
-                    # Creating symlinks
-                    with cwd(x11_out_dir):
-                        for link in c.x11_symlinks:
-                            print_subtext(
-                                f"Linking '{magenta(link)}' with '{c.x11_cursor_name}'"
-                            )
-                            os.symlink(x_cursor.name, link)
+                        # Creating symlinks
+                        with cwd(x11_out_dir):
+                            for link in c.x11_symlinks:
+                                print_subtext(
+                                    f"Linking '{magenta(link)}' with '{c.x11_cursor_name}'"
+                                )
+                                os.symlink(x_cursor.name, link)
 
                 print_done("XCursors Generation")
 
