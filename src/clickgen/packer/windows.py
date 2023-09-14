@@ -83,7 +83,7 @@ all_wreg = [
     'HKCU,"Control Panel\\Cursors",Hand,0x00020000,"%10%\\%CUR_DIR%\\%link%"',
     'HKCU,"Control Panel\\Cursors",Help,0x00020000,"%10%\\%CUR_DIR%\\%help%"',
     'HKCU,"Control Panel\\Cursors",IBeam,0x00020000,"%10%\\%CUR_DIR%\\%text%"',
-    'HKCU,"Control Panel\\Cursors",No,0x00020000,"%10%\\%CUR_DIR%\\%unavailiable%"',
+    'HKCU,"Control Panel\\Cursors",No,0x00020000,"%10%\\%CUR_DIR%\\%unavailable%"',
     'HKCU,"Control Panel\\Cursors",NWPen,0x00020000,"%10%\\%CUR_DIR%\\%handwriting%"',
     'HKCU,"Control Panel\\Cursors",Grab,0x00020000,"%10%\\%CUR_DIR%\\%move%"',
     'HKCU,"Control Panel\\Cursors",SizeAll,0x00020000,"%10%\\%CUR_DIR%\\%move%"',
