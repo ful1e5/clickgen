@@ -76,7 +76,7 @@ del %tmp%\tmp.vbs
 }
 
 all_wreg = [
-    'HKCU,"Control Panel\\Cursors",AppStarteng,0x00020000,"%10%\\%CUR_DIR%\\%work%"',
+    'HKCU,"Control Panel\\Cursors",AppStarting,0x00020000,"%10%\\%CUR_DIR%\\%work%"',
     'HKCU,"Control Panel\\Cursors",Arrow,0x00020000,"%10%\\%CUR_DIR%\\%pointer%"',
     'HKCU,"Control Panel\\Cursors",crosshair,0x00020000,"%10%\\%CUR_DIR%\\%cross%"',
     'HKCU,"Control Panel\\Cursors",precisionhair,0x00020000,"%10%\\%CUR_DIR%\\%cross%"',

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Issues Fixes
+
+- typo: Fixed typo in windows packaging registry `AppStarteng` -> `AppStarting`
+
 ## [v2.1.8] - 14 September 2023
 
 ### Changes
