@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.1.9] - 23 September 2023
+
 ### Issues Fixes
 
 - typo: Fixed typo in windows packaging registry `AppStarteng` -> `AppStarting`
@@ -308,7 +310,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - auto-generated **symlinks** based on input configs
 - `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.8...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.1.9...main
+[v2.1.9]: https://github.com/ful1e5/clickgen/compare/v2.1.8...v2.1.9
 [v2.1.8]: https://github.com/ful1e5/clickgen/compare/v2.1.7...v2.1.8
 [v2.1.7]: https://github.com/ful1e5/clickgen/compare/v2.1.6...v2.1.7
 [v2.1.6]: https://github.com/ful1e5/clickgen/compare/v2.1.5...v2.1.6
