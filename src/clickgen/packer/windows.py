@@ -133,7 +133,7 @@ def pack_win(
         stem = f.stem.lower()
         sreg.append(f"%10%\\%CUR_DIR%\\%{stem}%")
         scur.append(f.name)
-        sstr.append(f'{stem}{" "*(20-len(stem))}= "{f.name}"')
+        sstr.append(f'{stem}{" "*(20-len(stem))}= "{f.name}"')  # noqa: E226
         wreg_list.extend([item for item in all_wreg if f"%{stem}%" in item])
 
     scheme_reg = f'"{",".join(sreg)}"'
