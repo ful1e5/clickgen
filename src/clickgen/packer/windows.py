@@ -75,24 +75,26 @@ del %tmp%\tmp.vbs
     ),
 }
 
+# NOTE: DO NOT CHANGE ORDER OF THIS LIST
+# https://github.com/ful1e5/Bibata_Cursor/issues/154#issuecomment-1783938013
 all_wreg = [
-    'HKCU,"Control Panel\\Cursors",AppStarting,0x00020000,"%10%\\%CUR_DIR%\\%work%"',
     'HKCU,"Control Panel\\Cursors",Arrow,0x00020000,"%10%\\%CUR_DIR%\\%pointer%"',
+    'HKCU,"Control Panel\\Cursors",Help,0x00020000,"%10%\\%CUR_DIR%\\%help%"',
+    'HKCU,"Control Panel\\Cursors",AppStarting,0x00020000,"%10%\\%CUR_DIR%\\%work%"',
+    'HKCU,"Control Panel\\Cursors",Wait,0x00020000,"%10%\\%CUR_DIR%\\%busy%"',
     'HKCU,"Control Panel\\Cursors",crosshair,0x00020000,"%10%\\%CUR_DIR%\\%cross%"',
     'HKCU,"Control Panel\\Cursors",precisionhair,0x00020000,"%10%\\%CUR_DIR%\\%cross%"',
-    'HKCU,"Control Panel\\Cursors",Hand,0x00020000,"%10%\\%CUR_DIR%\\%link%"',
-    'HKCU,"Control Panel\\Cursors",Help,0x00020000,"%10%\\%CUR_DIR%\\%help%"',
     'HKCU,"Control Panel\\Cursors",IBeam,0x00020000,"%10%\\%CUR_DIR%\\%text%"',
-    'HKCU,"Control Panel\\Cursors",No,0x00020000,"%10%\\%CUR_DIR%\\%unavailable%"',
     'HKCU,"Control Panel\\Cursors",NWPen,0x00020000,"%10%\\%CUR_DIR%\\%handwriting%"',
+    'HKCU,"Control Panel\\Cursors",No,0x00020000,"%10%\\%CUR_DIR%\\%unavailable%"',
+    'HKCU,"Control Panel\\Cursors",SizeNS,0x00020000,"%10%\\%CUR_DIR%\\%vert%"',
+    'HKCU,"Control Panel\\Cursors",SizeWE,0x00020000,"%10%\\%CUR_DIR%\\%horz%"',
+    'HKCU,"Control Panel\\Cursors",SizeNWSE,0x00020000,"%10%\\%CUR_DIR%\\%dgn1%"',
+    'HKCU,"Control Panel\\Cursors",SizeNESW,0x00020000,"%10%\\%CUR_DIR%\\%dgn2%"',
     'HKCU,"Control Panel\\Cursors",Grab,0x00020000,"%10%\\%CUR_DIR%\\%move%"',
     'HKCU,"Control Panel\\Cursors",SizeAll,0x00020000,"%10%\\%CUR_DIR%\\%move%"',
-    'HKCU,"Control Panel\\Cursors",SizeNESW,0x00020000,"%10%\\%CUR_DIR%\\%dgn2%"',
-    'HKCU,"Control Panel\\Cursors",SizeNS,0x00020000,"%10%\\%CUR_DIR%\\%vert%"',
-    'HKCU,"Control Panel\\Cursors",SizeNWSE,0x00020000,"%10%\\%CUR_DIR%\\%dgn1%"',
-    'HKCU,"Control Panel\\Cursors",SizeWE,0x00020000,"%10%\\%CUR_DIR%\\%horz%"',
     'HKCU,"Control Panel\\Cursors",UpArrow,0x00020000,"%10%\\%CUR_DIR%\\%alternate%"',
-    'HKCU,"Control Panel\\Cursors",Wait,0x00020000,"%10%\\%CUR_DIR%\\%busy%"',
+    'HKCU,"Control Panel\\Cursors",Hand,0x00020000,"%10%\\%CUR_DIR%\\%link%"',
     'HKCU,"Control Panel\\Cursors",Pin,0x00020000,"%10%\\%CUR_DIR%\\%pin%"',
     'HKCU,"Control Panel\\Cursors",Person,0x00020000,"%10%\\%CUR_DIR%\\%person%"',
     'HKCU,"Control Panel\\Cursors",Pan,0x00020000,"%10%\\%CUR_DIR%\\%pan%"',
@@ -116,7 +118,18 @@ def pack_win(
 
     sreg, scur, sstr, wreg_list = [], [], [], []
 
-    for f in sorted(set(files)):
+    # Define a custom sorting key function
+    def custom_sort_key(file_path):
+        stem = file_path.stem.lower()
+        for item in all_wreg:
+            if f"%{stem}%" in item:
+                return all_wreg.index(item)
+        return len(all_wreg)
+
+    # Sort files using the custom sorting key
+    files = sorted(set(files), key=custom_sort_key)
+
+    for f in files:
         stem = f.stem.lower()
         sreg.append(f"%10%\\%CUR_DIR%\\%{stem}%")
         scur.append(f.name)
