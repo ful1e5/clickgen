@@ -29,15 +29,8 @@ def to_cur(frame: CursorFrame) -> bytes:
         if width > 256 or height > 256:
             raise ValueError(f"Image too big for CUR format: {width}x{height}")
 
-        # Place cursor image in 32x32 canvas if png is smaller.
-        # Otherwise Cursors looks blurry
         blob = BytesIO()
-        if width <= 32 or height <= 32:
-            canvas = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
-            canvas.paste(clone, (0, 0))
-            canvas.save(blob, "PNG")
-        else:
-            image.image.save(blob, "PNG")
+        image.image.save(blob, "PNG")
 
         blob.seek(0)
         image_data.append(blob.read())
