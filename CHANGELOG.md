@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Issue Fixes
+
+-   Fixed python string template in Windows uninstallation script, reported on: https://github.com/ful1e5/clickgen/commit/4fbf21b1d04755c9a6bd2b77b5b69f9ad1c1b56b.
+
 ## [v2.2.0] - 21 December 2023
 
 ### Issues Fixes

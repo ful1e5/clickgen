@@ -68,9 +68,9 @@ REG DELETE "HKCU\\Control Panel\\Cursors\\Schemes" /v "$theme_name" /f
 :: ===============================================================================
 :: This enables a popup message box to indicate a user for the operation complete.
 :: ===============================================================================
-echo x=msgbox("Successfully deleted the cursor!", 0+64, "Cursor") > %tmp%\tmp.vbs
-wscript %tmp%\tmp.vbs
-del %tmp%\tmp.vbs
+echo x=msgbox("Successfully deleted the cursor!", 0+64, "Cursor") > %tmp%\\tmp.vbs
+wscript %tmp%\\tmp.vbs
+del %tmp%\\tmp.vbs
 """
     ),
 }
