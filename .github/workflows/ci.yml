@@ -36,7 +36,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Caching pip packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ matrix.path }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
@@ -64,7 +64,7 @@ jobs:
           python-version: "3.x"
 
       - name: Caching pip packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: pip-cache # use this to check for `cache-hit` (`steps.pip-cache.outputs.cache-hit != 'true'`)
         with:
           path: ~/.cache/pip
