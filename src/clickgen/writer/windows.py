@@ -6,8 +6,6 @@ from io import BytesIO
 from itertools import chain
 from typing import List, Tuple
 
-from PIL import Image
-
 from clickgen.cursors import CursorFrame
 
 # .CUR FILE FORMAT
