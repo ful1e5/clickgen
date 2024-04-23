@@ -23,21 +23,44 @@ def to_cur(frame: CursorFrame) -> bytes:
     image_data: List[bytes] = []
     offset = ICON_DIR.size + len(frame) * ICON_DIR_ENTRY.size
 
+    def re_canvas(size: int, img: Image.Image):
+        canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+        canvas.paste(img, (0, 0))
+        return canvas
+
     for image in frame:
         clone = image.image.copy()
         width, height = clone.size
         if width > 256 or height > 256:
             raise ValueError(f"Image too big for CUR format: {width}x{height}")
 
-        # Place cursor image in 32x32 canvas if png is smaller.
-        # Otherwise Cursors looks blurry
+        # Resize cursor canvas to prevent blurriness
+        # Bug Report: https://github.com/ful1e5/Bibata_Cursor/issues/149
+        #
+        # | size | Regular (× ²⁄₃) | Large (× ⁴⁄₅) | Extra-Large (× 1) |
+        # | ---: | --------------: | ------------: | ----------------: |
+        # |   32 |     21.333 → 22 |     25.6 → 26 |                32 |
+        # |   48 |              32 |     38.4 → 39 |                48 |
+        # |   64 |     42.666 → 43 |     51.2 → 52 |                64 |
+        # |   96 |              64 |     76.8 → 77 |                96 |
+        # |  128 |     85.333 → 86 |   102.4 → 103 |               128 |
+        # |  256 |   170.666 → 171 |   204.8 → 205 |               256 |
+
         blob = BytesIO()
         if width <= 32 or height <= 32:
-            canvas = Image.new("RGBA", (32, 32), (0, 0, 0, 0))
-            canvas.paste(clone, (0, 0))
-            canvas.save(blob, "PNG")
+            re_canvas(32, clone).save(blob, "PNG")
+        elif width <= 48 or height <= 48:
+            re_canvas(48, clone).save(blob, "PNG")
+        elif width <= 64 or height <= 64:
+            re_canvas(64, clone).save(blob, "PNG")
+        elif width <= 96 or height <= 96:
+            re_canvas(96, clone).save(blob, "PNG")
+        elif width <= 128 or height <= 128:
+            re_canvas(128, clone).save(blob, "PNG")
+        elif width <= 256 or height <= 256:
+            re_canvas(256, clone).save(blob, "PNG")
         else:
-            image.image.save(blob, "PNG")
+            raise ValueError(f"Unable to re-canvas windows cursors: {width}x{height}")
 
         blob.seek(0)
         image_data.append(blob.read())
