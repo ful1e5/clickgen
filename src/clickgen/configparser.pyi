@@ -4,7 +4,7 @@ from clickgen.parser.png import DELAY as DELAY, SIZES as SIZES
 from clickgen.writer.windows import to_win as to_win
 from clickgen.writer.x11 import to_x11 as to_x11
 from pathlib import Path
-from typing import Any, Dict, List, TypeVar, Union
+from typing import Any, Dict, List, TypeVar
 
 class ThemeSection:
     name: str
@@ -32,11 +32,11 @@ def parse_config_section(fp: Path, d: Dict[str, Any], **kwargs) -> ConfigSection
 T = TypeVar('T')
 
 class CursorSection:
-    x11_cursor_name: Union[str, None]
-    x11_cursor: Union[bytes, None]
+    x11_cursor_name: str | None
+    x11_cursor: bytes | None
     x11_symlinks: List[str]
-    win_cursor_name: Union[str, None]
-    win_cursor: Union[bytes, None]
+    win_cursor_name: str | None
+    win_cursor: bytes | None
     def __init__(self, x11_cursor_name, x11_cursor, x11_symlinks, win_cursor_name, win_cursor) -> None: ...
     def __lt__(self, other): ...
     def __le__(self, other): ...
