@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.2.2] - 24 April 2024
+
+### Important Changes
+
+-   Re-canvas all windows sizes to prevent blurry windows cursors f81ae4d2f4d63913f4ed60cdba351f74c5d9668b
+
+### What's New?
+
+-   Support python 3.12
+
+### Changes
+
+-   ci: exclude older python version(>3.10) on macOS runner
+
 ## [v2.2.1] - 02 March 2024
 
 ### Important Changes
@@ -330,7 +344,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   auto-generated **symlinks** based on input configs
 -   `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.1...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.2...main
+[v2.2.2]: https://github.com/ful1e5/clickgen/compare/v2.2.1...v2.2.2
 [v2.2.1]: https://github.com/ful1e5/clickgen/compare/v2.2.0...v2.2.1
 [v2.2.0]: https://github.com/ful1e5/clickgen/compare/v2.1.9...v2.2.0
 [v2.1.9]: https://github.com/ful1e5/clickgen/compare/v2.1.8...v2.1.9
