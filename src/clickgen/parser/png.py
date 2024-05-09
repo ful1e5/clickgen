@@ -9,7 +9,7 @@ from PIL import Image
 from clickgen.cursors import CursorFrame, CursorImage
 from clickgen.parser.base import BaseParser
 
-SIZES = [22, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
+SIZES = [16, 20, 22, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
 DELAY = 0
 
 
