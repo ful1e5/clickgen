@@ -122,7 +122,7 @@ def main() -> None:  # noqa: C901
         dest="sizes",
         nargs="+",
         default=None,
-        type=int,
+        type=str,
         help=""" Change cursor size.
         Multiple sizes are assigned to XCursor
         while one size will be assigned to Windows.""",
