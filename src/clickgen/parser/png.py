@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import io
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 
 from PIL import Image
 
@@ -24,14 +24,14 @@ class SinglePNGParser(BaseParser):
         self,
         blob: bytes,
         hotspot: Tuple[int, int],
-        sizes: Optional[List[int]] = None,
+        sizes: Optional[List[Union[int, str]]] = None,
         delay: Optional[int] = None,
     ) -> None:
         super().__init__(blob)
         self._image = Image.open(io.BytesIO(self.blob))
 
+        # 'set' to prevent value duplication
         if not sizes:
-            # 'set' to prevent value duplication
             self.sizes = set(SIZES)
         else:
             self.sizes = set(sizes)
@@ -58,9 +58,45 @@ class SinglePNGParser(BaseParser):
     def _parse(self) -> List[CursorFrame]:
         images: List[CursorImage] = []
         for s in sorted(self.sizes):
-            res_img = self._image.resize((s, s), 1)
+            size: int = 0
+            canvas_size: int = 0
+
+            if isinstance(s, str):
+                try:
+                    if ":" in s:
+                        size_str, canvas_size_str = s.split(":")
+                        size = int(size_str)
+                        canvas_size = int(canvas_size_str)
+                    else:
+                        size = int(s)
+                        canvas_size = size
+                except ValueError:
+                    raise ValueError(
+                        f"'sizes' input '{s}' must be an integer or integers separated by ':'."
+                    )
+                except IndexError:
+                    raise ValueError(
+                        f"'sizes' input '{s}' must contain one ':' to separate sizes."
+                    )
+            elif isinstance(s, int):
+                size = s
+                canvas_size = s
+            else:
+                raise TypeError(
+                    "Input must be 'cursor_size:canvas_size' or an integer."
+                )
+
+            res_img = self._image.resize((size, size), 1)
+
+            if size != canvas_size:
+                canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+                canvas.paste(res_img, (0, 0))
+                res_img = canvas
+
             res_hotspot = self._cal_hotspot(res_img)
-            images.append(CursorImage(image=res_img, hotspot=res_hotspot, nominal=s))
+            images.append(
+                CursorImage(image=res_img, hotspot=res_hotspot, nominal=canvas_size)
+            )
 
         return [CursorFrame(images, delay=self.delay)]
 

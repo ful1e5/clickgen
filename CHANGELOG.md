@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### What's New?
+
+-   Clickgen now allows cursor bitmap re-canvasing by specifying size using the `cursor_size:canvas_size` format.
+
 ## [v2.2.2] - 24 April 2024
 
 ### Important Changes
