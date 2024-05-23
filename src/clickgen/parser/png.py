@@ -74,10 +74,6 @@ class SinglePNGParser(BaseParser):
                     raise ValueError(
                         f"'sizes' input '{s}' must be an integer or integers separated by ':'."
                     )
-                except IndexError:
-                    raise ValueError(
-                        f"'sizes' input '{s}' must contain one ':' to separate sizes."
-                    )
             elif isinstance(s, int):
                 size = s
                 canvas_size = s

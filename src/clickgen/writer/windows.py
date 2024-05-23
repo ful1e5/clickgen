@@ -57,10 +57,8 @@ def to_cur(frame: CursorFrame) -> bytes:
             re_canvas(96, clone).save(blob, "PNG")
         elif width <= 128 or height <= 128:
             re_canvas(128, clone).save(blob, "PNG")
-        elif width <= 256 or height <= 256:
-            re_canvas(256, clone).save(blob, "PNG")
         else:
-            raise ValueError(f"Unable to re-canvas windows cursors: {width}x{height}")
+            re_canvas(256, clone).save(blob, "PNG")
 
         blob.seek(0)
         image_data.append(blob.read())
