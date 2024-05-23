@@ -17,21 +17,22 @@ Clickgen's core functionality is heavily inspired by [quantum5/win2xcur](https:/
 > **Note**
 > The project's success depends on sponsorships. Meeting sponsorship goals for [ful1e5](https://github.com/ful1e5) GitHub Account will drive new releases and ongoing development.
 
-- **2023-08-23:** `ctgen` CLI supports `.json` and `.yaml`/`.yml` as configuration file.
-- **2023-08-17:** Cursor size settings moved to `[cursors.fallback_settings]` in config. See [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
-- **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
-- **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
-  I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
-  Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#usage) usage.
+-   **2024-05-24:** Clickgen now allows cursor bitmap re-canvasing by specifying size using the `cursor_size:canvas_size` format. See [changelog-05212024](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-9511166)
+-   **2023-08-23:** `ctgen` CLI supports `.json` and `.yaml`/`.yml` as configuration file.
+-   **2023-08-17:** Cursor size settings moved to `[cursors.fallback_settings]` in config. See [changelog-08172023](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-6747666)
+-   **2022-06-15:** Docker Image support deprecated due to cross-platform compatibility.
+-   **2022-07-09:** :warning: All the **functionality and modules are removed from older versions in `v2.0.0`**.
+    I will be restricting any updates to the `>=v1.2.0` versions to security updates and hotfixes.
+    Check updated documentations for [building cursors from API](#api-examples) and [CLIs](#usage) usage.
 
 ## Requirements
 
-- Python version 3.7.5 or higher
-- [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
-- [PyYaml](https://pypi.org/project/PyYaml) >= 6.0.1
-- [attrs](https://pypi.org/project/attrs) >= 15.0.0
-- [numpy](https://pypi.org/project/numpy) >= 1.21.6
-- [toml](https://pypi.org/project/toml) >= 0.10.2
+-   Python version 3.7.5 or higher
+-   [Pillow](https://pypi.org/project/Pillow) >= 8.1.1
+-   [PyYaml](https://pypi.org/project/PyYaml) >= 6.0.1
+-   [attrs](https://pypi.org/project/attrs) >= 15.0.0
+-   [numpy](https://pypi.org/project/numpy) >= 1.21.6
+-   [toml](https://pypi.org/project/toml) >= 0.10.2
 
 ## Install
 
@@ -45,7 +46,7 @@ pip3 install clickgen
 
 ### Arch Linux
 
-- [AUR](https://aur.archlinux.org/packages/python-clickgen)
+-   [AUR](https://aur.archlinux.org/packages/python-clickgen)
 
 ## Usage
 

@@ -45,6 +45,18 @@ def test_single_png_parser_raises_01(blob):
         SinglePNGParser(blob, hotspot=(201, 100))
 
 
+def test_single_png_parser_raises_size_error_for_canvasing(blob):
+    with pytest.raises(ValueError):
+        SinglePNGParser(blob, hotspot=(3, 3), sizes=["test"])
+    with pytest.raises(ValueError):
+        SinglePNGParser(blob, hotspot=(3, 3), sizes=["20:"])
+    with pytest.raises(ValueError):
+        SinglePNGParser(blob, hotspot=(3, 3), sizes=[":20"])
+
+    with pytest.raises(TypeError):
+        SinglePNGParser(blob, hotspot=(3, 3), sizes=[(20, 20)])
+
+
 def test_multi_png_parser(blobs, hotspot, sizes, delay):
     p = MultiPNGParser(blobs, hotspot, sizes, delay)
 

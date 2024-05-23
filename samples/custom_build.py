@@ -25,7 +25,7 @@ if __name__ == "__main__":
             pngs.append(p.read())
 
     try:
-        ani = open_blob(pngs, hotspot=(100, 100))
+        ani = open_blob(pngs, hotspot=(100, 100), sizes=["24:32", "32"])
 
         # save Windows animated cursor
         aext, aresult = to_win(ani.frames)

@@ -62,7 +62,7 @@ def main() -> None:
         dest="sizes",
         nargs="+",
         default=SIZES,
-        type=int,
+        type=str,
         help="Set pixel-size for cursor.",
     )
     parser.add_argument(

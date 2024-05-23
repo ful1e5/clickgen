@@ -18,6 +18,26 @@ def test_windows_cur_writer(cursor_frame, x11_tmp_dir: Path):
     assert cfile.is_file()
 
 
+def test_windows_cur_writer_re_canvas(image: Image, hotspot, delay):
+    def cur_frame(size: int):
+        i = image.resize(size=(size, size), resample=3)
+        return CursorImage(i, hotspot, nominal=31)
+
+    to_cur(
+        CursorFrame(
+            [
+                cur_frame(20),
+                cur_frame(40),
+                cur_frame(60),
+                cur_frame(90),
+                cur_frame(120),
+                cur_frame(250),
+            ],
+            delay,
+        )
+    )
+
+
 def test_windows_cur_writer_raises(image: Image, hotspot, delay):
     i = image.resize(size=(500, 500), resample=3)
     c = CursorImage(i, hotspot, nominal=i.size[0])

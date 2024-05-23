@@ -10,8 +10,8 @@ platforms = ['x11', 'windows']
 
 [cursors]
 [cursors.fallback_settings]
-x11_sizes = [16,20, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
-win_sizes = [24, 32, 48, 64, 96]
+x11_sizes = [16, 20, 24, 28, 32, 40, 48, 56, 64, 72, 80, 88, 96]
+win_sizes = ['24:32', '32', '48', '64', '96']
 x_hotspot = 53
 y_hotspot = 36
 x11_delay = 30
@@ -27,7 +27,7 @@ x11_symlinks = ['link1']
 png = 'pointer.png'
 win_name = 'Alternate'
 x11_name = 'pointer2'
-x11_symlinks = ['link2','link3', 'link4', 'link5', 'link6','link7', 'link8']
+x11_symlinks = ['link2', 'link3', 'link4', 'link5', 'link6', 'link7', 'link8']
 
 
 [cursors.test_pointer3]
