@@ -10,14 +10,22 @@ class CursorImage:
     image: Image
     hotspot: Tuple[int, int]
     nominal: int
+    re_canvas: bool
 
-    def __init__(self, image: Image, hotspot: Tuple[int, int], nominal: int) -> None:
+    def __init__(
+        self,
+        image: Image,
+        hotspot: Tuple[int, int],
+        nominal: int,
+        re_canvas: bool = False,
+    ) -> None:
         self.image = image
         self.hotspot = hotspot
         self.nominal = nominal
+        self.re_canvas = re_canvas
 
     def __repr__(self) -> str:
-        return f"CursorImage(image={self.image!r}, hotspot={self.hotspot!r}, nominal={self.nominal!r})"
+        return f"CursorImage(image={self.image!r}, hotspot={self.hotspot!r}, nominal={self.nominal!r}, re_canvas={self.re_canvas!r})"
 
 
 class CursorFrame:

@@ -5,7 +5,8 @@ class CursorImage:
     image: Image
     hotspot: tuple[int, int]
     nominal: int
-    def __init__(self, image: Image, hotspot: tuple[int, int], nominal: int) -> None: ...
+    re_canvas: bool
+    def __init__(self, image: Image, hotspot: tuple[int, int], nominal: int, re_canvas: bool = False) -> None: ...
 
 class CursorFrame:
     images: list[CursorImage]

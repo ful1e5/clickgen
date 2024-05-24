@@ -85,13 +85,18 @@ class SinglePNGParser(BaseParser):
             res_img = self._image.resize((size, size), 1)
 
             if size != canvas_size:
-                canvas = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+                canvas = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
                 canvas.paste(res_img, (0, 0))
                 res_img = canvas
 
             res_hotspot = self._cal_hotspot(res_img)
             images.append(
-                CursorImage(image=res_img, hotspot=res_hotspot, nominal=canvas_size)
+                CursorImage(
+                    image=res_img,
+                    hotspot=res_hotspot,
+                    nominal=canvas_size,
+                    re_canvas=size != canvas_size,
+                )
             )
 
         return [CursorFrame(images, delay=self.delay)]
@@ -109,7 +114,7 @@ class MultiPNGParser(BaseParser):
         self,
         blobs: List[bytes],
         hotspot: Tuple[int, int],
-        sizes: Optional[List[int]] = None,
+        sizes: Optional[List[Union[int, str]]] = None,
         delay: Optional[int] = None,
     ) -> None:
         super().__init__(blobs[0])

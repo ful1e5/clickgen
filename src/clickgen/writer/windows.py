@@ -47,18 +47,21 @@ def to_cur(frame: CursorFrame) -> bytes:
         # |  256 |   170.666 → 171 |   204.8 → 205 |               256 |
 
         blob = BytesIO()
-        if width <= 32 or height <= 32:
-            re_canvas(32, clone).save(blob, "PNG")
-        elif width <= 48 or height <= 48:
-            re_canvas(48, clone).save(blob, "PNG")
-        elif width <= 64 or height <= 64:
-            re_canvas(64, clone).save(blob, "PNG")
-        elif width <= 96 or height <= 96:
-            re_canvas(96, clone).save(blob, "PNG")
-        elif width <= 128 or height <= 128:
-            re_canvas(128, clone).save(blob, "PNG")
+        if not image.re_canvas:
+            if width <= 32 or height <= 32:
+                re_canvas(32, clone).save(blob, "PNG")
+            elif width <= 48 or height <= 48:
+                re_canvas(48, clone).save(blob, "PNG")
+            elif width <= 64 or height <= 64:
+                re_canvas(64, clone).save(blob, "PNG")
+            elif width <= 96 or height <= 96:
+                re_canvas(96, clone).save(blob, "PNG")
+            elif width <= 128 or height <= 128:
+                re_canvas(128, clone).save(blob, "PNG")
+            else:
+                re_canvas(256, clone).save(blob, "PNG")
         else:
-            re_canvas(256, clone).save(blob, "PNG")
+            image.image.save(blob, "PNG")
 
         blob.seek(0)
         image_data.append(blob.read())
