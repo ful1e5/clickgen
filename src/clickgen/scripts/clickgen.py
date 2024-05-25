@@ -63,7 +63,8 @@ def main() -> None:
         nargs="+",
         default=SIZES,
         type=str,
-        help="Set pixel-size for cursor.",
+        help="""Specify the cursor size(s) either as a single integer value or
+        in the 'size:canvas_size' format to resize the cursor to a specific canvas size.""",
     )
     parser.add_argument(
         "-d",

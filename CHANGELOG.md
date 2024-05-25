@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.2.3] - 25 May 2024
+
 ### What's New?
 
 -   Clickgen now allows cursor bitmap re-canvasing by specifying size using the `cursor_size:canvas_size` format. See [changelog-05212024](https://github.com/ful1e5/clickgen/discussions/59#discussioncomment-9511166)
@@ -348,7 +350,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   auto-generated **symlinks** based on input configs
 -   `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.2...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.3...main
+[v2.2.3]: https://github.com/ful1e5/clickgen/compare/v2.2.2...v2.2.3
 [v2.2.2]: https://github.com/ful1e5/clickgen/compare/v2.2.1...v2.2.2
 [v2.2.1]: https://github.com/ful1e5/clickgen/compare/v2.2.0...v2.2.1
 [v2.2.0]: https://github.com/ful1e5/clickgen/compare/v2.1.9...v2.2.0

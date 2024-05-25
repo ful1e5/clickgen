@@ -57,13 +57,13 @@ pip3 install clickgen
 For example, if you have to build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Linux Format:
 
-```
+```bash
 clickgen samples/pngs/pointer.png -x 10 -y 10 -s 22 24 32 -p x11
 ```
 
 You also **build animated Xcursor** by providing multiple png files to argument and animation delay with `-d`:
 
-```
+```bash
 clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s 22 24 32 -p x11
 ```
 
@@ -72,15 +72,21 @@ clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s
 To build [ponter.png](https://github.com/ful1e5/clickgen/blob/main/samples/pngs/pointer.png)
 file to Windows Format (`.cur`):
 
-> **Warning: Windows Cursor only support single size.**
+> **Warning: Windows Animated Cursor only support single size.**
 
-```
+```bash
 clickgen samples/pngs/pointer.png -x 10 -y 10 -s 32 -p windows
+```
+
+You can also specify the size in the `size:canvas_size` format to enable canvasing:
+
+```bash
+clickgen samples/pngs/pointer.png -x 10 -y 10 -s 20:32 -p windows
 ```
 
 For **animated Windows Cursor** (`.ani`):
 
-```
+```bash
 clickgen samples/pngs/wait-001.png samples/pngs/wait-001.png -d 3 -x 10 -y 10 -s 32 -p windows
 ```
 
@@ -98,13 +104,13 @@ ctgen sample/sample.yaml
 
 You also provide multiple theme configuration file once as following:
 
-```
+```bash
 ctgen sample/sample.toml sample/sample.json
 ```
 
 Override theme's `name` of theme with `-n` option:
 
-```
+```bash
 ctgen sample/sample.toml -n "New Theme"
 ```
 

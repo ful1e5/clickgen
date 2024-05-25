@@ -123,9 +123,8 @@ def main() -> None:  # noqa: C901
         nargs="+",
         default=None,
         type=str,
-        help=""" Change cursor size.
-        Multiple sizes are assigned to XCursor
-        while one size will be assigned to Windows.""",
+        help="""Specify the cursor size(s) either as a single integer value or
+        in the 'size:canvas_size' format to resize the cursor to a specific canvas size.""",
     )
 
     parser.add_argument(
