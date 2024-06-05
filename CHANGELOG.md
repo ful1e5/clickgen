@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+## [v2.2.4] - 05 June 2024
+
 ### What's New?
 
 -   Show detailed error for missing bitmaps in `ctgen` cursors config parsing
@@ -354,7 +356,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -   auto-generated **symlinks** based on input configs
 -   `.tar` archive & `directory` as out **package**.
 
-[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.3...main
+[unreleased]: https://github.com/ful1e5/clickgen/compare/v2.2.4...main
+[v2.2.4]: https://github.com/ful1e5/clickgen/compare/v2.2.3...v2.2.4
 [v2.2.3]: https://github.com/ful1e5/clickgen/compare/v2.2.2...v2.2.3
 [v2.2.2]: https://github.com/ful1e5/clickgen/compare/v2.2.1...v2.2.2
 [v2.2.1]: https://github.com/ful1e5/clickgen/compare/v2.2.0...v2.2.1

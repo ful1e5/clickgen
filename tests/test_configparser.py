@@ -192,6 +192,5 @@ def test_parse_cursor_section_handles_png_not_found_exception():
 
     c = parse_config_section(Path(), dd2)
 
-    with pytest.raises(FileNotFoundError) as e:
+    with pytest.raises(FileNotFoundError):
         parse_cursors_section(exp_dd1, c)
-        print(e)
