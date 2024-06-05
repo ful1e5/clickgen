@@ -1,9 +1,12 @@
 from pathlib import Path
 
+import pytest
+
 from clickgen.configparser import (
     ClickgenConfig,
     parse_config_file,
     parse_config_section,
+    parse_cursors_section,
     parse_json_file,
     parse_theme_section,
     parse_toml_file,
@@ -75,10 +78,10 @@ dd2 = {
 def test_parse_config_section():
     c = parse_config_section(Path(), dd2)
     assert isinstance(c.bitmaps_dir, Path)
-    assert c.bitmaps_dir.name is "test"
+    assert c.bitmaps_dir.name == "test"
     assert c.bitmaps_dir.is_absolute()
     assert isinstance(c.out_dir, Path)
-    assert c.out_dir.name is "test"
+    assert c.out_dir.name == "test"
     assert c.out_dir.is_absolute()
 
     assert c.platforms == "test"
@@ -178,3 +181,17 @@ def test_parse_config_files(samples_dir: Path):
         fp = samples_dir / f"sample.{ext}"
         c: ClickgenConfig = parse_config_file(fp)
         assert_clickgen_config(c)
+
+
+def test_parse_cursor_section_handles_png_not_found_exception():
+    exp_dd1 = dd1
+    exp_dd1["cursors"] = {
+        "fallback_settings": {},
+        "bitmap1": {"png": "test.png", "x11_name": "test", "win_name": "test"},
+    }
+
+    c = parse_config_section(Path(), dd2)
+
+    with pytest.raises(FileNotFoundError) as e:
+        parse_cursors_section(exp_dd1, c)
+        print(e)

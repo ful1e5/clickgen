@@ -107,6 +107,11 @@ def parse_cursors_section(
 
         blobs = [f.read_bytes() for f in sorted(config.bitmaps_dir.glob(v["png"]))]
 
+        if not blobs:
+            raise FileNotFoundError(
+                f"Bitmaps not found '{v["png"]}' in '{config.bitmaps_dir}'"
+            )
+
         x11_cursor = None
         x11_cursor_name = None
         if "x11_name" in v:

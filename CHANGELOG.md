@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### What's New?
+
+-   Show detailed error for missing bitmaps in `ctgen` cursors config parsing
+
 ## [v2.2.3] - 25 May 2024
 
 ### What's New?
