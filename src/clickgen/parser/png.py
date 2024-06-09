@@ -83,13 +83,13 @@ class SinglePNGParser(BaseParser):
                 )
 
             res_img = self._image.resize((size, size), 1)
+            res_hotspot = self._cal_hotspot(res_img)
 
             if size != canvas_size:
                 canvas = Image.new("RGBA", (canvas_size, canvas_size), (0, 0, 0, 0))
                 canvas.paste(res_img, (0, 0))
                 res_img = canvas
 
-            res_hotspot = self._cal_hotspot(res_img)
             images.append(
                 CursorImage(
                     image=res_img,

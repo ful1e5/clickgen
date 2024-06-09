@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Issue Fixes
+
+-   Fixed hotspot calculation while re-canvasing
+
 ## [v2.2.4] - 05 June 2024
 
 ### What's New?
